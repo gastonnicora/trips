@@ -15,8 +15,8 @@ public class UserMapper {
         return new UserDTOs(
                 user.getUuid(),
                 user.getName(),
-                user.getEmail(),
                 user.getLastname(),
+                user.getEmail(),
                 user.getRole(),
                 user.isEnabled(),
                 user.getCreatedAt(),

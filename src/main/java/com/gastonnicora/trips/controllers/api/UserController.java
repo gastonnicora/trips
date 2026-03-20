@@ -49,7 +49,7 @@ public class UserController {
         return new ArrayList<>();
     }
     
-    @GetMapping("/I")
+    @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Usuario actual", description = "Devuelve los datos del usuario actual")
     public UserDTOs currentUser() {

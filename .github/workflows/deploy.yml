@@ -28,4 +28,4 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Run app (test run)
-        run: java -jar target/*.jar
+        run: java -jar target/*.jar --spring.profiles.active=prod

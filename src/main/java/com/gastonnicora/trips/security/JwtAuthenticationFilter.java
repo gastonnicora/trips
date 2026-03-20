@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.security;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +41,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = header.substring(7);
-        String username = jwtService.extractUsername(token);
+        String username;
+
+         try {
+            username = jwtService.extractUsername(token);
+        } catch (JwtException e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.getWriter().write("""
+            {
+                "status":403,
+                "message":"Token invalido",
+                "timestamp":"%s",
+                "errors":null
+            }
+            """.formatted(LocalDateTime.now()));
+            return; 
+        }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
