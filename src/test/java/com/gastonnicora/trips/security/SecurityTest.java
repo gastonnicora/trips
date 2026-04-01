@@ -35,4 +35,6 @@ class SecurityTest {
         mockMvc.perform(get("/api/users/me"))
                 .andExpect(status().isOk());
     }
+
+    
 }

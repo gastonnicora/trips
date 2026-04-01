@@ -20,15 +20,17 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class AuthIntegrationTest {
+class LoginTest {
 
         @Autowired
         private MockMvc mockMvc;
 
+
+        //test login correcto
         @Test
         void shouldRegisterAndLogin() throws Exception {
-                
-                AuxUser user = UserTestFactory.registerUser(mockMvc,"user", "1234");
+
+                AuxUser user = UserTestFactory.registerUser(mockMvc, "user", "1234");
                 mockMvc.perform(post("/api/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -38,10 +40,10 @@ class AuthIntegrationTest {
                                 .andExpect(jsonPath("$.token").exists());
         }
 
-
+        //Login incorrecto por email
         @Test
-        void TestLoginFailCredentials() throws Exception {
-                AuxUser user = UserTestFactory.registerUser(mockMvc,"user", "1234");
+        void TestLoginFailEmail() throws Exception {
+                AuxUser user = UserTestFactory.registerUser(mockMvc, "user", "1234");
                 mockMvc.perform(post("/api/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -50,16 +52,36 @@ class AuthIntegrationTest {
                                 .andExpect(status().isUnauthorized());
         }
 
+        //Login incorrecto por contraseña
         @Test
-        void TestLoginFailValid() throws Exception {
-                AuxUser user = UserTestFactory.registerUser(mockMvc,"user", "1234");
+        void TestLoginFailPass() throws Exception {
+                AuxUser user = UserTestFactory.registerUser(mockMvc, "user", "1234");
                 mockMvc.perform(post("/api/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
-                                                    {"email":"%saaffa","password":"12"}
+                                                    {"email":"%s","password":"12"}
                                                 """.formatted(user.getEmail(), user.getPass())))
                                 .andExpect(status().isUnauthorized());
         }
 
+        //Login incorrecto por email demaciado largo
+        @Test
+        void TestLongLengthInput() throws Exception {
+                AuxUser user = UserTestFactory.registerUser(mockMvc, "user", "1234");
+                String mail = """
+                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+                                 Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus
+                                  et magnis dis parturient montes, nascetur ridiculus mus.
+                                   Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
+                                   Nulla consequat massa quis enim. Donec.
+
+                                               """;
+                mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                                    {"email":"%s%s","password":"12"}
+                                                """.formatted(user.getEmail(),mail, user.getPass())))
+                                .andExpect(status().isBadRequest());
+        }
 
 }

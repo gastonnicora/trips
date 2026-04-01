@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserTestFactory {
 
+    //registra un usuario y devuelve el email y la contraseña
     public static AuxUser registerUser(MockMvc mockMvc, String name, String pass) throws Exception {
         String email = name + "_" + System.currentTimeMillis() + "@test.com";
 
@@ -27,6 +28,7 @@ public class UserTestFactory {
         return new AuxUser(email, pass);
     }
 
+    // hace login de un usuario y devuelve el token
     public static String loginAndGetToken(MockMvc mockMvc, String email, String pass) throws Exception {
         String response = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -38,7 +40,6 @@ public class UserTestFactory {
                 .getResponse()
                 .getContentAsString();
 
-        // extraer token del JSON (ejemplo simple con substring, mejor usar ObjectMapper)
         String token = response.split(":")[1].replaceAll("[\"}]", "").trim();
         return token;
     }

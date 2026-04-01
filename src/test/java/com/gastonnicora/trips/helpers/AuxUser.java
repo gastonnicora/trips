@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.helpers;
 
+
+//Clase auxiliar de usuario para pruebas
 public class AuxUser{
         private String email;
         private String pass;
