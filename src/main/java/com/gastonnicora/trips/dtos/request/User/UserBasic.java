@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-//TODO Crear clase que devuelva los mensajes de cada error
 
 public abstract class UserBasic {
 
