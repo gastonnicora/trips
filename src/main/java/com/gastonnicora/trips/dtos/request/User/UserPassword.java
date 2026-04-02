@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 
-//TODO Agregar mensajes si falta y Size
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 public class UserPassword {
     
@@ -15,18 +14,18 @@ public class UserPassword {
 
 
     @Schema(description = "Contraseña actual", example = "12345678")
-    @NotBlank(message = "Debe introducir su contraseña")
-    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + " caracteres")    
+    @NotBlank(message = "La contraseña actual no puede quedar en blanco")
+    @Size(min = minLengthPass, message = "La contraseña debe contener al menos "+ minLengthPass +" y máximo 255 caracteres",max = 255)    
     private String passwordOld;
 
-    @Schema(description = "Nueva contraseña con mínimo "+ minLengthPass+" caracteres.", example = "12345678")
-    @NotBlank(message = "Debe introducir una contraseña nueva")
-    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + " caracteres")
+    @Schema(description = "Nueva contraseña", example = "12345678")
+    @NotBlank(message = "La nueva contraseña no puede quedar en blanco")
+    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + "y máximo 255 caracteres",max = 255)
     private String password;
 
-    @Schema(description = "Repita la nueva contraseña", example = "12345678")
-    @NotBlank(message = "Debe repetir la nueva contraseña")
-    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + " caracteres")
+    @Schema(description = "Repetición de la nueva contraseña", example = "12345678")
+    @NotBlank(message = "La nueva contraseña no puede quedar en blanco")
+    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + "y máximo 255 caracteres",max = 255)
     private String confirmPassword;
 
     public UserPassword(String passwordOld, String password, String confirmPassword) {

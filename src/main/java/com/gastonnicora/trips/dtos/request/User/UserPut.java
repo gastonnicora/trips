@@ -1,6 +1,5 @@
 package com.gastonnicora.trips.dtos.request.User;
 
-//TODO Agregar mensajes si falta y Size
 
 public class UserPut extends UserBasic {
 
