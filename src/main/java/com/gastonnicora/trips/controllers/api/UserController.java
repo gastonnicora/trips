@@ -87,7 +87,7 @@ public class UserController {
     }
 
     @PutMapping("/changeRole/{uuid}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar roles de un usuario", description = "Modifica un usuario por su uuid")
     public UserDTOs updateUserRole(@PathVariable UUID uuid, @Valid @RequestBody UserRole entity) {
