@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 
-//TODO Agregar mensajes si falta y Size
 public class UserRole {
     @NotEmpty(message = "Debe seleccionar al menos un rol")
     @NotNull(message = "Debe seleccionar al menos un rol")
