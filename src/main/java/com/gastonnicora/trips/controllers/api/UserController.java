@@ -31,17 +31,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 @Tag(name = "User API", description = "Endpoints para la gestión de usuarios")
 public class UserController {
-    //TODO cambiar urls
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("s")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Obtener usuarios", description = "Obtiene una lista de usuarios filtrados por un parámetro opcional")
@@ -64,7 +63,7 @@ public class UserController {
         return userService.getUserByUuid(uuid);
     }
 
-    @PostMapping("/register")
+    @PostMapping
     @Operation(summary = "Crear Usuario", description = "Crea un nuevo usuario")
     public UserDTOs saveUser(@Valid @RequestBody UserCreate entity) {
 
@@ -72,7 +71,7 @@ public class UserController {
     }
 
 
-    @PutMapping("")
+    @PutMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi usuario", description = "Modifica mi usuario")
     public UserDTOs updateCurrentUser(@Valid @RequestBody UserPut entity) {
@@ -95,7 +94,7 @@ public class UserController {
         return userService.setRole(uuid, entity);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Eliminar mi usuario", description = "Elimina mi usuario")
     public void deleteCurrentUser() {
