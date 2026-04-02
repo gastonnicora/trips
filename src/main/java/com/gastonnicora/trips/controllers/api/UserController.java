@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/users")
 @Tag(name = "User API", description = "Endpoints para la gestión de usuarios")
 public class UserController {
-
+    //TODO cambiar urls
     private final UserService userService;
 
     public UserController(UserService userService) {
