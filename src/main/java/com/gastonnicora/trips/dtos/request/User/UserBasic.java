@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+//TODO Agregar mensajes si falta y Size
+//TODO Crear clase que devuelva los mensajes de cada error
+
 public abstract class UserBasic {
 
     

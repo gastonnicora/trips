@@ -36,6 +36,7 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Inicio de sesion",description = "Inicia sesión con email y contraseña y recibe un token")
     public LoginResponse login(@Valid @RequestBody LoginRequest entity) {
+        //TODO agreagrar y configurar refreshtokon para mejorar seguridad
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(entity.getEmail(), entity.getPassword())
         );

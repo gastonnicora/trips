@@ -6,6 +6,8 @@ import com.gastonnicora.trips.validations.FieldsMatch;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+//TODO Agregar mensajes si falta y Size
+
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 public class UserCreate extends UserBasic{
 
@@ -18,7 +20,7 @@ public class UserCreate extends UserBasic{
     private String password;
 
     @Schema(description = "Repetir contraseña", example = "12345678")
-    @NotBlank
+    @NotBlank(message = "Debe introducir una contraseña")
     private String confirmPassword;
 
     public UserCreate(String name, String lastname, String email, String password, String confirmPass) {

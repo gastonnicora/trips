@@ -60,15 +60,15 @@ class LoginTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                                     {"email":"%s","password":"12"}
-                                                """.formatted(user.getEmail(), user.getPass())))
+                                                """.formatted(user.getEmail())))
                                 .andExpect(status().isUnauthorized());
         }
 
-        //Login incorrecto por email demaciado largo
+        //login falla por pass demasiado larga
         @Test
         void TestLongLengthInput() throws Exception {
                 AuxUser user = UserTestFactory.registerUser(mockMvc, "user", "1234");
-                String mail = """
+                String pass = """
                                 Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
                                  Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus
                                   et magnis dis parturient montes, nascetur ridiculus mus.
@@ -76,11 +76,23 @@ class LoginTest {
                                    Nulla consequat massa quis enim. Donec.
 
                                                """;
+               mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                                    {"email":"%s","password":"%s"}
+                                                """.formatted(user.getEmail(), pass.replace("\n", "").trim())))
+                                .andExpect(status().isBadRequest());
+        }
+        
+        //Login falla por email con espacio 
+        @Test
+        void TestEmailWithSpace() throws Exception{
+                AuxUser user = UserTestFactory.registerUser(mockMvc, "user", "1234");
                 mockMvc.perform(post("/api/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
-                                                    {"email":"%s%s","password":"12"}
-                                                """.formatted(user.getEmail(),mail, user.getPass())))
+                                                    {"email":"%s ","password":"%s"}
+                                                """.formatted(user.getEmail(), user.getPass())))
                                 .andExpect(status().isBadRequest());
         }
 
