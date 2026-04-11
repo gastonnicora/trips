@@ -1,62 +1,166 @@
 package com.gastonnicora.trips.controllers.api;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gastonnicora.trips.dtos.request.LoginRequest;
-import com.gastonnicora.trips.dtos.response.LoginResponse;
+import com.gastonnicora.trips.dtos.request.auth.LoginRequest;
+import com.gastonnicora.trips.dtos.request.auth.RefreshRequest;
+import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
+import com.gastonnicora.trips.dtos.response.auth.RefreshResponse;
+import com.gastonnicora.trips.entitys.RefreshToken;
+import com.gastonnicora.trips.helpers.UserAgent;
 import com.gastonnicora.trips.security.JwtService;
+import com.gastonnicora.trips.services.RefreshTokenService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-
+// TODO refactorizar 
+//TODO agregar mensajes swagger
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Auth API", description = "Endpoints para autenticación y autorización")
 public class AuthController {
-    
+
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
+
+    @Value("${cookie.secure}")
+    private boolean cookieSecure;
 
     public AuthController(AuthenticationManager authenticationManager,
-                          JwtService jwtService){
+            JwtService jwtService, RefreshTokenService refreshTokenService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Inicio de sesion",description = "Inicia sesión con email y contraseña y recibe un token")
-    public LoginResponse login(@Valid @RequestBody LoginRequest entity) {
-        //TODO agreagrar y configurar refreshtokon para mejorar seguridad
+    @Operation(summary = "Inicio de sesion", description = "Inicia sesión con email y contraseña y recibe un token")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest login, HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(entity.getEmail(), entity.getPassword())
-        );
-        String token = jwtService.generateToken(entity.getEmail());
-        return new LoginResponse(token);
+                new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
+
+        String token = jwtService.generateToken(login.getEmail());
+
+        String refreshToken = jwtService.generateRefreshToken(login.getEmail());
+
+        String userAgent = request.getHeader("User-Agent");
+        String ip = request.getRemoteAddr();
+        String device = UserAgent.getDevice(request.getHeader("User-Agent"));
+
+        RefreshToken refreshTokenE = refreshTokenService.createToken(refreshToken, login.getEmail(), userAgent, ip,
+                device);
+
+        // 🌐 WEB → cookie
+        if ("web".equals(device)) {
+            Cookie cookie = new Cookie("refreshToken", refreshTokenE.getToken());
+            cookie.setHttpOnly(true);
+            cookie.setSecure(cookieSecure);
+            cookie.setPath("/api/auth/refresh");
+            cookie.setMaxAge(7 * 24 * 60 * 60);
+
+            response.addCookie(cookie);
+        }
+
+        // 📱 ANDROID → en body
+        return ResponseEntity.ok(
+                new LoginResponse(token,
+                        "android".equals(device) ? refreshTokenE.getToken() : null));
+    }
+
+    // valida refreshToken, si es valido devuelve uno nuevo y un nuevo token de
+    // acceso
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
+            @RequestBody(required = false) RefreshRequest body,
+            HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+
+        String token = null;
+        // WEB
+        if (cookieToken != null) {
+            token = cookieToken;
+        }
+
+        // ANDROID
+        if (body != null && body.getRefreshToken() != null) {
+            token = body.getRefreshToken();
+        }
+        if(token== null){
+            throw new RuntimeException("Token inexistente");
+        }
+
+        String userAgent = request.getHeader("User-Agent");
+        String ip = request.getRemoteAddr();
+
+        RefreshToken rt = refreshTokenService.verifyToken(token, ip, userAgent);
+
+        String refreshToken = jwtService.generateRefreshToken(rt.getEmail());
+
+        String device = UserAgent.getDevice(request.getHeader("User-Agent"));
+
+        RefreshToken newRefresh = refreshTokenService.createToken(refreshToken, rt.getEmail(), userAgent, ip, device);
+        refreshTokenService.revokeToken(token);
+
+        String newAccess = jwtService.generateToken(rt.getEmail());
+
+        // WEB -> cookie
+        if ("web".equals(device)) {
+            Cookie cookie = new Cookie("refreshToken", newRefresh.getToken());
+            cookie.setHttpOnly(true);
+            cookie.setSecure(cookieSecure);
+            cookie.setPath("/api/auth/refresh");
+            cookie.setMaxAge(7 * 24 * 60 * 60);
+
+            response.addCookie(cookie);
+        }
+        return ResponseEntity.ok(
+                new RefreshResponse(
+                        newAccess,
+                        "android".equals(rt.getDevice()) ? newRefresh.getToken() : null));
+
     }
 
     @PostMapping("/logout")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Cerrar sesión", description = "Cierra la sesión actual.")
-    public ResponseEntity<?> logout() {
-        return ResponseEntity.ok("Logged out");
+    public ResponseEntity<?> logout(
+            @CookieValue(value = "refreshToken", required = false) String cookieToken,
+            @RequestBody(required = false) RefreshRequest body,
+            HttpServletResponse response) {
+
+        String token = cookieToken != null
+                ? cookieToken
+                : (body != null ? body.getRefreshToken() : null);
+
+        if (token != null) {
+            refreshTokenService.revokeToken(token);
+        }
+
+        // limpiar cookie en web
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/api/auth/refresh");
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok().build();
+
     }
-    
-
-
-    
-
-
-
-
 
 }

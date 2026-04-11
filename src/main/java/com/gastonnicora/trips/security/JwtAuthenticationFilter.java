@@ -22,51 +22,62 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsService;
 
     public JwtAuthenticationFilter(JwtService jwtService,
-                                   UserDetailsServiceImpl userDetailsService){
+            UserDetailsServiceImpl userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-                                    throws ServletException, IOException {
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
 
-        if(header == null || !header.startsWith("Bearer ")){
+        if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = header.substring(7);
         String username;
+        if (!jwtService.isValid(token)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.getWriter().write("""
+                    {
+                        "status":403,
+                        "message":"Token invalido",
+                        "timestamp":"%s",
+                        "errors":null
+                    }
+                    """.formatted(LocalDateTime.now()));
+            return;
+        }
+        try {
 
-         try {
             username = jwtService.extractUsername(token);
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
             response.getWriter().write("""
-            {
-                "status":403,
-                "message":"Token invalido",
-                "timestamp":"%s",
-                "errors":null
-            }
-            """.formatted(LocalDateTime.now()));
-            return; 
+                    {
+                        "status":403,
+                        "message":"Token invalido",
+                        "timestamp":"%s",
+                        "errors":null
+                    }
+                    """.formatted(LocalDateTime.now()));
+            return;
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 

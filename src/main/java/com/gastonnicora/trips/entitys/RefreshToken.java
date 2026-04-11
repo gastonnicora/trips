@@ -1,0 +1,59 @@
+package com.gastonnicora.trips.entitys;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "refreshTokens")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RefreshToken {
+
+    
+    @Id
+    @Column(name = "uuid", nullable = false, unique = true)
+    private UUID uuid;
+
+    @Column(name = "token", nullable = false)
+    private String token;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+    
+    @Column(name = "ip", nullable = false)
+    private String ip;
+
+
+    @Column(name = "user_agent", nullable = false)
+    private String userAgent;
+
+    @Column(name = "device")
+    private String device;
+
+
+    @Column(name = "active", nullable = false)
+    private boolean active;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "expiry_date", nullable = false)
+    private Instant expiryDate;
+
+}
