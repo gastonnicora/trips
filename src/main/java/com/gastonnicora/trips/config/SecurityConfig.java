@@ -58,7 +58,6 @@ public class SecurityConfig {
                 return http.build();
         }
 
-        // TODO ver si se puede sacar las endpoint de /api/*
         @Bean
         @Order(2)
         public SecurityFilterChain securityChain(HttpSecurity http, AuthenticationManager authenticationManager)
