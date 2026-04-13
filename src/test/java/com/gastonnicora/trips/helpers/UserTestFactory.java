@@ -2,7 +2,6 @@ package com.gastonnicora.trips.helpers;
 
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,7 +11,7 @@ public class UserTestFactory {
     public static AuxUser registerUser(MockMvc mockMvc, String name, String pass) throws Exception {
         String email = name + "_" + System.currentTimeMillis() + "@test.com";
 
-        mockMvc.perform(post("/api/users/register")
+        mockMvc.perform(post("/api/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
@@ -24,6 +23,7 @@ public class UserTestFactory {
                             }
                         """.formatted(name, email, pass, pass)))
                 .andExpect(status().isOk());
+
 
         return new AuxUser(email, pass);
     }

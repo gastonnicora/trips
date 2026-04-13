@@ -34,7 +34,7 @@ class UserIntegrationTest {
         String pass = "1234";
         //
         // register
-        mockMvc.perform(post("/api/users/register")
+        mockMvc.perform(post("/api/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                             {

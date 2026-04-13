@@ -2,7 +2,7 @@ package com.gastonnicora.trips.helpers;
 
 public class UserAgent {
     public static String getDevice(String userAgent) {
-        String deviceType = "unknown";
+        String deviceType = "web";
         if (userAgent != null) {
             userAgent = userAgent.toLowerCase();
 
@@ -10,8 +10,6 @@ public class UserAgent {
                 deviceType = "android";
             } else if (userAgent.contains("iphone") || userAgent.contains("ios")) {
                 deviceType = "ios";
-            } else {
-                deviceType = "web";
             }
         }
         return deviceType;
