@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import io.jsonwebtoken.JwtException;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 
 @RestControllerAdvice
@@ -35,16 +36,15 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(ErrorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleRuntime(RuntimeException ex){
-
-        return new ApiError(
-                400,
+    public ResponseEntity<?> handleRuntime(ErrorException ex){
+        return ResponseEntity.status(ex.getStatus()).body( new ApiError(
+                ex.getStatus(),
                 ex.getMessage(),
                 LocalDateTime.now(),
                 null
-        );
+        ));
     }
 
     @ExceptionHandler(BadCredentialsException.class)

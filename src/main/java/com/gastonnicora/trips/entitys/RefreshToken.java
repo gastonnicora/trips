@@ -2,6 +2,7 @@ package com.gastonnicora.trips.entitys;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,6 +28,7 @@ public class RefreshToken {
     
     @Id
     @Column(name = "uuid", nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
     @Column(name = "token", nullable = false)
@@ -55,5 +57,18 @@ public class RefreshToken {
 
     @Column(name = "expiry_date", nullable = false)
     private Instant expiryDate;
+
+    public RefreshToken(String email, String ip, String userAgent, String device) {
+        this.token = UUID.randomUUID().toString();
+        this.active = true;
+        this.email = email;
+        this.ip = ip;
+        this.userAgent = userAgent;
+        this.device = device;
+        this.expiryDate= Instant.now().plus(7, ChronoUnit.DAYS);
+    }
+
+
+    
 
 }

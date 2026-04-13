@@ -27,8 +27,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-// TODO refactorizar 
-//TODO agregar mensajes swagger
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Auth API", description = "Endpoints para autenticación y autorización")
@@ -49,33 +47,25 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Inicio de sesion", description = "Inicia sesión con email y contraseña y recibe un token")
+    @Operation(summary = "Inicio de sesión", description = "Inicia sesión con email y contraseña y recibe un token")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest login, HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+            HttpServletResponse response) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
 
         String token = jwtService.generateToken(login.getEmail());
 
-        String refreshToken = jwtService.generateRefreshToken(login.getEmail());
-
         String userAgent = request.getHeader("User-Agent");
         String ip = request.getRemoteAddr();
-        String device = UserAgent.getDevice(request.getHeader("User-Agent"));
+        String device = UserAgent.getDevice(userAgent);
 
-        RefreshToken refreshTokenE = refreshTokenService.createToken(refreshToken, login.getEmail(), userAgent, ip,
+        RefreshToken refreshTokenE = refreshTokenService.createToken(login.getEmail(), userAgent, ip,
                 device);
 
         // 🌐 WEB → cookie
         if ("web".equals(device)) {
-            Cookie cookie = new Cookie("refreshToken", refreshTokenE.getToken());
-            cookie.setHttpOnly(true);
-            cookie.setSecure(cookieSecure);
-            cookie.setPath("/api/auth/refresh");
-            cookie.setMaxAge(7 * 24 * 60 * 60);
-
-            response.addCookie(cookie);
+            addRefreshCookie(response, refreshTokenE.getToken());
         }
 
         // 📱 ANDROID → en body
@@ -90,20 +80,16 @@ public class AuthController {
     public ResponseEntity<?> refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
             @RequestBody(required = false) RefreshRequest body,
             HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+            HttpServletResponse response) {
 
         String token = null;
         // WEB
         if (cookieToken != null) {
             token = cookieToken;
         }
-
         // ANDROID
         if (body != null && body.getRefreshToken() != null) {
             token = body.getRefreshToken();
-        }
-        if(token== null){
-            throw new RuntimeException("Token inexistente");
         }
 
         String userAgent = request.getHeader("User-Agent");
@@ -111,24 +97,15 @@ public class AuthController {
 
         RefreshToken rt = refreshTokenService.verifyToken(token, ip, userAgent);
 
-        String refreshToken = jwtService.generateRefreshToken(rt.getEmail());
 
-        String device = UserAgent.getDevice(request.getHeader("User-Agent"));
-
-        RefreshToken newRefresh = refreshTokenService.createToken(refreshToken, rt.getEmail(), userAgent, ip, device);
+        RefreshToken newRefresh = refreshTokenService.createToken(rt.getEmail(), userAgent, ip, rt.getDevice());
         refreshTokenService.revokeToken(token);
 
         String newAccess = jwtService.generateToken(rt.getEmail());
 
         // WEB -> cookie
-        if ("web".equals(device)) {
-            Cookie cookie = new Cookie("refreshToken", newRefresh.getToken());
-            cookie.setHttpOnly(true);
-            cookie.setSecure(cookieSecure);
-            cookie.setPath("/api/auth/refresh");
-            cookie.setMaxAge(7 * 24 * 60 * 60);
-
-            response.addCookie(cookie);
+        if ("web".equals(rt.getDevice())) {
+            addRefreshCookie(response, newRefresh.getToken());
         }
         return ResponseEntity.ok(
                 new RefreshResponse(
@@ -157,10 +134,22 @@ public class AuthController {
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setMaxAge(0);
         cookie.setPath("/api/auth/refresh");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(cookieSecure);
         response.addCookie(cookie);
 
         return ResponseEntity.ok().build();
 
     }
 
+    private void addRefreshCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie("refreshToken", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(cookieSecure);
+        cookie.setPath("/api/auth/refresh");
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        cookie.setAttribute("SameSite", "Lax");
+
+        response.addCookie(cookie);
+    }
 }

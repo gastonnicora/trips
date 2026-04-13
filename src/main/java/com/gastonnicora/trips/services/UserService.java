@@ -17,6 +17,7 @@ import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.dtos.request.User.UserRole;
 import com.gastonnicora.trips.entitys.User;
 import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.exeptions.ErrorException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
 
@@ -36,7 +37,7 @@ public class UserService {
 
     public UserDTOs createUser(UserCreate user) {
         if (emailUsed(user.getEmail())) {
-            throw new RuntimeException("El email ya esta siendo utilizado");
+            throw new ErrorException("El email ya esta siendo utilizado",400);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User newUser = new User(null,
@@ -58,7 +59,7 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        throw new RuntimeException("El usuario no se encontró");
+        throw new ErrorException("El usuario no se encontró",400);
 
     }
 
@@ -67,19 +68,19 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        throw new RuntimeException("El usuario buscado no existe");
+        throw new ErrorException("El usuario buscado no existe",400);
 
     }
 
     public UserDTOs putUserByUuid(UUID uuid, UserPut user) {
         User userNow = userRepository.findByUuid(uuid).orElseThrow(
             ()-> 
-            new RuntimeException("El usuario no existe"));
+            new ErrorException("El usuario no existe",400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
         if (!user.getEmail().equals(userNow.getEmail())) {
             if(emailUsed(user.getEmail())){
-                throw new RuntimeException("El email ya esta en uso");
+                throw new ErrorException("El email ya esta en uso",400);
             }
             userNow.setEmail(user.getEmail());
         }
@@ -90,12 +91,12 @@ public class UserService {
     public UserDTOs putCurrentUser(UserPut user) {
         User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(),true).orElseThrow(
             ()-> 
-            new RuntimeException("El usuario no existe"));
+            new ErrorException("El usuario no existe",400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
         if (!user.getEmail().equals(userNow.getEmail())) {
             if(emailUsed(user.getEmail())){
-                throw new RuntimeException("El email ya esta en uso");
+                throw new ErrorException("El email ya esta en uso",400);
             }
             userNow.setEmail(user.getEmail());
         }
@@ -107,10 +108,10 @@ public class UserService {
     public UserDTOs updatePassword(UserPassword user){
         User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(), true).orElseThrow(
             ()-> 
-            new RuntimeException("El usuario no existe")
+            new ErrorException("El usuario no existe", 400)
         );
         if (!passwordEncoder.matches(user.getPasswordOld(), userNow.getPassword())) {
-            throw new RuntimeException("La contraseña actual es incorrecta");
+            throw new ErrorException("La contraseña actual es incorrecta",400);
         }
         userNow.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(userNow);
@@ -120,12 +121,12 @@ public class UserService {
     public UserDTOs setRole(UUID uuid, UserRole role){
         User user = userRepository.findByUuid(uuid).orElseThrow(
             ()-> 
-            new RuntimeException("El usuario no existe")
+            new ErrorException("El usuario no existe",400)
         );
         if (!user.getRole().contains(Role.SUPER_ADMIN)){
             role.getRoles().remove(Role.SUPER_ADMIN);
         }else{
-            throw new RuntimeException("No se puede modificar los roles el SUPER_ADMIN");
+            throw new ErrorException("No se puede modificar los roles el SUPER_ADMIN",400);
         }
         user.setRole(role.getRoles());
         userRepository.save(user);
@@ -136,7 +137,7 @@ public class UserService {
     public void deleteCurrentUser(){
         User user= userRepository.findByEmailAndEnabled(getCurrentUserEmail(),true).orElseThrow(
             ()-> 
-            new RuntimeException("El usuario no existe")
+            new ErrorException("El usuario no existe",400)
         );
         user.setEnabled(false);
         userRepository.save(user);

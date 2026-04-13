@@ -24,6 +24,14 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     @Modifying
     @Transactional
     void deleteAllByExpiryDateBefore(Instant now);
+    
+    @Modifying
+    @Transactional
+    void deleteAllByActiveFalse();
+
+     @Modifying
+    @Transactional
+    void deleteByToken(String token);
 
     Optional<RefreshToken> findByUuid(UUID uUId);
 

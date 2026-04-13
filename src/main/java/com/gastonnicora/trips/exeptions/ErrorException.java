@@ -1,0 +1,16 @@
+package com.gastonnicora.trips.exeptions;
+
+
+public class ErrorException extends RuntimeException {
+    private final int status;
+
+    public ErrorException(String message, int status) {
+        super(message);
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+}
