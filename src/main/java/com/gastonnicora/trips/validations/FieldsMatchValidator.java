@@ -9,11 +9,14 @@ public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Ob
 
     private String field;
     private String fieldMatch;
+    private String message;
 
     @Override
     public void initialize(FieldsMatch constraintAnnotation) {
         this.field = constraintAnnotation.field();
         this.fieldMatch = constraintAnnotation.fieldMatch();
+
+        this.message = constraintAnnotation.message();
     }
 
     @Override
@@ -30,11 +33,20 @@ public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Ob
             Object firstValue = firstField.get(value);
             Object secondValue = secondField.get(value);
 
-            if(firstValue == null || secondValue == null){
+            if (firstValue == null || secondValue == null) {
                 return false;
             }
 
-            return firstValue.equals(secondValue);
+            boolean valid = firstValue.equals(secondValue);
+
+            if (!valid) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(message)
+                        .addPropertyNode(fieldMatch) 
+                        .addConstraintViolation();
+            }
+
+            return valid;
 
         } catch (Exception e) {
             return false;

@@ -20,55 +20,53 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleValidationErrors(MethodArgumentNotValidException ex){
+    public ApiError handleValidationErrors(MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
 
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
+        ex.getBindingResult().getGlobalErrors()
+                .forEach(error -> errors.put(error.getObjectName(), error.getDefaultMessage()));
 
         return new ApiError(
                 400,
                 "Error en la validación",
                 LocalDateTime.now(),
-                errors
-        );
+                errors);
     }
 
     @ExceptionHandler(ErrorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<?> handleRuntime(ErrorException ex){
-        return ResponseEntity.status(ex.getStatus()).body( new ApiError(
+    public ResponseEntity<?> handleRuntime(ErrorException ex) {
+        return ResponseEntity.status(ex.getStatus()).body(new ApiError(
                 ex.getStatus(),
                 ex.getMessage(),
                 LocalDateTime.now(),
-                null
-        ));
+                null));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiError handleBadCredentialsException(BadCredentialsException ex){
+    public ApiError handleBadCredentialsException(BadCredentialsException ex) {
 
         return new ApiError(
                 401,
                 "Email o contraseña incorrectos",
                 LocalDateTime.now(),
-                null
-        );
+                null);
     }
 
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ApiError handleBadTokenException(JwtException ex){
+    public ApiError handleBadTokenException(JwtException ex) {
 
         return new ApiError(
                 403,
                 ex.getMessage(),
                 LocalDateTime.now(),
-                null
-        );
+                null);
     }
 
 }
