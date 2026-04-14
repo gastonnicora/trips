@@ -12,10 +12,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.gastonnicora.trips.helpers.UserTestFactory;
+
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.http.MediaType;
 
 import java.util.stream.Stream;
 
@@ -85,39 +86,47 @@ public class RegisterTest {
                 .andExpect(status().isBadRequest());
         
     }
+
     private String userJson(String name, String lastname, String email, String pass, String confirm) {
-    return """
-        {
-            "name": "%s",
-            "lastname": "%s",
-            "email": "%s",
-            "password": "%s",
-            "confirmPassword": "%s"
-        }
-    """.formatted(name, lastname, email, pass, confirm);
-}
+        return """
+                    {
+                        "name": "%s",
+                        "lastname": "%s",
+                        "email": "%s",
+                        "password": "%s",
+                        "confirmPassword": "%s"
+                    }
+                """.formatted(name, lastname, email, pass, confirm);
+    }
+    
 
     static Stream<org.junit.jupiter.params.provider.Arguments> invalidUsers() {
         return Stream.of(
                 // name vacío
                 org.junit.jupiter.params.provider.Arguments.of(
-                        "", "Perez", "test@test.com", "12345678", "12345678", "name"),
+                        "", "Perez", "test@test.com", "goodPassword", "goodPassword", "name"),
 
                 // lastname vacío
                 org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "", "test@test.com", "12345678", "12345678", "lastname"),
+                        "Juan", "", "test@test.com", "goodPassword", "goodPassword", "lastname"),
 
                 // email inválido
                 org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "Perez", "invalid-email", "12345678", "12345678", "email"),
+                        "Juan", "Perez", "invalid-email", "goodPassword", "goodPassword", "email"),
+                // email vació
+                org.junit.jupiter.params.provider.Arguments.of(
+                        "Juan", "Perez", "", "goodPassword", "goodPassword", "email"),
 
+                // email con espacio
+                org.junit.jupiter.params.provider.Arguments.of(
+                        "Juan", "Perez", "test@test.com ", "goodPassword", "goodPassword", "email"),
                 // password corta
                 org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "Perez", "test@test.com", "123", "123", "password"),
+                        "Juan", "Perez", "test@test.com", "wrong", "wrong", "password"),
 
-                // passwords no coinciden (custom validation)
+                // passwords no coinciden
                 org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "Perez", "test@test.com", "12345678", "99999999", "confirmPassword"));
+                        "Juan", "Perez", "test@test.com", "goodPassword", "worngPassword", "confirmPassword"));
     }
 
 }
