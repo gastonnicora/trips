@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.gastonnicora.trips.helpers.AuxUser;
+import com.gastonnicora.trips.dtos.entitys.UserDTOs;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 
 import jakarta.transaction.Transactional;
@@ -26,11 +26,13 @@ class LoginTest {
         @Autowired
         private MockMvc mockMvc;
 
-        AuxUser user;
+        UserDTOs user;
+        final String  name= "user";
+        final String pass= "goodPassword"; 
 
         @BeforeEach
         void setup() throws Exception {
-                user = UserTestFactory.registerUser(mockMvc, "user", "12345678");
+                user = UserTestFactory.registerUser(mockMvc, name, pass);
         }
 
         // test login correcto
@@ -41,7 +43,7 @@ class LoginTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                                     {"email":"%s","password":"%s"}
-                                                """.formatted(user.getEmail(), user.getPass())))
+                                                """.formatted(user.getEmail(), pass)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.token").exists());
         }
@@ -53,7 +55,7 @@ class LoginTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                                     {"email":"%saaffa","password":"%s"}
-                                                """.formatted(user.getEmail(), user.getPass())))
+                                                """.formatted(user.getEmail(),pass)))
                                 .andExpect(status().isUnauthorized());
         }
 
@@ -94,7 +96,7 @@ class LoginTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                                     {"email":"%s ","password":"%s"}
-                                                """.formatted(user.getEmail(), user.getPass())))
+                                                """.formatted(user.getEmail(),pass)))
                                 .andExpect(status().isBadRequest());
         }
 
@@ -106,7 +108,7 @@ class LoginTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                                     {"email":"%s","password":"%s"}
-                                                """.formatted(user.getEmail(), user.getPass())))
+                                                """.formatted(user.getEmail(),pass)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.token").exists())
                                 .andExpect(jsonPath("$.refreshToken").value((Object) null));
@@ -121,7 +123,7 @@ class LoginTest {
                                 .header("User-Agent", "okhttp/4.9.0 (Android)")
                                 .content("""
                                                     {"email":"%s","password":"%s"}
-                                                """.formatted(user.getEmail(), user.getPass())))
+                                                """.formatted(user.getEmail(), pass)))
                                 .andExpect(status().isOk())
                                 .andExpect(cookie().doesNotExist("refreshToken"))
                                 .andExpect(jsonPath("$.token").exists())

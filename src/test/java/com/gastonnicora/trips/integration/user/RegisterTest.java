@@ -26,107 +26,101 @@ import java.util.stream.Stream;
 @Transactional
 public class RegisterTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Test
-    void testRegister() throws Exception {
-        String name = "Juan";
-        String lastname = "Perez";
-        String pass = "goodpassword";
-        String email = name + "_" + System.currentTimeMillis() + "@test.com";
+        @Test
+        void testRegister() throws Exception {
+                String name = "Juan";
+                String lastname = "Perez";
+                String pass = "goodpassword";
+                String email = name + "_" + System.currentTimeMillis() + "@test.com";
 
-        mockMvc.perform(post("/api/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(userJson(name, lastname, email, pass, pass)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").exists())
-                .andExpect(jsonPath("$.email").value(email))
-                .andExpect(jsonPath("$.enabled").value(true));
+                mockMvc.perform(post("/api/user")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(UserTestFactory.userJson(name, lastname, email, pass, pass)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.uuid").exists())
+                                .andExpect(jsonPath("$.email").value(email))
+                                .andExpect(jsonPath("$.enabled").value(true));
 
-    }
+        }
 
-    @ParameterizedTest
-    @MethodSource("invalidUsers")
-    void testRegisterValidationErrors(
-            String name,
-            String lastname,
-            String email,
-            String password,
-            String confirmPassword,
-            String expectedField) throws Exception {
+        @ParameterizedTest
+        @MethodSource("invalidUsers")
+        void testRegisterValidationErrors(
+                        String name,
+                        String lastname,
+                        String email,
+                        String password,
+                        String confirmPassword,
+                        String expectedField) throws Exception {
 
-        mockMvc.perform(post("/api/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(userJson(name, lastname, email, password, confirmPassword)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors").exists())
-                .andExpect(
-                        jsonPath("$.errors.%s".formatted(expectedField)).value(org.hamcrest.Matchers.notNullValue()));
-                        
-    }
+                mockMvc.perform(post("/api/user")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(UserTestFactory.userJson(name, lastname, email, password, confirmPassword)))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.errors").exists())
+                                .andExpect(
+                                                jsonPath("$.errors.%s".formatted(expectedField))
+                                                                .value(org.hamcrest.Matchers.notNullValue()));
 
-    @Test
-    void testRegisterFailByEmailUsed() throws Exception{
-         String name = "Juan";
-        String lastname = "Perez";
-        String pass = "goodpassword";
-        String email = "DuplicateEmail" + "_" + System.currentTimeMillis() + "@test.com";
+        }
 
-        mockMvc.perform(post("/api/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(userJson(name, lastname, email, pass, pass)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").exists())
-                .andExpect(jsonPath("$.email").value(email))
-                .andExpect(jsonPath("$.enabled").value(true));
-        mockMvc.perform(post("/api/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(userJson(name, lastname, email, pass, pass)))
-                .andExpect(status().isBadRequest());
-        
-    }
+        @Test
+        void testRegisterFailByEmailUsed() throws Exception {
+                String name = "Juan";
+                String lastname = "Perez";
+                String pass = "goodpassword";
+                String email = "DuplicateEmail" + "_" + System.currentTimeMillis() + "@test.com";
 
-    private String userJson(String name, String lastname, String email, String pass, String confirm) {
-        return """
-                    {
-                        "name": "%s",
-                        "lastname": "%s",
-                        "email": "%s",
-                        "password": "%s",
-                        "confirmPassword": "%s"
-                    }
-                """.formatted(name, lastname, email, pass, confirm);
-    }
-    
+                mockMvc.perform(post("/api/user")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(UserTestFactory.userJson(name, lastname, email, pass, pass)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.uuid").exists())
+                                .andExpect(jsonPath("$.email").value(email))
+                                .andExpect(jsonPath("$.enabled").value(true));
+                mockMvc.perform(post("/api/user")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(UserTestFactory.userJson(name, lastname, email, pass, pass)))
+                                .andExpect(status().isBadRequest());
 
-    static Stream<org.junit.jupiter.params.provider.Arguments> invalidUsers() {
-        return Stream.of(
-                // name vacío
-                org.junit.jupiter.params.provider.Arguments.of(
-                        "", "Perez", "test@test.com", "goodPassword", "goodPassword", "name"),
+        }
 
-                // lastname vacío
-                org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "", "test@test.com", "goodPassword", "goodPassword", "lastname"),
+       
 
-                // email inválido
-                org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "Perez", "invalid-email", "goodPassword", "goodPassword", "email"),
-                // email vació
-                org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "Perez", "", "goodPassword", "goodPassword", "email"),
+        static Stream<org.junit.jupiter.params.provider.Arguments> invalidUsers() {
+                return Stream.of(
+                                // name vacío
+                                org.junit.jupiter.params.provider.Arguments.of(
+                                                "", "Perez", "test@test.com", "goodPassword", "goodPassword", "name"),
 
-                // email con espacio
-                org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "Perez", "test@test.com ", "goodPassword", "goodPassword", "email"),
-                // password corta
-                org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "Perez", "test@test.com", "wrong", "wrong", "password"),
+                                // lastname vacío
+                                org.junit.jupiter.params.provider.Arguments.of(
+                                                "Juan", "", "test@test.com", "goodPassword", "goodPassword",
+                                                "lastname"),
 
-                // passwords no coinciden
-                org.junit.jupiter.params.provider.Arguments.of(
-                        "Juan", "Perez", "test@test.com", "goodPassword", "worngPassword", "confirmPassword"));
-    }
+                                // email inválido
+                                org.junit.jupiter.params.provider.Arguments.of(
+                                                "Juan", "Perez", "invalid-email", "goodPassword", "goodPassword",
+                                                "email"),
+                                // email vació
+                                org.junit.jupiter.params.provider.Arguments.of(
+                                                "Juan", "Perez", "", "goodPassword", "goodPassword", "email"),
+
+                                // email con espacio
+                                org.junit.jupiter.params.provider.Arguments.of(
+                                                "Juan", "Perez", "test@test.com ", "goodPassword", "goodPassword",
+                                                "email"),
+                                // password corta
+                                org.junit.jupiter.params.provider.Arguments.of(
+                                                "Juan", "Perez", "test@test.com", "wrong", "wrong", "password"),
+
+                                // passwords no coinciden
+                                org.junit.jupiter.params.provider.Arguments.of(
+                                                "Juan", "Perez", "test@test.com", "goodPassword", "worngPassword",
+                                                "confirmPassword"));
+        }
 
 }

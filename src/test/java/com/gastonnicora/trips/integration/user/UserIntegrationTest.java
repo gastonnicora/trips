@@ -7,7 +7,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.gastonnicora.trips.helpers.AuxUser;
+import com.gastonnicora.trips.dtos.entitys.UserDTOs;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -54,8 +54,8 @@ class UserIntegrationTest {
     @Test
     void shouldAccessProtectedEndpoint() throws Exception {
         
-        AuxUser user = UserTestFactory.registerUser(mockMvc, "user", "1234");
-        String token = UserTestFactory.loginAndGetToken(mockMvc, user.getEmail(), user.getPass());
+        UserDTOs user = UserTestFactory.registerUser(mockMvc, "user", "1234");
+        String token = UserTestFactory.loginAndGetToken(mockMvc, user.getEmail(), "1234");
         mockMvc.perform(get("/api/users/me")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
