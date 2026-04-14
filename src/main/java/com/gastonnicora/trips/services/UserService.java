@@ -88,14 +88,22 @@ public class UserService {
         return userMapper.toDTO(userNow);   
 
     }
+
+    
+    //TODO corregir accion al cambiar el email
     public UserDTOs putCurrentUser(UserPut user) {
         User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(),true).orElseThrow(
             ()-> 
             new ErrorException("El usuario no existe",400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
+        System.err.println("EMAIL "+user.getEmail());
+        System.err.println("EMAIL VIEJO"+userNow.getEmail());
         if (!user.getEmail().equals(userNow.getEmail())) {
+            System.err.println("EMAIL DISTINTO");
             if(emailUsed(user.getEmail())){
+                System.err.println("EMAIL EN USO");
+                System.err.println(user.getEmail());
                 throw new ErrorException("El email ya esta en uso",400);
             }
             userNow.setEmail(user.getEmail());
@@ -152,6 +160,6 @@ public class UserService {
 
     private Boolean emailUsed(String email) {
         User userEmail = userRepository.findByEmailAndEnabled(email,true).orElse(null);
-        return (userEmail != null && userEmail.isEnabled());
+        return (userEmail != null );
     }
 }

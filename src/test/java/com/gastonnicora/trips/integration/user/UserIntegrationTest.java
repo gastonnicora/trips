@@ -55,7 +55,7 @@ class UserIntegrationTest {
     void shouldAccessProtectedEndpoint() throws Exception {
         
         UserDTOs user = UserTestFactory.registerUser(mockMvc, "user", "1234");
-        String token = UserTestFactory.loginAndGetToken(mockMvc, user.getEmail(), "1234");
+        String token = UserTestFactory.login(mockMvc, user.getEmail(), "1234").getToken();
         mockMvc.perform(get("/api/users/me")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())

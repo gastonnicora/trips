@@ -63,7 +63,7 @@ public class RefreshToken {
         this.active = true;
         this.email = email;
         this.ip = ip;
-        this.userAgent = userAgent;
+        this.userAgent= (userAgent!= null && !userAgent.isBlank())?userAgent:"web";
         this.device = device;
         this.expiryDate= Instant.now().plus(7, ChronoUnit.DAYS);
     }

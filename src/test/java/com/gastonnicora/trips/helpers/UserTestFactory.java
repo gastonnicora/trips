@@ -4,6 +4,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
+import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -39,19 +40,19 @@ public class UserTestFactory {
     }
 
     // hace login de un usuario y devuelve el token
-    public static String loginAndGetToken(MockMvc mockMvc, String email, String pass) throws Exception {
-        String response = mockMvc.perform(post("/api/auth/login")
+    public static LoginResponse login(MockMvc mockMvc, String email, String pass) throws Exception {
+        MvcResult response = mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                             {"email":"%s","password":"%s"}
                         """.formatted(email, pass)))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andReturn();
+        String responseJson = response.getResponse().getContentAsString();
 
-        String token = response.split(":")[1].replaceAll("[\"}]", "").trim();
-        return token;
+        ObjectMapper mapper = new ObjectMapper();
+
+        return mapper.readValue(responseJson, LoginResponse.class);
     }
 
     public static String userJson(String name, String lastname, String email, String password, String confirmPassword) {
