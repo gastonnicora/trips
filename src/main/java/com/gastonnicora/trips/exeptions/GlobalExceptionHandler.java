@@ -38,13 +38,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ErrorException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleRuntime(ErrorException ex) {
         return ResponseEntity.status(ex.getStatus()).body(new ApiError(
                 ex.getStatus(),
                 ex.getMessage(),
                 LocalDateTime.now(),
-                null));
+                ex.getErrors()));
     }
 
     @ExceptionHandler(BadCredentialsException.class)

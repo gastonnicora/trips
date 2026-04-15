@@ -52,7 +52,15 @@ class LoginTest {
                                 .andExpect(jsonPath("$.token").exists());
         }
 
-        //Test de comportamiento de campos invalidos
+        // test login correcto
+        @Test
+        void shouldLoginSuccessfullyWhenEmailHaveSpace() throws Exception {
+                authApi.login(email + " ", pass)
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.token").exists());
+        }
+
+        // Test de comportamiento de campos invalidos
         @ParameterizedTest
         @MethodSource("invalid")
         void shouldReturnBadRequestWhenValidationFails(
@@ -66,14 +74,15 @@ class LoginTest {
                                                 jsonPath("$.errors.%s".formatted(expectedField))
                                                                 .value(org.hamcrest.Matchers.notNullValue()));
         }
-        //Test de comportamiento cuando el email y contraseñas no son correctos
+
+        // Test de comportamiento cuando el email y contraseñas no son correctos
         @ParameterizedTest
         @MethodSource("invalidCredentials")
         void shouldReturnUnauthorizedWhenCredentialsAreInvalid(
                         String email,
                         String password) throws Exception {
-                UserApiTestClient userApi= new UserApiTestClient(mockMvc);
-                userApi.register("Juan","Nicora","test@test.com","goodPassword","goodPassword");
+                UserApiTestClient userApi = new UserApiTestClient(mockMvc);
+                userApi.register("Juan", "Nicora", "test@test.com", "goodPassword", "goodPassword");
                 authApi.login(email, password)
                                 .andExpect(status().isUnauthorized())
                                 .andExpect(jsonPath("$.message").exists())
@@ -112,10 +121,6 @@ class LoginTest {
                                                 "email"),
                                 // email vació
                                 Arguments.of("", "goodPassword", "email"),
-
-                                // email con espacio
-                                Arguments.of("test@test.com ", "goodPassword", 
-                                                "email"),//TODO hacer trim de email y sacar test
 
                                 // Contraseña de gran tamaño
                                 Arguments.of("test@test.com",

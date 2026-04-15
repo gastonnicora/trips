@@ -39,7 +39,9 @@ public class UserService {
 
     public UserDTOs createUser(UserCreate user) {
         if (emailUsed(user.getEmail())) {
-            throw new ErrorException("El email ya esta siendo utilizado",400);
+            ErrorException ex= new ErrorException("Error en la validación",400);
+            ex.addError("email", "El email ya esta siendo utilizado");
+            throw ex;
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User newUser = new User(null,
@@ -61,8 +63,8 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        throw new ErrorException("El usuario no se encontró",400);
-
+        ErrorException ex= new ErrorException("El usuario no se encontró",400);
+        throw ex;
     }
 
     public UserDTOs getUserByUuid(UUID uuid) {
@@ -70,8 +72,8 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        throw new ErrorException("El usuario buscado no existe",400);
-
+        ErrorException ex =new ErrorException("El usuario buscado no existe",400);
+        throw ex;  
     }
 
     public UserDTOs putUserByUuid(UUID uuid, UserPut user) {
@@ -83,7 +85,9 @@ public class UserService {
         String email= userNow.getEmail();
         if (!user.getEmail().equals(userNow.getEmail())) {
             if(emailUsed(user.getEmail())){
-                throw new ErrorException("El email ya esta en uso",400);
+                ErrorException ex = new ErrorException("Error en la validación",400);
+                ex.addError("email", "El email ya esta en uso");
+                throw ex;
             }
             userNow.setEmail(user.getEmail());
         }
@@ -106,7 +110,10 @@ public class UserService {
         String email= userNow.getEmail();
         if (!user.getEmail().equals(userNow.getEmail())) {
             if(emailUsed(user.getEmail())){
-                throw new ErrorException("El email ya esta en uso",400);
+                ErrorException ex =new ErrorException("Error en la validación",400);
+                ex.addError("email", "El email ya esta en uso");
+                
+                throw ex;
             }
             userNow.setEmail(user.getEmail());
         }
@@ -125,7 +132,10 @@ public class UserService {
             new ErrorException("El usuario no existe", 400)
         );
         if (!passwordEncoder.matches(user.getPasswordOld(), userNow.getPassword())) {
-            throw new ErrorException("La contraseña actual es incorrecta",400);
+            ErrorException ex =new ErrorException("Error en la validación",400);
+            ex.addError("passwordOld", "La contraseña actual es incorrecta");   
+            
+            throw ex;
         }
         userNow.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(userNow);
@@ -140,7 +150,8 @@ public class UserService {
         if (!user.getRole().contains(Role.SUPER_ADMIN)){
             role.getRoles().remove(Role.SUPER_ADMIN);
         }else{
-            throw new ErrorException("No se puede modificar los roles el SUPER_ADMIN",400);
+
+            throw new ErrorException("No se puede modificar los roles del SUPER_ADMIN",400);
         }
         user.setRole(role.getRoles());
         userRepository.save(user);
@@ -155,6 +166,10 @@ public class UserService {
         );
         user.setEnabled(false);
         userRepository.save(user);
+        refreshTokenService.findByEmailAndActiveTrue(user.getEmail()).forEach(rt -> {
+            rt.setActive(false);
+            refreshTokenService.save(rt);
+        });
     }
 
     private String getCurrentUserEmail() {

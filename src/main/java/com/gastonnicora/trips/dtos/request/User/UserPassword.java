@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 public class UserPassword {
     
-    private final int minLengthPass = 4;
+    private final int minLengthPass = 8;
 
 
     @Schema(description = "Contraseña actual", example = "12345678")

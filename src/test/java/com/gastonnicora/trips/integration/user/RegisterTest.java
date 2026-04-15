@@ -45,7 +45,7 @@ public class RegisterTest {
                 apiUser.register(name, lastname, email, password, password)
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.uuid").exists())
-                                .andExpect(jsonPath("$.email").value(email))
+                                .andExpect(jsonPath("$.email").value(email.trim().toLowerCase()))
                                 .andExpect(jsonPath("$.enabled").value(true));
 
         }
@@ -83,7 +83,7 @@ public class RegisterTest {
                                 .andExpect(status().isOk());
                 apiUser.register(name, lastname, email, pass, pass)
                                 .andExpect(status().isBadRequest())
-                                .andExpect(jsonPath("$.errors").exists()) //TODO modificar excepcion y mensaje para que muestre donde esta el error
+                                .andExpect(jsonPath("$.errors").exists()) 
                                 .andExpect(jsonPath("$.errors.email").exists())
                                 .andExpect(
                                                 jsonPath("$.errors.email")

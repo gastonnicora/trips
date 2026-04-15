@@ -62,9 +62,7 @@ public class PutPasswordTest {
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
-                        .value(org.hamcrest.Matchers.notNullValue())); // TODO modificar excepcion y mensaje para que
-                                                                       // muestre donde esta el error
-
+                        .value(org.hamcrest.Matchers.notNullValue())); 
     }
 
     // Test fallido por que contraseña anterior es errónea
@@ -93,14 +91,14 @@ public class PutPasswordTest {
                 // Nueva contraseña vacía
                 Arguments.of("goodPassword", "", "newPassword", "password"),
                 // Nueva contraseña corta
-                Arguments.of("goodPassword", "short", "short", "password"),// TODO Corregir min max
+                Arguments.of("goodPassword", "short", "short", "password"),
                 // Repetición de contraseña vacía
                 Arguments.of("goodPassword", "newPassword", "", "confirmPassword"),
                 // Repetición de contraseña incorrecta
                 Arguments.of("goodPassword", "newPassword", "wrongPassword", "confirmPassword"),
 
                 // Campos en null
-                Arguments.of(null, null, null, "passwordOld"), //TODO corregir comprobacion de null
+                Arguments.of(null, null, null, "passwordOld"),
                 Arguments.of(null, null, null, "password"),
                 Arguments.of(null, null, null, "confirmPassword"));
     }

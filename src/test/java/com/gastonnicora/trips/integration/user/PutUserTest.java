@@ -65,7 +65,7 @@ public class PutUserTest {
                 final String newEmail = "martaSierra@mail.com";
                 apiUser.update(newName, newLastname, newEmail)
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.email").value(newEmail))
+                                .andExpect(jsonPath("$.email").value(newEmail.trim().toLowerCase()))
                                 .andExpect(jsonPath("$.name").value(newName))
                                 .andExpect(jsonPath("$.lastname").value(newLastname));
         }
@@ -93,7 +93,7 @@ public class PutUserTest {
                                 .andExpect(status().isBadRequest())
                                 .andExpect(
                                                 jsonPath("$.errors.email")
-                                                                .value(org.hamcrest.Matchers.notNullValue()));//TODO modificar excepcion y mensaje para que muestre donde esta el error 
+                                                                .value(org.hamcrest.Matchers.notNullValue()));
         }
 
         @Test
