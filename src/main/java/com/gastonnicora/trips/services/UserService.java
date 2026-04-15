@@ -26,7 +26,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenService;
-    private final PasswordEncoder passwordEncoder; 
+    private final PasswordEncoder passwordEncoder;
     @Autowired
     private UserMapper userMapper;
 
@@ -39,7 +39,7 @@ public class UserService {
 
     public UserDTOs createUser(UserCreate user) {
         if (emailUsed(user.getEmail())) {
-            ErrorException ex= new ErrorException("Error en la validación",400);
+            ErrorException ex = new ErrorException("Error en la validación", 400);
             ex.addError("email", "El email ya esta siendo utilizado");
             throw ex;
         }
@@ -59,11 +59,11 @@ public class UserService {
 
     public UserDTOs getCurrentUser() {
         String email = getCurrentUserEmail();
-        Optional<User> user = userRepository.findByEmailAndEnabled(email,true);
+        Optional<User> user = userRepository.findByEmailAndEnabled(email, true);
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        ErrorException ex= new ErrorException("El usuario no se encontró",400);
+        ErrorException ex = new ErrorException("El usuario no se encontró", 400);
         throw ex;
     }
 
@@ -72,104 +72,88 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        ErrorException ex =new ErrorException("El usuario buscado no existe",400);
-        throw ex;  
+        ErrorException ex = new ErrorException("El usuario buscado no existe", 400);
+        throw ex;
     }
 
     public UserDTOs putUserByUuid(UUID uuid, UserPut user) {
         User userNow = userRepository.findByUuid(uuid).orElseThrow(
-            ()-> 
-            new ErrorException("El usuario no existe",400));
+                () -> new ErrorException("El usuario no existe", 400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
-        String email= userNow.getEmail();
+        String email = userNow.getEmail();
         if (!user.getEmail().equals(userNow.getEmail())) {
-            if(emailUsed(user.getEmail())){
-                ErrorException ex = new ErrorException("Error en la validación",400);
+            if (emailUsed(user.getEmail())) {
+                ErrorException ex = new ErrorException("Error en la validación", 400);
                 ex.addError("email", "El email ya esta en uso");
                 throw ex;
             }
             userNow.setEmail(user.getEmail());
+
+            refreshTokenService.deactivateAllByEmail(email);
         }
-        refreshTokenService.findByEmailAndActiveTrue(email).forEach(rt -> {
-            rt.setEmail(user.getEmail());
-            refreshTokenService.save(rt);
-        });
         userRepository.save(userNow);
-        return userMapper.toDTO(userNow);   
+        return userMapper.toDTO(userNow);
 
     }
 
-    
     public UserDTOs putCurrentUser(UserPut user) {
-        User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(),true).orElseThrow(
-            ()-> 
-            new ErrorException("El usuario no existe",400));
+        User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(), true).orElseThrow(
+                () -> new ErrorException("El usuario no existe", 400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
-        String email= userNow.getEmail();
+        String email = userNow.getEmail();
         if (!user.getEmail().equals(userNow.getEmail())) {
-            if(emailUsed(user.getEmail())){
-                ErrorException ex =new ErrorException("Error en la validación",400);
+            if (emailUsed(user.getEmail())) {
+                ErrorException ex = new ErrorException("Error en la validación", 400);
                 ex.addError("email", "El email ya esta en uso");
-                
+
                 throw ex;
             }
             userNow.setEmail(user.getEmail());
+            refreshTokenService.deactivateAllByEmail(email);
         }
-        refreshTokenService.findByEmailAndActiveTrue(email).forEach(rt -> {
-            rt.setEmail(user.getEmail());
-            refreshTokenService.save(rt);
-        });
         userRepository.save(userNow);
-        return userMapper.toDTO(userNow);   
+        return userMapper.toDTO(userNow);
 
     }
 
-    public UserDTOs updatePassword(UserPassword user){
+    public UserDTOs updatePassword(UserPassword user) {
         User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(), true).orElseThrow(
-            ()-> 
-            new ErrorException("El usuario no existe", 400)
-        );
+                () -> new ErrorException("El usuario no existe", 400));
         if (!passwordEncoder.matches(user.getPasswordOld(), userNow.getPassword())) {
-            ErrorException ex =new ErrorException("Error en la validación",400);
-            ex.addError("passwordOld", "La contraseña actual es incorrecta");   
-            
+            ErrorException ex = new ErrorException("Error en la validación", 400);
+            ex.addError("passwordOld", "La contraseña actual es incorrecta");
+
             throw ex;
         }
         userNow.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(userNow);
+        refreshTokenService.deactivateAllByEmail(getCurrentUserEmail());
+
         return userMapper.toDTO(userNow);
     }
 
-    public UserDTOs setRole(UUID uuid, UserRole role){
+    public UserDTOs setRole(UUID uuid, UserRole role) {
         User user = userRepository.findByUuid(uuid).orElseThrow(
-            ()-> 
-            new ErrorException("El usuario no existe",400)
-        );
-        if (!user.getRole().contains(Role.SUPER_ADMIN)){
+                () -> new ErrorException("El usuario no existe", 400));
+        if (!user.getRole().contains(Role.SUPER_ADMIN)) {
             role.getRoles().remove(Role.SUPER_ADMIN);
-        }else{
+        } else {
 
-            throw new ErrorException("No se puede modificar los roles del SUPER_ADMIN",400);
+            throw new ErrorException("No se puede modificar los roles del SUPER_ADMIN", 400);
         }
         user.setRole(role.getRoles());
         userRepository.save(user);
         return userMapper.toDTO(user);
     }
 
-
-    public void deleteCurrentUser(){
-        User user= userRepository.findByEmailAndEnabled(getCurrentUserEmail(),true).orElseThrow(
-            ()-> 
-            new ErrorException("El usuario no existe",400)
-        );
+    public void deleteCurrentUser() {
+        User user = userRepository.findByEmailAndEnabled(getCurrentUserEmail(), true).orElseThrow(
+                () -> new ErrorException("El usuario no existe", 400));
         user.setEnabled(false);
         userRepository.save(user);
-        refreshTokenService.findByEmailAndActiveTrue(user.getEmail()).forEach(rt -> {
-            rt.setActive(false);
-            refreshTokenService.save(rt);
-        });
+        refreshTokenService.deactivateAllByEmail(user.getEmail());
     }
 
     private String getCurrentUserEmail() {
@@ -180,7 +164,7 @@ public class UserService {
     }
 
     private Boolean emailUsed(String email) {
-        User userEmail = userRepository.findByEmailAndEnabled(email,true).orElse(null);
-        return (userEmail != null );
+        User userEmail = userRepository.findByEmailAndEnabled(email, true).orElse(null);
+        return (userEmail != null);
     }
 }

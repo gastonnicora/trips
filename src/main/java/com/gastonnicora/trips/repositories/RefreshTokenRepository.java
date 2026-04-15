@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gastonnicora.trips.entitys.RefreshToken;
@@ -24,14 +26,18 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     @Modifying
     @Transactional
     void deleteAllByExpiryDateBefore(Instant now);
-    
+
     @Modifying
     @Transactional
     void deleteAllByActiveFalse();
 
-     @Modifying
+    @Modifying
     @Transactional
     void deleteByToken(String token);
+
+    @Modifying
+    @Query("update RefreshToken r set r.active = false where r.email = :email")
+    void deactivateAllByEmail(@Param("email") String email);
 
     Optional<RefreshToken> findByUuid(UUID uUId);
 

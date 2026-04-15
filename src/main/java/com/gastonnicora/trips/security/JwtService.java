@@ -1,5 +1,6 @@
 package com.gastonnicora.trips.security;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,13 +16,13 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET;
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
 
-        return Jwts.builder()
-                .subject(username)
+        return Jwts.builder() //TODO agregar vercion de token para seguridad
+                .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))// 15 minutos
-                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))// 5 minutos
+                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8)))
                 .compact();
     }
 
