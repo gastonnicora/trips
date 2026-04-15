@@ -58,4 +58,12 @@ public class UserApiTestClient {
                 .header("User-Agent", userAgent)
                 .contentType(MediaType.APPLICATION_JSON));
     }
+
+     public  ResultActions getMe() throws Exception{
+        return mockMvc.perform(get("/api/user/me")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON));
+    }
 }

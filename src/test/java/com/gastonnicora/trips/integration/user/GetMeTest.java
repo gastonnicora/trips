@@ -1,5 +1,4 @@
 package com.gastonnicora.trips.integration.user;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,9 +20,8 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class DeleteUserTest {
-
-    @Autowired
+public class GetMeTest {
+   @Autowired
     private MockMvc mockMvc;
 
     private UserDTOs user;
@@ -41,28 +39,17 @@ public class DeleteUserTest {
     }
 
     @Test
-    void shouldDeleteUserSuccessfully() throws Exception {
-        userApi.deleteCurrentUser()
-                .andExpect(status().isOk());
+    void shouldReturnUserSuccessfully() throws Exception {
+        userApi.getMe()
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(user.getEmail()));
     }
 
     @Test
     void shouldReturnForbiddenWhenTokenIsMissing() throws Exception {
         userApi.withToken("");
-        userApi.deleteCurrentUser()
+        userApi.getMe()
                 .andExpect(status().isForbidden());
-    }
-
-    @Test
-    void shouldDeleteUserSuccessfully_andUserShouldNotBeAbleToLogin() throws Exception {
-
-        userApi.deleteCurrentUser()
-                .andExpect(status().isOk());
-
-        AuthApiTestClient newClient = new AuthApiTestClient(mockMvc);
-
-        newClient.login(user.getEmail(), password)
-                .andExpect(status().isUnauthorized());
-    }
-
+    }   
+    
 }
