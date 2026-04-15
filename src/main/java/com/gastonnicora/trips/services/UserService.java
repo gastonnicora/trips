@@ -19,22 +19,22 @@ import com.gastonnicora.trips.entitys.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exeptions.ErrorException;
 import com.gastonnicora.trips.mappers.UserMapper;
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenService;
     private final PasswordEncoder passwordEncoder; 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserMapper userMapper;
 
     public UserService(UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder, RefreshTokenRepository refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public UserDTOs createUser(UserCreate user) {
@@ -80,12 +80,17 @@ public class UserService {
             new ErrorException("El usuario no existe",400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
+        String email= userNow.getEmail();
         if (!user.getEmail().equals(userNow.getEmail())) {
             if(emailUsed(user.getEmail())){
                 throw new ErrorException("El email ya esta en uso",400);
             }
             userNow.setEmail(user.getEmail());
         }
+        refreshTokenService.findByEmailAndActiveTrue(email).forEach(rt -> {
+            rt.setEmail(user.getEmail());
+            refreshTokenService.save(rt);
+        });
         userRepository.save(userNow);
         return userMapper.toDTO(userNow);   
 
@@ -99,36 +104,30 @@ public class UserService {
             new ErrorException("El usuario no existe",400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
-        System.err.println("EMAIL "+user.getEmail());
-        System.err.println("EMAIL VIEJO"+userNow.getEmail());
+        String email= userNow.getEmail();
         if (!user.getEmail().equals(userNow.getEmail())) {
-            System.err.println("EMAIL DISTINTO");
             if(emailUsed(user.getEmail())){
-                log.error("EMAIL EN USO");
-                log.error(user.getEmail());
                 throw new ErrorException("El email ya esta en uso",400);
             }
             userNow.setEmail(user.getEmail());
         }
+        refreshTokenService.findByEmailAndActiveTrue(email).forEach(rt -> {
+            rt.setEmail(user.getEmail());
+            refreshTokenService.save(rt);
+        });
         userRepository.save(userNow);
         return userMapper.toDTO(userNow);   
 
     }
 
     public UserDTOs updatePassword(UserPassword user){
-        log.error("contraseña anterior "+user.getPasswordOld());
-        log.error("contraseña nueva "+user.getPassword());
-        log.error("contraseña nueva "+user.getConfirmPassword());
         User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(), true).orElseThrow(
             ()-> 
             new ErrorException("El usuario no existe", 400)
         );
-        log.error("el usuario exxiste");
         if (!passwordEncoder.matches(user.getPasswordOld(), userNow.getPassword())) {
-            log.error("contraseña incorrecta");
             throw new ErrorException("La contraseña actual es incorrecta",400);
         }
-        log.error("contraseña correcta");
         userNow.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(userNow);
         return userMapper.toDTO(userNow);
