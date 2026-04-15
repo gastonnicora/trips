@@ -23,7 +23,7 @@ public class LoginRequest {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.trim().toLowerCase();
     }
 
     public String getPassword() {
@@ -33,4 +33,11 @@ public class LoginRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public LoginRequest(
+            String email, String password) {
+        this.email = email.trim().toLowerCase();
+        this.password = password;
+    }
+    
 }

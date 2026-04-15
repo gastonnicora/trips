@@ -122,10 +122,6 @@ public class PutUserTest {
                                 Arguments.of(
                                                 "Juan", "Perez", "", "email"),
 
-                                // email con espacio
-                                Arguments.of(
-                                                "Juan", "Perez", "test@test.com ",
-                                                "email"),
                                 
                                 // campos en null
                                 Arguments.of(

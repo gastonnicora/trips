@@ -110,10 +110,6 @@ public class RegisterTest {
                                 Arguments.of(
                                                 "Juan", "Perez", "", "goodPassword", "goodPassword", "email"),
 
-                                // email con espacio
-                                Arguments.of(
-                                                "Juan", "Perez", "test@test.com ", "goodPassword", "goodPassword",
-                                                "email"),//TODO si hago trim eliminar
                                 // password corta
                                 Arguments.of(
                                                 "Juan", "Perez", "test@test.com", "wrong", "wrong", "password"),

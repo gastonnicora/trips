@@ -97,7 +97,6 @@ public class UserService {
     }
 
     
-    //TODO corregir accion al cambiar el email
     public UserDTOs putCurrentUser(UserPut user) {
         User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(),true).orElseThrow(
             ()-> 
