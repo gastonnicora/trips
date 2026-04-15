@@ -43,4 +43,19 @@ public class UserApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(UserTestFactory.userJsonPutPass(passwordOld, password, confirmPassword)));
     }
+
+    public  ResultActions deleteCurrentUser() throws Exception{
+        return mockMvc.perform(delete("/api/user")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON));
+    }
+     public  ResultActions deleteCurrentUserWithUserAgent(String userAgent) throws Exception{
+        return mockMvc.perform(delete("/api/user")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", userAgent)
+                .contentType(MediaType.APPLICATION_JSON));
+    }
 }
