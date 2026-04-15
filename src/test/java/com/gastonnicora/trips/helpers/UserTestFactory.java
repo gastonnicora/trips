@@ -8,8 +8,6 @@ import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 
 import tools.jackson.databind.ObjectMapper;
 
-import org.springframework.http.MediaType;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserTestFactory {
@@ -57,7 +55,7 @@ public class UserTestFactory {
     public static String userJsonPutPass(String passwordOld, String password, String confirmPassword) {
         return """
                     {
-                        "passswordOld":%s,
+                        "passwordOld":"%s",
                         "password": "%s",
                         "confirmPassword": "%s"
                     }

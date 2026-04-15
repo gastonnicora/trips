@@ -35,4 +35,12 @@ public class UserApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(UserTestFactory.userJson(name, lastname, email, null, null)));
     }
+    public ResultActions updatePassword(String passwordOld, String password, String confirmPassword) throws Exception {
+        return mockMvc.perform(put("/api/user/changePassword")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(UserTestFactory.userJsonPutPass(passwordOld, password, confirmPassword)));
+    }
 }
