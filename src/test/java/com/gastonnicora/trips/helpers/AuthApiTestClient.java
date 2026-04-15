@@ -16,6 +16,7 @@ public class AuthApiTestClient {
     public ResultActions login(String email, String password) throws Exception {
         return mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test")
                 .content("""
                         {"email":"%s","password":"%s"}
                         """.formatted(email, password)));

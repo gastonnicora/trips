@@ -21,10 +21,10 @@ public class UserApiTestClient {
         return this;
     }
 
-    public ResultActions register(String name, String lastname, String email, String password) throws Exception {
+    public ResultActions register(String name, String lastname, String email, String password,String confirmPassword) throws Exception {
         return mockMvc.perform(post("/api/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(UserTestFactory.userJson(name, lastname, email, password, password)));
+                .content(UserTestFactory.userJson(name, lastname, email, password, confirmPassword)));
     }
 
     public ResultActions update(String name, String lastname, String email) throws Exception {
