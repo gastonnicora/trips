@@ -22,6 +22,8 @@ import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -73,6 +75,7 @@ public class UserService {
         throw ex;
     }
 
+    @Transactional
     public UserDTOs putUserByUuid(UUID uuid, UserPut user) {
         User userNow = userRepository.findByUuid(uuid).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
@@ -95,6 +98,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public UserDTOs putCurrentUser(UserPut user) {
         User userNow = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
@@ -118,6 +122,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public UserDTOs updatePassword(UserPassword user) {
         User userNow = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
@@ -149,6 +154,7 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
+    @Transactional
     public void deleteCurrentUser() {
         User user = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));

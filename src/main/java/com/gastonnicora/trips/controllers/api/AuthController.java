@@ -15,7 +15,9 @@ import com.gastonnicora.trips.dtos.request.auth.RefreshRequest;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.dtos.response.auth.RefreshResponse;
 import com.gastonnicora.trips.entitys.RefreshToken;
+import com.gastonnicora.trips.entitys.User;
 import com.gastonnicora.trips.helpers.UserAgent;
+import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.JwtService;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
@@ -35,15 +37,19 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final UserRepository userRepository;
+
 
     @Value("${cookie.secure}")
     private boolean cookieSecure;
 
     public AuthController(AuthenticationManager authenticationManager,
-            JwtService jwtService, RefreshTokenService refreshTokenService) {
+            JwtService jwtService, RefreshTokenService refreshTokenService,
+            UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
@@ -53,8 +59,8 @@ public class AuthController {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
-
-        String token = jwtService.generateToken(login.getEmail());
+        User user= userRepository.findByEmailAndEnabledTrue(login.getEmail()).orElseThrow();
+        String token = jwtService.generateToken(login.getEmail(),user.getVersion());
 
         String userAgent = request.getHeader("User-Agent");
         String ip = request.getRemoteAddr();
@@ -100,8 +106,8 @@ public class AuthController {
 
         RefreshToken newRefresh = refreshTokenService.createToken(rt.getEmail(), userAgent, ip, rt.getDevice());
         refreshTokenService.revokeToken(token);
-
-        String newAccess = jwtService.generateToken(rt.getEmail());
+        User user= userRepository.findByEmailAndEnabledTrue(rt.getEmail()).orElseThrow();
+        String newAccess = jwtService.generateToken(rt.getEmail(),user.getVersion());
 
         // WEB -> cookie
         if ("web".equals(rt.getDevice())) {
