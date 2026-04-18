@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 
+@Schema(description = "DTO de usuario para Request")
 public abstract class UserBasic {
 
     

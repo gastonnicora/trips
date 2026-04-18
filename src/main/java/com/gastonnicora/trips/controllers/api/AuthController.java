@@ -48,7 +48,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Inicio de sesión", description = "Inicia sesión con email y contraseña y recibe un token")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest login, HttpServletRequest request,
+    public LoginResponse login(@Valid @RequestBody LoginRequest login, HttpServletRequest request,
             HttpServletResponse response) {
 
         authenticationManager.authenticate(
@@ -69,15 +69,15 @@ public class AuthController {
         }
 
         //  ANDROID -> en body
-        return ResponseEntity.ok(
+        return 
                 new LoginResponse(token,
-                        "android".equals(device) ? refreshTokenE.getToken() : null));
+                        "android".equals(device) ? refreshTokenE.getToken() : null);
     }
 
     // valida refreshToken, si es valido devuelve uno nuevo y un nuevo token de
     // acceso
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
+    public RefreshResponse refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
             @RequestBody(required = false) RefreshRequest body,
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -107,10 +107,10 @@ public class AuthController {
         if ("web".equals(rt.getDevice())) {
             addRefreshCookie(response, newRefresh.getToken());
         }
-        return ResponseEntity.ok(
+        return 
                 new RefreshResponse(
                         newAccess,
-                        "android".equals(rt.getDevice()) ? newRefresh.getToken() : null));
+                        "android".equals(rt.getDevice()) ? newRefresh.getToken() : null);
 
     }
 

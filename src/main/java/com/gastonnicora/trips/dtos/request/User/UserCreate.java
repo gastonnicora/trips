@@ -7,6 +7,7 @@ import com.gastonnicora.trips.validations.FieldsMatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
+@Schema(description = "DTO de usuario para post")
 public class UserCreate extends UserBasic{
 
     private final int minLengthPass = 8;

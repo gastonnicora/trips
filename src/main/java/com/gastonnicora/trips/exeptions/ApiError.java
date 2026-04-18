@@ -1,18 +1,29 @@
 package com.gastonnicora.trips.exeptions;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
+@Schema(description = "Error genérico")
 public class ApiError {
 
+    @Schema(description = "Estatus de respuesta", example = "400")
     private int status;
+    @Schema(description = "Mensaje de error", example = "Error en la validación")
     private String message;
+    @Schema(description = "Cuando se genero el error")
     private LocalDateTime timestamp;
-    private Map<String, String> errors;
+    @Schema(description = "Listado de errores", example = "{\"email\":[\"El email no puede quedar en blanco\"] }")
+    private Map<String, List<String>> errors;
 
 }

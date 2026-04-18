@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 
 
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
+@Schema(description = "DTO de usuario para put password")
 public class UserPassword {
     
     private final int minLengthPass = 8;
@@ -20,12 +21,12 @@ public class UserPassword {
 
     @Schema(description = "Nueva contraseña", example = "12345678")
     @NotBlank(message = "La nueva contraseña no puede quedar en blanco")
-    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + "y máximo 255 caracteres",max = 255)
+    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + " y máximo 255 caracteres",max = 255)
     private String password;
 
     @Schema(description = "Repetición de la nueva contraseña", example = "12345678")
     @NotBlank(message = "La nueva contraseña no puede quedar en blanco")
-    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + "y máximo 255 caracteres",max = 255)
+    @Size(min = minLengthPass, message = "La contraseña debe contener al menos " + minLengthPass + " y máximo 255 caracteres",max = 255)
     private String confirmPassword;
 
     public UserPassword(String passwordOld, String password, String confirmPassword) {
