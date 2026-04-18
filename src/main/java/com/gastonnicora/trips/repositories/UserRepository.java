@@ -12,6 +12,9 @@ import com.gastonnicora.trips.entitys.User;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmailAndEnabled(String email, boolean enabled);
+
+    Optional<User> findByEmailAndEnabledTrue(String email);
+
     List<User> findByEmail(String email);
     Optional<User> findByUuid(UUID uuid);
 }

@@ -27,10 +27,10 @@ class UserRepositoryTest {
     @Test
     void shouldFindByUsername() {
 
-        User user = new User(null,"test","test","test","test",Set.of(Role.USER),true,null,null);
+        User user = new User("test","test","test","test",Set.of(Role.USER));
         userRepository.save(user);
 
-        Optional<User> found = userRepository.findByEmailAndEnabled("test",true);
+        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test");
 
         assertTrue(found.isPresent());
     }

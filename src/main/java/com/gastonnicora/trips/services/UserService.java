@@ -44,22 +44,19 @@ public class UserService {
             throw ex;
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User newUser = new User(null,
+        User newUser = new User(
                 user.getName(),
                 user.getLastname(),
                 user.getEmail(),
                 user.getPassword(),
-                Set.of(Role.USER),
-                true,
-                null,
-                null);
+                Set.of(Role.USER));
 
         return userMapper.toDTO(userRepository.save(newUser));
     }
 
     public UserDTOs getCurrentUser() {
         String email = getCurrentUserEmail();
-        Optional<User> user = userRepository.findByEmailAndEnabled(email, true);
+        Optional<User> user = userRepository.findByEmailAndEnabledTrue(email);
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
@@ -89,6 +86,7 @@ public class UserService {
                 throw ex;
             }
             userNow.setEmail(user.getEmail());
+            userNow.addVersion();
 
             refreshTokenService.deactivateAllByEmail(email);
         }
@@ -98,7 +96,7 @@ public class UserService {
     }
 
     public UserDTOs putCurrentUser(UserPut user) {
-        User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(), true).orElseThrow(
+        User userNow = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
@@ -111,6 +109,8 @@ public class UserService {
                 throw ex;
             }
             userNow.setEmail(user.getEmail());
+            userNow.addVersion();
+
             refreshTokenService.deactivateAllByEmail(email);
         }
         userRepository.save(userNow);
@@ -119,7 +119,7 @@ public class UserService {
     }
 
     public UserDTOs updatePassword(UserPassword user) {
-        User userNow = userRepository.findByEmailAndEnabled(getCurrentUserEmail(), true).orElseThrow(
+        User userNow = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         if (!passwordEncoder.matches(user.getPasswordOld(), userNow.getPassword())) {
             ErrorException ex = new ErrorException("Error en la validación", 400);
@@ -128,6 +128,7 @@ public class UserService {
             throw ex;
         }
         userNow.setPassword(passwordEncoder.encode(user.getPassword()));
+        userNow.addVersion();
         userRepository.save(userNow);
         refreshTokenService.deactivateAllByEmail(getCurrentUserEmail());
 
@@ -149,9 +150,10 @@ public class UserService {
     }
 
     public void deleteCurrentUser() {
-        User user = userRepository.findByEmailAndEnabled(getCurrentUserEmail(), true).orElseThrow(
+        User user = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         user.setEnabled(false);
+        user.addVersion();
         userRepository.save(user);
         refreshTokenService.deactivateAllByEmail(user.getEmail());
     }
@@ -164,7 +166,7 @@ public class UserService {
     }
 
     private Boolean emailUsed(String email) {
-        User userEmail = userRepository.findByEmailAndEnabled(email, true).orElse(null);
+        User userEmail = userRepository.findByEmailAndEnabledTrue(email).orElse(null);
         return (userEmail != null);
     }
 }

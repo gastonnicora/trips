@@ -25,15 +25,11 @@ public class UserMapper {
     }
     public User toEntity(UserDTOs userDTO) {
        return new User(
-                userDTO.getUuid(),
                 userDTO.getName(),
                 userDTO.getLastname(),
                 userDTO.getEmail(),
                 null,
-                userDTO.getRole(),
-                userDTO.isEnabled(),
-                null,
-                null
+                userDTO.getRole()
         );
     }
     public List<UserDTOs> toDTOList(List<User> users) {

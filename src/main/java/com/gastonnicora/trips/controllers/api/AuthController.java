@@ -63,12 +63,12 @@ public class AuthController {
         RefreshToken refreshTokenE = refreshTokenService.createToken(login.getEmail(), userAgent, ip,
                 device);
 
-        // 🌐 WEB → cookie
+        // WEB -> cookie
         if ("web".equals(device)) {
             addRefreshCookie(response, refreshTokenE.getToken());
         }
 
-        // 📱 ANDROID → en body
+        //  ANDROID -> en body
         return ResponseEntity.ok(
                 new LoginResponse(token,
                         "android".equals(device) ? refreshTokenE.getToken() : null));

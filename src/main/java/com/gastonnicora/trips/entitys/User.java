@@ -1,6 +1,8 @@
 package com.gastonnicora.trips.entitys;
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,14 +22,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@ToString(exclude = "password")
 public class User {
 
     @Id
@@ -47,21 +53,51 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Set<Role> role;
 
     @Column(name = "enabled", nullable = false)
-    private boolean enabled;
+    private boolean enabled=true;
 
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
-    private LocalDate createdAt;
-    
+    private LocalDateTime createdAt;
+
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDate updatedAt;
-    
+    private LocalDateTime updatedAt;
+
+    @Column(name = "version", nullable = false)
+    private int version=0;
+
+
+    public User(String name, String lastname, String email, String password) {
+       this(name, lastname, email, password, null);
+    }
+
+    public User(String name, String lastname, String email, String password, Set<Role> role) {
+        this.name = name;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+        this.role = (role != null) ? new HashSet<>(role) : new HashSet<>(Set.of(Role.USER));
+    }
+
+    public void addRole(Role role) {
+        this.role.add(role);
+    }
+
+    public void removeRole(Role role) {
+        this.role.remove(role);
+    }
+    public void addVersion(){
+        this.version++;
+    }
+
+
+
 
 }
