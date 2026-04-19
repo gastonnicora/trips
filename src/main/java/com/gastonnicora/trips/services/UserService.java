@@ -175,4 +175,21 @@ public class UserService {
         User userEmail = userRepository.findByEmailAndEnabledTrue(email).orElse(null);
         return (userEmail != null);
     }
+
+    public void createSuperAdminIfNotExists(String email, String password) {
+    boolean exists = userRepository.existsByRoleContains(Role.SUPER_ADMIN);
+
+    if (!exists && email != null && password != null && !emailUsed(email)) {
+        User superAdmin = new User(
+                "Super",
+                "Admin",
+                email,
+                passwordEncoder.encode(password),
+                Set.of(Role.SUPER_ADMIN)
+        );
+
+        userRepository.save(superAdmin);
+        System.out.println("SUPER_ADMIN creado");
+    }
+}
 }

@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.enums.Role;
 
 
 public interface UserRepository extends JpaRepository<User, UUID> {
@@ -17,4 +18,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     List<User> findByEmail(String email);
     Optional<User> findByUuid(UUID uuid);
+    boolean existsByRoleContains(Role role);
 }

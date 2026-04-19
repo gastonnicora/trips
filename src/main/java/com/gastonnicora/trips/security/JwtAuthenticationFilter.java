@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.gastonnicora.trips.entitys.User;
-import com.gastonnicora.trips.exeptions.ApiError;
-import com.gastonnicora.trips.exeptions.ErrorException;
 import com.gastonnicora.trips.repositories.UserRepository;
 
 import io.jsonwebtoken.JwtException;

@@ -1,6 +1,5 @@
 package com.gastonnicora.trips.entitys;
 
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,14 +52,13 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Set<Role> role;
 
     @Column(name = "enabled", nullable = false)
-    private boolean enabled=true;
+    private boolean enabled = true;
 
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
@@ -71,11 +69,10 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Column(name = "version", nullable = false)
-    private int version=0;
-
+    private int version = 0;
 
     public User(String name, String lastname, String email, String password) {
-       this(name, lastname, email, password, null);
+        this(name, lastname, email, password, null);
     }
 
     public User(String name, String lastname, String email, String password, Set<Role> role) {
@@ -83,21 +80,30 @@ public class User {
         this.lastname = lastname;
         this.email = email;
         this.password = password;
-        this.role = (role != null) ? new HashSet<>(role) : new HashSet<>(Set.of(Role.USER));
+        this.role = new HashSet<>();
+
+        this.role.add(Role.USER);
+
+        if (role != null) {
+            this.role.addAll(role);
+        }
+        
     }
 
     public void addRole(Role role) {
         this.role.add(role);
     }
+    public void addRoles(Set<Role> roles) {
+        this.role.addAll(roles);
+    }
+
 
     public void removeRole(Role role) {
         this.role.remove(role);
     }
-    public void addVersion(){
+
+    public void addVersion() {
         this.version++;
     }
-
-
-
 
 }
