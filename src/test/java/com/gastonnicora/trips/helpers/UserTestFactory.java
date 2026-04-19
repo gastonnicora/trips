@@ -40,6 +40,18 @@ public class UserTestFactory {
         return mapper.readValue(responseJson, LoginResponse.class);
     }
 
+    public static LoginResponse loginWithAndroid(MockMvc mockMvc, String email, String pass) throws Exception {
+        AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);
+        MvcResult response = authApi.loginWithUserAgent(email, pass,"okhttp/4.9.0 (Android)")
+                .andExpect(status().isOk())
+                .andReturn();
+        String responseJson = response.getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        return mapper.readValue(responseJson, LoginResponse.class);
+    }
+
     public static String userJson(String name, String lastname, String email, String password, String confirmPassword) {
         return """
                     {

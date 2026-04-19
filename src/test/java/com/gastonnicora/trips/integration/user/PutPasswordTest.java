@@ -11,8 +11,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
-import com.gastonnicora.trips.entitys.User;
-import com.gastonnicora.trips.helpers.AuthApiTestClient;
 import com.gastonnicora.trips.helpers.UserApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 

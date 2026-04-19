@@ -18,7 +18,7 @@ public class JwtService {
 
     public String generateToken(String email,int version) {
 
-        return Jwts.builder() //TODO agregar vercion de token para seguridad
+        return Jwts.builder() 
                 .subject(email)
                 .claim("ver",version ) 
                 .issuedAt(new Date())

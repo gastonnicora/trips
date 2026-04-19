@@ -80,6 +80,7 @@ public class AuthController {
                         "android".equals(device) ? refreshTokenE.getToken() : null);
     }
 
+    //TODO validar que token no sea null
     // valida refreshToken, si es valido devuelve uno nuevo y un nuevo token de
     // acceso
     @PostMapping("/refresh")
@@ -119,7 +120,7 @@ public class AuthController {
                         "android".equals(rt.getDevice()) ? newRefresh.getToken() : null);
 
     }
-
+    //TODO Correguir jwt cuando logout
     @PostMapping("/logout")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Cerrar sesión", description = "Cierra la sesión actual.")
@@ -134,8 +135,9 @@ public class AuthController {
 
         if (token != null) {
             refreshTokenService.revokeToken(token);
+            System.err.println(token);
         }
-
+//TODO hacer que cookie solo en web
         // limpiar cookie en web
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setMaxAge(0);
