@@ -1,14 +1,15 @@
 package com.gastonnicora.trips.helpers;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 
+import jakarta.servlet.http.Cookie;
 import tools.jackson.databind.ObjectMapper;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserTestFactory {
 
@@ -32,17 +33,25 @@ public class UserTestFactory {
         AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);
         MvcResult response = authApi.login(email, pass)
                 .andExpect(status().isOk())
+                .andExpect(cookie().exists("refreshToken"))
+                .andExpect(cookie().value("refreshToken", org.hamcrest.Matchers.notNullValue()))
                 .andReturn();
         String responseJson = response.getResponse().getContentAsString();
 
         ObjectMapper mapper = new ObjectMapper();
 
-        return mapper.readValue(responseJson, LoginResponse.class);
+        LoginResponse loginResponse = mapper.readValue(responseJson, LoginResponse.class);
+        
+        String refreshCookie = response.getResponse().getCookie("refreshToken").getValue();
+        loginResponse.setRefreshToken(refreshCookie);
+        return loginResponse;
     }
+
+
 
     public static LoginResponse loginWithAndroid(MockMvc mockMvc, String email, String pass) throws Exception {
         AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);
-        MvcResult response = authApi.loginWithUserAgent(email, pass,"okhttp/4.9.0 (Android)")
+        MvcResult response = authApi.loginWithUserAgent(email, pass, "okhttp/4.9.0 (Android)")
                 .andExpect(status().isOk())
                 .andReturn();
         String responseJson = response.getResponse().getContentAsString();

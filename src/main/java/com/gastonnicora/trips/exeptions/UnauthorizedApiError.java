@@ -12,7 +12,7 @@ public class UnauthorizedApiError extends ApiError {
     
     @Schema(description = "Estatus de respuesta", example = "401")
     private int status;
-    @Schema(description = "Mensaje de error", example = "Email o contraseña incorrectos")
+    @Schema(description = "Mensaje de error", example = "Token inválido o expirado")
     private String message;
     @Schema(description = "Cuando se genero el error")
     private LocalDateTime timestamp;

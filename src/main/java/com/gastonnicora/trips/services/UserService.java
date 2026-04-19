@@ -27,13 +27,13 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenService;
+    private final  RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private UserMapper userMapper;
 
     public UserService(UserRepository userRepository,
-            PasswordEncoder passwordEncoder, RefreshTokenRepository refreshTokenService) {
+            PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.refreshTokenService = refreshTokenService;
@@ -81,7 +81,6 @@ public class UserService {
                 () -> new ErrorException("El usuario no existe", 400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
-        String email = userNow.getEmail();
         if (!user.getEmail().equals(userNow.getEmail())) {
             if (emailUsed(user.getEmail())) {
                 ErrorException ex = new ErrorException("Error en la validación", 400);
@@ -91,7 +90,7 @@ public class UserService {
             userNow.setEmail(user.getEmail());
             userNow.addVersion();
 
-            refreshTokenService.deactivateAllByEmail(email);
+            refreshTokenService.deactivateAllByUserUuid(userNow.getUuid());
         }
         userRepository.save(userNow);
         return userMapper.toDTO(userNow);
@@ -104,7 +103,6 @@ public class UserService {
                 () -> new ErrorException("El usuario no existe", 400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
-        String email = userNow.getEmail();
         if (!user.getEmail().equals(userNow.getEmail())) {
             if (emailUsed(user.getEmail())) {
                 ErrorException ex = new ErrorException("Error en la validación", 400);
@@ -115,7 +113,7 @@ public class UserService {
             userNow.setEmail(user.getEmail());
             userNow.addVersion();
 
-            refreshTokenService.deactivateAllByEmail(email);
+            refreshTokenService.deactivateAllByUserUuid(userNow.getUuid());
         }
         userRepository.save(userNow);
         return userMapper.toDTO(userNow);
@@ -135,7 +133,7 @@ public class UserService {
         userNow.setPassword(passwordEncoder.encode(user.getPassword()));
         userNow.addVersion();
         userRepository.save(userNow);
-        refreshTokenService.deactivateAllByEmail(getCurrentUserEmail());
+        refreshTokenService.deactivateAllByUserUuid(userNow.getUuid());
 
         return userMapper.toDTO(userNow);
     }
@@ -161,7 +159,7 @@ public class UserService {
         user.setEnabled(false);
         user.addVersion();
         userRepository.save(user);
-        refreshTokenService.deactivateAllByEmail(user.getEmail());
+        refreshTokenService.deactivateAllByUserUuid(user.getUuid());
     }
 
     private String getCurrentUserEmail() {

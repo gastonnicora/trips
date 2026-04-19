@@ -2,6 +2,7 @@ package com.gastonnicora.trips.security;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class JwtService {
         return Jwts.builder() 
                 .subject(email)
                 .claim("ver",version ) 
+                .claim("jti", UUID.randomUUID().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))// 5 minutos
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8)))

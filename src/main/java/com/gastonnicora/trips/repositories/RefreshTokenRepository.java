@@ -15,13 +15,13 @@ import com.gastonnicora.trips.entitys.RefreshToken;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
 
-    Optional<RefreshToken> findByToken(String token);
+    Optional<RefreshToken> findByRefreshToken(String refreshToken);
 
-    List<RefreshToken> findByEmailAndActiveTrue(String email);
+    List<RefreshToken> findAllByUserUuidAndActiveTrue(UUID userUuid);
 
     @Modifying
     @Transactional
-    void deleteByEmail(String email);
+    void deleteByUserUuid(UUID userUuid);
 
     @Modifying
     @Transactional
@@ -33,12 +33,14 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
 
     @Modifying
     @Transactional
-    void deleteByToken(String token);
+    void deleteByRefreshToken(String token);
 
-    @Modifying
-    @Query("update RefreshToken r set r.active = false where r.email = :email")
-    void deactivateAllByEmail(@Param("email") String email);
 
-    Optional<RefreshToken> findByUuid(UUID uUId);
+    Optional<RefreshToken> findByUuid(UUID uuid);
+
+    
+    Optional<RefreshToken> findByToken(String token);
+
+    boolean existsByRefreshToken(String refreshToken);
 
 }

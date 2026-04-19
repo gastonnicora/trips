@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.gastonnicora.trips.entitys.RefreshToken;
 import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
 
 import io.jsonwebtoken.JwtException;
@@ -24,14 +26,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
-    private UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public JwtAuthenticationFilter(JwtService jwtService,
             UserDetailsServiceImpl userDetailsService,
-            UserRepository userRepository) {
+        RefreshTokenRepository refreshTokenRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
-        this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
@@ -67,8 +69,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             writeError(response);
             return;
         }
-        Optional<User> user = userRepository.findByEmailAndEnabledTrue(username);
-        if (user.isEmpty() || user.get().getVersion() != version) {
+        Optional<RefreshToken> refreshToken=refreshTokenRepository.findByToken(token);
+        if (refreshToken.isEmpty() ||!refreshToken.get().isActive()|| refreshToken.get().getVersion() != version) {
             writeError(response);
             return;
         }
@@ -85,12 +87,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void writeError(HttpServletResponse response) throws IOException {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
 
         String body = """
                 {
-                    "status": 403,
+                    "status": 401,
                     "message": "Token invalido",
                     "timestamp": "%s",
                     "errors": null

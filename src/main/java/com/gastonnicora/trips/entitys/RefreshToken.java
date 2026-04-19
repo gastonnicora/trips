@@ -34,8 +34,11 @@ public class RefreshToken {
     @Column(name = "token", nullable = false)
     private String token;
 
-    @Column(name = "email", nullable = false)
-    private String email;
+    @Column(name = "refresh_token", nullable = false)
+    private String refreshToken;
+
+    @Column(name = "user_uuid", nullable = false)
+    private UUID userUuid;
     
     @Column(name = "ip", nullable = false)
     private String ip;
@@ -58,14 +61,23 @@ public class RefreshToken {
     @Column(name = "expiry_date", nullable = false)
     private Instant expiryDate;
 
-    public RefreshToken(String email, String ip, String userAgent, String device) {
-        this.token = UUID.randomUUID().toString();
+    @Column(name = "version", nullable = false)
+    private int version;
+
+    public RefreshToken(String token,UUID userUuid, String ip, String userAgent, String device, int version) {
+        this.token = token;
+        this.refreshToken = UUID.randomUUID().toString();
         this.active = true;
-        this.email = email;
+        this.userUuid = userUuid;
         this.ip = ip;
         this.userAgent= (userAgent!= null && !userAgent.isBlank())?userAgent:"web";
         this.device = device;
         this.expiryDate= Instant.now().plus(7, ChronoUnit.DAYS);
+        this.version= version;
+    }
+
+    public void addVersion() {
+        this.version++;
     }
 
 

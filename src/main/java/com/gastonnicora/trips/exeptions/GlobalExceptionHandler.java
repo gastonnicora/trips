@@ -79,10 +79,10 @@ public class GlobalExceptionHandler {
         }
 
         @ExceptionHandler(JwtException.class)
-        @ResponseStatus(HttpStatus.FORBIDDEN)
-        public ForbiddenApiError handleBadTokenException(JwtException ex) {
+        @ResponseStatus(HttpStatus.UNAUTHORIZED)
+        public ApiError handleBadTokenException(JwtException ex) {
 
-                return new ForbiddenApiError(ex.getMessage());
+                return new ApiError(401,"Token inválido o expirado");
 
         }
 

@@ -37,11 +37,15 @@ public class AuthApiTestClient {
                         """.formatted(email, password))); // TODO Cambiar por android
     }
 
-    public ResultActions logout() throws Exception {
+    
+    public ResultActions logout(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/logout")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test")
-                .header("Authorization", "Bearer " + token));
+                .header("Authorization", "Bearer " + token)
+                .content("""
+                        {"refreshToken":"%s"}
+                        """.formatted(refreshToken)));
     }
 
     public ResultActions logoutAndroid(String refreshToken) throws Exception {

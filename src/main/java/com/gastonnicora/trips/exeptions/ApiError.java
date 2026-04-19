@@ -26,4 +26,12 @@ public class ApiError {
     @Schema(description = "Listado de errores", example = "{\"email\":[\"El email no puede quedar en blanco\"] }")
     private Map<String, List<String>> errors;
 
+    public ApiError(int status, String message) {
+        this.status = status;
+        this.message = message;
+        this.timestamp = LocalDateTime.now();
+    }
+
+
+
 }

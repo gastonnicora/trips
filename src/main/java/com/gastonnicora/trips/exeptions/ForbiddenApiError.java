@@ -12,7 +12,7 @@ public class ForbiddenApiError extends ApiError{
 
     @Schema(description = "Estatus de respuesta", example = "403")
     private int status;
-    @Schema(description = "Mensaje de error", example = "Token invalido")
+    @Schema(description = "Mensaje de error", example = "Acceso denegado")
     private String message;
     @Schema(description = "Cuando se genero el error")
     private LocalDateTime timestamp;
