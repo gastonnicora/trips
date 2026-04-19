@@ -57,7 +57,7 @@ public class PutUserTest {
                                 .andExpect(jsonPath("$.lastname").value(newLastname));
         }
 
-        // TODO corregir accion al cambiar el email cambiar datos refreshtoken y generar nuevo token
+        
         @Test
         void shouldUpdateUserEmailSuccessfully() throws Exception {
                 final String newName = "Marta";
@@ -68,6 +68,19 @@ public class PutUserTest {
                                 .andExpect(jsonPath("$.email").value(newEmail.trim().toLowerCase()))
                                 .andExpect(jsonPath("$.name").value(newName))
                                 .andExpect(jsonPath("$.lastname").value(newLastname));
+        }
+         @Test
+        void shouldReturnForbiddenWhenChangeEmail() throws Exception {
+                final String newName = "Marta";
+                final String newLastname = "Sierra";
+                final String newEmail = "martaSierra@mail.com";
+                apiUser.update(newName, newLastname, newEmail)
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.email").value(newEmail.trim().toLowerCase()))
+                                .andExpect(jsonPath("$.name").value(newName))
+                                .andExpect(jsonPath("$.lastname").value(newLastname));
+                apiUser.update(newName, newLastname, newEmail)
+                .andExpect(status().isForbidden());
         }
 
         @ParameterizedTest

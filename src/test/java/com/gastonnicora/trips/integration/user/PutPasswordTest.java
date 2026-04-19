@@ -11,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
+import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.helpers.AuthApiTestClient;
 import com.gastonnicora.trips.helpers.UserApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 
@@ -49,6 +51,14 @@ public class PutPasswordTest {
         String newPassword = "newPassword";
         userApi.updatePassword(password, newPassword, newPassword)
                 .andExpect(status().isOk());
+    }
+    @Test
+    void shouldReturnForbiddenWhenChangePassword() throws Exception {
+        String newPassword = "newPassword";
+        userApi.updatePassword(password, newPassword, newPassword)
+                .andExpect(status().isOk());
+        userApi.updatePassword(newPassword, password, password)
+                .andExpect(status().isForbidden());
     }
 
     @ParameterizedTest
