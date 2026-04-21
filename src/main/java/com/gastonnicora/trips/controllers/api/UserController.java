@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gastonnicora.trips.dtos.entitys.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTOs;
 import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
 import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;

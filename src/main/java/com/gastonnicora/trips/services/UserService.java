@@ -10,8 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.gastonnicora.trips.dtos.entitys.UserDTOs;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
+import com.gastonnicora.trips.dtos.entities.UserDTOs;
 import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
 import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.dtos.request.User.UserChangeRole;

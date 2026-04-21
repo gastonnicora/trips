@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.gastonnicora.trips.dtos.entitys.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTOs;
 import com.gastonnicora.trips.entities.User;
 
 @Component

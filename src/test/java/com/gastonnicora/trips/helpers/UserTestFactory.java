@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.gastonnicora.trips.dtos.entitys.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTOs;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 
 import tools.jackson.databind.ObjectMapper;

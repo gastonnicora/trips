@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.dtos.entitys.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTOs;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.mappers.UserMapper;
