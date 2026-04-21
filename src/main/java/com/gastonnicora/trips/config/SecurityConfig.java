@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.gastonnicora.trips.security.JwtAuthenticationFilter;
 import com.gastonnicora.trips.security.UserDetailsServiceImpl;
+import com.gastonnicora.trips.security.handlers.CustomAccessDeniedHandler;
+import com.gastonnicora.trips.security.handlers.CustomAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -24,10 +26,17 @@ public class SecurityConfig {
 
         private final UserDetailsServiceImpl userService;
         private final JwtAuthenticationFilter jwtFilter;
+        private final CustomAccessDeniedHandler accessDeniedHandler;
+        private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
-        public SecurityConfig(UserDetailsServiceImpl userService, JwtAuthenticationFilter jwtFilter) {
-                this.jwtFilter = jwtFilter;
+        public SecurityConfig(UserDetailsServiceImpl userService,
+                        JwtAuthenticationFilter jwtFilter,
+                        CustomAccessDeniedHandler accessDeniedHandler,
+                        CustomAuthenticationEntryPoint authenticationEntryPoint) {
                 this.userService = userService;
+                this.jwtFilter = jwtFilter;
+                this.accessDeniedHandler = accessDeniedHandler;
+                this.authenticationEntryPoint = authenticationEntryPoint;
         }
 
         @Bean
@@ -40,31 +49,46 @@ public class SecurityConfig {
                 return config.getAuthenticationManager();
         }
 
+        //  API con JWT
         @Bean
         @Order(1)
         public SecurityFilterChain jwtSecurityChain(HttpSecurity http) throws Exception {
                 http
                                 .csrf(csrf -> csrf.disable())
                                 .securityMatcher("/api/**")
+
+                                .exceptionHandling(ex -> ex
+                                                .authenticationEntryPoint(authenticationEntryPoint) // 401
+                                                .accessDeniedHandler(accessDeniedHandler) // 403
+                                )
+
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/error", "/api/auth/refresh").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/user").anonymous()
                                                 .requestMatchers("/api/auth/login").anonymous()
                                                 .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
                                                 .anyRequest().authenticated())
+
                                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
         }
 
+        //  Web 
         @Bean
         @Order(2)
-        public SecurityFilterChain securityChain(HttpSecurity http, AuthenticationManager authenticationManager)
-                        throws Exception {
+        public SecurityFilterChain securityChain(HttpSecurity http,
+                        AuthenticationManager authenticationManager) throws Exception {
 
                 http
                                 .csrf(csrf -> csrf.disable())
+
+                                .exceptionHandling(ex -> ex
+                                                .authenticationEntryPoint(authenticationEntryPoint)
+                                                .accessDeniedHandler(accessDeniedHandler))
+
                                 .securityMatcher("/**")
+
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/error", "/auth/**").permitAll()
                                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
@@ -72,11 +96,14 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers("/**").hasAnyRole("ADMIN", "USER")
                                                 .anyRequest().authenticated())
+
                                 .authenticationManager(authenticationManager)
                                 .userDetailsService(userService)
+
                                 .formLogin(form -> form.permitAll())
                                 .httpBasic(basic -> {
                                 })
+
                                 .logout(logout -> logout
                                                 .logoutUrl("/logout")
                                                 .logoutSuccessUrl("/login")
@@ -86,5 +113,4 @@ public class SecurityConfig {
 
                 return http.build();
         }
-
 }

@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.exeptions;
+package com.gastonnicora.trips.exceptions;
 
 import java.time.LocalDateTime;
 import java.util.List;

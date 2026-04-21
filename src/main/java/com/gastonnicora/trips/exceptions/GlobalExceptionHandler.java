@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.exeptions;
+package com.gastonnicora.trips.exceptions;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
         @ResponseStatus(HttpStatus.UNAUTHORIZED)
         public UnauthorizedApiError handleBadCredentialsException(BadCredentialsException ex) {
 
-                return new UnauthorizedApiError();
+                return new UnauthorizedApiError("No autenticado o token inválido");
         }
 
         @ExceptionHandler(JwtException.class)

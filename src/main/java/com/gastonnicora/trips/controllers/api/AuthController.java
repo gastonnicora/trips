@@ -16,7 +16,7 @@ import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.dtos.response.auth.RefreshResponse;
 import com.gastonnicora.trips.entitys.RefreshToken;
 import com.gastonnicora.trips.entitys.User;
-import com.gastonnicora.trips.exeptions.ErrorException;
+import com.gastonnicora.trips.exceptions.ErrorException;
 import com.gastonnicora.trips.helpers.UserAgent;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.JwtService;

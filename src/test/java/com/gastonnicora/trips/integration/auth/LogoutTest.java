@@ -69,7 +69,7 @@ public class LogoutTest {
     @Test
     void shouldLogoutFailsWhenTokenIsMissing() throws Exception {
         this.authApi = authApi.withToken("");
-        authApi.logout(refreshToken).andExpect(status().isForbidden());
+        authApi.logout(refreshToken).andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -83,7 +83,7 @@ public class LogoutTest {
 
         // intento usar refresh token otra vez
         authApi.refreshAndroid(login.getRefreshToken())
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class LogoutTest {
     @Test
     void shouldStillAllowAccessWithOldAccessTokenAfterLogout() throws Exception {
         authApi.logout(refreshToken).andExpect(status().isOk());
-        authApi.logout(refreshToken).andExpect(status().isForbidden());
+        authApi.logout(refreshToken).andExpect(status().isUnauthorized());
     }
 
 }

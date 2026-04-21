@@ -71,7 +71,7 @@ public class PutUserTest {
         }
 
         @Test
-        void shouldReturnForbiddenWhenChangeEmail() throws Exception {
+        void shouldReturnUnauthorizedWhenChangeEmail() throws Exception {
                 final String newName = "Marta";
                 final String newLastname = "Sierra";
                 final String newEmail = "martaSierra@mail.com";
@@ -81,7 +81,7 @@ public class PutUserTest {
                                 .andExpect(jsonPath("$.name").value(newName))
                                 .andExpect(jsonPath("$.lastname").value(newLastname));
                 apiUser.update(newName, newLastname, newEmail)
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         @ParameterizedTest
@@ -111,10 +111,10 @@ public class PutUserTest {
         }
 
         @Test
-        void shouldReturnForbiddenWhenTokenIsMissing() throws Exception {
+        void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
                 apiUser.withToken("");
                 apiUser.update(user.getName(), user.getLastname(), user.getEmail())
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         static Stream<Arguments> invalidUsers() {

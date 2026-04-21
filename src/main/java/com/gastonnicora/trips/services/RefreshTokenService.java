@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gastonnicora.trips.entitys.RefreshToken;
-import com.gastonnicora.trips.exeptions.ErrorException;
+import com.gastonnicora.trips.exceptions.ErrorException;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 
 @Service

@@ -47,10 +47,10 @@ public class GetMeTest {
     }
 
     @Test
-    void shouldReturnForbiddenWhenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         userApi.withToken("");
         userApi.getMe()
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
 }

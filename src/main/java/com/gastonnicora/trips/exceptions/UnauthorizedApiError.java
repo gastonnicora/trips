@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.exeptions;
+package com.gastonnicora.trips.exceptions;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,10 +18,10 @@ public class UnauthorizedApiError extends ApiError {
     @Schema(description = "Listado de errores", example = "null")
     private Map<String, List<String>> errors;
 
-    public UnauthorizedApiError() {
+    public UnauthorizedApiError(String message) {
         super(
                 401,
-                "Email o contraseña incorrectos",
+                message,
                 java.time.LocalDateTime.now(),
                 null);
     }

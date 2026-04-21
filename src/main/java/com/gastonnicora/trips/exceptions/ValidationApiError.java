@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.exeptions;
+package com.gastonnicora.trips.exceptions;
 
 import java.util.List;
 import java.util.Map;

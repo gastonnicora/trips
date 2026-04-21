@@ -47,10 +47,10 @@ public class DeleteUserTest {
     }
 
     @Test
-    void shouldReturnForbiddenWhenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         userApi.withToken("");
         userApi.deleteCurrentUser()
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

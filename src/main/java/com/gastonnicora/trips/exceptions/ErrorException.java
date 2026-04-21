@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.exeptions;
+package com.gastonnicora.trips.exceptions;
 
 import java.util.HashMap;
 import java.util.List;

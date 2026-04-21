@@ -53,12 +53,12 @@ public class PutPasswordTest {
         }
 
         @Test
-        void shouldReturnForbiddenWhenChangePassword() throws Exception {
+        void shouldReturnUnauthorizedWhenChangePassword() throws Exception {
                 String newPassword = "newPassword";
                 userApi.updatePassword(password, newPassword, newPassword)
                                 .andExpect(status().isOk());
                 userApi.updatePassword(newPassword, password, password)
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         @ParameterizedTest
@@ -88,10 +88,10 @@ public class PutPasswordTest {
         }
 
         @Test
-        void shouldReturnForbiddenWhenTokenIsMissing() throws Exception {
+        void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
                 userApi.withToken("");
                 userApi.updatePassword("newPassword", "newPassword", "newPassword")
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         static Stream<Arguments> invalidFileds() {

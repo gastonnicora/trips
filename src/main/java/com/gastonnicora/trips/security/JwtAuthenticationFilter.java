@@ -1,7 +1,6 @@
 package com.gastonnicora.trips.security;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,55 +47,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = header.substring(7);
-        if (!jwtService.isValid(token)) {
-            writeError(response);
-            return;
-        }
-        String username;
+
         try {
+            if (!jwtService.isValid(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-            username = jwtService.extractUsername(token);
-        } catch (JwtException e) {
-            writeError(response);
-            return;
-        }
-        int version;
-        try {
-            version = jwtService.extractVersion(token);
-        } catch (JwtException e) {
-            writeError(response);
-            return;
-        }
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByToken(token);
-        if (refreshToken.isEmpty() || !refreshToken.get().isActive() || refreshToken.get().getVersion() != version) {
-            writeError(response);
-            return;
-        }
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            String username = jwtService.extractUsername(token);
+            int version = jwtService.extractVersion(token);
 
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities());
+            Optional<RefreshToken> refreshToken = refreshTokenRepository.findByToken(token);
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
+            if (refreshToken.isEmpty()
+                    || !refreshToken.get().isActive()
+                    || refreshToken.get().getVersion() != version) {
+
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+        } catch (JwtException | IllegalArgumentException e) {
+
+        }
 
         filterChain.doFilter(request, response);
-    }
-
-    private void writeError(HttpServletResponse response) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json");
-
-        String body = """
-                {
-                    "status": 401,
-                    "message": "Token invalido",
-                    "timestamp": "%s",
-                    "errors": null
-                }
-                """.formatted(LocalDateTime.now());
-
-        response.getWriter().write(body);
     }
 }
