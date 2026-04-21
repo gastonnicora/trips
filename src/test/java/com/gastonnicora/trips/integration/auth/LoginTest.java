@@ -108,7 +108,7 @@ class LoginTest {
         // Comprueba que se pase el refreshtoken a android
         @Test
         void shouldReturnRefreshTokenInBodyForAndroidClients() throws Exception {
-                authApi.loginWithUserAgent(email, pass, "okhttp/4.9.0 (Android)")
+                authApi.loginWithAndroid(email, pass)
                                 .andExpect(status().isOk())
                                 .andExpect(cookie().doesNotExist("refreshToken"))
                                 .andExpect(jsonPath("$.token").exists())

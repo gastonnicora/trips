@@ -95,7 +95,7 @@ public class LogoutTest {
                 .andExpect(status().isOk());
 
         // intento usar refresh token otra vez
-        authApi.refresh()
+        authApi.refresh(refreshToken)
                 .andExpect(status().isUnauthorized());
     }
 

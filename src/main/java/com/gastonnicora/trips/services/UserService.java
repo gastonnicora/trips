@@ -185,7 +185,6 @@ public class UserService {
                     Set.of(Role.SUPER_ADMIN));
 
             userRepository.save(superAdmin);
-            System.out.println("SUPER_ADMIN creado");
         }
     }
 }

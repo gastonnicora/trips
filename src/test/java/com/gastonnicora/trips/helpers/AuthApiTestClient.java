@@ -29,13 +29,13 @@ public class AuthApiTestClient {
                         """.formatted(email, password)));
     }
 
-    public ResultActions loginWithUserAgent(String email, String password, String userAgent) throws Exception {
+    public ResultActions loginWithAndroid(String email, String password) throws Exception {
         return mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", userAgent)
+                .header("User-Agent", "okhttp/4.9.0 (Android)")
                 .content("""
                         {"email":"%s","password":"%s"}
-                        """.formatted(email, password))); // TODO Cambiar por android
+                        """.formatted(email, password)));
     }
 
     public ResultActions logout(String refreshToken) throws Exception {
@@ -68,11 +68,14 @@ public class AuthApiTestClient {
                         """.formatted(refreshToken)));
     }
 
-    public ResultActions refresh() throws Exception {
+    public ResultActions refresh(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test")
-                .header("Authorization", "Bearer " + token));
+                .header("Authorization", "Bearer " + token)
+                .content("""
+                        {"refreshToken":"%s"}
+                        """.formatted(refreshToken)));
     }
 
 }

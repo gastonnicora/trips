@@ -49,7 +49,7 @@ public class UserTestFactory {
 
     public static LoginResponse loginWithAndroid(MockMvc mockMvc, String email, String pass) throws Exception {
         AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);
-        MvcResult response = authApi.loginWithUserAgent(email, pass, "okhttp/4.9.0 (Android)")
+        MvcResult response = authApi.loginWithAndroid(email, pass)
                 .andExpect(status().isOk())
                 .andReturn();
         String responseJson = response.getResponse().getContentAsString();

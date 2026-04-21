@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.controllers.api;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -72,7 +74,6 @@ public class AuthController {
         // WEB -> cookie
         if ("web".equals(device)) {
             addRefreshCookie(response, refreshTokenE.getRefreshToken());
-            System.err.println("Login RefreshToken: " + refreshTokenE.getRefreshToken());
         }
 
         // ANDROID -> en body
@@ -134,15 +135,17 @@ public class AuthController {
         String refreshToken = cookieToken != null
                 ? cookieToken
                 : (body != null ? body.getRefreshToken() : null);
-        if (refreshToken != null && refreshTokenService.existsByRefreshToken(refreshToken)) {
+
+        Optional<RefreshToken> rt= refreshTokenService.findByRefreshToken(refreshToken);
+        if (refreshToken != null && !rt.isEmpty() && rt.get()!= null) {
             refreshTokenService.revokeToken(refreshToken);
         } else {
 
             throw new ErrorException("Token inválido o expirado", 401);
         }
-
         // limpiar cookie en web
-        if (cookieToken != null) {
+        if ("web".equals(rt.get().getDevice())) {
+            System.err.println("WEB");
             Cookie cookie = new Cookie("refreshToken", null);
             cookie.setMaxAge(0);
             cookie.setPath("/api/auth/refresh");

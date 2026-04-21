@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.services;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,6 @@ public class RefreshTokenService {
     public void revokeToken(String refreshToken) {
 
         repo.findByRefreshToken(refreshToken).ifPresent(rt -> {
-            System.err.println("revokeToken");
             rt.setActive(false);
             rt.addVersion();
             repo.save(rt);
@@ -71,10 +71,14 @@ public class RefreshTokenService {
 
     public void deactivateAllByUserUuid(UUID uuid) {
         repo.findAllByUserUuidAndActiveTrue(uuid).forEach(rt -> {
-            System.err.println("deactivateAllByUserUuid");
             rt.setActive(false);
             rt.addVersion();
             repo.save(rt);
         });
+    }
+
+    public Optional<RefreshToken> findByRefreshToken(String refreshToken) {
+
+        return repo.findByRefreshToken(refreshToken);
     }
 }
