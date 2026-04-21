@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.integration.user;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,7 @@ import jakarta.transaction.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 public class GetMeTest {
-   @Autowired
+    @Autowired
     private MockMvc mockMvc;
 
     private UserDTOs user;
@@ -49,6 +51,6 @@ public class GetMeTest {
         userApi.withToken("");
         userApi.getMe()
                 .andExpect(status().isForbidden());
-    }   
-    
+    }
+
 }

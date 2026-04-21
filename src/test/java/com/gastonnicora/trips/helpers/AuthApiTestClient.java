@@ -1,9 +1,10 @@
 package com.gastonnicora.trips.helpers;
 
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 public class AuthApiTestClient {
 
@@ -37,7 +38,6 @@ public class AuthApiTestClient {
                         """.formatted(email, password))); // TODO Cambiar por android
     }
 
-    
     public ResultActions logout(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/logout")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,6 +67,7 @@ public class AuthApiTestClient {
                         {"refreshToken":"%s"}
                         """.formatted(refreshToken)));
     }
+
     public ResultActions refresh() throws Exception {
         return mockMvc.perform(post("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -1,11 +1,14 @@
 package com.gastonnicora.trips.helpers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.*;
-
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 public class UserApiTestClient {
 
@@ -21,7 +24,8 @@ public class UserApiTestClient {
         return this;
     }
 
-    public ResultActions register(String name, String lastname, String email, String password,String confirmPassword) throws Exception {
+    public ResultActions register(String name, String lastname, String email, String password, String confirmPassword)
+            throws Exception {
         return mockMvc.perform(post("/api/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(UserTestFactory.userJson(name, lastname, email, password, confirmPassword)));
@@ -35,6 +39,7 @@ public class UserApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(UserTestFactory.userJson(name, lastname, email, null, null)));
     }
+
     public ResultActions updatePassword(String passwordOld, String password, String confirmPassword) throws Exception {
         return mockMvc.perform(put("/api/user/changePassword")
                 .with(csrf())
@@ -44,14 +49,15 @@ public class UserApiTestClient {
                 .content(UserTestFactory.userJsonPutPass(passwordOld, password, confirmPassword)));
     }
 
-    public  ResultActions deleteCurrentUser() throws Exception{
+    public ResultActions deleteCurrentUser() throws Exception {
         return mockMvc.perform(delete("/api/user")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
                 .contentType(MediaType.APPLICATION_JSON));
     }
-     public  ResultActions deleteCurrentUserWithUserAgent(String userAgent) throws Exception{
+
+    public ResultActions deleteCurrentUserWithUserAgent(String userAgent) throws Exception {
         return mockMvc.perform(delete("/api/user")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
@@ -59,7 +65,7 @@ public class UserApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-     public  ResultActions getMe() throws Exception{
+    public ResultActions getMe() throws Exception {
         return mockMvc.perform(get("/api/user/me")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)

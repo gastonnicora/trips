@@ -5,11 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-
 @Schema(description = "DTO de usuario para Request")
 public abstract class UserBasic {
 
-    
     @Schema(description = "Nombre del usuario", example = "Juan")
     @NotBlank(message = "El nombre no puede quedar en blanco")
     @Size(max = 255, message = "El nombre no puede tener mas de 255 caracteres")
@@ -20,12 +18,11 @@ public abstract class UserBasic {
     @Size(max = 255, message = "El apellido no puede tener mas de 255 caracteres")
     private String lastname;
 
-    @Schema(description = "Email del usuario",example = "juanperez@mail.com")
+    @Schema(description = "Email del usuario", example = "juanperez@mail.com")
     @NotBlank(message = "El email no puede quedar en blanco")
     @Email(message = "El email no es valido")
     @Size(max = 255, message = "El email no puede tener mas de 255 caracteres")
     private String email;
-
 
     public UserBasic(String name, String lastname, String email) {
         this.name = name;
@@ -58,4 +55,3 @@ public abstract class UserBasic {
     }
 
 }
-

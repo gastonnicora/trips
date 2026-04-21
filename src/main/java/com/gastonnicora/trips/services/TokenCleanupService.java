@@ -18,6 +18,7 @@ public class TokenCleanupService {
     public void clean() {
         repo.deleteAllByExpiryDateBefore(Instant.now());
     }
+
     @Scheduled(cron = "0 0 * * * *")
     public void cleanInactive() {
         repo.deleteAllByActiveFalse();

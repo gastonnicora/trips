@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Error de autenticación")
 public class UnauthorizedApiError extends ApiError {
 
-    
     @Schema(description = "Estatus de respuesta", example = "401")
     private int status;
     @Schema(description = "Mensaje de error", example = "Token inválido o expirado")
@@ -18,13 +17,12 @@ public class UnauthorizedApiError extends ApiError {
     private LocalDateTime timestamp;
     @Schema(description = "Listado de errores", example = "null")
     private Map<String, List<String>> errors;
-    
+
     public UnauthorizedApiError() {
         super(
-            401,
-            "Email o contraseña incorrectos",
-            java.time.LocalDateTime.now(),
-            null
-        );
+                401,
+                "Email o contraseña incorrectos",
+                java.time.LocalDateTime.now(),
+                null);
     }
 }

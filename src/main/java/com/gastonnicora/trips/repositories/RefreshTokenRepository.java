@@ -7,8 +7,6 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gastonnicora.trips.entitys.RefreshToken;
@@ -35,10 +33,8 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     @Transactional
     void deleteByRefreshToken(String token);
 
-
     Optional<RefreshToken> findByUuid(UUID uuid);
 
-    
     Optional<RefreshToken> findByToken(String token);
 
     boolean existsByRefreshToken(String refreshToken);

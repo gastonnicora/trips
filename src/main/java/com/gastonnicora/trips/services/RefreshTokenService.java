@@ -16,8 +16,9 @@ public class RefreshTokenService {
     @Autowired
     private RefreshTokenRepository repo;
 
-    public RefreshToken createToken(String token,UUID userUuid, String userAgent, String ip, String device,int version) {
-        RefreshToken newToken = new RefreshToken(token, userUuid, ip, userAgent, device,version);
+    public RefreshToken createToken(String token, UUID userUuid, String userAgent, String ip, String device,
+            int version) {
+        RefreshToken newToken = new RefreshToken(token, userUuid, ip, userAgent, device, version);
         return repo.save(newToken);
     }
 

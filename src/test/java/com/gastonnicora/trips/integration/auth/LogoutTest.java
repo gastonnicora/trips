@@ -1,14 +1,10 @@
 package com.gastonnicora.trips.integration.auth;
 
-import java.util.stream.Stream;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -43,8 +39,8 @@ public class LogoutTest {
         user = UserTestFactory.registerUser(mockMvc, name, pass);
         email = user.getEmail();
         LoginResponse response = UserTestFactory.login(mockMvc, email, pass);
-        token= response.getToken();
-        refreshToken= response.getRefreshToken();
+        token = response.getToken();
+        refreshToken = response.getRefreshToken();
 
         this.authApi = new AuthApiTestClient(mockMvc).withToken(token);
     }

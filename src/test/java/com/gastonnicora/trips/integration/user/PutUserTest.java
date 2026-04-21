@@ -1,9 +1,15 @@
 package com.gastonnicora.trips.integration.user;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -15,11 +21,6 @@ import com.gastonnicora.trips.helpers.UserApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -57,7 +58,6 @@ public class PutUserTest {
                                 .andExpect(jsonPath("$.lastname").value(newLastname));
         }
 
-        
         @Test
         void shouldUpdateUserEmailSuccessfully() throws Exception {
                 final String newName = "Marta";
@@ -69,7 +69,8 @@ public class PutUserTest {
                                 .andExpect(jsonPath("$.name").value(newName))
                                 .andExpect(jsonPath("$.lastname").value(newLastname));
         }
-         @Test
+
+        @Test
         void shouldReturnForbiddenWhenChangeEmail() throws Exception {
                 final String newName = "Marta";
                 final String newLastname = "Sierra";
@@ -80,7 +81,7 @@ public class PutUserTest {
                                 .andExpect(jsonPath("$.name").value(newName))
                                 .andExpect(jsonPath("$.lastname").value(newLastname));
                 apiUser.update(newName, newLastname, newEmail)
-                .andExpect(status().isForbidden());
+                                .andExpect(status().isForbidden());
         }
 
         @ParameterizedTest
@@ -113,7 +114,7 @@ public class PutUserTest {
         void shouldReturnForbiddenWhenTokenIsMissing() throws Exception {
                 apiUser.withToken("");
                 apiUser.update(user.getName(), user.getLastname(), user.getEmail())
-                .andExpect(status().isForbidden());
+                                .andExpect(status().isForbidden());
         }
 
         static Stream<Arguments> invalidUsers() {
@@ -135,7 +136,6 @@ public class PutUserTest {
                                 Arguments.of(
                                                 "Juan", "Perez", "", "email"),
 
-                                
                                 // campos en null
                                 Arguments.of(
                                                 null, null, null,

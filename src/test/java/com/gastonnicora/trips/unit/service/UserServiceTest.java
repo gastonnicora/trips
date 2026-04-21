@@ -54,10 +54,10 @@ class UserServiceTest {
 
         UserCreate user = new UserCreate("test", "test", "test", "test", "test");
         when(userMapper.toDTO(any())).thenAnswer(invocation -> {
-            UserDTOs dto = new UserDTOs(null,user.getName(), user.getLastname(), user.getEmail(), Set.of(Role.USER), true, null, null);
+            UserDTOs dto = new UserDTOs(null, user.getName(), user.getLastname(), user.getEmail(), Set.of(Role.USER),
+                    true, null, null);
             return dto;
         });
-
 
         UserDTOs result = userService.createUser(user);
 

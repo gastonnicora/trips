@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.gastonnicora.trips.entitys.RefreshToken;
-import com.gastonnicora.trips.entitys.User;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
-import com.gastonnicora.trips.repositories.UserRepository;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -30,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public JwtAuthenticationFilter(JwtService jwtService,
             UserDetailsServiceImpl userDetailsService,
-        RefreshTokenRepository refreshTokenRepository) {
+            RefreshTokenRepository refreshTokenRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.refreshTokenRepository = refreshTokenRepository;
@@ -69,8 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             writeError(response);
             return;
         }
-        Optional<RefreshToken> refreshToken=refreshTokenRepository.findByToken(token);
-        if (refreshToken.isEmpty() ||!refreshToken.get().isActive()|| refreshToken.get().getVersion() != version) {
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByToken(token);
+        if (refreshToken.isEmpty() || !refreshToken.get().isActive() || refreshToken.get().getVersion() != version) {
             writeError(response);
             return;
         }

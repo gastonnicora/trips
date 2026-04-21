@@ -13,13 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Getter
 @Setter
 @ToString
 @Schema(description = "DTO de usuario")
 public class UserDTOs {
-    
+
     private UUID uuid;
     @Schema(description = "Nombre del usuario", example = "Juan")
     @NotBlank(message = "El nombre no puede quedar en blanco")
@@ -31,7 +30,7 @@ public class UserDTOs {
     @Size(max = 255, message = "El apellido no puede tener mas de 255 caracteres")
     private String lastname;
 
-    @Schema(description = "Email del usuario",example = "juanperez@mail.com")
+    @Schema(description = "Email del usuario", example = "juanperez@mail.com")
     @NotBlank(message = "El email no puede quedar en blanco")
     @Size(max = 255, message = "El email no puede tener mas de 255 caracteres")
     private String email;
@@ -59,11 +58,5 @@ public class UserDTOs {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-    
-    
-
-    
-    
 
 }

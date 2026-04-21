@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 import com.gastonnicora.trips.entitys.User;
 import com.gastonnicora.trips.repositories.UserRepository;
 
-
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService   {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;

@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.helpers;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -8,7 +9,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 
-import jakarta.servlet.http.Cookie;
 import tools.jackson.databind.ObjectMapper;
 
 public class UserTestFactory {
@@ -41,13 +41,11 @@ public class UserTestFactory {
         ObjectMapper mapper = new ObjectMapper();
 
         LoginResponse loginResponse = mapper.readValue(responseJson, LoginResponse.class);
-        
+
         String refreshCookie = response.getResponse().getCookie("refreshToken").getValue();
         loginResponse.setRefreshToken(refreshCookie);
         return loginResponse;
     }
-
-
 
     public static LoginResponse loginWithAndroid(MockMvc mockMvc, String email, String pass) throws Exception {
         AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);

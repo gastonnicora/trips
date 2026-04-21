@@ -3,6 +3,7 @@ package com.gastonnicora.trips.entitys;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -16,8 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "refreshTokens")
 @Data
@@ -25,7 +24,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RefreshToken {
 
-    
     @Id
     @Column(name = "uuid", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,17 +37,15 @@ public class RefreshToken {
 
     @Column(name = "user_uuid", nullable = false)
     private UUID userUuid;
-    
+
     @Column(name = "ip", nullable = false)
     private String ip;
-
 
     @Column(name = "user_agent", nullable = false)
     private String userAgent;
 
     @Column(name = "device")
     private String device;
-
 
     @Column(name = "active", nullable = false)
     private boolean active;
@@ -64,23 +60,20 @@ public class RefreshToken {
     @Column(name = "version", nullable = false)
     private int version;
 
-    public RefreshToken(String token,UUID userUuid, String ip, String userAgent, String device, int version) {
+    public RefreshToken(String token, UUID userUuid, String ip, String userAgent, String device, int version) {
         this.token = token;
         this.refreshToken = UUID.randomUUID().toString();
         this.active = true;
         this.userUuid = userUuid;
         this.ip = ip;
-        this.userAgent= (userAgent!= null && !userAgent.isBlank())?userAgent:"web";
+        this.userAgent = (userAgent != null && !userAgent.isBlank()) ? userAgent : "web";
         this.device = device;
-        this.expiryDate= Instant.now().plus(7, ChronoUnit.DAYS);
-        this.version= version;
+        this.expiryDate = Instant.now().plus(7, ChronoUnit.DAYS);
+        this.version = version;
     }
 
     public void addVersion() {
         this.version++;
     }
-
-
-    
 
 }

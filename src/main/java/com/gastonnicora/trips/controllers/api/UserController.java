@@ -1,21 +1,5 @@
 package com.gastonnicora.trips.controllers.api;
 
-import com.gastonnicora.trips.services.UserService;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.gastonnicora.trips.dtos.entitys.UserDTOs;
-import com.gastonnicora.trips.dtos.request.User.UserCreate;
-import com.gastonnicora.trips.dtos.request.User.UserPassword;
-import com.gastonnicora.trips.dtos.request.User.UserPut;
-import com.gastonnicora.trips.dtos.request.User.UserRole;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,8 +11,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.gastonnicora.trips.dtos.entitys.UserDTOs;
+import com.gastonnicora.trips.dtos.request.User.UserCreate;
+import com.gastonnicora.trips.dtos.request.User.UserPassword;
+import com.gastonnicora.trips.dtos.request.User.UserPut;
+import com.gastonnicora.trips.dtos.request.User.UserRole;
+import com.gastonnicora.trips.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/user")
@@ -47,14 +43,14 @@ public class UserController {
     public List<UserDTOs> getUsers() {
         return new ArrayList<>();
     }
-    
+
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Usuario actual", description = "Devuelve los datos del usuario actual")
     public UserDTOs currentUser() {
         return userService.getCurrentUser();
     }
-    
+
     @GetMapping("/{uuid}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
@@ -70,7 +66,6 @@ public class UserController {
         return userService.createUser(entity);
     }
 
-
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi usuario", description = "Modifica mi usuario")
@@ -83,7 +78,7 @@ public class UserController {
     @Operation(summary = "Modificar mi contraseña", description = "Modifica mi contraseña")
     public UserDTOs changePassword(@Valid @RequestBody UserPassword entity) {
         return userService.updatePassword(entity);
-    
+
     }
 
     @PutMapping("/changeRole/{uuid}")
@@ -100,5 +95,5 @@ public class UserController {
     public void deleteCurrentUser() {
         userService.deleteCurrentUser();
     }
-    
+
 }

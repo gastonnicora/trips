@@ -6,15 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class LoginRequest {
-    
+
     @NotBlank(message = "Debe introducir un email")
     @Email(message = "Debe introducir un email valido")
-    @Size(max =255,message = "El email no puede ser de mas de 255 caracteres")
+    @Size(max = 255, message = "El email no puede ser de mas de 255 caracteres")
     @Schema(description = "Su email", example = "juanperez@mail.com")
     private String email;
 
     @NotBlank(message = "Debe introducir una contraseña")
-    @Size(max=255,message = "La contraseña debe tener entre 0 y 255 caracteres")
+    @Size(max = 255, message = "La contraseña debe tener entre 0 y 255 caracteres")
     @Schema(description = "Contraseña", example = "12345678")
     private String password;
 
@@ -39,5 +39,5 @@ public class LoginRequest {
         this.email = email.trim().toLowerCase();
         this.password = password;
     }
-    
+
 }

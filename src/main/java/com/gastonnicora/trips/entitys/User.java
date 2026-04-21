@@ -87,16 +87,16 @@ public class User {
         if (role != null) {
             this.role.addAll(role);
         }
-        
+
     }
 
     public void addRole(Role role) {
         this.role.add(role);
     }
+
     public void addRoles(Set<Role> roles) {
         this.role.addAll(roles);
     }
-
 
     public void removeRole(Role role) {
         this.role.remove(role);

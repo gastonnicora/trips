@@ -19,7 +19,6 @@ import com.gastonnicora.trips.entitys.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exeptions.ErrorException;
 import com.gastonnicora.trips.mappers.UserMapper;
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -27,7 +26,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final  RefreshTokenService refreshTokenService;
+    private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private UserMapper userMapper;
@@ -175,19 +174,18 @@ public class UserService {
     }
 
     public void createSuperAdminIfNotExists(String email, String password) {
-    boolean exists = userRepository.existsByRoleContains(Role.SUPER_ADMIN);
+        boolean exists = userRepository.existsByRoleContains(Role.SUPER_ADMIN);
 
-    if (!exists && email != null && password != null && !emailUsed(email)) {
-        User superAdmin = new User(
-                "Super",
-                "Admin",
-                email,
-                passwordEncoder.encode(password),
-                Set.of(Role.SUPER_ADMIN)
-        );
+        if (!exists && email != null && password != null && !emailUsed(email)) {
+            User superAdmin = new User(
+                    "Super",
+                    "Admin",
+                    email,
+                    passwordEncoder.encode(password),
+                    Set.of(Role.SUPER_ADMIN));
 
-        userRepository.save(superAdmin);
-        System.out.println("SUPER_ADMIN creado");
+            userRepository.save(superAdmin);
+            System.out.println("SUPER_ADMIN creado");
+        }
     }
-}
 }

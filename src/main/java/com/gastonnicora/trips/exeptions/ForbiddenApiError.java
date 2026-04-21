@@ -8,7 +8,7 @@ import java.util.Map;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Error de acceso prohibido")
-public class ForbiddenApiError extends ApiError{
+public class ForbiddenApiError extends ApiError {
 
     @Schema(description = "Estatus de respuesta", example = "403")
     private int status;
@@ -19,12 +19,11 @@ public class ForbiddenApiError extends ApiError{
     @Schema(description = "Listado de errores", example = "null")
     private Map<String, List<String>> errors;
 
-  public ForbiddenApiError(String message) {
+    public ForbiddenApiError(String message) {
         super(
-            403,
-            message,
-            java.time.LocalDateTime.now(),
-            null
-        );
+                403,
+                message,
+                java.time.LocalDateTime.now(),
+                null);
     }
 }

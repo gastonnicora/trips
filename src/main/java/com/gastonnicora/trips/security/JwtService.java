@@ -17,18 +17,17 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET;
 
-    public String generateToken(String email,int version) {
+    public String generateToken(String email, int version) {
 
-        return Jwts.builder() 
+        return Jwts.builder()
                 .subject(email)
-                .claim("ver",version ) 
+                .claim("ver", version)
                 .claim("jti", UUID.randomUUID().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))// 5 minutos
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8)))
                 .compact();
     }
-
 
     public String extractUsername(String token) {
 
@@ -39,28 +38,26 @@ public class JwtService {
                 .getPayload()
                 .getSubject();
     }
-    
-    public Integer extractVersion(String token) {
-    return Jwts.parser()
-            .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .get("ver", Integer.class);
-}
 
+    public Integer extractVersion(String token) {
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("ver", Integer.class);
+    }
 
     public boolean isValid(String token) {
-    try {
-        Jwts.parser()
-            .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
-            .build()
-            .parseSignedClaims(token);
-        return true;
-    } catch (JwtException | IllegalArgumentException e) {
-        return false;
+        try {
+            Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
-}
 
-    
 }

@@ -15,7 +15,4 @@ public class RefreshRequest {
         this.refreshToken = refreshToken;
     }
 
-
-    
-
 }

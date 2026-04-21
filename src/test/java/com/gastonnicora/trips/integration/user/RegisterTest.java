@@ -1,9 +1,15 @@
 package com.gastonnicora.trips.integration.user;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -13,11 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.gastonnicora.trips.helpers.UserApiTestClient;
 
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -60,7 +61,7 @@ public class RegisterTest {
                         String confirmPassword,
                         String expectedField) throws Exception {
 
-                apiUser.register(name, lastname, email, password,confirmPassword)
+                apiUser.register(name, lastname, email, password, confirmPassword)
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.errors").exists())
                                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
@@ -68,7 +69,6 @@ public class RegisterTest {
                                                 jsonPath("$.errors.%s".formatted(expectedField))
                                                                 .value(org.hamcrest.Matchers.notNullValue()));
 
-                
         }
 
         @Test
@@ -78,12 +78,11 @@ public class RegisterTest {
                 String pass = "goodpassword";
                 String email = "DuplicateEmail" + "_" + System.currentTimeMillis() + "@test.com";
 
-
                 apiUser.register(name, lastname, email, pass, pass)
                                 .andExpect(status().isOk());
                 apiUser.register(name, lastname, email, pass, pass)
                                 .andExpect(status().isBadRequest())
-                                .andExpect(jsonPath("$.errors").exists()) 
+                                .andExpect(jsonPath("$.errors").exists())
                                 .andExpect(jsonPath("$.errors.email").exists())
                                 .andExpect(
                                                 jsonPath("$.errors.email")
@@ -118,9 +117,9 @@ public class RegisterTest {
                                 Arguments.of(
                                                 "Juan", "Perez", "test@test.com", "goodPassword", "wrongPassword",
                                                 "confirmPassword"),
-                                        // password corta
+                                // password corta
                                 Arguments.of(
-                                                null,null,null,null,null, "password"));
+                                                null, null, null, null, null, "password"));
         }
 
 }

@@ -25,7 +25,6 @@ public class SecurityConfig {
         private final UserDetailsServiceImpl userService;
         private final JwtAuthenticationFilter jwtFilter;
 
-
         public SecurityConfig(UserDetailsServiceImpl userService, JwtAuthenticationFilter jwtFilter) {
                 this.jwtFilter = jwtFilter;
                 this.userService = userService;

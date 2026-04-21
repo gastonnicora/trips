@@ -36,5 +36,4 @@ class SecurityTest {
                 .andExpect(status().isOk());
     }
 
-    
 }
