@@ -140,15 +140,16 @@ public class AuthController {
 
             throw new ErrorException("Token inválido o expirado", 401);
         }
-        // TODO hacer que cookie solo en web
-        // limpiar cookie en web
-        Cookie cookie = new Cookie("refreshToken", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/api/auth/refresh");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(cookieSecure);
-        response.addCookie(cookie);
 
+        // limpiar cookie en web
+        if (cookieToken != null) {
+            Cookie cookie = new Cookie("refreshToken", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/api/auth/refresh");
+            cookie.setHttpOnly(true);
+            cookie.setSecure(cookieSecure);
+            response.addCookie(cookie);
+        }
         return ResponseEntity.ok().build();
 
     }
