@@ -49,7 +49,7 @@ public class SecurityConfig {
                 return config.getAuthenticationManager();
         }
 
-        //  API con JWT
+        // API con JWT
         @Bean
         @Order(1)
         public SecurityFilterChain jwtSecurityChain(HttpSecurity http) throws Exception {
@@ -74,7 +74,7 @@ public class SecurityConfig {
                 return http.build();
         }
 
-        //  Web 
+        // Web
         @Bean
         @Order(2)
         public SecurityFilterChain securityChain(HttpSecurity http,

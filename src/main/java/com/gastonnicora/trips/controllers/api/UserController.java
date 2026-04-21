@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
-import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
-import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
+import com.gastonnicora.trips.dtos.request.User.UserCreate;
+import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;

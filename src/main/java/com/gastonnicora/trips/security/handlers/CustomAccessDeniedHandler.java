@@ -1,12 +1,10 @@
 package com.gastonnicora.trips.security.handlers;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
 import com.gastonnicora.trips.exceptions.dtos.ForbiddenApiError;
 
