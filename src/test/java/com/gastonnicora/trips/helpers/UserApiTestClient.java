@@ -26,13 +26,13 @@ public class UserApiTestClient {
 
     public ResultActions register(String name, String lastname, String email, String password, String confirmPassword)
             throws Exception {
-        return mockMvc.perform(post("/api/user")
+        return mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(UserTestFactory.userJson(name, lastname, email, password, confirmPassword)));
     }
 
     public ResultActions update(String name, String lastname, String email) throws Exception {
-        return mockMvc.perform(put("/api/user")
+        return mockMvc.perform(put("/api/users")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
@@ -41,7 +41,7 @@ public class UserApiTestClient {
     }
 
     public ResultActions updatePassword(String passwordOld, String password, String confirmPassword) throws Exception {
-        return mockMvc.perform(put("/api/user/changePassword")
+        return mockMvc.perform(put("/api/users/changePassword")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
@@ -50,7 +50,7 @@ public class UserApiTestClient {
     }
 
     public ResultActions deleteCurrentUser() throws Exception {
-        return mockMvc.perform(delete("/api/user")
+        return mockMvc.perform(delete("/api/users")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
@@ -58,7 +58,7 @@ public class UserApiTestClient {
     }
 
     public ResultActions deleteCurrentUserWithUserAgent(String userAgent) throws Exception {
-        return mockMvc.perform(delete("/api/user")
+        return mockMvc.perform(delete("/api/users")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", userAgent)
@@ -66,7 +66,7 @@ public class UserApiTestClient {
     }
 
     public ResultActions getMe() throws Exception {
-        return mockMvc.perform(get("/api/user/me")
+        return mockMvc.perform(get("/api/users/me")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")

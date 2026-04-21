@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @Tag(name = "User API", description = "Endpoints para la gestión de usuarios")
 public class UserController {
     private final UserService userService;
@@ -36,7 +36,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("s")
+    @GetMapping
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Obtener usuarios", description = "Obtiene una lista de usuarios filtrados por un parámetro opcional")

@@ -64,7 +64,7 @@ public class SecurityConfig {
 
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/error", "/api/auth/refresh").permitAll()
-                                                .requestMatchers(HttpMethod.POST, "/api/user").anonymous()
+                                                .requestMatchers(HttpMethod.POST, "/api/users").anonymous()
                                                 .requestMatchers("/api/auth/login").anonymous()
                                                 .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
                                                 .anyRequest().authenticated())
