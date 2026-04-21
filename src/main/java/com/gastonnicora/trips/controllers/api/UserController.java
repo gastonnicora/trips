@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
-import com.gastonnicora.trips.dtos.request.User.UserPassword;
+import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
 import com.gastonnicora.trips.dtos.request.User.UserPut;
-import com.gastonnicora.trips.dtos.request.User.UserRole;
+import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,7 +76,7 @@ public class UserController {
     @PutMapping("/changePassword")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi contraseña", description = "Modifica mi contraseña")
-    public UserDTOs changePassword(@Valid @RequestBody UserPassword entity) {
+    public UserDTOs changePassword(@Valid @RequestBody UserChangePassword entity) {
         return userService.updatePassword(entity);
 
     }
@@ -85,7 +85,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar roles de un usuario", description = "Modifica un usuario por su uuid")
-    public UserDTOs updateUserRole(@PathVariable UUID uuid, @Valid @RequestBody UserRole entity) {
+    public UserDTOs updateUserRole(@PathVariable UUID uuid, @Valid @RequestBody UserChangeRole entity) {
         return userService.setRole(uuid, entity);
     }
 

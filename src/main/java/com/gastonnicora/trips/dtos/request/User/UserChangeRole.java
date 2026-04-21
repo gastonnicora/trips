@@ -9,13 +9,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "DTO de usuario para put role")
-public class UserRole {
+public class UserChangeRole {
     @NotEmpty(message = "Debe seleccionar al menos un rol")
     @NotNull(message = "Debe seleccionar al menos un rol")
     @Schema(description = "Roles del usuario", example = "USER")
     private Set<Role> roles;
 
-    public UserRole(Set<Role> roles) {
+    public UserChangeRole(Set<Role> roles) {
         this.roles = roles;
     }
 

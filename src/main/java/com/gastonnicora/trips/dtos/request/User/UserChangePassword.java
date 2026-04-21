@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 @Schema(description = "DTO de usuario para put password")
-public class UserPassword {
+public class UserChangePassword {
 
     private final int minLengthPass = 8;
 
@@ -30,7 +30,7 @@ public class UserPassword {
             + " y máximo 255 caracteres", max = 255)
     private String confirmPassword;
 
-    public UserPassword(String passwordOld, String password, String confirmPassword) {
+    public UserChangePassword(String passwordOld, String password, String confirmPassword) {
         this.passwordOld = passwordOld;
         this.password = password;
         this.confirmPassword = confirmPassword;

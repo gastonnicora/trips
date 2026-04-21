@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
-import com.gastonnicora.trips.dtos.request.User.UserPassword;
+import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
 import com.gastonnicora.trips.dtos.request.User.UserPut;
-import com.gastonnicora.trips.dtos.request.User.UserRole;
+import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.ErrorException;
@@ -120,7 +120,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTOs updatePassword(UserPassword user) {
+    public UserDTOs updatePassword(UserChangePassword user) {
         User userNow = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         if (!passwordEncoder.matches(user.getPasswordOld(), userNow.getPassword())) {
@@ -137,7 +137,7 @@ public class UserService {
         return userMapper.toDTO(userNow);
     }
 
-    public UserDTOs setRole(UUID uuid, UserRole role) {
+    public UserDTOs setRole(UUID uuid, UserChangeRole role) {
         User user = userRepository.findByUuid(uuid).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         if (!user.getRole().contains(Role.SUPER_ADMIN)) {
