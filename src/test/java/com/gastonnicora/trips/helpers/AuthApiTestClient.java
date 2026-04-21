@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import jakarta.servlet.http.Cookie;
+
 public class AuthApiTestClient {
 
     private final MockMvc mockMvc;
@@ -41,11 +43,10 @@ public class AuthApiTestClient {
     public ResultActions logout(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/logout")
                 .contentType(MediaType.APPLICATION_JSON)
+
+                .cookie(new Cookie("refreshToken", refreshToken))
                 .header("User-Agent", "JUnit-Test")
-                .header("Authorization", "Bearer " + token)
-                .content("""
-                        {"refreshToken":"%s"}
-                        """.formatted(refreshToken)));
+                .header("Authorization", "Bearer " + token));
     }
 
     public ResultActions logoutAndroid(String refreshToken) throws Exception {
@@ -71,11 +72,9 @@ public class AuthApiTestClient {
     public ResultActions refresh(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
+                .cookie(new Cookie("refreshToken", refreshToken))
                 .header("User-Agent", "JUnit-Test")
-                .header("Authorization", "Bearer " + token)
-                .content("""
-                        {"refreshToken":"%s"}
-                        """.formatted(refreshToken)));
+                .header("Authorization", "Bearer " + token));
     }
 
 }

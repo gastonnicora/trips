@@ -136,8 +136,8 @@ public class AuthController {
                 ? cookieToken
                 : (body != null ? body.getRefreshToken() : null);
 
-        Optional<RefreshToken> rt= refreshTokenService.findByRefreshToken(refreshToken);
-        if (refreshToken != null && !rt.isEmpty() && rt.get()!= null) {
+        Optional<RefreshToken> rt = refreshTokenService.findByRefreshToken(refreshToken);
+        if (refreshToken != null && !rt.isEmpty() && rt.get() != null) {
             refreshTokenService.revokeToken(refreshToken);
         } else {
 
