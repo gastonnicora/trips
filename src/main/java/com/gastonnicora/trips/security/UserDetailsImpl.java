@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.entities.User;
 
 public class UserDetailsImpl implements UserDetails {
     private final User user;

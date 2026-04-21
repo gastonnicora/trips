@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.gastonnicora.trips.dtos.entitys.UserDTOs;
-import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.entities.User;
 
 @Component
 public class UserMapper {

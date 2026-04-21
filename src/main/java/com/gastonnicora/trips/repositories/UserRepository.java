@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 
 public interface UserRepository extends JpaRepository<User, UUID> {

@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.utils;
 
 public class UserAgent {
     public static String getDevice(String userAgent) {

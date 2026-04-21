@@ -8,7 +8,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
-import com.gastonnicora.trips.exceptions.ForbiddenApiError;
+import com.gastonnicora.trips.exceptions.dtos.ForbiddenApiError;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

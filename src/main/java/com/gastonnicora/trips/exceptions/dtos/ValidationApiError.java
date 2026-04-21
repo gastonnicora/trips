@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.exceptions;
+package com.gastonnicora.trips.exceptions.dtos;
 
 import java.util.List;
 import java.util.Map;

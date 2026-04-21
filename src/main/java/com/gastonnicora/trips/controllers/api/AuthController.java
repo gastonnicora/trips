@@ -14,13 +14,13 @@ import com.gastonnicora.trips.dtos.request.auth.LoginRequest;
 import com.gastonnicora.trips.dtos.request.auth.RefreshRequest;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.dtos.response.auth.RefreshResponse;
-import com.gastonnicora.trips.entitys.RefreshToken;
-import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.exceptions.ErrorException;
-import com.gastonnicora.trips.helpers.UserAgent;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.JwtService;
 import com.gastonnicora.trips.services.RefreshTokenService;
+import com.gastonnicora.trips.utils.UserAgent;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

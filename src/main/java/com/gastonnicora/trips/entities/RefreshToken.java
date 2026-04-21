@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.entitys;
+package com.gastonnicora.trips.entities;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -15,7 +15,7 @@ import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.dtos.request.User.UserPassword;
 import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.dtos.request.User.UserRole;
-import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.ErrorException;
 import com.gastonnicora.trips.mappers.UserMapper;

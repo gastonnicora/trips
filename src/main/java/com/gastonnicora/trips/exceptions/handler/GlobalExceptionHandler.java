@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.exceptions;
+package com.gastonnicora.trips.exceptions.handler;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +13,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.gastonnicora.trips.exceptions.ErrorException;
+import com.gastonnicora.trips.exceptions.dtos.ApiError;
+import com.gastonnicora.trips.exceptions.dtos.ForbiddenApiError;
+import com.gastonnicora.trips.exceptions.dtos.UnauthorizedApiError;
+import com.gastonnicora.trips.exceptions.dtos.ValidationApiError;
 
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.gastonnicora.trips.entitys.RefreshToken;
+import com.gastonnicora.trips.entities.RefreshToken;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 
 import io.jsonwebtoken.JwtException;

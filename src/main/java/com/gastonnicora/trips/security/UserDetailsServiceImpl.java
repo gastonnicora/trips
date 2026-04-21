@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.gastonnicora.trips.entitys.User;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.repositories.UserRepository;
 
 @Service
