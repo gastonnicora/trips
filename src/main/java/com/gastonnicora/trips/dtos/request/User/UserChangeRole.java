@@ -10,9 +10,9 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "DTO de usuario para put role")
 public class UserChangeRole {
+    @Schema(description = "Conjunto de roles asignados al usuario", example = "[\"USER\", \"ADMIN\"]")
     @NotEmpty(message = "Debe seleccionar al menos un rol")
     @NotNull(message = "Debe seleccionar al menos un rol")
-    @Schema(description = "Roles del usuario", example = "USER")
     private Set<Role> roles;
 
     public UserChangeRole(Set<Role> roles) {

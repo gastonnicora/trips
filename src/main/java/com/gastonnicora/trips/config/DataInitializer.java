@@ -9,9 +9,9 @@ import com.gastonnicora.trips.services.UserService;
 
 @Configuration
 public class DataInitializer {
-    @Value("${super.email}")
+    @Value("${superadmin.email}")
     private String email;
-    @Value("${super.password}")
+    @Value("${superadmin.password}")
     private String password;
 
     @Bean

@@ -38,7 +38,7 @@ public class UserController {
 
     @GetMapping
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "Obtener usuarios", description = "Obtiene una lista de usuarios filtrados por un parámetro opcional")
     public List<UserDTOs> getUsers() {
         return new ArrayList<>();
@@ -82,7 +82,7 @@ public class UserController {
     }
 
     @PutMapping("/changeRole/{uuid}")
-    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar roles de un usuario", description = "Modifica un usuario por su uuid")
     public UserDTOs updateUserRole(@PathVariable UUID uuid, @Valid @RequestBody UserChangeRole entity) {

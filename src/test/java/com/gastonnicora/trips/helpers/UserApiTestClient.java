@@ -6,9 +6,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import com.gastonnicora.trips.enums.Role;
 
 public class UserApiTestClient {
 
@@ -71,5 +77,31 @@ public class UserApiTestClient {
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
                 .contentType(MediaType.APPLICATION_JSON));
+    }
+    public ResultActions getUsers() throws Exception {
+        return mockMvc.perform(get("/api/users")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    public ResultActions changeRole(String uuid, Set<Role> role) throws Exception {
+        return mockMvc.perform(put("/api/users/changeRole/"+uuid)
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON)
+            
+                .content("""
+                    {
+                    "roles": %s 
+                    }""".formatted(setToJson(role))));
+    }
+
+    private String setToJson(Set<Role> roles){
+        return roles.stream()
+                .map(role -> "\"" + role.name() + "\"")
+                .collect(Collectors.joining(", ", "[", "]"));
     }
 }

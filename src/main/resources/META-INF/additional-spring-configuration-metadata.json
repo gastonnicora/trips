@@ -10,12 +10,12 @@
     "description": "A description for 'cookie.secure'"
   },
   {
-    "name": "super.email",
+    "name": "superadmin.email",
     "type": "java.lang.String",
     "description": "Email of SUPER_USER"
   },
   {
-    "name": "super.password",
+    "name": "superadmin.password",
     "type": "java.lang.String",
     "description": "Password of SUPER_USER"
   }
