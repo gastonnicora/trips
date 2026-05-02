@@ -1,5 +1,6 @@
 package com.gastonnicora.trips.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.dtos.entities.UserDTOs;
 import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
 import com.gastonnicora.trips.dtos.request.User.UserPut;
+import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
@@ -73,6 +75,11 @@ public class UserService {
         ErrorException ex = new ErrorException("El usuario buscado no existe", 400);
         throw ex;
     }
+    public ListResponse<UserDTOs> getUsers() {
+        List<User> users = userRepository.findAll();
+        return new ListResponse<UserDTOs>(userMapper.toDTOList(users));
+    }
+
 
     @Transactional
     public UserDTOs putUserByUuid(UUID uuid, UserPut user) {
