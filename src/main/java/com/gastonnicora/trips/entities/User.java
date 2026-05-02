@@ -80,13 +80,8 @@ public class User {
         this.lastname = lastname;
         this.email = email;
         this.password = password;
-        this.role = new HashSet<>();
-
+        this.role = (role != null) ? new HashSet<>(role) : new HashSet<>();
         this.role.add(Role.USER);
-
-        if (role != null) {
-            this.role.addAll(role);
-        }
 
     }
 
