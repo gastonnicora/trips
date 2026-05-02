@@ -47,7 +47,7 @@ public class UserApiTestClient {
     }
 
     public ResultActions updatePassword(String passwordOld, String password, String confirmPassword) throws Exception {
-        return mockMvc.perform(put("/api/users/changePassword")
+        return mockMvc.perform(put("/api/users/me/password")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
@@ -87,7 +87,7 @@ public class UserApiTestClient {
     }
 
     public ResultActions changeRole(String uuid, Set<Role> role) throws Exception {
-        return mockMvc.perform(put("/api/users/changeRole/"+uuid)
+        return mockMvc.perform(put("/api/users/"+uuid+"/role")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")

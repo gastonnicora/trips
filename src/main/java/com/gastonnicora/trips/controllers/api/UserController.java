@@ -73,7 +73,7 @@ public class UserController {
         return userService.putCurrentUser(entity);
     }
 
-    @PutMapping("/changePassword")
+    @PutMapping("/me/password")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi contraseña", description = "Modifica mi contraseña")
     public UserDTOs changePassword(@Valid @RequestBody UserChangePassword entity) {
@@ -81,7 +81,7 @@ public class UserController {
 
     }
 
-    @PutMapping("/changeRole/{uuid}")
+    @PutMapping("/{uuid}/role")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar roles de un usuario", description = "Modifica un usuario por su uuid")
