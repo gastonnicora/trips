@@ -140,12 +140,10 @@ public class UserService {
     public UserDTOs setRole(UUID uuid, UserChangeRole role) {
         User user = userRepository.findByUuid(uuid).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
-        if (!user.getRole().contains(Role.SUPER_ADMIN)) {
-            role.getRoles().remove(Role.SUPER_ADMIN);
-        } else {
-
+        if (user.getRole().contains(Role.SUPER_ADMIN)) {
             throw new ErrorException("No se puede modificar los roles del SUPER_ADMIN", 400);
         }
+        role.getRoles().remove(Role.SUPER_ADMIN);
         user.setRole(role.getRoles());
         userRepository.save(user);
         return userMapper.toDTO(user);
