@@ -39,7 +39,7 @@ public class UserService {
     }
 
     public UserDTOs createUser(UserCreate user) {
-        if (emailUsed(user.getEmail())) {
+        if (userRepository.existsByEmailAndEnabledTrue(user.getEmail())) {
             ErrorException ex = new ErrorException("Error en la validación", 400);
             ex.addError("email", "El email ya esta siendo utilizado");
             throw ex;
@@ -81,7 +81,7 @@ public class UserService {
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
         if (!user.getEmail().equals(userNow.getEmail())) {
-            if (emailUsed(user.getEmail())) {
+            if (userRepository.existsByEmailAndEnabledTrue(user.getEmail())) {
                 ErrorException ex = new ErrorException("Error en la validación", 400);
                 ex.addError("email", "El email ya esta en uso");
                 throw ex;
@@ -103,7 +103,7 @@ public class UserService {
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
         if (!user.getEmail().equals(userNow.getEmail())) {
-            if (emailUsed(user.getEmail())) {
+            if (userRepository.existsByEmailAndEnabledTrue(user.getEmail())) {
                 ErrorException ex = new ErrorException("Error en la validación", 400);
                 ex.addError("email", "El email ya esta en uso");
 
@@ -168,15 +168,12 @@ public class UserService {
         return auth.getName();
     }
 
-    private Boolean emailUsed(String email) {
-        User userEmail = userRepository.findByEmailAndEnabledTrue(email).orElse(null);
-        return (userEmail != null);
-    }
+    
 
     public void createSuperAdminIfNotExists(String email, String password) {
         boolean exists = userRepository.existsByRoleContains(Role.SUPER_ADMIN);
 
-        if (!exists && email != null && password != null && !emailUsed(email)) {
+        if (!exists && email != null && password != null && !userRepository.existsByEmailAndEnabledTrue(email)) {
             User superAdmin = new User(
                     "Super",
                     "Admin",
