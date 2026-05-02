@@ -22,14 +22,7 @@ public class UserMapper {
                 user.getUpdatedAt());
     }
 
-    public User toEntity(UserDTOs userDTO) {
-        return new User(
-                userDTO.getName(),
-                userDTO.getLastname(),
-                userDTO.getEmail(),
-                null,
-                userDTO.getRole());
-    }
+  
 
     public List<UserDTOs> toDTOList(List<User> users) {
         return users.stream()
@@ -37,10 +30,5 @@ public class UserMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<User> toEntityList(List<UserDTOs> userDTOs) {
-        return userDTOs.stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList());
-    }
-
+  
 }
