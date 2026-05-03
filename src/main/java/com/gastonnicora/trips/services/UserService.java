@@ -1,6 +1,5 @@
 package com.gastonnicora.trips.services;
 
-import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserEmail;
 import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
 
 import java.util.List;
@@ -105,7 +104,7 @@ public class UserService {
 
     @Transactional
     public UserDTOs putCurrentUser(UserPut user) {
-        User userNow = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
+        User userNow = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         userNow.setName(user.getName());
         userNow.setLastname(user.getLastname());
@@ -149,6 +148,9 @@ public class UserService {
                 () -> new ErrorException("El usuario no existe", 400));
         if (user.getRole().contains(Role.SUPER_ADMIN)) {
             throw new ErrorException("No se puede modificar los roles del SUPER_ADMIN", 400);
+        }
+        if (!role.getRoles().contains(Role.USER)) {
+            role.getRoles().add(Role.USER);
         }
         role.getRoles().remove(Role.SUPER_ADMIN);
         user.setRole(role.getRoles());
