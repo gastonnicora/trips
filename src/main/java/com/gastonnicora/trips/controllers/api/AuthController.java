@@ -62,7 +62,7 @@ public class AuthController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
         User user = userRepository.findByEmailAndEnabledTrue(login.getEmail()).orElseThrow();
-        String token = jwtService.generateToken(login.getEmail(), user.getVersion());
+        String token = jwtService.generateToken(login.getEmail(), user.getVersion(),user.getUuid());
 
         String userAgent = request.getHeader("User-Agent");
         String ip = request.getRemoteAddr();
@@ -108,7 +108,7 @@ public class AuthController {
         RefreshToken rt = refreshTokenService.verifyToken(refreshToken, ip, userAgent);
 
         User user = userRepository.findById(rt.getUserUuid()).orElseThrow();
-        String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion());
+        String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(),user.getUuid());
 
         RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user.getUuid(), userAgent, ip,
                 rt.getDevice(), user.getVersion());

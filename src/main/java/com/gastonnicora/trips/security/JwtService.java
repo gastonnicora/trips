@@ -4,12 +4,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class JwtService {
@@ -17,47 +21,51 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET;
 
-    public String generateToken(String email, int version) {
+    private SecretKey key;
 
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateToken(String email, int version, UUID uuid) {
         return Jwts.builder()
                 .subject(email)
                 .claim("ver", version)
+                .claim("userId", uuid)
                 .claim("jti", UUID.randomUUID().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))// 5 minutos
-                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8)))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))
+                .signWith(key)
                 .compact();
     }
 
-    public String extractUsername(String token) {
-
+    private Claims parseClaims(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+                .getPayload();
+    }
+
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
     }
 
     public Integer extractVersion(String token) {
-        return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("ver", Integer.class);
+        return parseClaims(token).get("ver", Integer.class);
+    }
+
+    public UUID extractUUID(String token) {
+        return UUID.fromString(parseClaims(token).get("userId", String.class));
     }
 
     public boolean isValid(String token) {
         try {
-            Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
-                    .build()
-                    .parseSignedClaims(token);
+            parseClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
-
 }
