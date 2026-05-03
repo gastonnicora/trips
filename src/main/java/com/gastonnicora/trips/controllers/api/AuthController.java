@@ -62,7 +62,7 @@ public class AuthController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
         User user = userRepository.findByEmailAndEnabledTrue(login.getEmail()).orElseThrow();
-        String token = jwtService.generateToken(login.getEmail(), user.getVersion(),user.getUuid());
+        String token = jwtService.generateToken(login.getEmail(), user.getVersion(), user.getUuid());
 
         String userAgent = request.getHeader("User-Agent");
         String ip = request.getRemoteAddr();
@@ -71,18 +71,17 @@ public class AuthController {
         RefreshToken refreshTokenE = refreshTokenService.createToken(token, user.getUuid(), userAgent, ip,
                 device, user.getVersion());
 
-        // WEB -> cookie
+        // * WEB -> cookie
         if ("web".equals(device)) {
             addRefreshCookie(response, refreshTokenE.getRefreshToken());
         }
 
-        // ANDROID -> en body
+        // * ANDROID -> en body
         return new LoginResponse(token,
                 "android".equals(device) ? refreshTokenE.getRefreshToken() : null);
     }
 
-    // valida refreshToken, si es valido devuelve uno nuevo y un nuevo token de
-    // acceso
+    // *  valida refreshToken, si es valido devuelve uno nuevo y un nuevo token de acceso
     @PostMapping("/refresh")
     public RefreshResponse refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
             @RequestBody(required = false) RefreshRequest body,
@@ -90,11 +89,11 @@ public class AuthController {
             HttpServletResponse response) {
 
         String refreshToken = null;
-        // WEB
+        // * WEB
         if (cookieToken != null) {
             refreshToken = cookieToken;
         }
-        // ANDROID
+        // * ANDROID
         if (body != null && body.getRefreshToken() != null) {
             refreshToken = body.getRefreshToken();
         }
@@ -108,13 +107,13 @@ public class AuthController {
         RefreshToken rt = refreshTokenService.verifyToken(refreshToken, ip, userAgent);
 
         User user = userRepository.findById(rt.getUserUuid()).orElseThrow();
-        String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(),user.getUuid());
+        String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(), user.getUuid());
 
         RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user.getUuid(), userAgent, ip,
                 rt.getDevice(), user.getVersion());
         refreshTokenService.revokeToken(refreshToken);
 
-        // WEB -> cookie
+        // * WEB -> cookie
         if ("web".equals(rt.getDevice())) {
             addRefreshCookie(response, newRefresh.getRefreshToken());
         }
@@ -143,7 +142,7 @@ public class AuthController {
 
             throw new ErrorException("Token inválido o expirado", 401);
         }
-        // limpiar cookie en web
+        // * limpiar cookie en web
         if ("web".equals(rt.get().getDevice())) {
             System.err.println("WEB");
             Cookie cookie = new Cookie("refreshToken", null);
@@ -165,6 +164,6 @@ public class AuthController {
         cookie.setMaxAge(7 * 24 * 60 * 60);
         cookie.setAttribute("SameSite", "Lax");
 
-        response.addCookie(cookie);
+        response.addCookie(cookie); 
     }
 }

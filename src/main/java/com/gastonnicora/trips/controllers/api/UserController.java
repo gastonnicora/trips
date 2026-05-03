@@ -1,7 +1,5 @@
 package com.gastonnicora.trips.controllers.api;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,7 +56,7 @@ public class UserController {
     @Operation(summary = "Obtener usuario", description = "Obtiene un usuario por su uuid")
     public UserDTOs getUserByUuid(@PathVariable UUID uuid) {
         return userService.getUserByUuid(uuid);
-    }
+    }// TODO falta test
 
     @PostMapping
     @Operation(summary = "Crear Usuario", description = "Crea un nuevo usuario")
@@ -88,7 +86,7 @@ public class UserController {
     @Operation(summary = "Modificar roles de un usuario", description = "Modifica un usuario por su uuid")
     public UserDTOs updateUserRole(@PathVariable UUID uuid, @Valid @RequestBody UserChangeRole entity) {
         return userService.setRole(uuid, entity);
-    }
+    }// TODO falta test
 
     @DeleteMapping
     @SecurityRequirement(name = "bearerAuth")

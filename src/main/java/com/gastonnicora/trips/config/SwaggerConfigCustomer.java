@@ -66,7 +66,6 @@ public class SwaggerConfigCustomer {
             }
         }
 
-        // fallback si no matchea nada
         if (roles.isEmpty()) {
             return expression;
         }
