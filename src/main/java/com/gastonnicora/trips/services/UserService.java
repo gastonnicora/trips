@@ -1,22 +1,23 @@
 package com.gastonnicora.trips.services;
 
+import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserEmail;
+import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.dtos.entities.UserDTOs;
 import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
+import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
+import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.dtos.response.ListResponse;
-import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.ErrorException;
@@ -58,8 +59,7 @@ public class UserService {
     }
 
     public UserDTOs getCurrentUser() {
-        String email = getCurrentUserEmail();
-        Optional<User> user = userRepository.findByEmailAndEnabledTrue(email);
+        Optional<User> user = userRepository.findByUuid(getCurrentUserUuid());
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
@@ -75,11 +75,11 @@ public class UserService {
         ErrorException ex = new ErrorException("El usuario buscado no existe", 400);
         throw ex;
     }
+
     public ListResponse<UserDTOs> getUsers() {
         List<User> users = userRepository.findAll();
         return new ListResponse<UserDTOs>(userMapper.toDTOList(users));
     }
-
 
     @Transactional
     public UserDTOs putUserByUuid(UUID uuid, UserPut user) {
@@ -128,7 +128,7 @@ public class UserService {
 
     @Transactional
     public UserDTOs updatePassword(UserChangePassword user) {
-        User userNow = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
+        User userNow = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         if (!passwordEncoder.matches(user.getPasswordOld(), userNow.getPassword())) {
             ErrorException ex = new ErrorException("Error en la validación", 400);
@@ -158,22 +158,13 @@ public class UserService {
 
     @Transactional
     public void deleteCurrentUser() {
-        User user = userRepository.findByEmailAndEnabledTrue(getCurrentUserEmail()).orElseThrow(
+        User user = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         user.setEnabled(false);
         user.addVersion();
         userRepository.save(user);
         refreshTokenService.deactivateAllByUserUuid(user.getUuid());
     }
-
-    private String getCurrentUserEmail() {
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        return auth.getName();
-    }
-
-    
 
     public void createSuperAdminIfNotExists(String email, String password) {
         boolean exists = userRepository.existsByRoleContains(Role.SUPER_ADMIN);

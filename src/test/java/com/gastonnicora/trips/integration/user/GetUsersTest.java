@@ -44,8 +44,14 @@ public class GetUsersTest {
 
         @Test
         void shouldReturnOk_whenUserIsSuperAdmin() throws Exception {
+                 int length= 1;// Super admin definido en la app 
                 userApi.getUsers()
-                                .andExpect(status().isOk());
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.data").isArray())
+                                .andExpect(jsonPath("$.data.length()").isNotEmpty())
+                                .andExpect(jsonPath("$.total").exists())
+                                .andExpect(jsonPath("$.total").value(length))
+                                .andExpect(jsonPath("$.data.length()").value(length));
         }
 
         @Test
@@ -53,15 +59,18 @@ public class GetUsersTest {
                 UserDTOs user = UserTestFactory.registerUser(mockMvc, "Role_Admin", password);
                 // cambio de rol a un usuario
                 userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$").isArray())
-                                .andExpect(jsonPath("$.length()").isNotEmpty());;
+                                .andExpect(status().isOk()); // TODO agregar User en cambio de rol
 
                 token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
                 userApi = new UserApiTestClient(mockMvc).withToken(token);
-
+                int length= 2;// Super admin definido en la app mas el usuario recién creado
                 userApi.getUsers()
-                                .andExpect(status().isOk());
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.data").isArray())
+                                .andExpect(jsonPath("$.data.length()").isNotEmpty())
+                                .andExpect(jsonPath("$.total").exists())
+                                .andExpect(jsonPath("$.total").value(length))
+                                .andExpect(jsonPath("$.data.length()").value(length));
         }
 
         @Test

@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.security;
 
 import java.util.Collection;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,10 @@ public class UserDetailsImpl implements UserDetails {
 
     public UserDetailsImpl(User user) {
         this.user = user;
+    }
+
+    public UUID getUuid() {
+        return user.getUuid();
     }
 
     @Override
