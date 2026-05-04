@@ -1,7 +1,5 @@
 package com.gastonnicora.trips.controllers.api;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,16 +25,46 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+/**
+ * Controlador para la gestión de usuarios.
+ * <p>
+ * Este controlador maneja todas las operaciones relacionadas con los usuarios,
+ * como la creación, modificación, eliminación y obtención de usuarios a través
+ * de los endpoints definidos en la URL "/api/users".
+ * </p>
+ * 
+ * 
+ * @author Gastón
+ * @version 1.0
+ * @since 2023-05-04
+ */
+
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "User API", description = "Endpoints para la gestión de usuarios")
 public class UserController {
     private final UserService userService;
 
+    /**
+     * Constructor del controlador UserController.
+     * 
+     * @param userService Servicio de usuario que maneja la lógica de negocio
+     *                    relacionada con los usuarios.
+     */
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+      /**
+     * Obtiene la lista de todos los usuarios.
+     * <p>
+     * <danger>Nota</danger>
+     * <p>
+     * <strong>Importante</strong> Solo accesible por usuarios con roles "ADMIN" o "SUPER_ADMIN".
+     * </p> 
+     * 
+     * @return ListResponse de objetos UserDTO con todos los usuarios.
+     */
     @GetMapping
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
@@ -45,6 +73,9 @@ public class UserController {
         return userService.getUsers();
     }
 
+    /** 
+     * @return UserDTOs
+     */
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Usuario actual", description = "Devuelve los datos del usuario actual")
@@ -52,6 +83,10 @@ public class UserController {
         return userService.getCurrentUser();
     }
 
+    /** 
+     * @param uuid
+     * @return UserDTOs
+     */
     @GetMapping("/{uuid}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
@@ -60,6 +95,10 @@ public class UserController {
         return userService.getUserByUuid(uuid);
     }
 
+    /** 
+     * @param entity
+     * @return UserDTOs
+     */
     @PostMapping
     @Operation(summary = "Crear Usuario", description = "Crea un nuevo usuario")
     public UserDTOs saveUser(@Valid @RequestBody UserCreate entity) {
@@ -67,6 +106,10 @@ public class UserController {
         return userService.createUser(entity);
     }
 
+    /** 
+     * @param entity
+     * @return UserDTOs
+     */
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi usuario", description = "Modifica mi usuario")
@@ -74,6 +117,10 @@ public class UserController {
         return userService.putCurrentUser(entity);
     }
 
+    /** 
+     * @param entity
+     * @return UserDTOs
+     */
     @PutMapping("/me/password")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi contraseña", description = "Modifica mi contraseña")
@@ -82,6 +129,11 @@ public class UserController {
 
     }
 
+    /** 
+     * @param uuid
+     * @param entity
+     * @return UserDTOs
+     */
     @PutMapping("/{uuid}/role")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
     @SecurityRequirement(name = "bearerAuth")

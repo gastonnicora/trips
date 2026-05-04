@@ -110,6 +110,29 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+						<configuration>
+							<doclet>com.sun.tools.javadoc.Main</doclet>
+							<additionalJoptions>
+								<additionalJoption>-Xdoclint:none</additionalJoption>
+							</additionalJoptions>
+							<sourcePath>${project.basedir}/src/main/java</sourcePath> 
+							<useDefaultExcludes>false</useDefaultExcludes> 
+							<links>
+								<link>https://docs.oracle.com/en/java/javase/17/docs/api/</link> 
+							</links>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<annotationProcessorPaths>
