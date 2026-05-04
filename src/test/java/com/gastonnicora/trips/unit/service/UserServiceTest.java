@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.dtos.entities.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.mappers.UserMapper;
@@ -54,12 +54,12 @@ class UserServiceTest {
 
         UserCreate user = new UserCreate("test", "test", "test", "test", "test");
         when(userMapper.toDTO(any())).thenAnswer(invocation -> {
-            UserDTOs dto = new UserDTOs(null, user.getName(), user.getLastname(), user.getEmail(), Set.of(Role.USER),
+            UserDTO dto = new UserDTO(null, user.getName(), user.getLastname(), user.getEmail(), Set.of(Role.USER),
                     true, null, null);
             return dto;
         });
 
-        UserDTOs result = userService.createUser(user);
+        UserDTO result = userService.createUser(user);
 
         assertEquals("test", result.getName());
         assertEquals("test", result.getLastname());

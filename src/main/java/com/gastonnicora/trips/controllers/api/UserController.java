@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gastonnicora.trips.dtos.entities.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
 import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
@@ -71,7 +71,7 @@ public class UserController {
      * con roles "ADMIN" o "SUPER_ADMIN".
      * </p>
      * <p>
-     * Los usuarios serán devueltos como una lista de objetos {@link UserDTOs}.
+     * Los usuarios serán devueltos como una lista de objetos {@link UserDTO}.
      * </p>
      * <p>
      * Este endpoint hace uso del servicio {@link UserService} para obtener la
@@ -79,15 +79,15 @@ public class UserController {
      * </p>
      * 
      * @return ListResponse ({@link ListResponse}) de objetos UserDTO
-     *         ({@link UserDTOs}) con todos los usuarios.
-     * @see UserDTOs
+     *         ({@link UserDTO}) con todos los usuarios.
+     * @see UserDTO
      * @see UserService #getUsers()
      */
     @GetMapping
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "Obtener usuarios", description = "Obtiene una lista de usuarios filtrados por un parámetro opcional")
-    public ListResponse<UserDTOs> getUsers() {
+    public ListResponse<UserDTO> getUsers() {
         return userService.getUsers();
     }
 
@@ -97,20 +97,20 @@ public class UserController {
      * <strong>Requiere autenticación y autorización</strong>
      * </p>
      * <p>
-     * Los datos del usuario serán devueltos como un objeto {@link UserDTOs}.
+     * Los datos del usuario serán devueltos como un objeto {@link UserDTO}.
      * </p>
      * <p>
      * Este endpoint utiliza el servicio {@link UserService} para obtener los datos
      * del usuario actual.
      * </p>
      * 
-     * @return {@link UserDTOs} con los datos del usuario actual.
+     * @return {@link UserDTO} con los datos del usuario actual.
      * @see UserService #getCurrentUser()
      */
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Usuario actual", description = "Devuelve los datos del usuario actual")
-    public UserDTOs currentUser() {
+    public UserDTO currentUser() {
         return userService.getCurrentUser();
     }
 
@@ -129,14 +129,14 @@ public class UserController {
      * </p>
      * 
      * @param uuid UUID del usuario a obtener.
-     * @return {@link UserDTOs} con los datos del usuario con el UUID especificado.
+     * @return {@link UserDTO} con los datos del usuario con el UUID especificado.
      * @see UserService #getUserByUuid(UUID)
      */
     @GetMapping("/{uuid}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener usuario", description = "Obtiene un usuario por su uuid")
-    public UserDTOs getUserByUuid(@PathVariable UUID uuid) {
+    public UserDTO getUserByUuid(@PathVariable UUID uuid) {
         return userService.getUserByUuid(uuid);
     }
 
@@ -158,14 +158,14 @@ public class UserController {
      * 
      * @param userCreateRequest ({@link UserCreate}) con los datos válidos para el
      *               nuevo usuario.
-     * @return {@link UserDTOs} con los datos del usuario recién creado.
+     * @return {@link UserDTO} con los datos del usuario recién creado.
      * @throws ErrorException Si el correo electrónico ya está en
      *                        uso por otro usuario.
      * @see UserService #createUser(UserCreate)
      */
     @PostMapping
     @Operation(summary = "Crear Usuario", description = "Crea un nuevo usuario")
-    public UserDTOs createUser(@Valid @RequestBody UserCreate userCreateRequest) {
+    public UserDTO createUser(@Valid @RequestBody UserCreate userCreateRequest) {
         return userService.createUser(userCreateRequest);
     }
 
@@ -190,16 +190,16 @@ public class UserController {
      * 
      * @param userPutReques ({@link UserPut}) con los datos válidos para el
      *               nuevo usuario.
-     * @return {@link UserDTOs} con los datos actualizados del usuario.
+     * @return {@link UserDTO} con los datos actualizados del usuario.
      * @throws ErrorException Si el correo electrónico ya está en uso por otro
      *                        usuario.
-     * @see UserService #putCurrentUser(UserPut)
+     * @see UserService #updateCurrentUser(UserPut)
      */
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi usuario", description = "Modifica mi usuario")
-    public UserDTOs updateUserProfile(@Valid @RequestBody UserPut userPutReques) {
-        return userService.putCurrentUser(userPutReques);
+    public UserDTO updateUserProfile(@Valid @RequestBody UserPut userPutReques) {
+        return userService.updateCurrentUser(userPutReques);
     }
 
     /**
@@ -224,14 +224,14 @@ public class UserController {
      * 
      * @param userChangePasswordRequest ({@link UserChangePassword}) con los datos válidos para el
      *               cambio de contraseña.
-     * @return {@link UserDTOs} con los datos del usuario.
+     * @return {@link UserDTO} con los datos del usuario.
      * @throws ErrorException Si la contraseña actual no es válida.
      * @see UserService #updatePassword(UserChangePassword)
      */
     @PutMapping("/me/password")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi contraseña", description = "Modifica mi contraseña")
-    public UserDTOs changePassword(@Valid @RequestBody UserChangePassword userChangePasswordRequest) {
+    public UserDTO changePassword(@Valid @RequestBody UserChangePassword userChangePasswordRequest) {
         return userService.updatePassword(userChangePasswordRequest);
     }
 
@@ -256,7 +256,7 @@ public class UserController {
      * @param uuid   ({@link UUID}) del usuario a modificar.
      * @param userChangeRoleRequest ({@link UserChangeRole}) con los datos válidos para el
      *               cambio de roles.
-     * @return {@link UserDTOs} con los datos del usuario.
+     * @return {@link UserDTO} con los datos del usuario.
      * @throws ErrorException Si el usuario no existe.
      * @throws ErrorException Si el rol no es válido.
      * @throws ErrorException Si se quiere cambiar el rol a un SUPER_ADMIN.
@@ -266,7 +266,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar roles de un usuario", description = "Modifica un usuario por su uuid")
-    public UserDTOs changeUserRole(@PathVariable UUID uuid, @Valid @RequestBody UserChangeRole userChangeRoleRequest) {
+    public UserDTO changeUserRole(@PathVariable UUID uuid, @Valid @RequestBody UserChangeRole userChangeRoleRequest) {
         return userService.setRole(uuid, userChangeRoleRequest);
     }
 

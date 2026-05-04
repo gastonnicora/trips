@@ -17,7 +17,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Schema(description = "DTO de usuario")
-public class UserDTOs {
+public class UserDTO {
 
     private UUID uuid;
     @Schema(description = "Nombre del usuario", example = "Juan")
@@ -47,7 +47,7 @@ public class UserDTOs {
     @Schema(description = "Fecha de actualizacion del usuario", example = "2023-01-01T00:00:00")
     private LocalDateTime updatedAt;
 
-    public UserDTOs(UUID uuid, String name, String lastname, String email, Set<Role> role, boolean enabled,
+    public UserDTO(UUID uuid, String name, String lastname, String email, Set<Role> role, boolean enabled,
             LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.uuid = uuid;
         this.name = name;

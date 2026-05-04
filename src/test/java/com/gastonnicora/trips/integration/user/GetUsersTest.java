@@ -14,7 +14,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.gastonnicora.trips.dtos.entities.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.helpers.UserApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
@@ -56,7 +56,7 @@ public class GetUsersTest {
 
         @Test
         void shouldReturnOk_whenUserIsAdmin() throws Exception {
-                UserDTOs user = UserTestFactory.registerUser(mockMvc, "Role_Admin", password);
+                UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_Admin", password);
                 // cambio de rol a un usuario
                 userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
                                 .andExpect(status().isOk()); // TODO agregar User en cambio de rol
@@ -75,7 +75,7 @@ public class GetUsersTest {
 
         @Test
         void shouldReturnForbidden_whenUserIsRegularUser() throws Exception {
-                UserDTOs user = UserTestFactory.registerUser(mockMvc, "Role_User", password);
+                UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_User", password);
 
                 token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
                 userApi = new UserApiTestClient(mockMvc).withToken(token);

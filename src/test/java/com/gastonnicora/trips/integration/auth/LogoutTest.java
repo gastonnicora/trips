@@ -11,7 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.gastonnicora.trips.dtos.entities.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.helpers.AuthApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
@@ -26,7 +26,7 @@ public class LogoutTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private UserDTOs user;
+    private UserDTO user;
     private final String name = "user";
     private final String pass = "goodPassword";
     private AuthApiTestClient authApi;

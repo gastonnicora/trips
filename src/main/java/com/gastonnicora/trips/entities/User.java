@@ -26,6 +26,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Representa un usuario en el sistema.
+ * <p>
+ * Esta clase contiene información personal del usuario, sus roles, estado y las
+ * fechas de creación y actualización.
+ * Además, se gestionan las funciones básicas de los usuarios, como la
+ * asignación y eliminación de roles.
+ * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2023-05-04
+ */
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -35,20 +48,35 @@ import lombok.ToString;
 @ToString(exclude = "password")
 public class User {
 
+    /**
+     * UUID único para identificar al usuario en el sistema.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false, unique = true)
     private UUID uuid;
 
+    /**
+     * Nombre del usuario.
+     */
     @Column(name = "name", nullable = false)
     private String name;
 
+    /**
+     * Apellido del usuario.
+     */
     @Column(name = "lastname", nullable = false)
     private String lastname;
 
+    /**
+     * Dirección de correo electrónico del usuario.
+     */
     @Column(name = "email", nullable = false)
     private String email;
 
+    /**
+     * Contraseña del usuario.
+     */
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -85,14 +113,31 @@ public class User {
 
     }
 
+    /** 
+     * @param role
+     */
     public void addRole(Role role) {
         this.role.add(role);
     }
 
+    /** 
+     * @param roles
+     */
     public void addRoles(Set<Role> roles) {
         this.role.addAll(roles);
     }
 
+    /** 
+     * @param role
+     * @return boolean
+     */
+    public boolean hasRole(Role role) {
+        return this.role.contains(role);
+    }
+
+    /** 
+     * @param role
+     */
     public void removeRole(Role role) {
         this.role.remove(role);
     }

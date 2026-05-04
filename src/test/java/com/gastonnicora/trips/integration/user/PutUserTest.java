@@ -16,7 +16,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.gastonnicora.trips.dtos.entities.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.helpers.UserApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 
@@ -31,7 +31,7 @@ public class PutUserTest {
         @Autowired
         private MockMvc mockMvc;
 
-        UserDTOs user;
+        UserDTO user;
         String token;
         UserApiTestClient apiUser;
 
@@ -102,7 +102,7 @@ public class PutUserTest {
 
         @Test
         void shouldReturnBadRequestWhenEmailIsAlreadyInUse() throws Exception {
-                UserDTOs otherUser = UserTestFactory.registerUser(mockMvc, "Maria", "goodPassword");
+                UserDTO otherUser = UserTestFactory.registerUser(mockMvc, "Maria", "goodPassword");
                 apiUser.update(user.getName(), user.getLastname(), otherUser.getEmail())
                                 .andExpect(status().isBadRequest())
                                 .andExpect(

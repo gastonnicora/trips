@@ -5,13 +5,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.gastonnicora.trips.dtos.entities.UserDTOs;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.entities.User;
 
 @Component
 public class UserMapper {
-    public UserDTOs toDTO(User user) {
-        return new UserDTOs(
+    /** 
+     * @param user
+     * @return UserDTO
+     */
+    public UserDTO toDTO(User user) {
+        return new UserDTO(
                 user.getUuid(),
                 user.getName(),
                 user.getLastname(),
@@ -24,7 +28,11 @@ public class UserMapper {
 
   
 
-    public List<UserDTOs> toDTOList(List<User> users) {
+    /** 
+     * @param users
+     * @return List
+     */
+    public List<UserDTO> toDTOList(List<User> users) {
         return users.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
