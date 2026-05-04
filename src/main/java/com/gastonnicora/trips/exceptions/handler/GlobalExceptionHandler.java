@@ -24,58 +24,101 @@ import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Errores de validación", content = @Content(schema = @Schema(implementation = ValidationApiError.class)))
-@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Error en autenticación", content = @Content(schema = @Schema(implementation = UnauthorizedApiError.class)))
-@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Error de acceso", content = @Content(schema = @Schema(implementation = ForbiddenApiError.class)))
+/**
+ * Maneja globalmente las excepciones lanzadas por los controladores de la API.
+ * 
+ * Proporciona respuestas estandarizadas con DTOs de error, incluyendo:
+ * - Errores de validación (400)
+ * - Errores de autenticación (401)
+ * - Acceso prohibido (403)
+ * - Excepciones personalizadas de la aplicación
+ *
+ * Se documenta con Swagger/OpenAPI para que cada tipo de error tenga un ejemplo en la documentación.
+ */
 @RestControllerAdvice
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+        responseCode = "400",
+        description = "Errores de validación",
+        content = @Content(schema = @Schema(implementation = ValidationApiError.class))
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+        responseCode = "401",
+        description = "Error en autenticación",
+        content = @Content(schema = @Schema(implementation = UnauthorizedApiError.class))
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+        responseCode = "403",
+        description = "Error de acceso",
+        content = @Content(schema = @Schema(implementation = ForbiddenApiError.class))
+)
 public class GlobalExceptionHandler {
 
-        @ExceptionHandler(MethodArgumentNotValidException.class)
-        @ResponseStatus(HttpStatus.BAD_REQUEST)
-        public ValidationApiError handleValidationErrors(MethodArgumentNotValidException ex) {
+    /**
+     * Maneja errores de validación lanzados por Spring cuando fallan las
+     * anotaciones de validación (@NotBlank, @Size, etc.).
+     * 
+     * Devuelve un objeto ValidationApiError con un mapa de campos y mensajes de error.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationApiError handleValidationErrors(MethodArgumentNotValidException ex) {
 
-                Map<String, List<String>> errors = new HashMap<>();
+        Map<String, List<String>> errors = new HashMap<>();
 
-                ex.getBindingResult().getFieldErrors()
-                                .forEach(error -> errors
-                                                .computeIfAbsent(error.getField(), k -> new ArrayList<>())
-                                                .add(error.getDefaultMessage()));
+        // Errores específicos de campo
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.computeIfAbsent(error.getField(), k -> new ArrayList<>())
+                        .add(error.getDefaultMessage())
+        );
 
-                ex.getBindingResult().getGlobalErrors()
-                                .forEach(error -> errors
-                                                .computeIfAbsent(error.getObjectName(), k -> new ArrayList<>())
-                                                .add(error.getDefaultMessage()));
+        // Errores globales (por ejemplo @Valid en objetos anidados)
+        ex.getBindingResult().getGlobalErrors().forEach(error ->
+                errors.computeIfAbsent(error.getObjectName(), k -> new ArrayList<>())
+                        .add(error.getDefaultMessage())
+        );
 
-                return new ValidationApiError(errors);
-        }
+        return new ValidationApiError(errors);
+    }
 
-        @ExceptionHandler(ErrorException.class)
-        public ResponseEntity<ApiError> handleRuntime(ErrorException ex) {
+    /**
+     * Maneja las excepciones personalizadas de la aplicación.
+     * 
+     * Devuelve un ApiError con los detalles proporcionados en la excepción.
+     */
+    @ExceptionHandler(ErrorException.class)
+    public ResponseEntity<ApiError> handleRuntime(ErrorException ex) {
 
-                Map<String, List<String>> errors = ex.getErrors();
+        Map<String, List<String>> errors = ex.getErrors();
 
-                ApiError apiError = new ApiError(
-                                ex.getStatus(),
-                                ex.getMessage(),
-                                LocalDateTime.now(),
-                                errors);
+        ApiError apiError = new ApiError(
+                ex.getStatus(),
+                ex.getMessage(),
+                LocalDateTime.now(),
+                errors
+        );
 
-                return new ResponseEntity<>(apiError, HttpStatus.valueOf(ex.getStatus()));
-        }
+        return new ResponseEntity<>(apiError, HttpStatus.valueOf(ex.getStatus()));
+    }
 
-        @ExceptionHandler(BadCredentialsException.class)
-        @ResponseStatus(HttpStatus.UNAUTHORIZED)
-        public UnauthorizedApiError handleBadCredentialsException(BadCredentialsException ex) {
+    /**
+     * Maneja excepciones de credenciales inválidas.
+     * 
+     * Devuelve UnauthorizedApiError con HTTP 401.
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public UnauthorizedApiError handleBadCredentialsException(BadCredentialsException ex) {
+        return new UnauthorizedApiError("No autenticado o token inválido");
+    }
 
-                return new UnauthorizedApiError("No autenticado o token inválido");
-        }
-
-        @ExceptionHandler(JwtException.class)
-        @ResponseStatus(HttpStatus.UNAUTHORIZED)
-        public ApiError handleBadTokenException(JwtException ex) {
-
-                return new ApiError(401, "Token inválido o expirado");
-
-        }
-
+    /**
+     * Maneja excepciones de token JWT inválido o expirado.
+     * 
+     * Devuelve ApiError con HTTP 401.
+     */
+    @ExceptionHandler(JwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleBadTokenException(JwtException ex) {
+        return new ApiError(401, "Token inválido o expirado");
+    }
 }
