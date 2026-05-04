@@ -128,7 +128,7 @@ public class UserController {
      * del usuario con el UUID especificado.
      * </p>
      * 
-     * @param uuid UUID del usuario a obtener.
+     * @param uuid ({@link UUID}) del usuario a obtener.
      * @return {@link UserDTO} con los datos del usuario con el UUID especificado.
      * @see UserService #getUserByUuid(UUID)
      */
