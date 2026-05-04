@@ -13,9 +13,37 @@ import org.springframework.web.method.HandlerMethod;
 
 import io.swagger.v3.oas.models.Operation;
 
+/**
+ * Configuración de personalización de Swagger/OpenAPI.
+ * <p>
+ * Esta clase agrega información de roles requeridos a la documentación de
+ * la API generada por SpringDoc para métodos protegidos con la anotación
+ * {@link PreAuthorize}.
+ * </p>
+ * 
+ * <p>
+ * Cada operación protegida mostrará en su descripción los roles necesarios
+ * para acceder, por ejemplo: "🔒 Requiere rol: ADMIN, USER".
+ * </p>
+ * 
+ * @author Gastón
+ * @version 1.0
+ * @since 2023-05-04
+ */
 @Configuration
 public class SwaggerConfigCustomer {
 
+    /**
+     * Bean que personaliza las operaciones de OpenAPI agregando la información
+     * de seguridad basada en {@link PreAuthorize}.
+     * <p>
+     * Recorre cada método expuesto en la API y, si tiene la anotación
+     * {@link PreAuthorize}, extrae los roles y los añade a la descripción
+     * de la operación.
+     * </p>
+     * 
+     * @return {@link OperationCustomizer} para agregar información de roles a las operaciones
+     */
     @Bean
     public OperationCustomizer customizePreAuthorize() {
         return (Operation operation, HandlerMethod handlerMethod) -> {
@@ -40,6 +68,21 @@ public class SwaggerConfigCustomer {
         };
     }
 
+    /**
+     * Extrae los roles de una expresión de {@link PreAuthorize}.
+     * <p>
+     * Esta función reconoce expresiones de tipo:
+     * <ul>
+     * <li>hasRole('ROL')</li>
+     * <li>hasAnyRole('ROL1','ROL2')</li>
+     * </ul>
+     * y devuelve los roles como una cadena separada por comas.
+     * Si no se encuentra ningún rol, devuelve la expresión completa.
+     * </p>
+     * 
+     * @param expression expresión de {@link PreAuthorize} a analizar
+     * @return {@link String} roles extraídos separados por coma
+     */
     private String extractRoles(String expression) {
         List<String> roles = new ArrayList<>();
 
