@@ -55,9 +55,12 @@ public class GlobalExceptionHandler {
 
     /**
      * Maneja errores de validación lanzados por Spring cuando fallan las
-     * anotaciones de validación (@NotBlank, @Size, etc.).
+     * anotaciones de validación.
      * 
      * Devuelve un objeto ValidationApiError con un mapa de campos y mensajes de error.
+     * 
+     * @param ex Excepción de validación de Spring
+     * @return Objeto ValidationApiError con los errores de validación
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -84,6 +87,8 @@ public class GlobalExceptionHandler {
      * Maneja las excepciones personalizadas de la aplicación.
      * 
      * Devuelve un ApiError con los detalles proporcionados en la excepción.
+     * @param ex Excepción personalizada de la aplicación
+     * @return Objeto ApiError con los detalles de la excepción
      */
     @ExceptionHandler(ErrorException.class)
     public ResponseEntity<ApiError> handleRuntime(ErrorException ex) {
@@ -104,6 +109,8 @@ public class GlobalExceptionHandler {
      * Maneja excepciones de credenciales inválidas.
      * 
      * Devuelve UnauthorizedApiError con HTTP 401.
+     * @param ex Excepción de credenciales inválidas
+     * @return Objeto UnauthorizedApiError con el mensaje de error
      */
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -115,6 +122,8 @@ public class GlobalExceptionHandler {
      * Maneja excepciones de token JWT inválido o expirado.
      * 
      * Devuelve ApiError con HTTP 401.
+     * @param ex Excepción de token JWT
+     * @return Objeto ApiError con el mensaje de error
      */
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
