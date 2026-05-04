@@ -8,13 +8,37 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(description = "DTO de usuario para put role")
+/**
+ * DTO para cambiar los roles de un usuario.
+ * <p>
+ * Contiene un conjunto de roles que serán asignados al usuario.
+ * Aplica validaciones para asegurar que al menos un rol sea seleccionado.
+ * </p>
+ * 
+ * <p>
+ * Se utiliza típicamente en endpoints de actualización de roles.
+ * </p>
+ * 
+ * @author Gastón
+ * @version 1.0
+ * @since 2023-05-04
+ */
+@Schema(description = "DTO de usuario para cambiar roles")
 public class UserChangeRole {
+
+    /**
+     * Conjunto de roles asignados al usuario.
+     */
     @Schema(description = "Conjunto de roles asignados al usuario", example = "[\"USER\", \"ADMIN\"]")
     @NotEmpty(message = "Debe seleccionar al menos un rol")
     @NotNull(message = "Debe seleccionar al menos un rol")
     private Set<Role> roles;
 
+    /**
+     * Constructor completo.
+     * 
+     * @param roles ({@link Set})Conjunto de {@link Role} asignados al usuario
+     */
     public UserChangeRole(Set<Role> roles) {
         this.roles = roles;
     }
@@ -26,5 +50,4 @@ public class UserChangeRole {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
 }
