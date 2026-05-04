@@ -48,22 +48,38 @@ public class RefreshResponse {
         this.refreshToken = refreshToken;
     }
 
-    /** @return Token JWT de acceso */
+    /**
+     * Obtiene el nuevo token JWT de acceso.
+     * 
+     * @return Token JWT de acceso
+     */
     public String getToken() {
         return token;
     }
 
-    /** @param token Token JWT de acceso */
+    /**
+     * Establece el nuevo token JWT de acceso.
+     * 
+     * @param token Token JWT de acceso
+     */
     public void setToken(String token) {
         this.token = token;
     }
 
-    /** @return Token de refresco UUID */
+    /**
+     * Obtiene el nuevo token de refresco UUID.
+     * 
+     * @return Token de refresco UUID
+     */
     public String getRefreshToken() {
         return refreshToken;
     }
 
-    /** @param refreshToken Token de refresco UUID */
+    /**
+     * Establece el nuevo token de refresco UUID.
+     *
+     * @param refreshToken Token de refresco UUID
+     */
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }

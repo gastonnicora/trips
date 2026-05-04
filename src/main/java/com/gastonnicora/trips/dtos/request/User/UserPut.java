@@ -6,12 +6,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * DTO para actualizar los datos básicos de un usuario.
  * <p>
  * Hereda de {@link UserBasic} e incluye los campos:
+ * 
+ * </p>
  * <ul>
  * <li>name: Nombre del usuario</li>
  * <li>lastname: Apellido del usuario</li>
  * <li>email: Correo electrónico del usuario</li>
  * </ul>
- * </p>
  * <p>
  * Se utiliza típicamente en los endpoints de actualización de usuarios (PUT).
  * </p>

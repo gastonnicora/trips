@@ -10,11 +10,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * </p>
  * 
  * <ul>
- *   <li>{@code token}: Token JWT de acceso.</li>
- *   <li>{@code refreshToken}: Token UUID para refrescar el acceso (puede ser null para web si se usa cookie).</li>
+ * <li>{@code token}: Token JWT de acceso.</li>
+ * <li>{@code refreshToken}: Token UUID para refrescar el acceso (puede ser null
+ * para web si se usa cookie).</li>
  * </ul>
  * 
  * Ejemplo de uso en la API:
+ * 
  * <pre>
  * {
  *   "token": "eyJhbGciOiJIUzI1NiJ9...",
@@ -29,12 +31,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "DTO de respuesta de login")
 public class LoginResponse {
 
-    @Schema(description = "Token de acceso", 
-            example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0Ijox.NTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
+    @Schema(description = "Token de acceso", example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0Ijox.NTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
     private String token;
 
-    @Schema(description = "Token de refresco(UUID)", 
-            example = "550e8400-e29b-41d4-a716-446655440000")
+    @Schema(description = "Token de refresco(UUID)", example = "550e8400-e29b-41d4-a716-446655440000")
     private String refreshToken;
 
     /**
@@ -48,22 +48,38 @@ public class LoginResponse {
         this.refreshToken = refreshToken;
     }
 
-    /** @return Token JWT de acceso */
+    /**
+     * Obtiene el token JWT de acceso.
+     * 
+     * @return Token JWT de acceso
+     */
     public String getToken() {
         return token;
     }
 
-    /** @param token Token JWT de acceso */
+    /**
+     * Establece el token JWT de acceso.
+     * 
+     * @param token Token JWT de acceso
+     */
     public void setToken(String token) {
         this.token = token;
     }
 
-    /** @return Token de refresco UUID */
+    /**
+     * Obtiene el token de refresco UUID.
+     * 
+     * @return Token de refresco UUID
+     */
     public String getRefreshToken() {
         return refreshToken;
     }
 
-    /** @param refreshToken Token de refresco UUID */
+    /**
+     * Establece el token de refresco UUID.
+     * 
+     * @param refreshToken Token de refresco UUID
+     */
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
