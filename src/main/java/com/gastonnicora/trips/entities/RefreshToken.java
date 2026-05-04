@@ -17,6 +17,37 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Representa un token de refresco para mantener sesiones de usuario.
+ * <p>
+ * Contiene información sobre el token de acceso, token de refresco, usuario asociado,
+ * dispositivo y fecha de expiración.
+ * </p>
+ * <p>
+ * Campos principales:
+ * </p>
+ * <ul>
+ *   <li>{@code uuid}: Identificador único del token.</li>
+ *   <li>{@code token}: Token JWT de acceso.</li>
+ *   <li>{@code refreshToken}: Token único de refresco.</li>
+ *   <li>{@code userUuid}: Identificador del usuario asociado.</li>
+ *   <li>{@code ip}: Dirección IP desde donde se creó el token.</li>
+ *   <li>{@code userAgent}: Información del navegador o cliente.</li>
+ *   <li>{@code device}: Tipo de dispositivo (web, android, etc.).</li>
+ *   <li>{@code active}: Indica si el token está activo.</li>
+ *   <li>{@code createdAt}: Fecha de creación del token.</li>
+ *   <li>{@code expiryDate}: Fecha de expiración del token.</li>
+ *   <li>{@code version}: Versión del token (incrementa al actualizar). </li>
+ * </ul>
+ * 
+ * <p>
+ * Se utiliza para la gestión de sesiones y renovación de tokens en la aplicación.
+ * </p>
+ * 
+ * @author Gastón
+ * @version 1.0
+ * @since 2023-05-04
+ */
 @Entity
 @Table(name = "refreshTokens")
 @Data
@@ -29,7 +60,7 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    @Column(name = "token", nullable = false,columnDefinition = "TEXT")
+    @Column(name = "token", nullable = false, columnDefinition = "TEXT")
     private String token;
 
     @Column(name = "refresh_token", nullable = false)
@@ -60,6 +91,20 @@ public class RefreshToken {
     @Column(name = "version", nullable = false)
     private int version;
 
+    /**
+     * Constructor para crear un nuevo RefreshToken.
+     * <p>
+     * Genera automáticamente un {@code refreshToken} único y define la fecha de expiración
+     * a 7 días a partir de la creación.
+     * </p>
+     * 
+     * @param token JWT de acceso asociado
+     * @param userUuid UUID del usuario
+     * @param ip Dirección IP desde donde se crea el token
+     * @param userAgent Información del cliente (navegador, app, etc.)
+     * @param device Tipo de dispositivo (web, android, etc.)
+     * @param version Versión inicial del token
+     */
     public RefreshToken(String token, UUID userUuid, String ip, String userAgent, String device, int version) {
         this.token = token;
         this.refreshToken = UUID.randomUUID().toString();
@@ -72,6 +117,9 @@ public class RefreshToken {
         this.version = version;
     }
 
+    /**
+     * Incrementa la versión del token.
+     */
     public void addVersion() {
         this.version++;
     }

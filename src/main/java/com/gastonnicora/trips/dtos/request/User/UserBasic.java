@@ -5,18 +5,23 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+
 /**
- * DTO básico para solicitudes de usuario.
+ * DTO básico de usuario.
  * <p>
- * Esta clase abstracta se utiliza como base para los DTOs de request de
- * usuario.
- * Contiene los datos principales del usuario: nombre, apellido y email.
- * Incluye validaciones para asegurar que los campos no queden vacíos y tengan
- * el formato correcto.
+ * Clase abstracta que contiene la información mínima de un usuario que se comparte entre otros DTOs.
  * </p>
  * <p>
- * El email se normaliza automáticamente a minúsculas y sin espacios en los
- * extremos.
+ * Campos principales:
+ * </p>
+ * <ul>
+ *   <li>{@code name}: Nombre del usuario.</li>
+ *   <li>{@code lastname}: Apellido del usuario.</li>
+ *   <li>{@code email}: Correo electrónico del usuario.</li>
+ * </ul>
+ * 
+ * <p>
+ * Se utiliza como clase base para DTOs de creación y actualización de usuarios.
  * </p>
  * 
  * @author Gastón

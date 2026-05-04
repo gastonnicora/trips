@@ -8,15 +8,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Contiene un nuevo token JWT de acceso y, opcionalmente, un nuevo token de
  * refresco para reemplazar el anterior.
  * </p>
- * 
+ * <p>
+ * Campos principales:
+ * </p>
  * <ul>
- * <li>{@code token}: Nuevo token JWT de acceso.</li>
- * <li>{@code refreshToken}: Nuevo token UUID de refresco (puede ser null para
- * web si se usa cookie).</li>
+ *   <li>{@code token}: Nuevo token JWT de acceso.</li>
+ *   <li>{@code refreshToken}: Nuevo token UUID de refresco (puede ser null para web si se usa cookie).</li>
  * </ul>
  * 
+ * <p>
  * Ejemplo de respuesta JSON:
- * 
+ * </p>
  * <pre>
  * {
  *   "token": "eyJhbGciOiJIUzI1NiJ9...",

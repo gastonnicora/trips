@@ -5,18 +5,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * DTO de respuesta para el endpoint de login.
  * <p>
- * Contiene el token JWT de acceso y, opcionalmente, el token de refresco para
- * obtener nuevos tokens cuando el actual expira.
+ * Contiene el token JWT de acceso y un token de refresco UUID.
  * </p>
- * 
+ * <p>
+ * Campos principales:
+ * </p>
  * <ul>
- * <li>{@code token}: Token JWT de acceso.</li>
- * <li>{@code refreshToken}: Token UUID para refrescar el acceso (puede ser null
- * para web si se usa cookie).</li>
+ *   <li>{@code token}: Token JWT de acceso.</li>
+ *   <li>{@code refreshToken}: Token UUID de refresco.</li>
  * </ul>
  * 
- * Ejemplo de uso en la API:
- * 
+ * <p>
+ * Ejemplo de respuesta JSON:
+ * </p>
  * <pre>
  * {
  *   "token": "eyJhbGciOiJIUzI1NiJ9...",

@@ -9,13 +9,30 @@ import jakarta.validation.constraints.Size;
 /**
  * DTO para crear un nuevo usuario.
  * <p>
- * Hereda de {@link UserBasic} e incluye campos de contraseña con validación.
- * Aplica la validación {@link FieldsMatch} para asegurar que la contraseña y la
- * confirmación coincidan.
+ * Hereda de {@link UserBasic} e incluye la contraseña.
  * </p>
+ * <ul>
+ *   <li>{@code name}: Nombre del usuario</li>
+ *   <li>{@code lastname}: Apellido del usuario</li>
+ *   <li>{@code email}: Correo electrónico del usuario</li>
+ *   <li>{@code password}: Contraseña del usuario</li>
+ *   <li>{@code confirmPassword}: Confirmación de la contraseña</li>
+ * </ul>
+ * 
  * <p>
- * Se utiliza típicamente en el endpoint de creación de usuarios (POST).
+ * Se utiliza en los endpoints de registro de usuarios (POST).
  * </p>
+ * 
+ * Ejemplo de JSON:
+ * <pre>
+ * {
+ *   "name": "Gastón",
+ *   "lastname": "Nicora",
+ *   "email": "gaston@example.com",
+ *   "password": "123456",
+ *   "confirmPassword": "123456"
+ * }
+ * </pre>
  * 
  * @author Gastón
  * @version 1.0

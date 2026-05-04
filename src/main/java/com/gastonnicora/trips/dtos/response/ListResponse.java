@@ -6,14 +6,18 @@ import java.util.List;
  * DTO genérico para respuestas que retornan listas de datos.
  * <p>
  * Contiene la lista de elementos y el total de elementos.
- * El campo {@code total} se inicializa automáticamente al tamaño de la lista
- * y se actualiza al establecer una nueva lista mediante {@link #setData(List)}.
  * </p>
- *
+ * <p>
+ * Campos principales:
+ * </p>
+ * <ul>
+ *   <li>{@code data}: Lista de elementos devueltos.</li>
+ *   <li>{@code total}: Total de elementos en la lista.</li>
+ * </ul>
+ * 
  * <p>
  * Ejemplo de uso:
  * </p>
- * 
  * <pre>
  * ListResponse&lt;UserDTO&gt; response = new ListResponse&lt;&gt;(userList);
  * int totalUsers = response.getTotal();
@@ -21,6 +25,9 @@ import java.util.List;
  * </pre>
  *
  * @param <T> Tipo de los elementos de la lista
+ * @author Gastón
+ * @version 1.0
+ * @since 2023-05-04
  */
 public class ListResponse<T> {
 

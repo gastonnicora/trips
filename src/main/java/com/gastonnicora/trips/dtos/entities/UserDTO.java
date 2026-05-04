@@ -17,8 +17,38 @@ import lombok.ToString;
  * Data Transfer Object (DTO) que representa la información de un usuario.
  * <p>
  * Se utiliza para exponer los datos de usuario en respuestas de la API, sin
- * exponer información sensible como la contraseña.
+ * incluir información sensible como la contraseña.
  * </p>
+ * 
+ * <p>
+ * Campos principales:
+ * </p>
+ * <ul>
+ *   <li>{@code uuid}: Identificador único del usuario.</li>
+ *   <li>{@code name}: Nombre del usuario.</li>
+ *   <li>{@code lastname}: Apellido del usuario.</li>
+ *   <li>{@code email}: Correo electrónico del usuario.</li>
+ *   <li>{@code role}: Conjunto de roles asignados al usuario.</li>
+ *   <li>{@code enabled}: Estado del usuario (habilitado o deshabilitado).</li>
+ *   <li>{@code createdAt}: Fecha y hora de creación del usuario.</li>
+ *   <li>{@code updatedAt}: Fecha y hora de última actualización.</li>
+ * </ul>
+ * 
+ * <p>
+ * Ejemplo de JSON:
+ * </p>
+ * <pre>
+ * {
+ *   "uuid": "550e8400-e29b-41d4-a716-446655440000",
+ *   "name": "Juan",
+ *   "lastname": "Perez",
+ *   "email": "juanperez@mail.com",
+ *   "role": ["USER"],
+ *   "enabled": true,
+ *   "createdAt": "2023-01-01T00:00:00",
+ *   "updatedAt": "2023-01-01T00:00:00"
+ * }
+ * </pre>
  * 
  * @author Gastón
  * @version 1.0

@@ -29,14 +29,28 @@ import lombok.ToString;
 /**
  * Representa un usuario en el sistema.
  * <p>
- * Esta clase contiene información personal del usuario, sus roles, estado y las
- * fechas de creación y actualización.
- * Además, se gestionan las funciones básicas de los usuarios, como la
- * asignación y eliminación de roles.
- * Por defecto se le agrega el rol
- * {@link Role#USER}.
+ * Contiene información personal, roles, estado y fechas de creación/actualización.
+ * Por defecto, se asigna el rol {@link Role#USER}.
  * </p>
- *
+ * <p>
+ * Campos principales:
+ * </p>
+ * <ul>
+ *   <li>{@code uuid}: Identificador único del usuario.</li>
+ *   <li>{@code name}: Nombre del usuario.</li>
+ *   <li>{@code lastname}: Apellido del usuario.</li>
+ *   <li>{@code email}: Correo electrónico del usuario.</li>
+ *   <li>{@code password}: Contraseña cifrada del usuario.</li>
+ *   <li>{@code role}: Conjunto de roles asignados al usuario.</li>
+ *   <li>{@code enabled}: Indica si el usuario está habilitado.</li>
+ *   <li>{@code createdAt}: Fecha y hora de creación.</li>
+ *   <li>{@code updatedAt}: Fecha y hora de última actualización.</li>
+ *   <li>{@code version}: Versión del usuario.</li>
+ * </ul>
+ * <p>
+ * Se utiliza para gestionar la autenticación, autorización y administración de usuarios.
+ * </p>
+ * 
  * @author Gastón
  * @version 1.0
  * @since 2023-05-04
@@ -50,101 +64,68 @@ import lombok.ToString;
 @ToString(exclude = "password")
 public class User {
 
-    /**
-     * UUID único para identificar al usuario en el sistema.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false, unique = true)
     private UUID uuid;
 
-    /**
-     * Nombre del usuario.
-     */
     @Column(name = "name", nullable = false)
     private String name;
 
-    /**
-     * Apellido del usuario.
-     */
     @Column(name = "lastname", nullable = false)
     private String lastname;
 
-    /**
-     * Dirección de correo electrónico del usuario.
-     */
     @Column(name = "email", nullable = false)
     private String email;
 
-    /**
-     * Contraseña del usuario.
-     */
     @Column(name = "password", nullable = false)
     private String password;
 
-    /**
-     * Roles del usuario.
-     */
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Set<Role> role;
 
-    /**
-     * Indica si el usuario está habilitado o no.
-     */
     @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
 
-    /**
-     * Fecha y hora de creación del usuario.
-     */
-    @Column(name = "created_at", nullable = false)
     @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    /**
-     * Fecha y hora de actualización del usuario.
-     */
-    @Column(name = "updated_at")
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    /**
-     * Versión del usuario.
-     */
     @Column(name = "version", nullable = false)
     private int version = 0;
 
     /**
-     * Constructor de la clase usuario.
-     * 
+     * Constructor sin roles.
      * <p>
-     * Constructor de la clase usuario sin roles.
+     * Asigna automáticamente el rol {@link Role#USER}.
      * </p>
      * 
-     * @param name     ({@link String}) nombre del usuario
-     * @param lastname ({@link String}) apellido del usuario
-     * @param email    ({@link String}) email del usuario
-     * @param password ({@link String}) contraseña del usuario cifrada
+     * @param name Nombre del usuario
+     * @param lastname Apellido del usuario
+     * @param email Correo electrónico
+     * @param password Contraseña cifrada
      */
     public User(String name, String lastname, String email, String password) {
         this(name, lastname, email, password, null);
     }
 
     /**
-     * Constructor de la clase usuario.
-     * 
+     * Constructor con roles.
      * <p>
-     * Constructor de la clase usuario con roles.
+     * Si no se proporcionan roles, se asigna automáticamente {@link Role#USER}.
      * </p>
      * 
-     * @param name     ({@link String}) nombre del usuario
-     * @param lastname ({@link String}) apellido del usuario
-     * @param email    ({@link String}) email del usuario
-     * @param password ({@link String}) contraseña del usuario cifrada
-     * @param role     ({@link Set}) conjunto de roles ({@link Role}) a asignar al
-     *                 usuario
+     * @param name Nombre del usuario
+     * @param lastname Apellido del usuario
+     * @param email Correo electrónico
+     * @param password Contraseña cifrada
+     * @param role ({@link Set}) Conjunto de {@link Role} a asignar
      */
     public User(String name, String lastname, String email, String password, Set<Role> role) {
         this.name = name;
@@ -153,49 +134,47 @@ public class User {
         this.password = password;
         this.role = (role != null) ? new HashSet<>(role) : new HashSet<>();
         this.role.add(Role.USER);
-
     }
 
     /**
-     * Agregar un rol al usuario.
+     * Agrega un rol al usuario.
      * 
-     * @param role ({@link Role}) rol a asignar al usuario
+     * @param role ({@link Role}) a asignar
      */
     public void addRole(Role role) {
         this.role.add(role);
     }
 
     /**
-     * Agregar varios roles al usuario.
+     * Agrega varios roles al usuario.
      * 
-     * @param roles ({@link Set}) conjunto de roles ({@link Role}) a asignar al
-     *              usuario
+     * @param roles ({@link Set}) Conjunto de {@link Role} a asignar
      */
     public void addRoles(Set<Role> roles) {
         this.role.addAll(roles);
     }
 
     /**
-     * Verificar si el usuario tiene un rol.
+     * Verifica si el usuario tiene un rol específico.
      * 
-     * @param role ({@link Role}) rol a verificar
-     * @return boolean true si el usuario tiene el rol, false en caso contrario
+     * @param role ({@link Role})) Rol a verificar
+     * @return {@code true} si el usuario tiene el rol, {@code false} en caso contrario
      */
     public boolean hasRole(Role role) {
         return this.role.contains(role);
     }
 
     /**
-     * Eliminar un rol del usuario.
+     * Elimina un rol del usuario.
      * 
-     * @param role ({@link Role}) rol a eliminar del usuario
+     * @param role ({@link Role}) a eliminar
      */
     public void removeRole(Role role) {
         this.role.remove(role);
     }
 
     /**
-     * Incrementar la versión del usuario.
+     * Incrementa la versión del usuario.
      */
     public void addVersion() {
         this.version++;
