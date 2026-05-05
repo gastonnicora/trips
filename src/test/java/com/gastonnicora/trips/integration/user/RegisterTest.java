@@ -16,6 +16,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.gastonnicora.trips.helpers.AuthApiTestClient;
 import com.gastonnicora.trips.helpers.UserApiTestClient;
 
 import jakarta.transaction.Transactional;
@@ -90,6 +91,20 @@ public class RegisterTest {
 
         }
 
+        @Test
+        void shouldBeAbleToLoginImmediatelyAfterRegistration() throws Exception {
+                String password = "goodpassword";
+                String email = "auth_test_" + System.currentTimeMillis() + "@test.com";
+
+                apiUser.register("Juan", "Perez", email, password, password)
+                                .andExpect(status().isOk());
+
+                AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);
+                authApi.login(email, password)
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.token").exists());
+        }
+
         static Stream<Arguments> invalidUsers() {
                 return Stream.of(
                                 // name vacío
@@ -117,7 +132,7 @@ public class RegisterTest {
                                 Arguments.of(
                                                 "Juan", "Perez", "test@test.com", "goodPassword", "wrongPassword",
                                                 "confirmPassword"),
-                                // password corta
+                                // campos nulos
                                 Arguments.of(
                                                 null, null, null, null, null, "password"));
         }

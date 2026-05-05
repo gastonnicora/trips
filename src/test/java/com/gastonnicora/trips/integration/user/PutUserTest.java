@@ -55,7 +55,9 @@ public class PutUserTest {
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.email").value(user.getEmail()))
                                 .andExpect(jsonPath("$.name").value(newName))
-                                .andExpect(jsonPath("$.lastname").value(newLastname));
+                                .andExpect(jsonPath("$.lastname").value(newLastname))
+                                .andExpect(jsonPath("$.uuid").value(user.getUuid().toString()))
+                                .andExpect(jsonPath("$.enabled").value(true));
         }
 
         @Test

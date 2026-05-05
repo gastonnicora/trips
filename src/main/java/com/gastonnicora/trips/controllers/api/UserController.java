@@ -132,6 +132,7 @@ public class UserController {
      * @return {@link UserDTO} con los datos del usuario con el UUID especificado.
      * @see UserService #getUserByUuid(UUID)
      */
+    // TEST 🧪: falta testear
     @GetMapping("/{uuid}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
@@ -262,6 +263,7 @@ public class UserController {
      * @throws ErrorException Si se quiere cambiar el rol a un SUPER_ADMIN.
      * @see UserService #setRole(UUID, UserChangeRole)
      */
+    // TEST 🧪: Falta test
     @PutMapping("/{uuid}/role")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
     @SecurityRequirement(name = "bearerAuth")
