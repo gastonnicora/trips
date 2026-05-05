@@ -60,7 +60,7 @@ public class GetUsersTest {
                 UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_Admin", password);
                 // cambio de rol a un usuario
                 userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
-                                .andExpect(status().isOk()); // TODO agregar User en cambio de rol
+                                .andExpect(status().isOk());
 
                 token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
                 userApi = new UserApiTestClient(mockMvc).withToken(token);
