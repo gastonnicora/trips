@@ -1,6 +1,5 @@
 package com.gastonnicora.trips.integration.user;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -16,13 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.helpers.UserApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.jayway.jsonpath.JsonPath;
 
 import jakarta.transaction.Transactional;
 
@@ -98,6 +95,6 @@ public class GetUserByUuidTest {
     @Test
     void shouldReturnNotFound_whenUserDoesNotExist() throws Exception {
         userApi.getUser("00000")
-                .andExpect(status().isNotFound()); // FIXME 🐛:  Cambiar errores a 404 cuando no encontrado o no existe
+                .andExpect(status().isNotFound()); // FIXME 🐛: Cambiar errores a 404 cuando no encontrado o no existe
     }
 }
