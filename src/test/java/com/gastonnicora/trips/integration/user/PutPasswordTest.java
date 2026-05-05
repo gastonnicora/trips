@@ -16,6 +16,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.gastonnicora.trips.helpers.AuthApiTestClient;
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.helpers.UserApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
@@ -59,6 +60,19 @@ public class PutPasswordTest {
                                 .andExpect(status().isOk());
                 userApi.updatePassword(newPassword, password, password)
                                 .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        void shouldBeAbleToLoginWithNewPasswordAfterChange() throws Exception {
+                String newPassword = "newPassword123";
+                userApi.updatePassword(password, newPassword, newPassword)
+                                .andExpect(status().isOk());
+
+                // Intentar login con la nueva contraseña
+                AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);
+                authApi.login(user.getEmail(), newPassword)
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.token").exists());
         }
 
         @ParameterizedTest

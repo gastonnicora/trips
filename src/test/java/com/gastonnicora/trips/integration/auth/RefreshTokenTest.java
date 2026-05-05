@@ -69,21 +69,22 @@ public class RefreshTokenTest {
     }
 
     @Test
-    void shouldRefreshFailsWhenRefreshTokenIsMissing() throws Exception {
+    void shouldRefreshFailWhenRefreshTokenIsMissing() throws Exception {
         authApi.refresh("")
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldRefreshFailsWhenRefreshTokenIsWrong() throws Exception {
+    void shouldRefreshFailWhenRefreshTokenIsWrong() throws Exception {
         authApi.refresh("Wrong-Refresh-Token")
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldRefreshFailsWhenRefreshTokenIsRevoque() throws Exception {
+    void shouldRefreshFailWhenRefreshTokenIsRevoked() throws Exception {
         authApi.refresh(refreshToken)
                 .andExpect(status().isOk());
+        // Intentar usar el mismo token por segunda vez (detección de reutilización)
         authApi.refresh(refreshToken)
                 .andExpect(status().isUnauthorized());
     }

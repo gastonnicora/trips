@@ -65,4 +65,25 @@ public class DeleteUserTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void shouldInvalidateTokenImmediatelyAfterDeletion() throws Exception {
+        // Borrar usuario exitosamente
+        userApi.deleteCurrentUser()
+                .andExpect(status().isOk());
+
+        // Intentar obtener mis datos con el token que acaba de ser borrado
+        userApi.getMe()
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldNotAllowDeletingAlreadyDeletedUser() throws Exception {
+        userApi.deleteCurrentUser()
+                .andExpect(status().isOk());
+
+        // El segundo intento debería fallar porque la sesión/usuario ya no existen
+        userApi.deleteCurrentUser()
+                .andExpect(status().isUnauthorized());
+    }
+
 }

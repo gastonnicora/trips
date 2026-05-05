@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.helpers.AuthApiTestClient;
-import com.gastonnicora.trips.helpers.UserApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 
 import jakarta.transaction.Transactional;
@@ -83,8 +82,6 @@ class LoginTest {
         void shouldReturnUnauthorizedWhenCredentialsAreInvalid(
                         String email,
                         String password) throws Exception {
-                UserApiTestClient userApi = new UserApiTestClient(mockMvc);
-                userApi.register("Juan", "Nicora", "test@test.com", "goodPassword", "goodPassword");
                 authApi.login(email, password)
                                 .andExpect(status().isUnauthorized())
                                 .andExpect(jsonPath("$.message").exists())
@@ -134,10 +131,10 @@ class LoginTest {
 
         static Stream<Arguments> invalidCredentials() {
                 return Stream.of(
-                                // Contraseña invalida
-                                Arguments.of("test@test.com", "wrongPassword"),
-                                // email incorrecto
-                                Arguments.of("wrongEmail@test.com", "goodPassword"));
+                                // Intento con email existente pero password errónea
+                                Arguments.of("user@test.com", "wrongPassword"),
+                                // Intento con email que no existe
+                                Arguments.of("nonexistent@test.com", "goodPassword"));
         }
 
 }

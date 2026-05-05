@@ -43,7 +43,10 @@ public class GetMeTest {
     void shouldReturnUserSuccessfully() throws Exception {
         userApi.getMe()
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value(user.getEmail()));
+                .andExpect(jsonPath("$.email").value(user.getEmail()))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.uuid").exists())
+                .andExpect(jsonPath("$.enabled").value(true));
     }
 
     @Test

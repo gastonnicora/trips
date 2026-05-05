@@ -44,14 +44,15 @@ public class GetUsersTest {
 
         @Test
         void shouldReturnOk_whenUserIsSuperAdmin() throws Exception {
-                 int length= 1;// Super admin definido en la app 
+                int length = 1;// Super admin definido en la app
                 userApi.getUsers()
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.data").isArray())
                                 .andExpect(jsonPath("$.data.length()").isNotEmpty())
                                 .andExpect(jsonPath("$.total").exists())
                                 .andExpect(jsonPath("$.total").value(length))
-                                .andExpect(jsonPath("$.data.length()").value(length));
+                                .andExpect(jsonPath("$.data.length()").value(length))
+                                .andExpect(jsonPath("$.data[?(@.email == '%s')]".formatted(email)).exists());
         }
 
         @Test
@@ -63,7 +64,7 @@ public class GetUsersTest {
 
                 token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
                 userApi = new UserApiTestClient(mockMvc).withToken(token);
-                int length= 2;// Super admin definido en la app mas el usuario recién creado
+                int length = 2;// Super admin definido en la app mas el usuario recién creado
                 userApi.getUsers()
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.data").isArray())
