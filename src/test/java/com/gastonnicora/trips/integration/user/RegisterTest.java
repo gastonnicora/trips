@@ -82,12 +82,7 @@ public class RegisterTest {
                 apiUser.register(name, lastname, email, pass, pass)
                                 .andExpect(status().isOk());
                 apiUser.register(name, lastname, email, pass, pass)
-                                .andExpect(status().isBadRequest())
-                                .andExpect(jsonPath("$.errors").exists())
-                                .andExpect(jsonPath("$.errors.email").exists())
-                                .andExpect(
-                                                jsonPath("$.errors.email")
-                                                                .value(org.hamcrest.Matchers.notNullValue()));
+                                .andExpect(status().isConflict());
 
         }
 

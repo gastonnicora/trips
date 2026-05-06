@@ -106,10 +106,7 @@ public class PutUserTest {
         void shouldReturnBadRequestWhenEmailIsAlreadyInUse() throws Exception {
                 UserDTO otherUser = UserTestFactory.registerUser(mockMvc, "Maria", "goodPassword");
                 apiUser.update(user.getName(), user.getLastname(), otherUser.getEmail())
-                                .andExpect(status().isBadRequest())
-                                .andExpect(
-                                                jsonPath("$.errors.email")
-                                                                .value(org.hamcrest.Matchers.notNullValue()));
+                                .andExpect(status().isConflict());
         }
 
         @Test

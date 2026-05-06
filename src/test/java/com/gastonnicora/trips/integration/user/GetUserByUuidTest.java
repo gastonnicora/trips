@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,7 +95,8 @@ public class GetUserByUuidTest {
 
     @Test
     void shouldReturnNotFound_whenUserDoesNotExist() throws Exception {
-        userApi.getUser("00000")
+        String nonExistentUuid = UUID.randomUUID().toString();
+        userApi.getUser(nonExistentUuid)
                 .andExpect(status().isNotFound()); 
     }
 }
