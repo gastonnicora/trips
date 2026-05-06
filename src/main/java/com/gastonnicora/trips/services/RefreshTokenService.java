@@ -73,7 +73,7 @@ public class RefreshTokenService {
      * Verifica que el refresh token sea válido, activo, no expirado y que provenga
      * del mismo dispositivo y IP.
      * <p>
-     * Si falla alguna verificación, lanza {@link ErrorException} con código 401.
+     * Si falla alguna verificación, lanza {@link UnauthorizedException} con código 401.
      * </p>
      * 
      * @param refreshToken Token a verificar

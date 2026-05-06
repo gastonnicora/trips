@@ -78,7 +78,7 @@ public class UserService {
      * Se valida que el correo electrónico no esté en uso antes de crear el nuevo
      * usuario.
      * El sistema cifra la contraseña antes de guardarla.
-     * Si el correo ya está en uso, se lanza una excepción {@link ErrorException}.
+     * Si el correo ya está en uso, se lanza una excepción {@link ConflictException}.
      * </p>
      * 
      * @param userCreate ({@link UserCreate}) que contiene la información
@@ -107,7 +107,7 @@ public class UserService {
      * Se busca el usuario mediante su UUID y se devuelve un objeto {@link UserDTO}
      * con los detalles del usuario actual.
      * Si el usuario no es encontrado, se lanza una excepción
-     * {@link ErrorException}.
+     * {@link NotFoundException}.
      * </p>
      * 
      * @return {@link UserDTO} Datos del usuario actual.
@@ -120,13 +120,13 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        throw new NotFoundException("El usuario no se encontró");
+        throw new NotFoundException("El usuario solicitado no existe");
     }
 
     /**
      * Obtiene los detalles de un usuario específico basado en su UUID.
      * <p>
-     * Si el usuario no existe, se lanza una excepción {@link ErrorException}.
+     * Si el usuario no existe, se lanza una excepción {@link NotFoundException}.
      * </p>
      * 
      * @param uuid UUID del usuario que se quiere obtener.
@@ -179,7 +179,7 @@ public class UserService {
     @Transactional
     public UserDTO updateUserByUuid(UUID uuid, UserPut userPut) {
         User userEntity = userRepository.findByUuid(uuid).orElseThrow(
-                () -> new NotFoundException("El usuario no se encontró"));
+                () -> new NotFoundException("El usuario solicitado no existe"));
         userEntity.setName(userPut.getName());
         userEntity.setLastname(userPut.getLastname());
         if (!userPut.getEmail().equals(userEntity.getEmail())) {
@@ -213,7 +213,7 @@ public class UserService {
     @Transactional
     public UserDTO updateCurrentUser(UserPut userPut) {
         User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new NotFoundException("El usuario no se encontró"));
+                () -> new NotFoundException("El usuario solicitado no existe"));
         userEntity.setName(userPut.getName());
         userEntity.setLastname(userPut.getLastname());
         if (!userPut.getEmail().equals(userEntity.getEmail())) {
@@ -235,7 +235,7 @@ public class UserService {
      * <p>
      * Se verifica que la contraseña actual proporcionada coincida con la
      * almacenada. Si no es correcta,
-     * se lanza una excepción {@link ErrorException}. Luego, se actualiza la
+     * se lanza una excepción {@link ValidationException}. Luego, se actualiza la
      * contraseña y se desactivan
      * todos los tokens de refresco.
      * </p>
@@ -244,12 +244,13 @@ public class UserService {
      *                           credenciales.
      * @return {@link UserDTO} Datos del usuario con la contraseña actualizada.
      * @throws ValidationException Si la contraseña actual es incorrecta.
+     * @throws NotFoundException   Si el usuario no existe.
      */
 
     @Transactional
     public UserDTO updatePassword(UserChangePassword userChangePassword) {
         User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new NotFoundException("El usuario no se encontró"));
+                () -> new NotFoundException("El usuario solicitado no existe"));
         if (!passwordEncoder.matches(userChangePassword.getPasswordOld(), userEntity.getPassword())) {
             ValidationException ex = new ValidationException("Error en la validación");
             ex.addError("passwordOld", "La contraseña actual es incorrecta");
@@ -282,7 +283,7 @@ public class UserService {
      */
     public UserDTO setRole(UUID uuid, UserChangeRole role) {
         User user = userRepository.findByUuid(uuid).orElseThrow(
-                () -> new NotFoundException("El usuario no se encontró"));
+                () -> new NotFoundException("El usuario solicitado no existe"));
         if (user.getRole().contains(Role.SUPER_ADMIN)) {
             ValidationException ex = new ValidationException("Error en la validación");
             ex.addError("role", "No se puede modificar los roles del SUPER_ADMIN");
@@ -311,7 +312,7 @@ public class UserService {
     @Transactional
     public void deleteCurrentUser() {
         User user = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new NotFoundException("El usuario no se encontró"));
+                () -> new NotFoundException("El usuario solicitado no existe"));
         user.setEnabled(false);
         user.addVersion();
         userRepository.save(user);
