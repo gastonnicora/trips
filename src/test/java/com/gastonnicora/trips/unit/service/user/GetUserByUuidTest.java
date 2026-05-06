@@ -50,7 +50,7 @@ class GetUserByUuidTest {
         User user = new User("John", "Doe", "john@mail.com", "pass", Set.of(Role.USER));
         user.setUuid(uuid);
 
-        UserDTO dto = new UserDTO(); // TODO 🚀: Agregar constructor vacio
+        UserDTO dto = new UserDTO();
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
         when(userMapper.toDTO(user)).thenReturn(dto);
