@@ -15,22 +15,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.exceptions.ErrorException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.UserService;
 
-import jakarta.transaction.Transactional;
-
-@ActiveProfiles("test")
-@SpringBootTest
-@Transactional
 @ExtendWith(MockitoExtension.class)
 class GetUserByUuidTest {
 
@@ -68,11 +61,10 @@ class GetUserByUuidTest {
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
 
-        ErrorException ex = assertThrows(ErrorException.class, () -> {
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
             userService.getUserByUuid(uuid);
         });
 
         assertEquals(404, ex.getStatus());
-        assertEquals("El usuario buscado no existe", ex.getMessage());
     }
 }

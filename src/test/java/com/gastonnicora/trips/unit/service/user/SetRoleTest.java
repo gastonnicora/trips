@@ -2,10 +2,8 @@ package com.gastonnicora.trips.unit.service.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
@@ -18,25 +16,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.exceptions.ErrorException;
+import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.UserService;
 
-import jakarta.transaction.Transactional;
-
-@ActiveProfiles("test")
-@SpringBootTest
-@Transactional
 @ExtendWith(MockitoExtension.class)
 public class SetRoleTest {
+
     @Mock
     private UserRepository userRepository;
 
@@ -61,7 +53,7 @@ public class SetRoleTest {
 
         userService.setRole(uuid, request);
 
-        assertTrue(user.getRole().contains(Role.USER)); 
+        assertTrue(user.getRole().contains(Role.USER));
         assertEquals(Set.of(Role.ADMIN, Role.USER), user.getRole());
     }
 
@@ -89,15 +81,15 @@ public class SetRoleTest {
 
         User user = new User("Super", "Admin", "mail", "pass",
                 Set.of(Role.SUPER_ADMIN));
+        user.setUuid(uuid);
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
 
         UserChangeRole request = new UserChangeRole();
         request.setRoles(new HashSet<>(Set.of(Role.ADMIN)));
 
-        assertThrows(ErrorException.class, () -> {
+        assertThrows(ValidationException.class, () -> {
             userService.setRole(uuid, request);
         });
     }
-
 }
