@@ -132,9 +132,8 @@ public class UserController {
      * @return {@link UserDTO} con los datos del usuario con el UUID especificado.
      * @see UserService #getUserByUuid(UUID)
      */
-    // TEST 🧪: falta testear
     @GetMapping("/{uuid}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener usuario", description = "Obtiene un usuario por su uuid")
     public UserDTO getUserByUuid(@PathVariable UUID uuid) {
@@ -158,7 +157,7 @@ public class UserController {
      * </p>
      * 
      * @param userCreateRequest ({@link UserCreate}) con los datos válidos para el
-     *               nuevo usuario.
+     *                          nuevo usuario.
      * @return {@link UserDTO} con los datos del usuario recién creado.
      * @throws ErrorException Si el correo electrónico ya está en
      *                        uso por otro usuario.
@@ -190,7 +189,7 @@ public class UserController {
      * </p>
      * 
      * @param userPutReques ({@link UserPut}) con los datos válidos para el
-     *               nuevo usuario.
+     *                      nuevo usuario.
      * @return {@link UserDTO} con los datos actualizados del usuario.
      * @throws ErrorException Si el correo electrónico ya está en uso por otro
      *                        usuario.
@@ -223,8 +222,9 @@ public class UserController {
      * cambio de contraseña.
      * </p>
      * 
-     * @param userChangePasswordRequest ({@link UserChangePassword}) con los datos válidos para el
-     *               cambio de contraseña.
+     * @param userChangePasswordRequest ({@link UserChangePassword}) con los datos
+     *                                  válidos para el
+     *                                  cambio de contraseña.
      * @return {@link UserDTO} con los datos del usuario.
      * @throws ErrorException Si la contraseña actual no es válida.
      * @see UserService #updatePassword(UserChangePassword)
@@ -254,9 +254,10 @@ public class UserController {
      * rol del usuario.
      * </p>
      * 
-     * @param uuid   ({@link UUID}) del usuario a modificar.
-     * @param userChangeRoleRequest ({@link UserChangeRole}) con los datos válidos para el
-     *               cambio de roles.
+     * @param uuid                  ({@link UUID}) del usuario a modificar.
+     * @param userChangeRoleRequest ({@link UserChangeRole}) con los datos válidos
+     *                              para el
+     *                              cambio de roles.
      * @return {@link UserDTO} con los datos del usuario.
      * @throws ErrorException Si el usuario no existe.
      * @throws ErrorException Si el rol no es válido.

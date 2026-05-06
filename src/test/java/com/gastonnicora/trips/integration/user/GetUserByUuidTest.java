@@ -50,7 +50,7 @@ public class GetUserByUuidTest {
 
     @Test
     void shouldReturnOk_whenSuperAdminSeachAndUserExists() throws Exception {
-        userApi.getUser(user.getUuid().toString()) // FIXME 🐛: agregar permisos a superadmin
+        userApi.getUser(user.getUuid().toString())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(user.getName()))
                 .andExpect(jsonPath("$.lastname").value(user.getLastname()))
