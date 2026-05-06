@@ -19,7 +19,6 @@ import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.dtos.response.ListResponse;
-import com.gastonnicora.trips.exceptions.ErrorException;
 import com.gastonnicora.trips.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -159,8 +158,6 @@ public class UserController {
      * @param userCreateRequest ({@link UserCreate}) con los datos válidos para el
      *                          nuevo usuario.
      * @return {@link UserDTO} con los datos del usuario recién creado.
-     * @throws ErrorException Si el correo electrónico ya está en
-     *                        uso por otro usuario.
      * @see UserService #createUser(UserCreate)
      */
     @PostMapping
@@ -191,8 +188,6 @@ public class UserController {
      * @param userPutReques ({@link UserPut}) con los datos válidos para el
      *                      nuevo usuario.
      * @return {@link UserDTO} con los datos actualizados del usuario.
-     * @throws ErrorException Si el correo electrónico ya está en uso por otro
-     *                        usuario.
      * @see UserService #updateCurrentUser(UserPut)
      */
     @PutMapping
@@ -226,7 +221,6 @@ public class UserController {
      *                                  válidos para el
      *                                  cambio de contraseña.
      * @return {@link UserDTO} con los datos del usuario.
-     * @throws ErrorException Si la contraseña actual no es válida.
      * @see UserService #updatePassword(UserChangePassword)
      */
     @PutMapping("/me/password")
@@ -259,9 +253,6 @@ public class UserController {
      *                              para el
      *                              cambio de roles.
      * @return {@link UserDTO} con los datos del usuario.
-     * @throws ErrorException Si el usuario no existe.
-     * @throws ErrorException Si el rol no es válido.
-     * @throws ErrorException Si se quiere cambiar el rol a un SUPER_ADMIN.
      * @see UserService #setRole(UUID, UserChangeRole)
      */
     // TEST 🧪: Falta test
@@ -287,7 +278,6 @@ public class UserController {
      * usuario actual.
      * </p>
      * 
-     * @throws ErrorException Si el usuario no existe.
      * @see UserService #deleteCurrentUser()
      */
     @DeleteMapping

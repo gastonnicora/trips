@@ -64,11 +64,11 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     /**
      * Elimina un token de refresco por su valor.
      * 
-     * @param token Token de refresco
+     * @param refreshToken Token de refresco
      */
     @Modifying
     @Transactional
-    void deleteByRefreshToken(String token);
+    void deleteByRefreshToken(String refreshToken);
 
     /**
      * Busca un token por su UUID.

@@ -18,7 +18,7 @@ import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.dtos.response.auth.RefreshResponse;
 import com.gastonnicora.trips.entities.RefreshToken;
 import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.exceptions.ErrorException;
+import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.JwtService;
 import com.gastonnicora.trips.services.RefreshTokenService;
@@ -85,8 +85,8 @@ public class AuthController {
      *                 (User-Agent, IP)
      * @param response Respuesta HTTP donde se puede agregar la cookie
      * @return {@link LoginResponse} con el token de acceso y opcionalmente el
-     *         refresh token
-     * @throws ErrorException Si el email o contraseña son inválidos
+     *         refresh token.
+     * @throws UnauthorizedException Si las credenciales son inválidas.
      */
     @PostMapping("/login")
     @Operation(summary = "Inicio de sesión", description = "Inicia sesión con email y contraseña y recibe un token")
@@ -128,7 +128,7 @@ public class AuthController {
      * @param response    Respuesta HTTP para agregar la cookie (web)
      * @return {@link RefreshResponse} con el nuevo token de acceso y opcionalmente
      *         el refresh token
-     * @throws ErrorException Si el refresh token es inválido o expirado
+     * @throws UnauthorizedException Si el refresh token es inválido o expirado
      */
     @PostMapping("/refresh")
     public RefreshResponse refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
@@ -145,7 +145,7 @@ public class AuthController {
             refreshToken = body.getRefreshToken();
         }
         if (refreshToken == null) {
-            throw new ErrorException("Token inválido o expirado", 401);
+            throw new UnauthorizedException("Token inválido o expirado");
         }
 
         String userAgent = request.getHeader("User-Agent");
@@ -179,7 +179,7 @@ public class AuthController {
      *                    (opcional)
      * @param response    Respuesta HTTP para limpiar la cookie
      * @return {@link ResponseEntity} con estado 200 si la operación fue exitosa
-     * @throws ErrorException Si el refresh token es inválido o expirado
+     * @throws UnauthorizedException Si el refresh token es inválido o expirado
      */
     @PostMapping("/logout")
     @SecurityRequirement(name = "bearerAuth")
@@ -197,7 +197,7 @@ public class AuthController {
         if (refreshToken != null && !rt.isEmpty() && rt.get() != null) {
             refreshTokenService.revokeToken(refreshToken);
         } else {
-            throw new ErrorException("Token inválido o expirado", 401);
+            throw new UnauthorizedException("Token inválido o expirado");
         }
 
         if ("web".equals(rt.get().getDevice())) {

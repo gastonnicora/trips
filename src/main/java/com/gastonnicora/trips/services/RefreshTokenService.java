@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gastonnicora.trips.entities.RefreshToken;
-import com.gastonnicora.trips.exceptions.ErrorException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
+import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 
 /**
@@ -79,29 +80,28 @@ public class RefreshTokenService {
      * @param currentIp    IP del dispositivo actual
      * @param currentUA    User agent del dispositivo actual
      * @return {@link RefreshToken} válido
-     * @throws ErrorException Si el token es inválido, expirado o deshabilitado
+     * @throws UnauthorizedException Si el token es inválido, expirado o deshabilitado
      */
     public RefreshToken verifyToken(String refreshToken, String currentIp, String currentUA) {
 
         if (refreshToken == null) {
-            throw new ErrorException("Token inválido o expirado", 401);
+            throw new UnauthorizedException("Token inválido o expirado");
         }
 
         RefreshToken rt = repo.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new ErrorException("Token inválido o expirado", 401));
+                .orElseThrow(() -> new UnauthorizedException("Token inválido o expirado"));
 
         if (!rt.isActive()) {
-            repo.deleteByRefreshToken(rt.getToken());
-            throw new ErrorException("Token inválido o expirado", 401);
+            throw new UnauthorizedException("Token inválido o expirado");
         }
 
         if (rt.getExpiryDate().isBefore(Instant.now())) {
-            throw new ErrorException("Token inválido o expirado", 401);
+            throw new UnauthorizedException("Token inválido o expirado");
         }
 
         if (!rt.getIp().equals(currentIp) || !rt.getUserAgent().equals(currentUA)) {
-            repo.deleteByRefreshToken(rt.getToken());
-            throw new ErrorException("Token inválido o expirado", 401);
+            this.revokeToken(refreshToken);
+            throw new UnauthorizedException("Token inválido o expirado");
         }
 
         return rt;

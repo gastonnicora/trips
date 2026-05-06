@@ -19,7 +19,9 @@ import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.exceptions.ErrorException;
+import com.gastonnicora.trips.exceptions.ConflictException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
+import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
 
@@ -78,13 +80,11 @@ public class UserService {
      * @param userCreate ({@link UserCreate}) que contiene la información
      *                   para crear el nuevo usuario.
      * @return {@link UserDTO} Datos del usuario recién creado.
-     * @throws ErrorException Si el correo electrónico ya está siendo utilizado.
+     * @throws ConflictException Si el correo electrónico ya está siendo utilizado.
      */
     public UserDTO createUser(UserCreate userCreate) {
         if (userRepository.existsByEmailAndEnabledTrue(userCreate.getEmail())) {
-            ErrorException ex = new ErrorException("Error en la validación", 400);
-            ex.addError("email", "El email ya esta siendo utilizado");
-            throw ex;
+            throw new ConflictException("El email ya esta en uso");
         }
         userCreate.setPassword(passwordEncoder.encode(userCreate.getPassword()));
         User newUser = new User(
@@ -107,8 +107,8 @@ public class UserService {
      * </p>
      * 
      * @return {@link UserDTO} Datos del usuario actual.
-     * @throws ErrorException Si el usuario actual no es encontrado en la base de
-     *                        datos.
+     * @throws NotFoundException Si el usuario actual no es encontrado en la base de
+     *                           datos.
      */
     // WARNING ⚠️: Repeticion de codigo(getUsersByUUid)
     public UserDTO getCurrentUser() {
@@ -116,8 +116,7 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        ErrorException ex = new ErrorException("El usuario no se encontró", 400);
-        throw ex;
+        throw new NotFoundException("El usuario no se encontró");
     }
 
     /**
@@ -128,7 +127,7 @@ public class UserService {
      * 
      * @param uuid UUID del usuario que se quiere obtener.
      * @return {@link UserDTO} Datos del usuario con el UUID especificado.
-     * @throws ErrorException Si el usuario no existe.
+     * @throws NotFoundException Si el usuario no existe.
      */
     // WARNING ⚠️: codigo repetido (getCurrentUser)
     public UserDTO getUserByUuid(UUID uuid) {
@@ -136,8 +135,7 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.toDTO(user.get());
         }
-        ErrorException ex = new ErrorException("El usuario buscado no existe", 400);
-        throw ex;
+        throw new NotFoundException("El usuario solicitado no existe");
     }
 
     /**
@@ -170,20 +168,19 @@ public class UserService {
      * @param uuid    UUID del usuario a actualizar.
      * @param userPut ({@link UserPut}) con los nuevos datos del usuario.
      * @return {@link UserDTO} Datos actualizados del usuario.
-     * @throws ErrorException Si el usuario no existe o el email ya está en uso.
+     * @throws NotFoundException Si el usuario no existe.
+     * @throws ConflictException Si el email ya está en uso.
      */
     // WARNING ⚠️:Repeticion de codigo(updateCurrentUser)
     @Transactional
     public UserDTO updateUserByUuid(UUID uuid, UserPut userPut) {
         User userEntity = userRepository.findByUuid(uuid).orElseThrow(
-                () -> new ErrorException("El usuario no existe", 400));
+                () -> new NotFoundException("El usuario no se encontró"));
         userEntity.setName(userPut.getName());
         userEntity.setLastname(userPut.getLastname());
         if (!userPut.getEmail().equals(userEntity.getEmail())) {
             if (userRepository.existsByEmailAndEnabledTrue(userPut.getEmail())) {
-                ErrorException ex = new ErrorException("Error en la validación", 400);
-                ex.addError("email", "El email ya esta en uso");
-                throw ex;
+                throw new ConflictException("El email ya esta en uso");
             }
             userEntity.setEmail(userPut.getEmail());
             userEntity.addVersion();
@@ -206,20 +203,18 @@ public class UserService {
      * 
      * @param userPut ({@link UserPut}) con los nuevos datos del usuario.
      * @return {@link UserDTO} Datos actualizados del usuario.
-     * @throws ErrorException Si el usuario no existe o el email ya está en uso.
+     * @throws NotFoundException Si el usuario no existe.
+     * @throws ConflictException Si el email ya está en uso.
      */
     @Transactional
     public UserDTO updateCurrentUser(UserPut userPut) {
         User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new ErrorException("El usuario no existe", 400));
+                () -> new NotFoundException("El usuario no se encontró"));
         userEntity.setName(userPut.getName());
         userEntity.setLastname(userPut.getLastname());
         if (!userPut.getEmail().equals(userEntity.getEmail())) {
             if (userRepository.existsByEmailAndEnabledTrue(userPut.getEmail())) {
-                ErrorException ex = new ErrorException("Error en la validación", 400);
-                ex.addError("email", "El email ya esta en uso");
-
-                throw ex;
+                throw new ConflictException("El email ya esta en uso");
             }
             userEntity.setEmail(userPut.getEmail());
             userEntity.addVersion();
@@ -244,15 +239,15 @@ public class UserService {
      * @param userChangePassword ({@link UserChangePassword}) con las nuevas
      *                           credenciales.
      * @return {@link UserDTO} Datos del usuario con la contraseña actualizada.
-     * @throws ErrorException Si la contraseña actual es incorrecta.
+     * @throws ValidationException Si la contraseña actual es incorrecta.
      */
 
     @Transactional
     public UserDTO updatePassword(UserChangePassword userChangePassword) {
         User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new ErrorException("El usuario no existe", 400));
+                () -> new NotFoundException("El usuario no se encontró"));
         if (!passwordEncoder.matches(userChangePassword.getPasswordOld(), userEntity.getPassword())) {
-            ErrorException ex = new ErrorException("Error en la validación", 400);
+            ValidationException ex = new ValidationException("Error en la validación");
             ex.addError("passwordOld", "La contraseña actual es incorrecta");
 
             throw ex;
@@ -277,14 +272,14 @@ public class UserService {
      * @param role ({@link UserChangeRole}) que contiene los nuevos roles para el
      *             usuario.
      * @return {@link UserDTO} Datos del usuario con los roles actualizados.
-     * @throws ErrorException Si el usuario no existe o si se intenta cambiar o
-     *                        asignar el rol de {@link Role#SUPER_ADMIN}.
+     * @throws NotFoundException Si el usuario no existe.
+     * @throws ValidationException si se intenta cambiar el rol de {@link Role#SUPER_ADMIN}.
      */
     public UserDTO setRole(UUID uuid, UserChangeRole role) {
         User user = userRepository.findByUuid(uuid).orElseThrow(
-                () -> new ErrorException("El usuario no existe", 400));
+                () -> new NotFoundException("El usuario no se encontró"));
         if (user.getRole().contains(Role.SUPER_ADMIN)) {
-            ErrorException ex = new ErrorException("Error en la validación", 400);
+            ValidationException ex = new ValidationException("Error en la validación");
             ex.addError("role", "No se puede modificar los roles del SUPER_ADMIN");
             throw ex;
         }
@@ -305,13 +300,13 @@ public class UserService {
      * mediante la desactivación de sus tokens de refresco.
      * </p>
      * 
-     * @throws ErrorException Si el usuario no existe en la base de datos.
+     * @throws NotFoundException Si el usuario no existe en la base de datos.
      */
 
     @Transactional
     public void deleteCurrentUser() {
         User user = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new ErrorException("El usuario no existe", 400));
+                () -> new NotFoundException("El usuario no se encontró"));
         user.setEnabled(false);
         user.addVersion();
         userRepository.save(user);
@@ -328,8 +323,6 @@ public class UserService {
      *
      * @param email    String con el email del SUPER_ADMIN a crear.
      * @param password String con la contraseña del SUPER_ADMIN a crear.
-     * @throws ErrorException Si ya existe un SUPER_ADMIN o si los parámetros
-     *                        de entrada son inválidos.
      */
 
     public void createSuperAdminIfNotExists(String email, String password) {
