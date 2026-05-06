@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
  * con los datos existentes, por ejemplo:
  * </p>
  * <ul>
- *   <li>Intentar registrar un usuario con un email que ya existe</li>
- *   <li>Actualizar un recurso que ha sido modificado por otra operación</li>
- *   <li>Violaciones de reglas de negocio que impiden la acción solicitada</li>
+ * <li>Intentar registrar un usuario con un email que ya existe</li>
+ * <li>Actualizar un recurso que ha sido modificado por otra operación</li>
+ * <li>Violaciones de reglas de negocio que impiden la acción solicitada</li>
  * </ul>
  *
  * <p>

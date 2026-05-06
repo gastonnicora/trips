@@ -110,7 +110,8 @@ public class LogoutTest {
     void shouldNotAllowLogoutTwiceWithSameToken() throws Exception {
         // Primer logout exitoso
         authApi.logout(refreshToken).andExpect(status().isOk());
-        // El segundo intento con el mismo token debe fallar porque la sesión ya fue invalidada en el filtro
+        // El segundo intento con el mismo token debe fallar porque la sesión ya fue
+        // invalidada en el filtro
         authApi.logout(refreshToken).andExpect(status().isUnauthorized());
     }
 

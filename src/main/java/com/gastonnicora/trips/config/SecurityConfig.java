@@ -92,9 +92,10 @@ public class SecurityConfig {
          * Spring Security.
          * </p>
          * 
-         * @param config ({@link AuthenticationConfiguration}) Configuración de autenticación de Spring Security.
+         * @param config ({@link AuthenticationConfiguration}) Configuración de
+         *               autenticación de Spring Security.
          * @return {@link AuthenticationManager} instancia para manejar autenticación.
-         * @throws  Exception si ocurre algún error al obtener el AuthenticationManager.
+         * @throws Exception si ocurre algún error al obtener el AuthenticationManager.
          */
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -114,7 +115,8 @@ public class SecurityConfig {
          * </p>
          * 
          * @param http ({@link HttpSecurity}) de Spring Security.
-         * @return {@link SecurityFilterChain} cadena de filtros de seguridad configurada.
+         * @return {@link SecurityFilterChain} cadena de filtros de seguridad
+         *         configurada.
          * @throws Exception si ocurre un error al configurar la seguridad.
          * @see JwtAuthenticationFilter
          */
@@ -152,8 +154,10 @@ public class SecurityConfig {
          * </p>
          * 
          * @param http                  ({@link HttpSecurity}) de Spring Security.
-         * @param authenticationManager ({@link AuthenticationManager}) para autenticar usuarios.
-         * @return {@link SecurityFilterChain} cadena de filtros de seguridad configurada.
+         * @param authenticationManager ({@link AuthenticationManager}) para autenticar
+         *                              usuarios.
+         * @return {@link SecurityFilterChain} cadena de filtros de seguridad
+         *         configurada.
          * @throws Exception si ocurre un error al configurar la seguridad.
          */
         @Bean

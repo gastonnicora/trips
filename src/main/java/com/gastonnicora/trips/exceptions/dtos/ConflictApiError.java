@@ -29,17 +29,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @version 1.0
  * @since 2026-05-06
  */
-@Schema(
-    description = "Conflicto de recursos",
-    example = """
-    {
-      "status": 409,
-      "message": "Conflicto de recursos",
-      "timestamp": "2026-05-06T12:34:56",
-      "errors": null
-    }
-    """
-)
+@Schema(description = "Conflicto de recursos", example = """
+        {
+          "status": 409,
+          "message": "Conflicto de recursos",
+          "timestamp": "2026-05-06T12:34:56",
+          "errors": null
+        }
+        """)
 public class ConflictApiError extends ApiError {
 
     /**

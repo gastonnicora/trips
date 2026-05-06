@@ -16,16 +16,18 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 
 /**
- * Servicio para la generación, validación y extracción de información de tokens JWT.
+ * Servicio para la generación, validación y extracción de información de tokens
+ * JWT.
  * <p>
- * Utiliza HS256 con una clave secreta definida en {@code application.properties}.
+ * Utiliza HS256 con una clave secreta definida en
+ * {@code application.properties}.
  * </p>
  * 
  * Funcionalidades:
  * <ul>
- *   <li>Generar tokens JWT con email, versión y UUID del usuario.</li>
- *   <li>Extraer información del token (email, versión, UUID).</li>
- *   <li>Validar que un token sea válido.</li>
+ * <li>Generar tokens JWT con email, versión y UUID del usuario.</li>
+ * <li>Extraer información del token (email, versión, UUID).</li>
+ * <li>Validar que un token sea válido.</li>
  * </ul>
  * 
  * @author Gastón

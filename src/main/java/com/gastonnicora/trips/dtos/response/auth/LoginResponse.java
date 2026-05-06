@@ -11,13 +11,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Campos principales:
  * </p>
  * <ul>
- *   <li>{@code token}: Token JWT de acceso.</li>
- *   <li>{@code refreshToken}: Token UUID de refresco.</li>
+ * <li>{@code token}: Token JWT de acceso.</li>
+ * <li>{@code refreshToken}: Token UUID de refresco.</li>
  * </ul>
  * 
  * <p>
  * Ejemplo de respuesta JSON:
  * </p>
+ * 
  * <pre>
  * {
  *   "token": "eyJhbGciOiJIUzI1NiJ9...",

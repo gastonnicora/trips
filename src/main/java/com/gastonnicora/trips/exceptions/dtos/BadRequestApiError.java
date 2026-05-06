@@ -49,7 +49,8 @@ public class BadRequestApiError extends ApiError {
 
     /**
      * Constructor opcional si querés personalizar el mensaje.
-     *  @param message Mensaje descriptivo del error
+     * 
+     * @param message Mensaje descriptivo del error
      */
     public BadRequestApiError(String message) {
         super(HttpStatus.BAD_REQUEST.value(), message);

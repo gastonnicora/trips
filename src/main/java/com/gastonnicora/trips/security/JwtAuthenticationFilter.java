@@ -21,15 +21,20 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Filtro de autenticación JWT para Spring Security.
  * <p>
- * Este filtro intercepta todas las solicitudes HTTP y realiza los siguientes pasos:
+ * Este filtro intercepta todas las solicitudes HTTP y realiza los siguientes
+ * pasos:
  * </p>
  * <ul>
- *   <li>Verifica que la cabecera "Authorization" contenga un token Bearer válido.</li>
- *   <li>Valida el token JWT usando {@link JwtService}.</li>
- *   <li>Extrae el username y la versión del token del JWT.</li>
- *   <li>Verifica que el RefreshToken asociado esté activo y que la versión coincida.</li>
- *   <li>Si todo es válido, establece la autenticación en el contexto de Spring Security.</li>
- *   <li>Si el token es inválido o no cumple las condiciones, la solicitud continúa sin autenticación.</li>
+ * <li>Verifica que la cabecera "Authorization" contenga un token Bearer
+ * válido.</li>
+ * <li>Valida el token JWT usando {@link JwtService}.</li>
+ * <li>Extrae el username y la versión del token del JWT.</li>
+ * <li>Verifica que el RefreshToken asociado esté activo y que la versión
+ * coincida.</li>
+ * <li>Si todo es válido, establece la autenticación en el contexto de Spring
+ * Security.</li>
+ * <li>Si el token es inválido o no cumple las condiciones, la solicitud
+ * continúa sin autenticación.</li>
  * </ul>
  * <p>
  * Utiliza {@link UserDetailsServiceImpl} para cargar los detalles del usuario.

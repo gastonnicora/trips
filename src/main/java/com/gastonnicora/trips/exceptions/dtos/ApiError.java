@@ -21,10 +21,11 @@ import lombok.ToString;
  * Campos principales:
  * </p>
  * <ul>
- *   <li>{@code status}: Código HTTP del error.</li>
- *   <li>{@code message}: Mensaje descriptivo del error.</li>
- *   <li>{@code timestamp}: Fecha y hora en que se generó el error.</li>
- *   <li>{@code errors}: Map de errores detallados (por ejemplo, validaciones de campos).</li>
+ * <li>{@code status}: Código HTTP del error.</li>
+ * <li>{@code message}: Mensaje descriptivo del error.</li>
+ * <li>{@code timestamp}: Fecha y hora en que se generó el error.</li>
+ * <li>{@code errors}: Map de errores detallados (por ejemplo, validaciones de
+ * campos).</li>
  * </ul>
  * 
  * <p>
@@ -71,7 +72,7 @@ public abstract class ApiError {
      * Inicializa el {@code timestamp} automáticamente con la fecha y hora actual.
      * </p>
      *
-     * @param status Código HTTP del error
+     * @param status  Código HTTP del error
      * @param message Mensaje descriptivo del error
      */
     public ApiError(int status, String message) {

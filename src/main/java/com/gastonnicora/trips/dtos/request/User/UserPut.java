@@ -8,9 +8,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Hereda de {@link UserBasic} e incluye los campos:
  * </p>
  * <ul>
- *   <li>{@code name}: Nombre del usuario</li>
- *   <li>{@code lastname}: Apellido del usuario</li>
- *   <li>{@code email}: Correo electrónico del usuario</li>
+ * <li>{@code name}: Nombre del usuario</li>
+ * <li>{@code lastname}: Apellido del usuario</li>
+ * <li>{@code email}: Correo electrónico del usuario</li>
  * </ul>
  * <p>
  * Se utiliza típicamente en los endpoints de actualización de usuarios (PUT).
@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * <p>
  * Ejemplo de uso:
  * </p>
+ * 
  * <pre>
  * UserPut userPut = new UserPut("Gastón", "Nicora", "gaston@example.com");
  * String nombre = userPut.getName();
@@ -34,9 +35,9 @@ public class UserPut extends UserBasic {
     /**
      * Constructor completo.
      * 
-     * @param name Nombre del usuario
+     * @param name     Nombre del usuario
      * @param lastname Apellido del usuario
-     * @param email Correo electrónico
+     * @param email    Correo electrónico
      */
     public UserPut(String name, String lastname, String email) {
         super(name, lastname, email);

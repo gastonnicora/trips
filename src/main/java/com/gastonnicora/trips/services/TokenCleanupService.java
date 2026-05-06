@@ -9,16 +9,18 @@ import org.springframework.stereotype.Service;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 
 /**
- * Servicio programado para limpiar tokens expirados o inactivos de la base de datos.
+ * Servicio programado para limpiar tokens expirados o inactivos de la base de
+ * datos.
  * <p>
  * Se utilizan tareas programadas (cron) para eliminar:
  * </p>
  * <ul>
- *   <li>Tokens cuya fecha de expiración ya pasó.</li>
- *   <li>Tokens que están desactivados (no activos).</li>
+ * <li>Tokens cuya fecha de expiración ya pasó.</li>
+ * <li>Tokens que están desactivados (no activos).</li>
  * </ul>
  * <p>
- * Esto ayuda a mantener la base de datos limpia y evitar acumulación innecesaria de tokens.
+ * Esto ayuda a mantener la base de datos limpia y evitar acumulación
+ * innecesaria de tokens.
  * </p>
  * 
  * Cron de ejemplo utilizado: "0 0 * * * *" → se ejecuta al inicio de cada hora.

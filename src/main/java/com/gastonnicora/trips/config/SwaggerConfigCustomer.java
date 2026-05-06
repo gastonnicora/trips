@@ -42,7 +42,8 @@ public class SwaggerConfigCustomer {
      * de la operación.
      * </p>
      * 
-     * @return {@link OperationCustomizer} para agregar información de roles a las operaciones
+     * @return {@link OperationCustomizer} para agregar información de roles a las
+     *         operaciones
      */
     @Bean
     public OperationCustomizer customizePreAuthorize() {

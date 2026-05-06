@@ -78,13 +78,14 @@ public class UserApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-     public ResultActions getUser(String uuid) throws Exception {
-        return mockMvc.perform(get("/api/users/"+uuid)
+    public ResultActions getUser(String uuid) throws Exception {
+        return mockMvc.perform(get("/api/users/" + uuid)
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
                 .contentType(MediaType.APPLICATION_JSON));
     }
+
     public ResultActions getUsers() throws Exception {
         return mockMvc.perform(get("/api/users")
                 .with(csrf())
@@ -94,19 +95,19 @@ public class UserApiTestClient {
     }
 
     public ResultActions changeRole(String uuid, Set<Role> role) throws Exception {
-        return mockMvc.perform(put("/api/users/"+uuid+"/role")
+        return mockMvc.perform(put("/api/users/" + uuid + "/role")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
                 .contentType(MediaType.APPLICATION_JSON)
-            
+
                 .content("""
-                    {
-                    "roles": %s 
-                    }""".formatted(setToJson(role))));
+                        {
+                        "roles": %s
+                        }""".formatted(setToJson(role))));
     }
 
-    private String setToJson(Set<Role> roles){
+    private String setToJson(Set<Role> roles) {
         return roles.stream()
                 .map(role -> "\"" + role.name() + "\"")
                 .collect(Collectors.joining(", ", "[", "]"));

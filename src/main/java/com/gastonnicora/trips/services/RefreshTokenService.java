@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gastonnicora.trips.entities.RefreshToken;
-import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 
@@ -22,14 +21,16 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
  * 
  * Flujo principal de verificación:
  * <ol>
- *   <li>Se valida que el token no sea nulo.</li>
- *   <li>Se verifica que exista en la base de datos.</li>
- *   <li>Se comprueba que el token esté activo.</li>
- *   <li>Se verifica que no haya expirado.</li>
- *   <li>Se asegura que provenga del mismo dispositivo y IP que al momento de crearlo.</li>
+ * <li>Se valida que el token no sea nulo.</li>
+ * <li>Se verifica que exista en la base de datos.</li>
+ * <li>Se comprueba que el token esté activo.</li>
+ * <li>Se verifica que no haya expirado.</li>
+ * <li>Se asegura que provenga del mismo dispositivo y IP que al momento de
+ * crearlo.</li>
  * </ol>
  * 
- * Además permite revocar un token específico o desactivar todos los tokens activos
+ * Además permite revocar un token específico o desactivar todos los tokens
+ * activos
  * de un usuario, incrementando su versión para invalidar tokens previos.
  * 
  * @author Gastón
@@ -73,14 +74,16 @@ public class RefreshTokenService {
      * Verifica que el refresh token sea válido, activo, no expirado y que provenga
      * del mismo dispositivo y IP.
      * <p>
-     * Si falla alguna verificación, lanza {@link UnauthorizedException} con código 401.
+     * Si falla alguna verificación, lanza {@link UnauthorizedException} con código
+     * 401.
      * </p>
      * 
      * @param refreshToken Token a verificar
      * @param currentIp    IP del dispositivo actual
      * @param currentUA    User agent del dispositivo actual
      * @return {@link RefreshToken} válido
-     * @throws UnauthorizedException Si el token es inválido, expirado o deshabilitado
+     * @throws UnauthorizedException Si el token es inválido, expirado o
+     *                               deshabilitado
      */
     public RefreshToken verifyToken(String refreshToken, String currentIp, String currentUA) {
 

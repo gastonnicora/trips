@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
  * vista de la lógica de negocio o del formato de los datos, por ejemplo:
  * </p>
  * <ul>
- *   <li>Parámetros inválidos en la URL o request</li>
- *   <li>Datos inconsistentes en la solicitud</li>
- *   <li>Violaciones de reglas de negocio simples</li>
+ * <li>Parámetros inválidos en la URL o request</li>
+ * <li>Datos inconsistentes en la solicitud</li>
+ * <li>Violaciones de reglas de negocio simples</li>
  * </ul>
  *
  * <p>

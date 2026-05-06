@@ -12,7 +12,8 @@ import com.gastonnicora.trips.enums.Role;
 /**
  * Repositorio para gestionar la entidad {@link User}.
  * <p>
- * Proporciona métodos para consultar usuarios por correo electrónico, UUID y roles.
+ * Proporciona métodos para consultar usuarios por correo electrónico, UUID y
+ * roles.
  * Utiliza Spring Data JPA para el acceso a la base de datos.
  * </p>
  */
@@ -21,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     /**
      * Busca un usuario por su correo electrónico y su estado de habilitación.
      * 
-     * @param email Correo electrónico
+     * @param email   Correo electrónico
      * @param enabled Estado de habilitación
      * @return {@link Optional} con el usuario si existe
      */
@@ -44,7 +45,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     boolean existsByEmailAndEnabledTrue(String email);
 
     /**
-     * Busca todos los usuarios con el correo electrónico indicado, independientemente de su estado.
+     * Busca todos los usuarios con el correo electrónico indicado,
+     * independientemente de su estado.
      * 
      * @param email Correo electrónico
      * @return Lista de usuarios encontrados

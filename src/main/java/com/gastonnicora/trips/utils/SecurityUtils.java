@@ -8,7 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.gastonnicora.trips.security.UserDetailsImpl;
 
 /**
- * Utilidades de seguridad para acceder a la información del usuario autenticado.
+ * Utilidades de seguridad para acceder a la información del usuario
+ * autenticado.
  * <p>
  * Proporciona métodos estáticos para obtener datos del usuario actualmente
  * autenticado en el contexto de Spring Security.

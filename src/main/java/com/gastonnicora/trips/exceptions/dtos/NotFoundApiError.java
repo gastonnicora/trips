@@ -29,17 +29,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @version 1.0
  * @since 2026-05-06
  */
-@Schema(
-    description = "Recurso no encontrado",
-    example = """
-    {
-      "status": 404,
-      "message": "Recurso no encontrado",
-      "timestamp": "2026-05-04T12:34:56",
-      "errors": null
-    }
-    """
-)
+@Schema(description = "Recurso no encontrado", example = """
+        {
+          "status": 404,
+          "message": "Recurso no encontrado",
+          "timestamp": "2026-05-04T12:34:56",
+          "errors": null
+        }
+        """)
 public class NotFoundApiError extends ApiError {
 
     /**

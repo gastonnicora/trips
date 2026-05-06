@@ -27,7 +27,7 @@ class UserRepositoryTest {
     @Test
     void shouldFindByUsername() {
 
-        User user = new User("test","test","test","test",Set.of(Role.USER));
+        User user = new User("test", "test", "test", "test", Set.of(Role.USER));
         userRepository.save(user);
 
         Optional<User> found = userRepository.findByEmailAndEnabledTrue("test");

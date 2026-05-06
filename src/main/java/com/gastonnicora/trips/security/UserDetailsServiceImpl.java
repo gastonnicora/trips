@@ -23,10 +23,12 @@ import com.gastonnicora.trips.repositories.UserRepository;
  * 
  * Flujo principal:
  * <ol>
- *   <li>Recibe un username (email) a autenticar.</li>
- *   <li>Busca el usuario en la base de datos con {@link UserRepository#findByEmailAndEnabledTrue(String)}.</li>
- *   <li>Si no encuentra el usuario, lanza {@link UsernameNotFoundException}.</li>
- *   <li>Si lo encuentra, retorna un {@link UserDetailsImpl} que envuelve al usuario.</li>
+ * <li>Recibe un username (email) a autenticar.</li>
+ * <li>Busca el usuario en la base de datos con
+ * {@link UserRepository#findByEmailAndEnabledTrue(String)}.</li>
+ * <li>Si no encuentra el usuario, lanza {@link UsernameNotFoundException}.</li>
+ * <li>Si lo encuentra, retorna un {@link UserDetailsImpl} que envuelve al
+ * usuario.</li>
  * </ol>
  * 
  * @author Gastón
@@ -44,7 +46,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * 
      * @param username Email del usuario a autenticar
      * @return {@link UserDetails} con la información del usuario
-     * @throws UsernameNotFoundException Si el usuario no existe o no está habilitado
+     * @throws UsernameNotFoundException Si el usuario no existe o no está
+     *                                   habilitado
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

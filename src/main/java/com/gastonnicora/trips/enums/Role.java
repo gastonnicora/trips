@@ -20,7 +20,8 @@ public enum Role {
     USER,
 
     /**
-     * Administrador general con permisos para gestionar recursos y usuarios básicos.
+     * Administrador general con permisos para gestionar recursos y usuarios
+     * básicos.
      */
     ADMIN,
 
@@ -30,12 +31,14 @@ public enum Role {
     SUPER_ADMIN,
 
     /**
-     * Pasajero que puede buscar viajes, reservarlos, cancelarlos y consultar su historial.
+     * Pasajero que puede buscar viajes, reservarlos, cancelarlos y consultar su
+     * historial.
      */
     PASSENGER,
 
     /**
-     * Vendedor que gestiona viajes (crear, modificar, eliminar), reservas (ver, cancelar)
+     * Vendedor que gestiona viajes (crear, modificar, eliminar), reservas (ver,
+     * cancelar)
      * y genera reportes de ventas.
      */
     SELLER,
@@ -59,7 +62,8 @@ public enum Role {
     PLATFORM_ADMIN,
 
     /**
-     * Agente de soporte que gestiona tickets de soporte y genera reportes relacionados.
+     * Agente de soporte que gestiona tickets de soporte y genera reportes
+     * relacionados.
      */
     SUPPORT_AGENT,
 
@@ -68,7 +72,6 @@ public enum Role {
      * para mejorar la plataforma.
      */
     ANALYST,
-
 
     /**
      * Responsable financiero que gestiona facturación y genera reportes
@@ -82,5 +85,4 @@ public enum Role {
      */
     HR_MANAGER,
 
-    
 }

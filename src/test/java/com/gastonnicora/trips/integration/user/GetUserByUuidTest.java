@@ -97,6 +97,6 @@ public class GetUserByUuidTest {
     void shouldReturnNotFound_whenUserDoesNotExist() throws Exception {
         String nonExistentUuid = UUID.randomUUID().toString();
         userApi.getUser(nonExistentUuid)
-                .andExpect(status().isNotFound()); 
+                .andExpect(status().isNotFound());
     }
 }

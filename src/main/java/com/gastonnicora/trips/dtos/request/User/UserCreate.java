@@ -12,11 +12,11 @@ import jakarta.validation.constraints.Size;
  * Hereda de {@link UserBasic} e incluye la contraseña.
  * </p>
  * <ul>
- *   <li>{@code name}: Nombre del usuario</li>
- *   <li>{@code lastname}: Apellido del usuario</li>
- *   <li>{@code email}: Correo electrónico del usuario</li>
- *   <li>{@code password}: Contraseña del usuario</li>
- *   <li>{@code confirmPassword}: Confirmación de la contraseña</li>
+ * <li>{@code name}: Nombre del usuario</li>
+ * <li>{@code lastname}: Apellido del usuario</li>
+ * <li>{@code email}: Correo electrónico del usuario</li>
+ * <li>{@code password}: Contraseña del usuario</li>
+ * <li>{@code confirmPassword}: Confirmación de la contraseña</li>
  * </ul>
  * 
  * <p>
@@ -24,6 +24,7 @@ import jakarta.validation.constraints.Size;
  * </p>
  * 
  * Ejemplo de JSON:
+ * 
  * <pre>
  * {
  *   "name": "Gastón",

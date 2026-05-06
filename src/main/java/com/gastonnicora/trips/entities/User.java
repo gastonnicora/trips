@@ -29,26 +29,28 @@ import lombok.ToString;
 /**
  * Representa un usuario en el sistema.
  * <p>
- * Contiene información personal, roles, estado y fechas de creación/actualización.
+ * Contiene información personal, roles, estado y fechas de
+ * creación/actualización.
  * Por defecto, se asigna el rol {@link Role#USER}.
  * </p>
  * <p>
  * Campos principales:
  * </p>
  * <ul>
- *   <li>{@code uuid}: Identificador único del usuario.</li>
- *   <li>{@code name}: Nombre del usuario.</li>
- *   <li>{@code lastname}: Apellido del usuario.</li>
- *   <li>{@code email}: Correo electrónico del usuario.</li>
- *   <li>{@code password}: Contraseña cifrada del usuario.</li>
- *   <li>{@code role}: Conjunto de roles asignados al usuario.</li>
- *   <li>{@code enabled}: Indica si el usuario está habilitado.</li>
- *   <li>{@code createdAt}: Fecha y hora de creación.</li>
- *   <li>{@code updatedAt}: Fecha y hora de última actualización.</li>
- *   <li>{@code version}: Versión del usuario.</li>
+ * <li>{@code uuid}: Identificador único del usuario.</li>
+ * <li>{@code name}: Nombre del usuario.</li>
+ * <li>{@code lastname}: Apellido del usuario.</li>
+ * <li>{@code email}: Correo electrónico del usuario.</li>
+ * <li>{@code password}: Contraseña cifrada del usuario.</li>
+ * <li>{@code role}: Conjunto de roles asignados al usuario.</li>
+ * <li>{@code enabled}: Indica si el usuario está habilitado.</li>
+ * <li>{@code createdAt}: Fecha y hora de creación.</li>
+ * <li>{@code updatedAt}: Fecha y hora de última actualización.</li>
+ * <li>{@code version}: Versión del usuario.</li>
  * </ul>
  * <p>
- * Se utiliza para gestionar la autenticación, autorización y administración de usuarios.
+ * Se utiliza para gestionar la autenticación, autorización y administración de
+ * usuarios.
  * </p>
  * 
  * @author Gastón
@@ -106,9 +108,9 @@ public class User {
      * Asigna automáticamente el rol {@link Role#USER}.
      * </p>
      * 
-     * @param name Nombre del usuario
+     * @param name     Nombre del usuario
      * @param lastname Apellido del usuario
-     * @param email Correo electrónico
+     * @param email    Correo electrónico
      * @param password Contraseña cifrada
      */
     public User(String name, String lastname, String email, String password) {
@@ -121,11 +123,11 @@ public class User {
      * Si no se proporcionan roles, se asigna automáticamente {@link Role#USER}.
      * </p>
      * 
-     * @param name Nombre del usuario
+     * @param name     Nombre del usuario
      * @param lastname Apellido del usuario
-     * @param email Correo electrónico
+     * @param email    Correo electrónico
      * @param password Contraseña cifrada
-     * @param role ({@link Set}) Conjunto de {@link Role} a asignar
+     * @param role     ({@link Set}) Conjunto de {@link Role} a asignar
      */
     public User(String name, String lastname, String email, String password, Set<Role> role) {
         this.name = name;
@@ -158,7 +160,8 @@ public class User {
      * Verifica si el usuario tiene un rol específico.
      * 
      * @param role ({@link Role})) Rol a verificar
-     * @return {@code true} si el usuario tiene el rol, {@code false} en caso contrario
+     * @return {@code true} si el usuario tiene el rol, {@code false} en caso
+     *         contrario
      */
     public boolean hasRole(Role role) {
         return this.role.contains(role);

@@ -19,9 +19,10 @@ import com.gastonnicora.trips.entities.User;
  * 
  * Funcionalidades:
  * <ul>
- *   <li>Devuelve las credenciales del usuario (email y password).</li>
- *   <li>Proporciona los roles del usuario como {@link GrantedAuthority}.</li>
- *   <li>Controla el estado de la cuenta (habilitado, no bloqueado, no expirado).</li>
+ * <li>Devuelve las credenciales del usuario (email y password).</li>
+ * <li>Proporciona los roles del usuario como {@link GrantedAuthority}.</li>
+ * <li>Controla el estado de la cuenta (habilitado, no bloqueado, no
+ * expirado).</li>
  * </ul>
  * 
  * @author Gastón

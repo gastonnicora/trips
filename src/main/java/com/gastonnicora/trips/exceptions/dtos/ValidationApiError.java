@@ -37,30 +37,30 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @since 2026-05-04
  */
 @Schema(description = "Error de validación", example = """
-        {
-          "status": 400,
-          "message": "Error en la validación",
-          "timestamp": "2026-05-04T12:34:56",
-          "errors": {
-            "email": ["El email no puede quedar en blanco"]
-          }
-        }
-        """)
+    {
+      "status": 400,
+      "message": "Error en la validación",
+      "timestamp": "2026-05-04T12:34:56",
+      "errors": {
+        "email": ["El email no puede quedar en blanco"]
+      }
+    }
+    """)
 public class ValidationApiError extends ApiError {
 
-    /**
-     * Constructor que inicializa los errores de validación.
-     * <p>
-     * Establece automáticamente {@code status} a 400, {@code message} a "Error en
-     * la validación",
-     * {@code timestamp} a la fecha y hora actual y {@code errors} al mapa
-     * proporcionado.
-     * </p>
-     *
-     * @param errors Mapa de campos con sus mensajes de error
-     */
+  /**
+   * Constructor que inicializa los errores de validación.
+   * <p>
+   * Establece automáticamente {@code status} a 400, {@code message} a "Error en
+   * la validación",
+   * {@code timestamp} a la fecha y hora actual y {@code errors} al mapa
+   * proporcionado.
+   * </p>
+   *
+   * @param errors Mapa de campos con sus mensajes de error
+   */
 
-    public ValidationApiError(Map<String, List<String>> errors) {
-        super(HttpStatus.BAD_REQUEST.value(), "Error en la validación", java.time.LocalDateTime.now(), errors);
-    }
+  public ValidationApiError(Map<String, List<String>> errors) {
+    super(HttpStatus.BAD_REQUEST.value(), "Error en la validación", java.time.LocalDateTime.now(), errors);
+  }
 }

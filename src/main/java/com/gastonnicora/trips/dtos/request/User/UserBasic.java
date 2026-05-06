@@ -5,19 +5,19 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-
 /**
  * DTO básico de usuario.
  * <p>
- * Clase abstracta que contiene la información mínima de un usuario que se comparte entre otros DTOs.
+ * Clase abstracta que contiene la información mínima de un usuario que se
+ * comparte entre otros DTOs.
  * </p>
  * <p>
  * Campos principales:
  * </p>
  * <ul>
- *   <li>{@code name}: Nombre del usuario.</li>
- *   <li>{@code lastname}: Apellido del usuario.</li>
- *   <li>{@code email}: Correo electrónico del usuario.</li>
+ * <li>{@code name}: Nombre del usuario.</li>
+ * <li>{@code lastname}: Apellido del usuario.</li>
+ * <li>{@code email}: Correo electrónico del usuario.</li>
  * </ul>
  * 
  * <p>

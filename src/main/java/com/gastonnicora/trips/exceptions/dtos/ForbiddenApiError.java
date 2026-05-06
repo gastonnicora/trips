@@ -30,17 +30,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @version 1.0
  * @since 2026-05-04
  */
-@Schema(
-    description = "Error de acceso prohibido",
-    example = """
-    {
-      "status": 403,
-      "message": "Acceso denegado",
-      "timestamp": "2026-05-04T12:34:56",
-      "errors": null
-    }
-    """
-)
+@Schema(description = "Error de acceso prohibido", example = """
+        {
+          "status": 403,
+          "message": "Acceso denegado",
+          "timestamp": "2026-05-04T12:34:56",
+          "errors": null
+        }
+        """)
 public class ForbiddenApiError extends ApiError {
 
     /**

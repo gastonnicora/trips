@@ -46,8 +46,7 @@ public class ValidationException extends RuntimeException {
     /** Mapa de errores por campo */
     private Map<String, List<String>> errors = null;
 
-
-     /**
+    /**
      * Constructor que inicializa la excepción con un mensaje descriptivo.
      *
      * @param message Mensaje de error

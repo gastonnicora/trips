@@ -11,13 +11,14 @@ import java.util.List;
  * Campos principales:
  * </p>
  * <ul>
- *   <li>{@code data}: Lista de elementos devueltos.</li>
- *   <li>{@code total}: Total de elementos en la lista.</li>
+ * <li>{@code data}: Lista de elementos devueltos.</li>
+ * <li>{@code total}: Total de elementos en la lista.</li>
  * </ul>
  * 
  * <p>
  * Ejemplo de uso:
  * </p>
+ * 
  * <pre>
  * ListResponse&lt;UserDTO&gt; response = new ListResponse&lt;&gt;(userList);
  * int totalUsers = response.getTotal();

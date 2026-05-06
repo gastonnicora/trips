@@ -25,19 +25,20 @@ import lombok.ToString;
  * Campos principales:
  * </p>
  * <ul>
- *   <li>{@code uuid}: Identificador único del usuario.</li>
- *   <li>{@code name}: Nombre del usuario.</li>
- *   <li>{@code lastname}: Apellido del usuario.</li>
- *   <li>{@code email}: Correo electrónico del usuario.</li>
- *   <li>{@code role}: Conjunto de roles asignados al usuario.</li>
- *   <li>{@code enabled}: Estado del usuario (habilitado o deshabilitado).</li>
- *   <li>{@code createdAt}: Fecha y hora de creación del usuario.</li>
- *   <li>{@code updatedAt}: Fecha y hora de última actualización.</li>
+ * <li>{@code uuid}: Identificador único del usuario.</li>
+ * <li>{@code name}: Nombre del usuario.</li>
+ * <li>{@code lastname}: Apellido del usuario.</li>
+ * <li>{@code email}: Correo electrónico del usuario.</li>
+ * <li>{@code role}: Conjunto de roles asignados al usuario.</li>
+ * <li>{@code enabled}: Estado del usuario (habilitado o deshabilitado).</li>
+ * <li>{@code createdAt}: Fecha y hora de creación del usuario.</li>
+ * <li>{@code updatedAt}: Fecha y hora de última actualización.</li>
  * </ul>
  * 
  * <p>
  * Ejemplo de JSON:
  * </p>
+ * 
  * <pre>
  * {
  *   "uuid": "550e8400-e29b-41d4-a716-446655440000",
