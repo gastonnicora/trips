@@ -7,6 +7,7 @@ import com.gastonnicora.trips.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO para cambiar los roles de un usuario.
@@ -24,6 +25,7 @@ import jakarta.validation.constraints.NotNull;
  * @since 2026-05-04
  */
 @Schema(description = "DTO de usuario para cambiar roles")
+@NoArgsConstructor
 public class UserChangeRole {
 
     /**

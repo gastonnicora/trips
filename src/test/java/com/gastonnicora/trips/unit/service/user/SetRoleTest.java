@@ -92,7 +92,7 @@ public class SetRoleTest {
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
 
-        UserChangeRole request = new UserChangeRole(); // TODO 🚀:  agregar constructor vacio
+        UserChangeRole request = new UserChangeRole();
         request.setRoles(new HashSet<>(Set.of(Role.ADMIN)));
 
         assertThrows(ErrorException.class, () -> {
