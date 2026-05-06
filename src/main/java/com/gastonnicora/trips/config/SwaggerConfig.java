@@ -25,7 +25,7 @@ import io.swagger.v3.oas.models.info.License;
  * 
  * @author Gastón
  * @version 1.1
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 @Configuration
 @SecurityScheme(

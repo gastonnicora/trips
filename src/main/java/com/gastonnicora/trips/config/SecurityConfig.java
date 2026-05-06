@@ -37,7 +37,7 @@ import com.gastonnicora.trips.security.handlers.CustomAuthenticationEntryPoint;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 @Configuration
 @EnableWebSecurity

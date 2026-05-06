@@ -16,7 +16,7 @@ import com.gastonnicora.trips.security.UserDetailsImpl;
  * 
  * Autor: Gastón
  * Versión: 1.0
- * Desde: 2023-05-04
+ * Desde: 2026-05-04
  */
 public class SecurityUtils {
 

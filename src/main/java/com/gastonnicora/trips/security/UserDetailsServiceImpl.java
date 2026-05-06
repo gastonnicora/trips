@@ -31,7 +31,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

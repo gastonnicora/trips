@@ -10,7 +10,7 @@ package com.gastonnicora.trips.enums;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 public enum Role {
 

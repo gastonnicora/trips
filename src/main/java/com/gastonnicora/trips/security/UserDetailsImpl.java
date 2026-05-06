@@ -26,7 +26,7 @@ import com.gastonnicora.trips.entities.User;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 public class UserDetailsImpl implements UserDetails {
     private final User user;

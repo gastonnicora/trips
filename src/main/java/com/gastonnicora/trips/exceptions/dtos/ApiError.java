@@ -35,7 +35,7 @@ import lombok.ToString;
  * {
  *   "status": 400,
  *   "message": "Error en la validación",
- *   "timestamp": "2023-05-04T12:34:56",
+ *   "timestamp": "2026-05-04T12:34:56",
  *   "errors": {
  *     "email": ["El email no puede quedar en blanco"]
  *   }
@@ -44,26 +44,25 @@ import lombok.ToString;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @Schema(description = "Error genérico de la API")
-public class ApiError {
+public abstract class ApiError {
 
-    @Schema(description = "Código HTTP de la respuesta", example = "400")
+    @Schema(description = "Código HTTP de la respuesta")
     private int status;
 
-    @Schema(description = "Mensaje descriptivo del error", example = "Error en la validación")
+    @Schema(description = "Mensaje descriptivo del error")
     private String message;
 
     @Schema(description = "Fecha y hora en que se generó el error")
     private LocalDateTime timestamp;
 
-    @Schema(description = "Listado de errores detallados por campo",
-            example = "{\"email\":[\"El email no puede quedar en blanco\"]}")
+    @Schema(description = "Listado de errores detallados por campo")
     private Map<String, List<String>> errors;
 
     /**

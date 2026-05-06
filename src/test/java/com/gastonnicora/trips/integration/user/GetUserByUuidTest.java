@@ -95,6 +95,6 @@ public class GetUserByUuidTest {
     @Test
     void shouldReturnNotFound_whenUserDoesNotExist() throws Exception {
         userApi.getUser("00000")
-                .andExpect(status().isNotFound()); // FIXME 🐛: Cambiar errores a 404 cuando no encontrado o no existe
+                .andExpect(status().isNotFound()); //  FIXME 🐛: Cambiar errores a 404 cuando no encontrado o no existe
     }
 }

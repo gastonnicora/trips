@@ -5,22 +5,21 @@ import org.springframework.http.HttpStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Representa un error de acceso prohibido (HTTP 403).
+ * Representa un error de recurso no encontrado (HTTP 404).
  * <p>
- * Se utiliza cuando un usuario intenta acceder a un recurso para el que no
- * tiene permisos.
+ * Se utiliza cuando el recurso solicitado no existe.
  * Hereda de {@link ApiError} y establece automáticamente el código de estado a
- * 403.
+ * 404.
  * </p>
- * 
+ *
  * <p>
  * Ejemplo de respuesta JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
- *   "status": 403,
- *   "message": "Acceso denegado",
+ *   "status": 404,
+ *   "message": "Recurso no encontrado",
  *   "timestamp": "2026-05-04T12:34:56",
  *   "errors": null
  * }
@@ -28,34 +27,34 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-05-06
  */
 @Schema(
-    description = "Error de acceso prohibido",
+    description = "Recurso no encontrado",
     example = """
     {
-      "status": 403,
-      "message": "Acceso denegado",
+      "status": 404,
+      "message": "Recurso no encontrado",
       "timestamp": "2026-05-04T12:34:56",
       "errors": null
     }
     """
 )
-public class ForbiddenApiError extends ApiError {
+public class NotFoundApiError extends ApiError {
 
     /**
      * Constructor por defecto.
      */
-    public ForbiddenApiError() {
-        super(HttpStatus.FORBIDDEN.value(), "Acceso denegado");
+    public NotFoundApiError() {
+        super(HttpStatus.NOT_FOUND.value(), "Recurso no encontrado");
     }
 
     /**
      * Constructor con mensaje personalizado.
      *
-     * @param message Mensaje descriptivo del error
+     * @param message Mensaje específico del error
      */
-    public ForbiddenApiError(String message) {
-        super(HttpStatus.FORBIDDEN.value(), message);
+    public NotFoundApiError(String message) {
+        super(HttpStatus.NOT_FOUND.value(), message);
     }
 }

@@ -25,7 +25,7 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
  * 
  * Autor: Gastón
  * Versión: 1.0
- * Desde: 2023-05-04
+ * Desde: 2026-05-04
  */
 @Service
 public class TokenCleanupService {

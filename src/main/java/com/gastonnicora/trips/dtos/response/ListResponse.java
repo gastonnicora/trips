@@ -27,7 +27,7 @@ import java.util.List;
  * @param <T> Tipo de los elementos de la lista
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 public class ListResponse<T> {
 

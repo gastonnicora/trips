@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 @Schema(description = "DTO de usuario para actualización (PUT)")
 public class UserPut extends UserBasic {

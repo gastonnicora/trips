@@ -46,7 +46,7 @@ import jakarta.validation.Valid;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 @RestController
 @RequestMapping("/api/auth")

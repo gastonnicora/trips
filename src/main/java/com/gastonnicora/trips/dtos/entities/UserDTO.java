@@ -45,14 +45,14 @@ import lombok.ToString;
  *   "email": "juanperez@mail.com",
  *   "role": ["USER"],
  *   "enabled": true,
- *   "createdAt": "2023-01-01T00:00:00",
- *   "updatedAt": "2023-01-01T00:00:00"
+ *   "createdAt": "2026-01-01T00:00:00",
+ *   "updatedAt": "2026-01-01T00:00:00"
  * }
  * </pre>
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
 @Getter
 @Setter
@@ -104,13 +104,13 @@ public class UserDTO {
     /**
      * Fecha y hora de creación del usuario.
      */
-    @Schema(description = "Fecha de creacion del usuario", example = "2023-01-01T00:00:00")
+    @Schema(description = "Fecha de creacion del usuario", example = "2026-01-01T00:00:00")
     private LocalDateTime createdAt;
 
     /**
      * Fecha y hora de la última actualización del usuario.
      */
-    @Schema(description = "Fecha de actualizacion del usuario", example = "2023-01-01T00:00:00")
+    @Schema(description = "Fecha de actualizacion del usuario", example = "2026-01-01T00:00:00")
     private LocalDateTime updatedAt;
 
     /**

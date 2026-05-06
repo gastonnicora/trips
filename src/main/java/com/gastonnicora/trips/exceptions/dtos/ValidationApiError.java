@@ -1,7 +1,10 @@
 package com.gastonnicora.trips.exceptions.dtos;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -22,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * {
  *   "status": 400,
  *   "message": "Error en la validación",
- *   "timestamp": "2023-05-04T12:34:56",
+ *   "timestamp": "2026-05-04T12:34:56",
  *   "errors": {
  *     "email": ["El email no puede quedar en blanco"]
  *   }
@@ -31,9 +34,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
-@Schema(description = "Error de validación")
+@Schema(description = "Error de validación", example = """
+        {
+          "status": 400,
+          "message": "Error en la validación",
+          "timestamp": "2026-05-04T12:34:56",
+          "errors": {
+            "email": ["El email no puede quedar en blanco"]
+          }
+        }
+        """)
 public class ValidationApiError extends ApiError {
 
     /**
@@ -47,7 +59,8 @@ public class ValidationApiError extends ApiError {
      *
      * @param errors Mapa de campos con sus mensajes de error
      */
+
     public ValidationApiError(Map<String, List<String>> errors) {
-        super(400, "Error en la validación", java.time.LocalDateTime.now(), errors);
+        super(HttpStatus.BAD_REQUEST.value(), "Error en la validación", java.time.LocalDateTime.now(), errors);
     }
 }

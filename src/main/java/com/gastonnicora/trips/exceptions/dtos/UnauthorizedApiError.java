@@ -1,8 +1,6 @@
 package com.gastonnicora.trips.exceptions.dtos;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import org.springframework.http.HttpStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -21,38 +19,41 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * {
  *   "status": 401,
  *   "message": "Token inválido o expirado",
- *   "timestamp": "2023-05-04T12:34:56",
+ *   "timestamp": "2026-05-04T12:34:56",
  *   "errors": null
  * }
  * </pre>
  * 
  * @author Gastón
  * @version 1.0
- * @since 2023-05-04
+ * @since 2026-05-04
  */
-@Schema(description = "Error de autenticación")
+@Schema(
+    description = "Error de autenticación",
+    example = """
+    {
+      "status": 401,
+      "message": "Token inválido o expirado",
+      "timestamp": "2026-05-04T12:34:56",
+      "errors": null
+    }
+    """
+)
 public class UnauthorizedApiError extends ApiError {
 
-
-    @Schema(description = "Estatus de respuesta", example = "401")
-    private int status;
-    @Schema(description = "Mensaje de error", example = "Token inválido o expirado")
-    private String message;
-    @Schema(description = "Cuando se genero el error")
-    private LocalDateTime timestamp;
-    @Schema(description = "Listado de errores", example = "null")
-    private Map<String, List<String>> errors;
-    
     /**
-     * Constructor que inicializa el mensaje de error.
-     * <p>
-     * Establece automáticamente el {@code status} a 401, el {@code timestamp} a la fecha
-     * y hora actual, y {@code errors} a null.
-     * </p>
+     * Constructor por defecto.
+     */
+    public UnauthorizedApiError() {
+        super(HttpStatus.UNAUTHORIZED.value(), "Token inválido o expirado");
+    }
+
+    /**
+     * Constructor con mensaje personalizado.
      *
      * @param message Mensaje descriptivo del error
      */
     public UnauthorizedApiError(String message) {
-        super(401, message);
+        super(HttpStatus.UNAUTHORIZED.value(), message);
     }
 }
