@@ -47,8 +47,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserMapper userMapper;
+
+    private final UserMapper userMapper;
 
     /**
      * Constructor que inicializa los servicios necesarios para la gestión de
@@ -60,12 +60,16 @@ public class UserService {
      *                            contraseñas de los usuarios.
      * @param refreshTokenService Servicio para manejar los tokens de refresco de
      *                            los usuarios.
+     * 
+     * @param userMapper          Mapper para convertir entidades {@link User} a
+     *                            DTOs {@link UserDTO}.
      */
     public UserService(UserRepository userRepository,
-            PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService) {
+            PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.refreshTokenService = refreshTokenService;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -272,8 +276,9 @@ public class UserService {
      * @param role ({@link UserChangeRole}) que contiene los nuevos roles para el
      *             usuario.
      * @return {@link UserDTO} Datos del usuario con los roles actualizados.
-     * @throws NotFoundException Si el usuario no existe.
-     * @throws ValidationException si se intenta cambiar el rol de {@link Role#SUPER_ADMIN}.
+     * @throws NotFoundException   Si el usuario no existe.
+     * @throws ValidationException si se intenta cambiar el rol de
+     *                             {@link Role#SUPER_ADMIN}.
      */
     public UserDTO setRole(UUID uuid, UserChangeRole role) {
         User user = userRepository.findByUuid(uuid).orElseThrow(

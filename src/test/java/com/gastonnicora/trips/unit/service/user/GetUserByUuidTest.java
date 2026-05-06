@@ -38,7 +38,7 @@ class GetUserByUuidTest {
     private UserRepository userRepository;
 
     @Mock
-    private UserMapper userMapper; // FIXME 🐛: Cambiar usermapper en service al constructor
+    private UserMapper userMapper;
 
     @InjectMocks
     private UserService userService;
