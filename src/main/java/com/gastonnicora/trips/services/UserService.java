@@ -76,7 +76,7 @@ public class UserService {
      * </p>
      * 
      * @param userCreate ({@link UserCreate}) que contiene la información
-     *                          para crear el nuevo usuario.
+     *                   para crear el nuevo usuario.
      * @return {@link UserDTO} Datos del usuario recién creado.
      * @throws ErrorException Si el correo electrónico ya está siendo utilizado.
      */
@@ -167,7 +167,7 @@ public class UserService {
      * con el usuario.
      * </p>
      * 
-     * @param uuid           UUID del usuario a actualizar.
+     * @param uuid    UUID del usuario a actualizar.
      * @param userPut ({@link UserPut}) con los nuevos datos del usuario.
      * @return {@link UserDTO} Datos actualizados del usuario.
      * @throws ErrorException Si el usuario no existe o el email ya está en uso.
@@ -242,7 +242,7 @@ public class UserService {
      * </p>
      * 
      * @param userChangePassword ({@link UserChangePassword}) con las nuevas
-     *                                  credenciales.
+     *                           credenciales.
      * @return {@link UserDTO} Datos del usuario con la contraseña actualizada.
      * @throws ErrorException Si la contraseña actual es incorrecta.
      */
@@ -284,7 +284,9 @@ public class UserService {
         User user = userRepository.findByUuid(uuid).orElseThrow(
                 () -> new ErrorException("El usuario no existe", 400));
         if (user.getRole().contains(Role.SUPER_ADMIN)) {
-            throw new ErrorException("No se puede modificar los roles del SUPER_ADMIN", 400);
+            ErrorException ex = new ErrorException("Error en la validación", 400);
+            ex.addError("role", "No se puede modificar los roles del SUPER_ADMIN");
+            throw ex;
         }
         if (!role.getRoles().contains(Role.USER)) {
             role.getRoles().add(Role.USER);
