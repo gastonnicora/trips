@@ -1,7 +1,6 @@
 package com.gastonnicora.trips.dtos.response;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
