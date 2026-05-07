@@ -77,7 +77,8 @@ public class UserService {
      * Se valida que el correo electrónico no esté en uso antes de crear el nuevo
      * usuario.
      * El sistema cifra la contraseña antes de guardarla.
-     * Si el correo ya está en uso, se lanza una excepción {@link ConflictException}.
+     * Si el correo ya está en uso, se lanza una excepción
+     * {@link ConflictException}.
      * </p>
      * 
      * @param userCreate ({@link UserCreate}) que contiene la información
@@ -113,13 +114,8 @@ public class UserService {
      * @throws NotFoundException Si el usuario actual no es encontrado en la base de
      *                           datos.
      */
-    // WARNING ⚠️: Repeticion de codigo(getUsersByUUid)
     public UserDTO getCurrentUser() {
-        Optional<User> user = userRepository.findByUuid(getCurrentUserUuid());
-        if (user.isPresent()) {
-            return userMapper.toDTO(user.get());
-        }
-        throw new NotFoundException("El usuario solicitado no existe");
+        return getUser(getCurrentUserUuid());
     }
 
     /**
@@ -132,13 +128,8 @@ public class UserService {
      * @return {@link UserDTO} Datos del usuario con el UUID especificado.
      * @throws NotFoundException Si el usuario no existe.
      */
-    // WARNING ⚠️: codigo repetido (getCurrentUser)
     public UserDTO getUserByUuid(UUID uuid) {
-        Optional<User> user = userRepository.findByUuid(uuid);
-        if (user.isPresent()) {
-            return userMapper.toDTO(user.get());
-        }
-        throw new NotFoundException("El usuario solicitado no existe");
+        return getUser(uuid);
     }
 
     /**
@@ -174,25 +165,8 @@ public class UserService {
      * @throws NotFoundException Si el usuario no existe.
      * @throws ConflictException Si el email ya está en uso.
      */
-    // WARNING ⚠️:Repeticion de codigo(updateCurrentUser)
-    @Transactional
     public UserDTO updateUserByUuid(UUID uuid, UserPut userPut) {
-        User userEntity = userRepository.findByUuid(uuid).orElseThrow(
-                () -> new NotFoundException("El usuario solicitado no existe"));
-        userEntity.setName(userPut.getName());
-        userEntity.setLastname(userPut.getLastname());
-        if (!userPut.getEmail().equals(userEntity.getEmail())) {
-            if (userRepository.existsByEmailAndEnabledTrue(userPut.getEmail())) {
-                throw new ConflictException("El email ya esta en uso");
-            }
-            userEntity.setEmail(userPut.getEmail());
-            userEntity.addVersion();
-
-            refreshTokenService.deactivateAllByUserUuid(userEntity.getUuid());
-        }
-        userRepository.save(userEntity);
-        return userMapper.toDTO(userEntity);
-
+        return updateUser(uuid, userPut);
     }
 
     /**
@@ -209,24 +183,8 @@ public class UserService {
      * @throws NotFoundException Si el usuario no existe.
      * @throws ConflictException Si el email ya está en uso.
      */
-    @Transactional
     public UserDTO updateCurrentUser(UserPut userPut) {
-        User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new NotFoundException("El usuario solicitado no existe"));
-        userEntity.setName(userPut.getName());
-        userEntity.setLastname(userPut.getLastname());
-        if (!userPut.getEmail().equals(userEntity.getEmail())) {
-            if (userRepository.existsByEmailAndEnabledTrue(userPut.getEmail())) {
-                throw new ConflictException("El email ya esta en uso");
-            }
-            userEntity.setEmail(userPut.getEmail());
-            userEntity.addVersion();
-
-            refreshTokenService.deactivateAllByUserUuid(userEntity.getUuid());
-        }
-        userRepository.save(userEntity);
-        return userMapper.toDTO(userEntity);
-
+        return updateUser(getCurrentUserUuid(), userPut);
     }
 
     /**
@@ -343,5 +301,82 @@ public class UserService {
 
             userRepository.save(superAdmin);
         }
+    }
+
+    /**
+     * Actualiza los detalles de un usuario dado por UUID.
+     * <p>
+     * Este método realiza las siguientes operaciones:
+     * </p>
+     * <ul>
+     * <li>Busca al usuario por UUID; lanza {@link NotFoundException} si no
+     * existe.</li>
+     * <li>Actualiza el nombre y apellido del usuario.</li>
+     * <li>Si el email cambia:
+     * <ul>
+     * <li>Verifica que no esté en uso por otro usuario activo; lanza
+     * {@link ConflictException} si ya existe.</li>
+     * <li>Actualiza el email del usuario.</li>
+     * <li>Incrementa la versión del usuario (método {@code addVersion()}).</li>
+     * <li>Desactiva todos los tokens de refresco asociados al usuario mediante
+     * {@link #refreshTokenService}.</li>
+     * </ul>
+     * </li>
+     * <li>Guarda los cambios en la base de datos y devuelve un {@link UserDTO}
+     * actualizado.</li>
+     * </ul>
+     * 
+     * 
+     * @param uuid    UUID del usuario a actualizar
+     * @param userPut {@link UserPut} con los nuevos datos del usuario
+     * @return {@link UserDTO} con los datos actualizados
+     * @throws NotFoundException si el usuario con el UUID dado no existe
+     * @throws ConflictException si se intenta cambiar el email a uno que ya está en
+     *                           uso
+     */
+    @Transactional
+    private UserDTO updateUser(UUID uuid, UserPut userPut) {
+        User userEntity = userRepository.findByUuid(uuid).orElseThrow(
+                () -> new NotFoundException("El usuario solicitado no existe"));
+        userEntity.setName(userPut.getName());
+        userEntity.setLastname(userPut.getLastname());
+        if (!userPut.getEmail().equals(userEntity.getEmail())) {
+            if (userRepository.existsByEmailAndEnabledTrue(userPut.getEmail())) {
+                throw new ConflictException("El email ya esta en uso");
+            }
+            userEntity.setEmail(userPut.getEmail());
+            userEntity.addVersion();
+
+            refreshTokenService.deactivateAllByUserUuid(userEntity.getUuid());
+        }
+        userRepository.save(userEntity);
+        return userMapper.toDTO(userEntity);
+    }
+
+    /**
+     * Busca un usuario por su UUID y lo convierte a {@link UserDTO}.
+     * <p>
+     * Este método realiza lo siguiente:
+     * <ul>
+     * <li>Busca al usuario en la base de datos mediante
+     * {@link #userRepository}.</li>
+     * <li>Si se encuentra, lo convierte a {@link UserDTO} mediante
+     * {@link #userMapper} y lo retorna.</li>
+     * <li>Si no se encuentra, lanza una {@link NotFoundException} con mensaje
+     * descriptivo.</li>
+     * </ul>
+     * </p>
+     * 
+     * @param uuid UUID del usuario que se quiere obtener
+     * @return {@link UserDTO} Datos del usuario correspondiente
+     * @throws NotFoundException si no existe ningún usuario con el UUID
+     *                           proporcionado
+     */
+    private UserDTO getUser(UUID uuid) {
+        Optional<User> user = userRepository.findByUuid(uuid);
+        if (user.isPresent()) {
+            return userMapper.toDTO(user.get());
+        }
+        throw new NotFoundException("El usuario solicitado no existe");
     }
 }
