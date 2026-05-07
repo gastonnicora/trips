@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO para el inicio de sesión del usuario.
@@ -18,6 +19,8 @@ import jakarta.validation.constraints.Size;
  * @version 1.0
  * @since 2026-05-04
  */
+@Schema(description = "DTO de inicio de sesión")
+@NoArgsConstructor
 public class LoginRequest {
 
     /**

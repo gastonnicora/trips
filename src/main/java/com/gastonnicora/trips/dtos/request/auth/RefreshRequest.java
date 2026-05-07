@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.dtos.request.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO para solicitudes de renovación de token (refresh).
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @version 1.0
  * @since 2026-05-04
  */
+@Schema(description = "DTO de refresh token")
+@NoArgsConstructor
 public class RefreshRequest {
 
     /**

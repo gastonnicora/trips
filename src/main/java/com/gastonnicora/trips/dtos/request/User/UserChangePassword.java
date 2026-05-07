@@ -5,6 +5,7 @@ import com.gastonnicora.trips.validations.FieldsMatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO para cambiar la contraseña de un usuario.
@@ -26,6 +27,7 @@ import jakarta.validation.constraints.Size;
  */
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 @Schema(description = "DTO de usuario para cambiar la contraseña")
+@NoArgsConstructor
 public class UserChangePassword {
 
     private final int minLengthPass = 8;

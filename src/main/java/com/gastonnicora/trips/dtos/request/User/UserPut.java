@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.dtos.request.User;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO para actualizar los datos básicos de un usuario.
@@ -30,6 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @since 2026-05-04
  */
 @Schema(description = "DTO de usuario para actualización (PUT)")
+@NoArgsConstructor
 public class UserPut extends UserBasic {
 
     /**

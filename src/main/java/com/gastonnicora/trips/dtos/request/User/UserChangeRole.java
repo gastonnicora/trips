@@ -1,5 +1,6 @@
 package com.gastonnicora.trips.dtos.request.User;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.gastonnicora.trips.enums.Role;
@@ -34,7 +35,7 @@ public class UserChangeRole {
     @Schema(description = "Conjunto de roles asignados al usuario", example = "[\"USER\", \"ADMIN\"]")
     @NotEmpty(message = "Debe seleccionar al menos un rol")
     @NotNull(message = "Debe seleccionar al menos un rol")
-    private Set<Role> roles;
+    private Set<Role> roles= new HashSet<>();
 
     /**
      * Constructor completo.
@@ -42,7 +43,7 @@ public class UserChangeRole {
      * @param roles ({@link Set})Conjunto de {@link Role} asignados al usuario
      */
     public UserChangeRole(Set<Role> roles) {
-        this.roles = roles;
+        this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
     }
 
     public Set<Role> getRoles() {

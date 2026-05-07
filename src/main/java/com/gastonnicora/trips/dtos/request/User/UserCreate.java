@@ -5,6 +5,7 @@ import com.gastonnicora.trips.validations.FieldsMatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO para crear un nuevo usuario.
@@ -41,6 +42,7 @@ import jakarta.validation.constraints.Size;
  */
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 @Schema(description = "DTO de usuario para creación (POST)")
+@NoArgsConstructor
 public class UserCreate extends UserBasic {
 
     /**

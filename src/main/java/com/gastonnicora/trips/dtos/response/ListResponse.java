@@ -1,6 +1,11 @@
 package com.gastonnicora.trips.dtos.response;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO genérico para respuestas que retornan listas de datos.
@@ -30,10 +35,12 @@ import java.util.List;
  * @version 1.0
  * @since 2026-05-04
  */
+@Schema(description = "DTO de respuesta de lista genérica")
+@NoArgsConstructor
 public class ListResponse<T> {
 
     /** Lista de elementos devueltos */
-    private List<T> data;
+    private List<T> data=new ArrayList<>();
 
     /** Total de elementos en la lista */
     private int total = 0;
@@ -44,7 +51,7 @@ public class ListResponse<T> {
      * @param data Lista de elementos
      */
     public ListResponse(List<T> data) {
-        this.data = data;
+        this.data = (data != null) ? new ArrayList<>(data) : new ArrayList<>();
         this.total = data.size();
     }
 

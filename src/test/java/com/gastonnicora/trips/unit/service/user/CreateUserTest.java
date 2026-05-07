@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.unit.service.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -20,6 +21,7 @@ import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.exceptions.ConflictException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.UserService;
@@ -86,7 +88,8 @@ public class CreateUserTest {
         when(userRepository.existsByEmailAndEnabledTrue(request.getEmail()))
                 .thenReturn(true);
 
-        userService.createUser(request);
+         assertThrows(ConflictException.class,
+            () -> userService.createUser(request));
 
         verify(userRepository).existsByEmailAndEnabledTrue(request.getEmail());
         verify(passwordEncoder, never()).encode("pass");

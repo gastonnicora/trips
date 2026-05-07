@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.dtos.response.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO de respuesta para el endpoint de login.
@@ -31,6 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @since 2026-05-04
  */
 @Schema(description = "DTO de respuesta de login")
+@NoArgsConstructor
 public class LoginResponse {
 
     @Schema(description = "Token de acceso", example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0Ijox.NTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")

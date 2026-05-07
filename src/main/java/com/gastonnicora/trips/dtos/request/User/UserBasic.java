@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO básico de usuario.
@@ -29,6 +30,7 @@ import jakarta.validation.constraints.Size;
  * @since 2026-05-04
  */
 @Schema(description = "DTO de usuario para Request")
+@NoArgsConstructor
 public abstract class UserBasic {
 
     /**
