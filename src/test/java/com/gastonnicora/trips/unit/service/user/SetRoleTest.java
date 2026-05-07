@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
@@ -42,7 +43,7 @@ public class SetRoleTest {
     void shouldAddUserRoleIfMissing() {
         UUID uuid = UUID.randomUUID();
 
-        User user = new User("John", "Doe", "mail", "pass", new HashSet<>(Set.of(Role.ADMIN)));
+        User user = new User("John", "Doe", "mail", "pass", new HashSet<>(Set.of(Role.USER)));
         user.setUuid(uuid);
 
         UserChangeRole request = new UserChangeRole();
@@ -53,8 +54,39 @@ public class SetRoleTest {
 
         userService.setRole(uuid, request);
 
+        // Validaciones
         assertTrue(user.getRole().contains(Role.USER));
         assertEquals(Set.of(Role.ADMIN, Role.USER), user.getRole());
+
+        // Verificaciones de Mockito
+        verify(userRepository).findByUuid(uuid);
+        verify(userRepository).save(user);
+        verify(userMapper).toDTO(user);
+    }
+
+    @Test
+    void shouldAddRoleIfEmpty() {
+        UUID uuid = UUID.randomUUID();
+
+        User user = new User("John", "Doe", "mail", "pass", new HashSet<>(Set.of(Role.ADMIN)));
+        user.setUuid(uuid);
+
+        UserChangeRole request = new UserChangeRole();
+        request.setRoles(new HashSet<>(Set.of()));
+
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
+        when(userMapper.toDTO(user)).thenReturn(new UserDTO());
+
+        userService.setRole(uuid, request);
+
+        // Validaciones
+        assertTrue(user.getRole().contains(Role.USER));
+        assertEquals(Set.of(Role.USER), user.getRole());
+
+        // Verificaciones de Mockito
+        verify(userRepository).findByUuid(uuid);
+        verify(userRepository).save(user);
+        verify(userMapper).toDTO(user);
     }
 
     @Test
@@ -73,14 +105,19 @@ public class SetRoleTest {
         userService.setRole(uuid, request);
 
         assertFalse(user.getRole().contains(Role.SUPER_ADMIN));
+        assertTrue(user.getRole().contains(Role.ADMIN));
+        assertTrue(user.getRole().contains(Role.USER));
+
+        verify(userRepository).findByUuid(uuid);
+        verify(userRepository).save(user);
+        verify(userMapper).toDTO(user);
     }
 
     @Test
     void shouldThrowException_whenUserIsSuperAdmin() {
         UUID uuid = UUID.randomUUID();
 
-        User user = new User("Super", "Admin", "mail", "pass",
-                Set.of(Role.SUPER_ADMIN));
+        User user = new User("Super", "Admin", "mail", "pass", Set.of(Role.SUPER_ADMIN));
         user.setUuid(uuid);
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
@@ -88,8 +125,9 @@ public class SetRoleTest {
         UserChangeRole request = new UserChangeRole();
         request.setRoles(new HashSet<>(Set.of(Role.ADMIN)));
 
-        assertThrows(ValidationException.class, () -> {
-            userService.setRole(uuid, request);
-        });
+        assertThrows(ValidationException.class, () -> userService.setRole(uuid, request));
+
+        verify(userRepository).findByUuid(uuid);
+        // No se guarda ni se llama al mapper porque lanza excepción
     }
 }
