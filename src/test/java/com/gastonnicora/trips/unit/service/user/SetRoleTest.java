@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.aspectj.weaver.ast.Not;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -170,7 +169,7 @@ public class SetRoleTest {
 
         UserChangeRole request = new UserChangeRole();
         request.setRoles(new HashSet<>(Set.of(Role.ADMIN)));
-        
+
         NotFoundException ex = assertThrows(NotFoundException.class, () -> userService.setRole(uuid, request));
         assertEquals("El usuario solicitado no existe", ex.getMessage());
         assertEquals(404, ex.getStatus());
