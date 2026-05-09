@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.aspectj.weaver.ast.Not;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
@@ -154,6 +156,24 @@ public class SetRoleTest {
         request.setRoles(new HashSet<>(Set.of(Role.ADMIN)));
 
         assertThrows(ValidationException.class, () -> userService.setRole(uuid, request));
+
+        verify(userRepository).findByUuid(uuid);
+        verify(userRepository, never()).save(any());
+        verify(userMapper, never()).toDTO(any());
+    }
+
+    @Test
+    void shouldThrowException_whenUserNotExists() {
+        UUID uuid = UUID.randomUUID();
+
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
+
+        UserChangeRole request = new UserChangeRole();
+        request.setRoles(new HashSet<>(Set.of(Role.ADMIN)));
+        
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> userService.setRole(uuid, request));
+        assertEquals("El usuario solicitado no existe", ex.getMessage());
+        assertEquals(404, ex.getStatus());
 
         verify(userRepository).findByUuid(uuid);
         verify(userRepository, never()).save(any());
