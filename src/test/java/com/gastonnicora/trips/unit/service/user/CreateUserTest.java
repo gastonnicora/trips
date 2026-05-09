@@ -78,7 +78,7 @@ public class CreateUserTest {
     }
 
     @Test
-    void shouldCreateUserIfEmailUsedy() {
+    void shouldThrowConflictException_whenEmailIsUsed() {
         UserCreate request = new UserCreate();
         request.setName("John");
         request.setLastname("Doe");
