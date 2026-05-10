@@ -1,6 +1,5 @@
 package com.gastonnicora.trips.unit.service.refreshToken;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -45,7 +44,7 @@ public class DeactivateAllByUserUuidTest {
                 .thenReturn(List.of(token1, token2));
 
         service.deactivateAllByUserUuid(uuid);
-        
+
         ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
 
         verify(repo, times(2)).save(captor.capture());
