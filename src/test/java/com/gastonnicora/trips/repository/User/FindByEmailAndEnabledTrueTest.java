@@ -1,5 +1,6 @@
-package com.gastonnicora.trips.repository;
+package com.gastonnicora.trips.repository.User;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
@@ -18,8 +19,8 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserRepositoryTest {
 
+public class FindByEmailAndEnabledTrueTest {
     @Autowired
     private UserRepository userRepository;
 
@@ -40,5 +41,32 @@ class UserRepositoryTest {
         Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
 
         assertTrue(found.isPresent());
+    }
+
+    @Test
+    void shouldFindByEmailIfNotExist() {
+
+        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
+
+        assertFalse(found.isPresent());
+    }
+
+    @Test
+    void shouldFindByEmailIsNotEnabled() {
+
+        User user = new User(
+                "username",
+                "latName",
+                "test@test.com",
+                "password",
+                Set.of(Role.USER));
+
+        user.setEnabled(false);
+
+        userRepository.save(user);
+
+        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
+
+        assertFalse(found.isPresent());
     }
 }

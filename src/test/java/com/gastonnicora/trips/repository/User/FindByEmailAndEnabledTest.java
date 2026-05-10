@@ -1,8 +1,10 @@
 package com.gastonnicora.trips.repository.User;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,7 +23,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 
 public class FindByEmailAndEnabledTest {
-@Autowired
+    @Autowired
     private UserRepository userRepository;
 
     @Test
@@ -38,22 +40,25 @@ public class FindByEmailAndEnabledTest {
 
         userRepository.save(user);
 
-        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
+        List<User> found = userRepository.findByEmailAndEnabled("test@test.com",true);
 
-        assertTrue(found.isPresent());
+        assertFalse(found.isEmpty());
+        assertTrue(found.get(0).isEnabled());
+        assertTrue(found.get(0).getEmail().equals("test@test.com"));
+        assertEquals(1, found.size());
     }
+
     @Test
     void shouldFindByEmailIfNotExist() {
 
+       List<User> found = userRepository.findByEmailAndEnabled("test@test.com",true);
 
-        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
+        assertTrue(found.isEmpty());
 
-        assertFalse(found.isPresent());
     }
 
-     @Test
+    @Test
     void shouldFindByEmailIsNotEnabled() {
-
 
         User user = new User(
                 "username",
@@ -65,9 +70,12 @@ public class FindByEmailAndEnabledTest {
         user.setEnabled(false);
 
         userRepository.save(user);
-        
-        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
 
-        assertFalse(found.isPresent());
+        List<User> found = userRepository.findByEmailAndEnabled("test@test.com",false); // FIXME 🐛: cambiar por lista 
+
+        assertFalse(found.isEmpty());
+        assertFalse(found.get(0).isEnabled());
+        assertTrue(found.get(0).getEmail().equals("test@test.com"));
+        assertEquals(1, found.size());
     }
 }
