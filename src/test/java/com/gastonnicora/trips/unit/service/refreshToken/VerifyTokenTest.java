@@ -152,5 +152,22 @@ public class VerifyTokenTest {
         assertEquals("Token inválido o expirado", ex.getMessage());
 
         verify(refreshTokenRepository, times(2)).findByRefreshToken("token");
-    }
+    } 
+
+    @Test
+    void shouldThrowsUnauthorizedException_whenCurrentUserAgentIsDifferent() {
+        UUID uuid = UUID.randomUUID();
+
+        RefreshToken refreshToken = new RefreshToken("token", uuid, "127.0.0.1", "user-agent", "web", 0);
+
+        when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.of(refreshToken));
+
+        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
+            refreshTokenService.verifyToken("token", "127.0.0.1", "user-agent2");
+        });
+        assertEquals(401, ex.getStatus());
+        assertEquals("Token inválido o expirado", ex.getMessage());
+
+        verify(refreshTokenRepository, times(2)).findByRefreshToken("token");
+    } 
 }

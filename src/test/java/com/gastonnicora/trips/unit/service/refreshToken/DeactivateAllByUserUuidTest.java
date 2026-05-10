@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.unit.service.refreshToken;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,24 +45,25 @@ public class DeactivateAllByUserUuidTest {
                 .thenReturn(List.of(token1, token2));
 
         service.deactivateAllByUserUuid(uuid);
+        
+        ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
 
-        assertFalse(token1.isActive());
-        assertFalse(token2.isActive());
+        verify(repo, times(2)).save(captor.capture());
 
-        verify(repo, times(2)).save(any(RefreshToken.class));
+        List<RefreshToken> saved = captor.getAllValues();
+
+        assertTrue(saved.stream().allMatch(rt -> !rt.isActive()));
     }
-    
+
     @Test
     void shouldDeactivateAllTokensIfEmptyList() {
 
         UUID uuid = UUID.randomUUID();
 
-
         when(repo.findAllByUserUuidAndActiveTrue(uuid))
                 .thenReturn(List.of());
 
         service.deactivateAllByUserUuid(uuid);
-
 
         verify(repo, never()).save(any(RefreshToken.class));
     }
