@@ -3,9 +3,7 @@ package com.gastonnicora.trips.repository.User;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +18,12 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByUuidTest {
+public class ExistsByRoleContainsTest {
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    void shouldFindByUuid() {
-
+    void shouldExistsByRole() {
         User user = new User(
                 "username",
                 "latName",
@@ -38,41 +35,36 @@ public class FindByUuidTest {
 
         userRepository.save(user);
 
-        Optional<User> found = userRepository.findByUuid(user.getUuid());
+        boolean found = userRepository.existsByRoleContains(Role.USER);
 
-        assertTrue(found.isPresent());
-        assertTrue(found.get().getUuid().equals(user.getUuid()));
-        assertTrue(found.get().getEmail().equals("test@test.com"));
-        assertTrue(found.get().getName().equals("username"));
+        assertTrue(found);
+
     }
 
     @Test
-    void shouldFindByUuidIfNotExist() {
-
-        Optional<User> found = userRepository.findByUuid(UUID.randomUUID());
-
-        assertFalse(found.isPresent());
-    }
-
-    @Test
-    void shouldFindById() {
-
+    void shouldExistsByRoleSuperAdmin() {
         User user = new User(
                 "username",
                 "latName",
                 "test@test.com",
                 "password",
-                Set.of(Role.USER));
+                Set.of(Role.SUPER_ADMIN));
 
         user.setEnabled(true);
 
         userRepository.save(user);
 
-        Optional<User> found = userRepository.findById(user.getUuid());
+        boolean found = userRepository.existsByRoleContains(Role.SUPER_ADMIN);
 
-        assertTrue(found.isPresent());
-        assertTrue(found.get().getUuid().equals(user.getUuid()));
-        assertTrue(found.get().getEmail().equals("test@test.com"));
-        assertTrue(found.get().getName().equals("username"));
+        assertTrue(found);
+
+    }
+
+    @Test
+    void shouldNotExistsByRole() {
+        boolean found = userRepository.existsByRoleContains(Role.ADMIN);
+
+        assertFalse(found);
+
     }
 }
