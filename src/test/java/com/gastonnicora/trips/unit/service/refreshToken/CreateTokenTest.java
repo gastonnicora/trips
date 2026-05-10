@@ -25,7 +25,7 @@ import com.gastonnicora.trips.services.RefreshTokenService;
 @ExtendWith(MockitoExtension.class)
 public class CreateTokenTest {
     @Mock
-    private RefreshTokenRepository refreshTokenRepository;
+    private RefreshTokenRepository refreshTokenRepository; // FIXME 🐛: relacionar userUuid con la tabla user
 
     @InjectMocks
     private RefreshTokenService refreshTokenService;

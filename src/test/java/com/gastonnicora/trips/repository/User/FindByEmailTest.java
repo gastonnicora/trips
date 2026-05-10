@@ -1,8 +1,10 @@
 package com.gastonnicora.trips.repository.User;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ExistsByEmailAndEnabledTrueTest {
+public class FindByEmailTest {
     @Autowired
     private UserRepository userRepository;
 
@@ -34,18 +36,34 @@ public class ExistsByEmailAndEnabledTrueTest {
         user.setEnabled(true);
 
         userRepository.save(user);
+        
+        User user2 = new User(
+                "username2",
+                "latName2",
+                "test@test.com",
+                "password2",
+                Set.of(Role.USER));
 
-        boolean found = userRepository.existsByEmailAndEnabledTrue("test@test.com");
+        user2.setEnabled(true);
 
-        assertTrue(found);
+        userRepository.save(user2);
+
+        List<User> found = userRepository.findByEmail("test@test.com");
+
+        assertEquals( 2,found.size());
+        assertFalse(found.isEmpty());
+        assertTrue(found.get(0).getEmail().equals("test@test.com"));
+        assertTrue(found.get(1).getEmail().equals("test@test.com"));
+        assertTrue(found.contains(user));
+        assertTrue(found.contains(user2));
     }
 
     @Test
     void shouldNotExistsByEmail() {
 
-        boolean found = userRepository.existsByEmailAndEnabledTrue("test@test.com");
+        List<User> found = userRepository.findByEmail("test@test.com");
 
-        assertFalse(found);
+        assertTrue(found.isEmpty());
+        assertTrue(found.size() == 0);
     }
-
 }
