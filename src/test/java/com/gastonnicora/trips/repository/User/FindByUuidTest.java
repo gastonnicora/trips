@@ -1,10 +1,13 @@
 package com.gastonnicora.trips.repository.User;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +22,12 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByEmailAndEnabledTrueTest {
+public class FindByUuidTest {
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    void shouldFindByEmail() {
+    void shouldFindByUuid() {
 
         User user = new User(
                 "username",
@@ -37,21 +40,24 @@ public class FindByEmailAndEnabledTrueTest {
 
         userRepository.save(user);
 
-        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
+        Optional<User> found = userRepository.findByUuid(user.getUuid());
 
         assertTrue(found.isPresent());
+        assertTrue(found.get().getUuid().equals(user.getUuid()));
+        assertTrue(found.get().getEmail().equals("test@test.com"));
+        assertTrue(found.get().getName().equals("username"));
     }
 
     @Test
-    void shouldFindByEmailIfNotExist() {
+    void shouldFindByUuidIfNotExist() {
 
-        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
+        Optional<User> found = userRepository.findByUuid(UUID.randomUUID());
 
         assertFalse(found.isPresent());
     }
 
     @Test
-    void shouldFindByEmailIsNotEnabled() {
+    void shouldFindById() {
 
         User user = new User(
                 "username",
@@ -60,12 +66,15 @@ public class FindByEmailAndEnabledTrueTest {
                 "password",
                 Set.of(Role.USER));
 
-        user.setEnabled(false);
+        user.setEnabled(true);
 
         userRepository.save(user);
 
-        Optional<User> found = userRepository.findByEmailAndEnabledTrue("test@test.com");
+        Optional<User> found = userRepository.findById(user.getUuid());
 
-        assertFalse(found.isPresent());
+        assertTrue(found.isPresent());
+        assertTrue(found.get().getUuid().equals(user.getUuid()));
+        assertTrue(found.get().getEmail().equals("test@test.com"));
+        assertTrue(found.get().getName().equals("username"));
     }
 }
