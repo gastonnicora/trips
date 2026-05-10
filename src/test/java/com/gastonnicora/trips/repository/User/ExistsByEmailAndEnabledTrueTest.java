@@ -20,13 +20,12 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByEmailAndEnabledTest {
+public class ExistsByEmailAndEnabledTrueTest {
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    void shouldFindByEmail() {
-
+    void shouldExistsByEmail() {
         User user = new User(
                 "username",
                 "latName",
@@ -38,42 +37,17 @@ public class FindByEmailAndEnabledTest {
 
         userRepository.save(user);
 
-        List<User> found = userRepository.findByEmailAndEnabled("test@test.com", true);
+        boolean found = userRepository.existsByEmailAndEnabledTrue("test@test.com");
 
-        assertFalse(found.isEmpty());
-        assertTrue(found.get(0).isEnabled());
-        assertTrue(found.get(0).getEmail().equals("test@test.com"));
-        assertEquals(1, found.size());
+        assertTrue(found);
     }
-
     @Test
-    void shouldFindByEmailIfNotExist() {
+    void shouldNotExistsByEmail() {
 
-        List<User> found = userRepository.findByEmailAndEnabled("test@test.com", true);
+        boolean found = userRepository.existsByEmailAndEnabledTrue("test@test.com");
 
-        assertTrue(found.isEmpty());
-
+        assertFalse(found);
     }
 
-    @Test
-    void shouldFindByEmailIsNotEnabled() {
 
-        User user = new User(
-                "username",
-                "latName",
-                "test@test.com",
-                "password",
-                Set.of(Role.USER));
-
-        user.setEnabled(false);
-
-        userRepository.save(user);
-
-        List<User> found = userRepository.findByEmailAndEnabled("test@test.com", false); // FIXME 🐛: cambiar por lista
-
-        assertFalse(found.isEmpty());
-        assertFalse(found.get(0).isEnabled());
-        assertTrue(found.get(0).getEmail().equals("test@test.com"));
-        assertEquals(1, found.size());
-    }
 }
