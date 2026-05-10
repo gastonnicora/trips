@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.repository.User;
+package com.gastonnicora.trips.repository.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
