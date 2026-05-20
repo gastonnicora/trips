@@ -69,7 +69,7 @@ public class FindByEmailAndEnabledTest {
 
         userRepository.save(user);
 
-        List<User> found = userRepository.findByEmailAndEnabled("test@test.com", false); // FIXME 🐛: cambiar por lista
+        List<User> found = userRepository.findByEmailAndEnabled("test@test.com", false);
 
         assertFalse(found.isEmpty());
         assertFalse(found.get(0).isEnabled());

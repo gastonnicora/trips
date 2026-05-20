@@ -18,6 +18,7 @@ import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.dtos.response.auth.RefreshResponse;
 import com.gastonnicora.trips.entities.RefreshToken;
 import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.JwtService;
@@ -94,7 +95,7 @@ public class AuthController {
             HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
-        User user = userRepository.findByEmailAndEnabledTrue(login.getEmail()).orElseThrow();
+        User user = userRepository.findByEmailAndEnabledTrue(login.getEmail()).orElseThrow(()-> new NotFoundException("El usuario no fue encontrado"));
         String token = jwtService.generateToken(login.getEmail(), user.getVersion(), user.getUuid());
 
         String userAgent = request.getHeader("User-Agent");
@@ -153,7 +154,7 @@ public class AuthController {
 
         RefreshToken rt = refreshTokenService.verifyToken(refreshToken, ip, userAgent);
 
-        User user = userRepository.findById(rt.getUser().getUuid()).orElseThrow(); // FIXME 🐛: agregar error
+        User user = userRepository.findById(rt.getUser().getUuid()).orElseThrow(()-> new NotFoundException("El usuario no fue encontrado")); // FIXME 🐛: agregar error
         String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(), user.getUuid());
 
         RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user, userAgent, ip,
