@@ -13,7 +13,7 @@ import com.gastonnicora.trips.enums.Role;
  * Repositorio para gestionar la entidad {@link User}.
  * <p>
  * Proporciona métodos para consultar usuarios por correo electrónico, UUID y
- * roles.
+ * roles entre otras opciones.
  * Utiliza Spring Data JPA para el acceso a la base de datos.
  * </p>
  */

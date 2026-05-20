@@ -1,10 +1,12 @@
 package com.gastonnicora.trips.config;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.method.HandlerMethod;
 
 import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.tags.Tag;
 
 /**
  * Configuración de personalización de Swagger/OpenAPI.
@@ -66,6 +69,24 @@ public class SwaggerConfigCustomer {
             }
 
             return operation;
+        };
+    }
+
+    /**
+     * Bean que ordena las etiquetas de Swagger/OpenAPI alfabéticamente.
+     * 
+     */
+    @Bean
+    public OpenApiCustomizer sortTagsAlphabetically() {
+        return openApi -> {
+
+            if (openApi.getTags() == null)
+                return;
+
+            openApi.setTags(
+                    openApi.getTags().stream()
+                            .sorted(Comparator.comparing(Tag::getName))
+                            .toList());
         };
     }
 

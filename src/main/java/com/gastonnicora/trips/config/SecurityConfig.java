@@ -133,7 +133,6 @@ public class SecurityConfig {
                                                 .requestMatchers("/error", "/api/auth/refresh").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/users").anonymous()
                                                 .requestMatchers("/api/auth/login").anonymous()
-                                                .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
                                                 .anyRequest().authenticated())
                                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -68,7 +68,7 @@ public class Company {
     private User owner;
 
     @Column(name = "address", nullable = false)
-    private String address;
+    private String address; // TODO 🚀:  cambiar por geolocalizacion
 
     @Column(name = "email", nullable = false)
     private String email;
