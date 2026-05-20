@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * @param enabled Estado de habilitación
      * @return {@link Optional} con el usuario si existe
      */
-    Optional<User> findByEmailAndEnabled(String email, boolean enabled);
+    List<User> findByEmailAndEnabled(String email, boolean enabled);
 
     /**
      * Busca un usuario por su correo electrónico solo si está habilitado.
