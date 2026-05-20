@@ -122,7 +122,7 @@ public class User {
      * <p>
      * Si no se proporcionan roles, se asigna automáticamente {@link Role#USER}.
      * </p>
-     *  
+     * 
      * @param name     Nombre del usuario
      * @param lastname Apellido del usuario
      * @param email    Correo electrónico

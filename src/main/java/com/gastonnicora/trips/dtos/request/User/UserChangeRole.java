@@ -35,7 +35,7 @@ public class UserChangeRole {
     @Schema(description = "Conjunto de roles asignados al usuario", example = "[\"USER\", \"ADMIN\"]")
     @NotEmpty(message = "Debe seleccionar al menos un rol")
     @NotNull(message = "Debe seleccionar al menos un rol")
-    private Set<Role> roles= new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     /**
      * Constructor completo.

@@ -46,7 +46,7 @@ public class FindAllByUser_UuidAndActiveTrueTest {
 
         refreshTokenRepository.save(rt);
 
-       List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
+        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
         assertFalse(found.isEmpty());
         assertTrue(found.get(0).equals(rt));
@@ -57,7 +57,6 @@ public class FindAllByUser_UuidAndActiveTrueTest {
         Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken("non-existent-token");
 
         assertFalse(found.isPresent());
-        
 
     }
 }

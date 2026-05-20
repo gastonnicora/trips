@@ -41,7 +41,7 @@ public class FindByRefreshTokenTest {
 
         userRepository.save(user);
 
-        RefreshToken refreshToken = new RefreshToken("token",user, "127.0.0.1", "user-agent", "web", 0);
+        RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
 
         String refresh = refreshToken.getRefreshToken();
 

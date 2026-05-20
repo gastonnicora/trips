@@ -34,7 +34,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
      * @param userUuid UUID del usuario
      * @return Lista de tokens activos
      */
-    List<RefreshToken> findAllByUser_UuidAndActiveTrue(UUID userUuid); 
+    List<RefreshToken> findAllByUser_UuidAndActiveTrue(UUID userUuid);
 
     /**
      * Elimina todos los tokens de un usuario.

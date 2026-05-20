@@ -24,76 +24,76 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DeleteAllByActiveFalseTest {
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+        @Autowired
+        private RefreshTokenRepository refreshTokenRepository;
 
-    @Test
-    void shouldDeleteAllByActiveFalse() {
-        User user = new User(
-                "username",
-                "latName",
-                "test@test.com",
-                "password",
-                Set.of(Role.USER));
+        @Test
+        void shouldDeleteAllByActiveFalse() {
+                User user = new User(
+                                "username",
+                                "latName",
+                                "test@test.com",
+                                "password",
+                                Set.of(Role.USER));
 
-        user.setEnabled(true);
-        userRepository.save(user);
+                user.setEnabled(true);
+                userRepository.save(user);
 
-        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
-        RefreshToken rt2 = new RefreshToken("token2", user, "127.0.0.1",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
-        RefreshToken rt3 = new RefreshToken("token3", user, "127.0.0.1",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+                RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+                RefreshToken rt2 = new RefreshToken("token2", user, "127.0.0.1",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+                RefreshToken rt3 = new RefreshToken("token3", user, "127.0.0.1",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
-        rt.setActive(false);
-        rt2.setActive(false);
+                rt.setActive(false);
+                rt2.setActive(false);
 
-        refreshTokenRepository.save(rt);
-        refreshTokenRepository.save(rt2);
-        refreshTokenRepository.save(rt3);
+                refreshTokenRepository.save(rt);
+                refreshTokenRepository.save(rt2);
+                refreshTokenRepository.save(rt3);
 
-        refreshTokenRepository.deleteAllByActiveFalse();
+                refreshTokenRepository.deleteAllByActiveFalse();
 
-        Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken(rt.getRefreshToken());
+                Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken(rt.getRefreshToken());
 
-        assertFalse(found.isPresent());
+                assertFalse(found.isPresent());
 
-        Optional<RefreshToken> found2 = refreshTokenRepository.findByRefreshToken(rt2.getRefreshToken());
+                Optional<RefreshToken> found2 = refreshTokenRepository.findByRefreshToken(rt2.getRefreshToken());
 
-        assertFalse(found2.isPresent());
+                assertFalse(found2.isPresent());
 
-        Optional<RefreshToken> found3 = refreshTokenRepository.findByRefreshToken(rt3.getRefreshToken());
+                Optional<RefreshToken> found3 = refreshTokenRepository.findByRefreshToken(rt3.getRefreshToken());
 
-        assertTrue(found3.isPresent());
-    }
+                assertTrue(found3.isPresent());
+        }
 
-    @Test
-    void shouldNotDeleteAllByActiveFalseIfAllActive() {
-        User user = new User(
-                "username",
-                "latName",
-                "test@test.com",
-                "password",
-                Set.of(Role.USER));
+        @Test
+        void shouldNotDeleteAllByActiveFalseIfAllActive() {
+                User user = new User(
+                                "username",
+                                "latName",
+                                "test@test.com",
+                                "password",
+                                Set.of(Role.USER));
 
-        user.setEnabled(true);
-        userRepository.save(user);
+                user.setEnabled(true);
+                userRepository.save(user);
 
-        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+                RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
-        refreshTokenRepository.save(rt);
+                refreshTokenRepository.save(rt);
 
-        refreshTokenRepository.deleteAllByActiveFalse();
+                refreshTokenRepository.deleteAllByActiveFalse();
 
-        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
+                List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
-        assertFalse(found.isEmpty());
-        assertEquals(1, refreshTokenRepository.count());
-    }
+                assertFalse(found.isEmpty());
+                assertEquals(1, refreshTokenRepository.count());
+        }
 
 }

@@ -28,73 +28,73 @@ import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
 public class CreateUserTest {
-    @Mock
-    private UserRepository userRepository;
+        @Mock
+        private UserRepository userRepository;
 
-    @Mock
-    private UserMapper userMapper;
+        @Mock
+        private UserMapper userMapper;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+        @Mock
+        private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
-    private UserService userService;
+        @InjectMocks
+        private UserService userService;
 
-    @Test
-    void shouldCreateUser() {
-        UserCreate request = new UserCreate();
-        request.setName("John");
-        request.setLastname("Doe");
-        request.setEmail("mail");
-        request.setPassword("pass");
+        @Test
+        void shouldCreateUser() {
+                UserCreate request = new UserCreate();
+                request.setName("John");
+                request.setLastname("Doe");
+                request.setEmail("mail");
+                request.setPassword("pass");
 
-        when(userRepository.existsByEmailAndEnabledTrue(request.getEmail()))
-                .thenReturn(false);
+                when(userRepository.existsByEmailAndEnabledTrue(request.getEmail()))
+                                .thenReturn(false);
 
-        when(passwordEncoder.encode("pass"))
-                .thenReturn("encoded-pass");
+                when(passwordEncoder.encode("pass"))
+                                .thenReturn("encoded-pass");
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+                ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
 
-        when(userRepository.save(any(User.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                when(userRepository.save(any(User.class)))
+                                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        when(userMapper.toDTO(any(User.class)))
-                .thenReturn(new UserDTO());
+                when(userMapper.toDTO(any(User.class)))
+                                .thenReturn(new UserDTO());
 
-        userService.createUser(request);
+                userService.createUser(request);
 
-        verify(userRepository).existsByEmailAndEnabledTrue(request.getEmail());
-        verify(passwordEncoder).encode("pass");
+                verify(userRepository).existsByEmailAndEnabledTrue(request.getEmail());
+                verify(passwordEncoder).encode("pass");
 
-        verify(userRepository).save(captor.capture());
-        verify(userMapper).toDTO(any(User.class));
+                verify(userRepository).save(captor.capture());
+                verify(userMapper).toDTO(any(User.class));
 
-        User saved = captor.getValue();
+                User saved = captor.getValue();
 
-        assertEquals("John", saved.getName());
-        assertEquals("encoded-pass", saved.getPassword());
-        assertEquals(Set.of(Role.USER), saved.getRole());
-    }
+                assertEquals("John", saved.getName());
+                assertEquals("encoded-pass", saved.getPassword());
+                assertEquals(Set.of(Role.USER), saved.getRole());
+        }
 
-    @Test
-    void shouldThrowConflictException_whenEmailIsUsed() {
-        UserCreate request = new UserCreate();
-        request.setName("John");
-        request.setLastname("Doe");
-        request.setEmail("mail");
-        request.setPassword("pass");
+        @Test
+        void shouldThrowConflictException_whenEmailIsUsed() {
+                UserCreate request = new UserCreate();
+                request.setName("John");
+                request.setLastname("Doe");
+                request.setEmail("mail");
+                request.setPassword("pass");
 
-        when(userRepository.existsByEmailAndEnabledTrue(request.getEmail()))
-                .thenReturn(true);
+                when(userRepository.existsByEmailAndEnabledTrue(request.getEmail()))
+                                .thenReturn(true);
 
-         assertThrows(ConflictException.class,
-            () -> userService.createUser(request));
+                assertThrows(ConflictException.class,
+                                () -> userService.createUser(request));
 
-        verify(userRepository).existsByEmailAndEnabledTrue(request.getEmail());
-        verify(passwordEncoder, never()).encode("pass");
-        verify(userRepository, never()).save(any(User.class));
-        verify(userMapper, never()).toDTO(any(User.class));
+                verify(userRepository).existsByEmailAndEnabledTrue(request.getEmail());
+                verify(passwordEncoder, never()).encode("pass");
+                verify(userRepository, never()).save(any(User.class));
+                verify(userMapper, never()).toDTO(any(User.class));
 
-    }
+        }
 }

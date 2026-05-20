@@ -36,7 +36,7 @@ public class FindByEmailTest {
         user.setEnabled(true);
 
         userRepository.save(user);
-        
+
         User user2 = new User(
                 "username2",
                 "latName2",
@@ -50,7 +50,7 @@ public class FindByEmailTest {
 
         List<User> found = userRepository.findByEmail("test@test.com");
 
-        assertEquals( 2,found.size());
+        assertEquals(2, found.size());
         assertFalse(found.isEmpty());
         assertTrue(found.get(0).getEmail().equals("test@test.com"));
         assertTrue(found.get(1).getEmail().equals("test@test.com"));

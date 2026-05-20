@@ -26,7 +26,7 @@ import com.gastonnicora.trips.services.RefreshTokenService;
 @ExtendWith(MockitoExtension.class)
 public class CreateTokenTest {
         @Mock
-        private RefreshTokenRepository refreshTokenRepository; 
+        private RefreshTokenRepository refreshTokenRepository;
 
         @Mock
         private UserRepository userRepository;

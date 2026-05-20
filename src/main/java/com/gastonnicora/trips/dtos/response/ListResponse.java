@@ -39,7 +39,7 @@ import lombok.NoArgsConstructor;
 public class ListResponse<T> {
 
     /** Lista de elementos devueltos */
-    private List<T> data=new ArrayList<>();
+    private List<T> data = new ArrayList<>();
 
     /** Total de elementos en la lista */
     private int total = 0;

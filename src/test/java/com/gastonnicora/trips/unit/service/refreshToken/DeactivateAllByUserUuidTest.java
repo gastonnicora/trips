@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.entities.RefreshToken;
-import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
@@ -30,7 +29,6 @@ public class DeactivateAllByUserUuidTest {
 
     @Mock
     private UserRepository userRepo;
-
 
     @InjectMocks
     private RefreshTokenService service;

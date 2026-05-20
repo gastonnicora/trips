@@ -95,7 +95,8 @@ public class AuthController {
             HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
-        User user = userRepository.findByEmailAndEnabledTrue(login.getEmail()).orElseThrow(()-> new NotFoundException("El usuario no fue encontrado"));
+        User user = userRepository.findByEmailAndEnabledTrue(login.getEmail())
+                .orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
         String token = jwtService.generateToken(login.getEmail(), user.getVersion(), user.getUuid());
 
         String userAgent = request.getHeader("User-Agent");
@@ -154,7 +155,8 @@ public class AuthController {
 
         RefreshToken rt = refreshTokenService.verifyToken(refreshToken, ip, userAgent);
 
-        User user = userRepository.findById(rt.getUser().getUuid()).orElseThrow(()-> new NotFoundException("El usuario no fue encontrado")); // FIXME 🐛: agregar error
+        User user = userRepository.findById(rt.getUser().getUuid())
+                .orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
         String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(), user.getUuid());
 
         RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user, userAgent, ip,
