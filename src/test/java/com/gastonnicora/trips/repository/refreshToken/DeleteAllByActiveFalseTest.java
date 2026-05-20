@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -57,7 +56,6 @@ public class DeleteAllByActiveFalseTest {
         refreshTokenRepository.save(rt2);
         refreshTokenRepository.save(rt3);
 
-
         refreshTokenRepository.deleteAllByActiveFalse();
 
         Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken(rt.getRefreshToken());
@@ -97,6 +95,5 @@ public class DeleteAllByActiveFalseTest {
         assertFalse(found.isEmpty());
         assertEquals(1, refreshTokenRepository.count());
     }
-
 
 }
