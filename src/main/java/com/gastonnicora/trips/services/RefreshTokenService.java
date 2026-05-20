@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 
@@ -47,16 +48,16 @@ public class RefreshTokenService {
      * Crea un nuevo refresh token y lo persiste.
      * 
      * @param token     Token generado
-     * @param userUuid  UUID del usuario
+     * @param user      Usuario asociado al refresh token
      * @param userAgent Información del navegador/dispositivo
      * @param ip        Dirección IP
      * @param device    Nombre del dispositivo
      * @param version   Versión del token
      * @return {@link RefreshToken} persistido
      */
-    public RefreshToken createToken(String token, UUID userUuid, String userAgent, String ip, String device,
+    public RefreshToken createToken(String token, User user, String userAgent, String ip, String device,
             int version) {
-        RefreshToken newToken = new RefreshToken(token, userUuid, ip, userAgent, device, version);
+        RefreshToken newToken = new RefreshToken(token, user, ip, userAgent, device, version);
         return repo.save(newToken);
     }
 
@@ -130,7 +131,7 @@ public class RefreshTokenService {
      * @param uuid UUID del usuario
      */
     public void deactivateAllByUserUuid(UUID uuid) {
-        repo.findAllByUserUuidAndActiveTrue(uuid).forEach(rt -> {
+        repo.findAllByUser_UuidAndActiveTrue(uuid).forEach(rt -> {
             rt.setActive(false);
             rt.addVersion();
             repo.save(rt);

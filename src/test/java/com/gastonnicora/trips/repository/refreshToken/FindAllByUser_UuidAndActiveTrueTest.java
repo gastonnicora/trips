@@ -22,7 +22,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindAllByUserUuidAndActiveTrueTest {
+public class FindAllByUser_UuidAndActiveTrueTest {
     @Autowired
     private UserRepository userRepository;
 
@@ -41,12 +41,12 @@ public class FindAllByUserUuidAndActiveTrueTest {
         user.setEnabled(true);
         userRepository.save(user);
 
-        RefreshToken rt = new RefreshToken("token", user.getUuid(), "127.0.0.1",
+        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
         refreshTokenRepository.save(rt);
 
-       List<RefreshToken> found = refreshTokenRepository.findAllByUserUuidAndActiveTrue(user.getUuid());
+       List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
         assertFalse(found.isEmpty());
         assertTrue(found.get(0).equals(rt));

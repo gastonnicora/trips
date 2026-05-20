@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,141 +18,157 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
 public class CreateTokenTest {
-    @Mock
-    private RefreshTokenRepository refreshTokenRepository; // FIXME 🐛: relacionar userUuid con la tabla user
+        @Mock
+        private RefreshTokenRepository refreshTokenRepository; // FIXME 🐛: relacionar userUuid con la tabla user
 
-    @InjectMocks
-    private RefreshTokenService refreshTokenService;
+        @Mock
+        private UserRepository userRepository;
 
-    @Test
-    void shouldCreateToken() {
+        @InjectMocks
+        private RefreshTokenService refreshTokenService;
 
-        UUID userUuid = UUID.randomUUID();
-        RefreshToken refreshToken = new RefreshToken("token", userUuid, "127.0.0.1", "user-agent", "device", 0);
+        @Test
+        void shouldCreateToken() {
 
-        when(refreshTokenRepository.save(any(RefreshToken.class))).thenReturn(refreshToken);
+                User user = new User("username", "latName", "test@test.com", "password", null);
 
-        ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
+                userRepository.save(user);
 
-        refreshTokenService.createToken("token", userUuid, "user-agent", "127.0.0.1",
-                "device", 0);
+                RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "device", 0);
 
-        verify(refreshTokenRepository).save(captor.capture());
+                when(refreshTokenRepository.save(any(RefreshToken.class))).thenReturn(refreshToken);
 
-        RefreshToken saved = captor.getValue();
+                ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
 
-        assertEquals("token", saved.getToken());
+                refreshTokenService.createToken("token", user, "user-agent", "127.0.0.1",
+                                "device", 0);
 
-        assertEquals(userUuid, saved.getUserUuid());
+                verify(refreshTokenRepository).save(captor.capture());
 
-        assertEquals("127.0.0.1", saved.getIp());
+                RefreshToken saved = captor.getValue();
 
-        assertEquals("user-agent", saved.getUserAgent());
+                assertEquals("token", saved.getToken());
 
-        assertEquals("device", saved.getDevice());
+                assertEquals(user, saved.getUser());
 
-        assertEquals(0, saved.getVersion());
+                assertEquals("127.0.0.1", saved.getIp());
 
-        assertTrue(saved.isActive());
+                assertEquals("user-agent", saved.getUserAgent());
 
-        assertNotNull(saved.getRefreshToken());
+                assertEquals("device", saved.getDevice());
 
-        assertNotNull(saved.getExpiryDate());
-        assertTrue(
-                saved.getExpiryDate().isAfter(
-                        Instant.now().plus(6, ChronoUnit.DAYS)));
+                assertEquals(0, saved.getVersion());
 
-        assertTrue(
-                saved.getExpiryDate().isBefore(
-                        Instant.now().plus(8, ChronoUnit.DAYS)));
-    }
-    @Test
-    void shouldCreateToken_whenUserAgentIsNull() {
+                assertTrue(saved.isActive());
 
-        UUID userUuid = UUID.randomUUID();
-        RefreshToken refreshToken = new RefreshToken("token", userUuid, "127.0.0.1", null, "device", 0);
+                assertNotNull(saved.getRefreshToken());
 
-        when(refreshTokenRepository.save(any(RefreshToken.class))).thenReturn(refreshToken);
+                assertNotNull(saved.getExpiryDate());
+                assertTrue(
+                                saved.getExpiryDate().isAfter(
+                                                Instant.now().plus(6, ChronoUnit.DAYS)));
 
-        ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
+                assertTrue(
+                                saved.getExpiryDate().isBefore(
+                                                Instant.now().plus(8, ChronoUnit.DAYS)));
+        }
 
-        refreshTokenService.createToken("token", userUuid, null, "127.0.0.1",
-                "device", 0);
+        @Test
+        void shouldCreateToken_whenUserAgentIsNull() {
 
-        verify(refreshTokenRepository).save(captor.capture());
+                User user = new User("username", "latName", "test@test.com", "password", null);
 
-        RefreshToken saved = captor.getValue();
+                userRepository.save(user);
 
-        assertEquals("token", saved.getToken());
+                RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", null, "device", 0);
 
-        assertEquals(userUuid, saved.getUserUuid());
+                when(refreshTokenRepository.save(any(RefreshToken.class))).thenReturn(refreshToken);
 
-        assertEquals("127.0.0.1", saved.getIp());
+                ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
 
-        assertEquals("web", saved.getUserAgent());
+                refreshTokenService.createToken("token", user, null, "127.0.0.1",
+                                "device", 0);
 
-        assertEquals("device", saved.getDevice());
+                verify(refreshTokenRepository).save(captor.capture());
 
-        assertEquals(0, saved.getVersion());
+                RefreshToken saved = captor.getValue();
 
-        assertTrue(saved.isActive());
+                assertEquals("token", saved.getToken());
 
-        assertNotNull(saved.getRefreshToken());
+                assertEquals(user, saved.getUser());
 
-        assertNotNull(saved.getExpiryDate());
-        assertTrue(
-                saved.getExpiryDate().isAfter(
-                        Instant.now().plus(6, ChronoUnit.DAYS)));
+                assertEquals("127.0.0.1", saved.getIp());
 
-        assertTrue(
-                saved.getExpiryDate().isBefore(
-                        Instant.now().plus(8, ChronoUnit.DAYS)));
-    }
-    @Test
-    void shouldCreateToken_whenUserAgentIsBlanK() {
+                assertEquals("web", saved.getUserAgent());
 
-        UUID userUuid = UUID.randomUUID();
-        RefreshToken refreshToken = new RefreshToken("token", userUuid, "127.0.0.1", " ", "device", 0);
+                assertEquals("device", saved.getDevice());
 
-        when(refreshTokenRepository.save(any(RefreshToken.class))).thenReturn(refreshToken);
+                assertEquals(0, saved.getVersion());
 
-        ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
+                assertTrue(saved.isActive());
 
-        refreshTokenService.createToken("token", userUuid, " ", "127.0.0.1",
-                "device", 0);
+                assertNotNull(saved.getRefreshToken());
 
-        verify(refreshTokenRepository).save(captor.capture());
+                assertNotNull(saved.getExpiryDate());
+                assertTrue(
+                                saved.getExpiryDate().isAfter(
+                                                Instant.now().plus(6, ChronoUnit.DAYS)));
 
-        RefreshToken saved = captor.getValue();
+                assertTrue(
+                                saved.getExpiryDate().isBefore(
+                                                Instant.now().plus(8, ChronoUnit.DAYS)));
+        }
 
-        assertEquals("token", saved.getToken());
+        @Test
+        void shouldCreateToken_whenUserAgentIsBlanK() {
 
-        assertEquals(userUuid, saved.getUserUuid());
+                User user = new User("username", "latName", "test@test.com", "password", null);
 
-        assertEquals("127.0.0.1", saved.getIp());
+                userRepository.save(user);
 
-        assertEquals("web", saved.getUserAgent());
+                RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", " ", "device", 0);
 
-        assertEquals("device", saved.getDevice());
+                when(refreshTokenRepository.save(any(RefreshToken.class))).thenReturn(refreshToken);
 
-        assertEquals(0, saved.getVersion());
+                ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
 
-        assertTrue(saved.isActive());
+                refreshTokenService.createToken("token", user, " ", "127.0.0.1",
+                                "device", 0);
 
-        assertNotNull(saved.getRefreshToken());
+                verify(refreshTokenRepository).save(captor.capture());
 
-        assertNotNull(saved.getExpiryDate());
-        assertTrue(
-                saved.getExpiryDate().isAfter(
-                        Instant.now().plus(6, ChronoUnit.DAYS)));
+                RefreshToken saved = captor.getValue();
 
-        assertTrue(
-                saved.getExpiryDate().isBefore(
-                        Instant.now().plus(8, ChronoUnit.DAYS)));
-    }
+                assertEquals("token", saved.getToken());
+
+                assertEquals(user, saved.getUser());
+
+                assertEquals("127.0.0.1", saved.getIp());
+
+                assertEquals("web", saved.getUserAgent());
+
+                assertEquals("device", saved.getDevice());
+
+                assertEquals(0, saved.getVersion());
+
+                assertTrue(saved.isActive());
+
+                assertNotNull(saved.getRefreshToken());
+
+                assertNotNull(saved.getExpiryDate());
+                assertTrue(
+                                saved.getExpiryDate().isAfter(
+                                                Instant.now().plus(6, ChronoUnit.DAYS)));
+
+                assertTrue(
+                                saved.getExpiryDate().isBefore(
+                                                Instant.now().plus(8, ChronoUnit.DAYS)));
+        }
 }

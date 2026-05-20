@@ -18,21 +18,32 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
 public class RevokeTokenTest {
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
+    @Mock
+    private UserRepository userRepository;
+
 
     @InjectMocks
     private RefreshTokenService refreshTokenService;
 
     @Test
     void shouldRevokeTokenIsPresent() {
-        UUID uuid = UUID.randomUUID();
-        RefreshToken refreshToken = new RefreshToken("token", uuid, "127.0.0.1", "user-agent", "web", 0);
+
+        
+        User user = new User("username", "latName", "test@test.com", "password", null);
+        
+        userRepository.save(user);
+
+        
+        RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
 
         when(refreshTokenRepository.findByRefreshToken(any(String.class)))
                 .thenReturn(Optional.of(refreshToken));

@@ -42,11 +42,11 @@ public class DeleteAllByActiveFalseTest {
         user.setEnabled(true);
         userRepository.save(user);
 
-        RefreshToken rt = new RefreshToken("token", user.getUuid(), "127.0.0.1",
+        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
-        RefreshToken rt2 = new RefreshToken("token2", user.getUuid(), "127.0.0.1",
+        RefreshToken rt2 = new RefreshToken("token2", user, "127.0.0.1",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
-        RefreshToken rt3 = new RefreshToken("token3", user.getUuid(), "127.0.0.1",
+        RefreshToken rt3 = new RefreshToken("token3", user, "127.0.0.1",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
         rt.setActive(false);
@@ -83,14 +83,14 @@ public class DeleteAllByActiveFalseTest {
         user.setEnabled(true);
         userRepository.save(user);
 
-        RefreshToken rt = new RefreshToken("token", user.getUuid(), "127.0.0.1",
+        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
         refreshTokenRepository.save(rt);
 
         refreshTokenRepository.deleteAllByActiveFalse();
 
-        List<RefreshToken> found = refreshTokenRepository.findAllByUserUuidAndActiveTrue(user.getUuid());
+        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
         assertFalse(found.isEmpty());
         assertEquals(1, refreshTokenRepository.count());

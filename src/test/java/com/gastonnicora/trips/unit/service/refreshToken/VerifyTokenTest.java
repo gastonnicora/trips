@@ -21,14 +21,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
 public class VerifyTokenTest {
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private RefreshTokenService refreshTokenService;
@@ -36,9 +40,13 @@ public class VerifyTokenTest {
     @Test
     void shouldVerifyToken() {
 
-        UUID uuid = UUID.randomUUID();
+        
+        User user = new User("username", "latName", "test@test.com", "password", null);
+        
+        userRepository.save(user);
 
-        RefreshToken refreshToken = new RefreshToken("token", uuid, "127.0.0.1", "user-agent", "web", 0);
+
+        RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
 
         when(refreshTokenRepository.findByRefreshToken(any(String.class)))
                 .thenReturn(Optional.of(refreshToken));
@@ -51,7 +59,7 @@ public class VerifyTokenTest {
 
         assertEquals("token", result.getToken());
 
-        assertEquals(uuid, result.getUserUuid());
+        assertEquals(user, result.getUser());
 
         assertEquals("127.0.0.1", result.getIp());
 
@@ -101,8 +109,12 @@ public class VerifyTokenTest {
 
     @Test
     void shouldThrowsUnauthorizedException_whenTokenIsInactive() {
-        UUID uuid = UUID.randomUUID();
-        RefreshToken refreshToken = new RefreshToken("token", uuid, "127.0.0.1", "user-agent", "web", 0);
+        
+        User user = new User("username", "latName", "test@test.com", "password", null);
+        
+        userRepository.save(user);
+
+        RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
         refreshToken.setActive(false);
 
         when(refreshTokenRepository.findByRefreshToken(any(String.class)))
@@ -120,9 +132,13 @@ public class VerifyTokenTest {
 
     @Test
     void shouldThrowsUnauthorizedException_whenTokenIsExpired() {
-        UUID uuid = UUID.randomUUID();
+        
+        User user = new User("username", "latName", "test@test.com", "password", null);
+        
+        userRepository.save(user);
 
-        RefreshToken refreshToken = new RefreshToken("token", uuid, "127.0.0.1", "user-agent", "web", 0);
+
+        RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
         refreshToken.setExpiryDate(refreshToken.getExpiryDate().minus(8, ChronoUnit.DAYS));
 
         when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.of(refreshToken));
@@ -139,9 +155,13 @@ public class VerifyTokenTest {
 
     @Test
     void shouldThrowsUnauthorizedException_whenCurrentIpIsDifferent() {
-        UUID uuid = UUID.randomUUID();
+        
+        User user = new User("username", "latName", "test@test.com", "password", null);
+        
+        userRepository.save(user);
 
-        RefreshToken refreshToken = new RefreshToken("token", uuid, "127.0.0.1", "user-agent", "web", 0);
+
+        RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
 
         when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.of(refreshToken));
 
@@ -156,9 +176,12 @@ public class VerifyTokenTest {
 
     @Test
     void shouldThrowsUnauthorizedException_whenCurrentUserAgentIsDifferent() {
-        UUID uuid = UUID.randomUUID();
 
-        RefreshToken refreshToken = new RefreshToken("token", uuid, "127.0.0.1", "user-agent", "web", 0);
+        User user = new User("username", "latName", "test@test.com", "password", null);
+        
+        userRepository.save(user);
+
+        RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
 
         when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.of(refreshToken));
 

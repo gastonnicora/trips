@@ -101,7 +101,7 @@ public class AuthController {
         String ip = request.getRemoteAddr();
         String device = UserAgent.getDevice(userAgent);
 
-        RefreshToken refreshTokenE = refreshTokenService.createToken(token, user.getUuid(), userAgent, ip,
+        RefreshToken refreshTokenE = refreshTokenService.createToken(token, user, userAgent, ip,
                 device, user.getVersion());
 
         if ("web".equals(device)) {
@@ -153,10 +153,10 @@ public class AuthController {
 
         RefreshToken rt = refreshTokenService.verifyToken(refreshToken, ip, userAgent);
 
-        User user = userRepository.findById(rt.getUserUuid()).orElseThrow();
+        User user = userRepository.findById(rt.getUser().getUuid()).orElseThrow(); // FIXME 🐛: agregar error
         String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(), user.getUuid());
 
-        RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user.getUuid(), userAgent, ip,
+        RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user, userAgent, ip,
                 rt.getDevice(), user.getVersion());
         refreshTokenService.revokeToken(refreshToken);
 

@@ -18,13 +18,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
 public class DeactivateAllByUserUuidTest {
     @Mock
     private RefreshTokenRepository repo;
+
+    @Mock
+    private UserRepository userRepo;
+
 
     @InjectMocks
     private RefreshTokenService service;
@@ -40,7 +46,7 @@ public class DeactivateAllByUserUuidTest {
         RefreshToken token2 = new RefreshToken();
         token2.setActive(true);
 
-        when(repo.findAllByUserUuidAndActiveTrue(uuid))
+        when(repo.findAllByUser_UuidAndActiveTrue(uuid))
                 .thenReturn(List.of(token1, token2));
 
         service.deactivateAllByUserUuid(uuid);
@@ -59,7 +65,7 @@ public class DeactivateAllByUserUuidTest {
 
         UUID uuid = UUID.randomUUID();
 
-        when(repo.findAllByUserUuidAndActiveTrue(uuid))
+        when(repo.findAllByUser_UuidAndActiveTrue(uuid))
                 .thenReturn(List.of());
 
         service.deactivateAllByUserUuid(uuid);

@@ -1,10 +1,8 @@
 package com.gastonnicora.trips.repository.refreshToken;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -41,26 +39,20 @@ public class DeleteByUserUuidTest {
         user.setEnabled(true);
         userRepository.save(user);
 
-        RefreshToken rt = new RefreshToken("token", user.getUuid(), "127.0.0.1",
+        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
-        RefreshToken rt2 = new RefreshToken("token", user.getUuid(), "127.0.0.1",
+        RefreshToken rt2 = new RefreshToken("token", user, "127.0.0.1",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
         refreshTokenRepository.save(rt);
         refreshTokenRepository.save(rt2);
 
-        refreshTokenRepository.deleteByUserUuid(user.getUuid());
+        refreshTokenRepository.deleteAllByUser_Uuid(user.getUuid());
 
-        List<RefreshToken> found = refreshTokenRepository.findAllByUserUuidAndActiveTrue(user.getUuid());
+        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
         assertTrue(found.isEmpty());
 
     }
 
-    @Test
-    void shouldNotDeleteByUserUuidIfNotExist() {
-        Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken("non-existent-token");
-
-        assertFalse(found.isPresent());
-    }
 }

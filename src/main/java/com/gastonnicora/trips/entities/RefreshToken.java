@@ -12,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,7 +33,7 @@ import lombok.NoArgsConstructor;
  * <li>{@code uuid}: Identificador único del token.</li>
  * <li>{@code token}: Token JWT de acceso.</li>
  * <li>{@code refreshToken}: Token único de refresco.</li>
- * <li>{@code userUuid}: Identificador del usuario asociado.</li>
+ * <li>{@code user}: Usuario asociado al refreshToken.</li>
  * <li>{@code ip}: Dirección IP desde donde se creó el token.</li>
  * <li>{@code userAgent}: Información del navegador o cliente.</li>
  * <li>{@code device}: Tipo de dispositivo (web, android, etc.).</li>
@@ -68,8 +70,9 @@ public class RefreshToken {
     @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
 
-    @Column(name = "user_uuid", nullable = false)
-    private UUID userUuid;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_uuid", nullable = false)
+    private User user;
 
     @Column(name = "ip", nullable = false)
     private String ip;
@@ -102,17 +105,17 @@ public class RefreshToken {
      * </p>
      * 
      * @param token     JWT de acceso asociado
-     * @param userUuid  UUID del usuario
+     * @param user      usuario relacionado con el token
      * @param ip        Dirección IP desde donde se crea el token
      * @param userAgent Información del cliente (navegador, app, etc.)
      * @param device    Tipo de dispositivo (web, android, etc.)
      * @param version   Versión inicial del token
      */
-    public RefreshToken(String token, UUID userUuid, String ip, String userAgent, String device, int version) {
+    public RefreshToken(String token, User user, String ip, String userAgent, String device, int version) {
         this.token = token;
         this.refreshToken = UUID.randomUUID().toString();
         this.active = true;
-        this.userUuid = userUuid;
+        this.user = user;
         this.ip = ip;
         this.userAgent = (userAgent != null && !userAgent.isBlank()) ? userAgent : "web";
         this.device = device;
