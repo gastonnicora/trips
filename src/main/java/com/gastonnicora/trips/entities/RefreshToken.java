@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,7 +62,8 @@ public class RefreshToken {
 
     @Id
     @Column(name = "uuid", nullable = false, unique = true)
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue
+    @UuidGenerator
     private UUID uuid;
 
     @Column(name = "token", nullable = false, columnDefinition = "TEXT")

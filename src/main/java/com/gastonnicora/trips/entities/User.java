@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import com.gastonnicora.trips.enums.Role;
 
@@ -66,9 +67,10 @@ import lombok.ToString;
 @ToString(exclude = "password")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+     @Id
     @Column(name = "uuid", nullable = false, unique = true)
+    @GeneratedValue
+    @UuidGenerator
     private UUID uuid;
 
     @Column(name = "name", nullable = false)
