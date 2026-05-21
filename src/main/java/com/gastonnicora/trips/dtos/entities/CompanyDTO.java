@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +25,8 @@ import lombok.ToString;
  * <li>{@code name}: Nombre de la empresa.</li>
  * <li>{@code owner}: Dueño de la empresa.</li>
  * <li>{@code address}: Dirección de la empresa.</li>
+ * <li>{@code latitude}: Latitud de la dirección de la empresa.</li>
+ * <li>{@code longitude}: Longitud de la dirección de la empresa.</li>
  * <li>{@code email}: Email de la empresa.</li>
  * <li>{@code phone}: Teléfono de la empresa.</li>
  * <li>{@code createdAt}: Fecha de creación de la empresa.</li>
@@ -52,8 +53,10 @@ import lombok.ToString;
  *     "updatedAt": "2026-01-01T00:00:00"
  *   },
  *   "address": "Calle Falsa 123,La Plata,Bs As, Argentina",
+ *   "latitude": 500,
+ *   "longitude": 500,
  *   "email": "company@mail.com",
- *   "phone": "1122334455",
+ *   "phone": "+5491122334455",
  *   "createdAt": "2026-01-01T00:00:00",
  *   "updatedAt": "2026-01-01T00:00:00",
  *   "active": true
@@ -83,10 +86,16 @@ public class CompanyDTO {
     @Schema(description = "Dirección de la empresa", example = "Calle Falsa 123,La Plata,Bs As, Argentina")
     private String address;
 
+    @Schema(description = "Latitud de la dirección de la empresa", example = "500")
+    private double latitude;
+
+    @Schema(description = "Longitud de la dirección de la empresa", example = "500")
+    private double longitude;
+
     @Schema(description = "Email de la empresa", example = "company@mail.com")
     private String email;
 
-    @Schema(description = "Teléfono de la empresa", example = "1122334455")
+    @Schema(description = "Teléfono de la empresa", example = "+5491122334455")
     private String phone;
 
     @Schema(description = "Fecha de creación de la empresa", example = "2026-01-01T00:00:00")

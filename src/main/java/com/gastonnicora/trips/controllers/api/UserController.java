@@ -3,7 +3,6 @@ package com.gastonnicora.trips.controllers.api;
 import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +18,8 @@ import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
 import com.gastonnicora.trips.dtos.request.User.UserCreate;
 import com.gastonnicora.trips.dtos.request.User.UserPut;
 import com.gastonnicora.trips.dtos.response.ListResponse;
+import com.gastonnicora.trips.exceptions.ConflictException;
+import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -147,8 +148,8 @@ public class UserController {
      * correo electrónico no esté en uso.
      * </p>
      * <p>
-     * En caso que los datos no sean válidos, Spring lanzará una excepción de tipo
-     * {@link MethodArgumentNotValidException}.
+     * En caso que los datos no sean válidos, se lanzará una excepción de tipo
+     * {@link ValidationException}.
      * </p>
      * <p>
      * Este endpoint hace uso del servicio {@link UserService} para crear al
@@ -177,8 +178,10 @@ public class UserController {
      * usuario, y se verifica que el correo electrónico no esté en uso.
      * </p>
      * <p>
-     * En caso que los datos no sean válidos, Spring lanzará una excepción de tipo
-     * {@link MethodArgumentNotValidException}.
+     * En caso que los datos no sean válidos, se lanzará una excepción de tipo
+     * {@link ValidationException}.
+     * En caso que el correo electrónico ya esté en uso se lanzará una excepción de
+     * tipo {@link ConflictException}.
      * </p>
      * <p>
      * Este endpoint hace uso del servicio {@link UserService} para actualizar los
@@ -209,8 +212,8 @@ public class UserController {
      * sesiones.
      * </p>
      * <p>
-     * En caso que los datos no sean válidos, Spring lanzará una excepción de tipo
-     * {@link MethodArgumentNotValidException}.
+     * En caso que los datos no sean válidos, se lanzará una excepción de tipo
+     * {@link ValidationException}.
      * </p>
      * <p>
      * Este endpoint hace uso del servicio {@link UserService} para realizar el

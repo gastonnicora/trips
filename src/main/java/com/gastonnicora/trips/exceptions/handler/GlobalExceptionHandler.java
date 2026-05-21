@@ -53,7 +53,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado", content = @Content(schema = @Schema(implementation = ForbiddenApiError.class)))
 @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Conflicto con el estado actual del recurso (ej: email ya registrado)", content = @Content(schema = @Schema(implementation = ConflictApiError.class)))
 public class GlobalExceptionHandler {
-
+        // TODO 🚀: Agregar mensaje  cod 500
         /**
          * Maneja errores de validación lanzados por Spring cuando fallan las
          * anotaciones de validación.

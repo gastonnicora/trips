@@ -122,12 +122,31 @@
 							<additionalJoptions>
 								<additionalJoption>-Xdoclint:none</additionalJoption>
 							</additionalJoptions>
-							<sourcePath>${project.basedir}/src/main/java</sourcePath> 
-							<useDefaultExcludes>false</useDefaultExcludes> 
+							<sourcePath>${project.basedir}/src/main/java</sourcePath>
+							<useDefaultExcludes>false</useDefaultExcludes>
 							<links>
-								<link>https://docs.oracle.com/en/java/javase/17/docs/api/</link> 
+								<link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
 							</links>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version> <!-- O la versión más reciente -->
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

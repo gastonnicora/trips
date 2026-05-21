@@ -9,14 +9,14 @@ import org.hibernate.annotations.UuidGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Representa una empresa de transporte.
@@ -48,8 +48,9 @@ import lombok.NoArgsConstructor;
  * @since 2026-05-20
  */
 @Entity
-@Table(name = "Companies")
-@Data
+@Table(name = "companies")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Company {
@@ -68,7 +69,13 @@ public class Company {
     private User owner;
 
     @Column(name = "address", nullable = false)
-    private String address; // TODO 🚀:  cambiar por geolocalizacion
+    private String address;
+
+    @Column(name = "latitude", nullable = false)
+    private double latitude;
+
+    @Column(name = "longitude", nullable = false)
+    private double longitude;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -99,11 +106,14 @@ public class Company {
      * @param email   Dirección de correo electrónico de la empresa
      * @param phone   Número de teléfono de la empresa
      */
-    public Company(String name, User owner, String address, String email, String phone) {
+    public Company(String name, User owner, String address, double latitude, double longitude, String email,
+            String phone) {
         this.name = name;
         this.owner = owner;
         this.address = address;
         this.email = email;
         this.phone = phone;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }

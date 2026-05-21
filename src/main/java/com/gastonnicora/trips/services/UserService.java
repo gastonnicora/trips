@@ -115,7 +115,7 @@ public class UserService {
      *                           datos.
      */
     public UserDTO getCurrentUser() {
-        return getUser(getCurrentUserUuid());
+        return userMapper.toDTO(getUser(getCurrentUserUuid()));
     }
 
     /**
@@ -129,7 +129,7 @@ public class UserService {
      * @throws NotFoundException Si el usuario no existe.
      */
     public UserDTO getUserByUuid(UUID uuid) {
-        return getUser(uuid);
+        return userMapper.toDTO(getUser(uuid));
     }
 
     /**
@@ -357,25 +357,24 @@ public class UserService {
      * Busca un usuario por su UUID y lo convierte a {@link UserDTO}.
      * <p>
      * Este método realiza lo siguiente:
+     * </p>
      * <ul>
      * <li>Busca al usuario en la base de datos mediante
      * {@link #userRepository}.</li>
-     * <li>Si se encuentra, lo convierte a {@link UserDTO} mediante
-     * {@link #userMapper} y lo retorna.</li>
      * <li>Si no se encuentra, lanza una {@link NotFoundException} con mensaje
      * descriptivo.</li>
      * </ul>
-     * </p>
+     * 
      * 
      * @param uuid UUID del usuario que se quiere obtener
-     * @return {@link UserDTO} Datos del usuario correspondiente
+     * @return {@link User} Datos del usuario correspondiente
      * @throws NotFoundException si no existe ningún usuario con el UUID
      *                           proporcionado
      */
-    private UserDTO getUser(UUID uuid) {
+    public User getUser(UUID uuid) {
         Optional<User> user = userRepository.findByUuid(uuid);
         if (user.isPresent()) {
-            return userMapper.toDTO(user.get());
+            return user.get();
         }
         throw new NotFoundException("El usuario solicitado no existe");
     }
