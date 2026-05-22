@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.dtos.request.User;
+package com.gastonnicora.trips.dtos.request.user;
 
 import com.gastonnicora.trips.validations.FieldsMatch;
 

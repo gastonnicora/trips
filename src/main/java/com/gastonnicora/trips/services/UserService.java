@@ -11,10 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
-import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
-import com.gastonnicora.trips.dtos.request.User.UserCreate;
-import com.gastonnicora.trips.dtos.request.User.UserPut;
+import com.gastonnicora.trips.dtos.request.user.UserChangePassword;
+import com.gastonnicora.trips.dtos.request.user.UserChangeRole;
+import com.gastonnicora.trips.dtos.request.user.UserCreate;
+import com.gastonnicora.trips.dtos.request.user.UserPut;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;

@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.request.User.UserCreate;
+import com.gastonnicora.trips.dtos.request.user.UserCreate;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.ConflictException;

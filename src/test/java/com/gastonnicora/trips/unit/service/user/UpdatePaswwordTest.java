@@ -26,7 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
+import com.gastonnicora.trips.dtos.request.user.UserChangePassword;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.NotFoundException;

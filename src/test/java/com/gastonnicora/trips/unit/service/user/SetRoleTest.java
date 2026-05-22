@@ -21,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
+import com.gastonnicora.trips.dtos.request.user.UserChangeRole;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.NotFoundException;

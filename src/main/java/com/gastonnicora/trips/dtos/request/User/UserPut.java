@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.dtos.request.User;
+package com.gastonnicora.trips.dtos.request.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NoArgsConstructor;

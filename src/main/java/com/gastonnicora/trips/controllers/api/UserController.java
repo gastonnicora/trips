@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.request.User.UserChangePassword;
-import com.gastonnicora.trips.dtos.request.User.UserChangeRole;
-import com.gastonnicora.trips.dtos.request.User.UserCreate;
-import com.gastonnicora.trips.dtos.request.User.UserPut;
+import com.gastonnicora.trips.dtos.request.user.UserChangePassword;
+import com.gastonnicora.trips.dtos.request.user.UserChangeRole;
+import com.gastonnicora.trips.dtos.request.user.UserCreate;
+import com.gastonnicora.trips.dtos.request.user.UserPut;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.exceptions.ConflictException;
 import com.gastonnicora.trips.exceptions.ValidationException;

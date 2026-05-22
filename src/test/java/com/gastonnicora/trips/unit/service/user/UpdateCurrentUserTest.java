@@ -24,7 +24,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.request.User.UserPut;
+import com.gastonnicora.trips.dtos.request.user.UserPut;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.ConflictException;

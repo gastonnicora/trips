@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.dtos.request.User;
+package com.gastonnicora.trips.dtos.request.user;
 
 import java.util.HashSet;
 import java.util.Set;
