@@ -8,6 +8,8 @@ target/
 **/*.txt
 *.bat
 
+logs/
+trips.log
 
 guide/
 
