@@ -27,6 +27,7 @@ public class GeocodingService {
                 .baseUrl("https://nominatim.openstreetmap.org")
                 .defaultHeader("User-Agent", "Trips/1.0 (gastonmatias.21@gmail.com)")
                 .build();
+                // TODO 🚀:  agregar try 
     }
 
     /**
@@ -46,5 +47,6 @@ public class GeocodingService {
                         .build())
                 .retrieve()
                 .body(AddressResponse.class);
+                // TODO 🚀:  agregar try 
     }
 }
