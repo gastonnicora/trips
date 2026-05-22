@@ -16,15 +16,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.ConflictException;
 import com.gastonnicora.trips.exceptions.ForbiddenException;
+import com.gastonnicora.trips.exceptions.InternalErrorException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.exceptions.dtos.BadRequestApiError;
 import com.gastonnicora.trips.exceptions.dtos.ConflictApiError;
 import com.gastonnicora.trips.exceptions.dtos.ForbiddenApiError;
+import com.gastonnicora.trips.exceptions.dtos.InternalServerErrorApiError;
 import com.gastonnicora.trips.exceptions.dtos.NotFoundApiError;
 import com.gastonnicora.trips.exceptions.dtos.UnauthorizedApiError;
 import com.gastonnicora.trips.exceptions.dtos.ValidationApiError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,7 +57,52 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Acceso denegado", content = @Content(schema = @Schema(implementation = ForbiddenApiError.class)))
 @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Conflicto con el estado actual del recurso (ej: email ya registrado)", content = @Content(schema = @Schema(implementation = ConflictApiError.class)))
 public class GlobalExceptionHandler {
-        // TODO 🚀: Agregar mensaje  cod 500
+
+        private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+        /**
+         * Maneja excepciones internas del servidor y devuelve una respuesta
+         * estandarizada con código HTTP 500 (Internal Server Error).
+         *
+         * <p>
+         * Este handler captura tanto excepciones genéricas de tipo
+         * {@link RuntimeException} como excepciones personalizadas
+         * {@link InternalErrorException}.
+         * </p>
+         *
+         * <p>
+         * En caso de recibir una {@link InternalErrorException},
+         * se devuelve el mensaje específico de la excepción.
+         * Para cualquier otra excepción no controlada,
+         * se retorna un mensaje genérico para evitar exponer
+         * detalles internos de la aplicación.
+         * </p>
+         *
+         * <p>
+         * Todas las excepciones son registradas en el sistema de logs
+         * mediante nivel ERROR junto con el stacktrace completo,
+         * permitiendo tareas de monitoreo y depuración.
+         * </p>
+         *
+         * @param ex Excepción capturada durante el procesamiento de la solicitud
+         * @return {@link InternalServerErrorApiError} con la información
+         *         del error interno
+         */
+        @ExceptionHandler({
+                        RuntimeException.class,
+                        InternalErrorException.class
+        })
+        @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+        public InternalServerErrorApiError handleInternalErrors(Exception ex) {
+                log.error("Error de interno del servidor", ex);
+                if (ex instanceof InternalErrorException) {
+                        return new InternalServerErrorApiError(ex.getMessage());
+                } else {
+                        return new InternalServerErrorApiError("Error interno del servidor");
+                }
+
+        }
+
         /**
          * Maneja errores de validación lanzados por Spring cuando fallan las
          * anotaciones de validación.
