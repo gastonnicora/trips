@@ -55,8 +55,7 @@ public class PostCompanyTest {
         companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", -34.6037, -58.3816)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Good Name"))
-                .andExpect(jsonPath("$.email").value("goodemail@mail.com")) // TODO 🚀: corregir email(lo mismo que en
-                                                                            // user)
+                .andExpect(jsonPath("$.email").value("goodemail@mail.com"))
                 .andExpect(jsonPath("$.phone").value("+5491122334455"))
                 .andExpect(jsonPath("$.latitude").value(-34.6037))
                 .andExpect(jsonPath("$.longitude").value(-58.3816))
@@ -80,7 +79,8 @@ public class PostCompanyTest {
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
-                        .value(notNullValue()));
+                        .value(notNullValue()))
+                .andDo(result -> System.out.println("Errors "+result.getResponse().getContentAsString()));
     }
 
     static Stream<Arguments> invalidCompanyFields() {

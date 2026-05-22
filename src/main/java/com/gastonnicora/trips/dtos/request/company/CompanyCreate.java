@@ -34,27 +34,23 @@ import lombok.Setter;
 
 @Schema(description = "DTO de empresa para creación (POST)")
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class CompanyCreate {
 
     @Schema(description = "Nombre de la empresa", example = "Viajes LP")
     @NotBlank(message = "El nombre no puede quedar en blanco")
-    @NotEmpty(message = "El nombre no puede quedar en blanco")
     @Size(max = 255, message = "El nombre no puede tener mas de 255 caracteres")
     private String name;
 
     @Schema(description = "Email de la empresa", example = "company@mail.com")
     @NotBlank(message = "El email no puede quedar en blanco")
-    @NotEmpty(message = "El email no puede quedar en blanco")
     @Size(max = 255, message = "El email no puede tener mas de 255 caracteres")
     @Email(message = "El email no es valido")
     private String email;
 
     @Schema(description = "Teléfono de la empresa", example = "+5491122334455")
     @NotBlank(message = "El teléfono no puede quedar en blanco")
-    @NotEmpty(message = "El teléfono no puede quedar en blanco")
     @Size(max = 255, message = "El teléfono no puede tener mas de 255 caracteres")
     @Pattern(regexp = "^\\+?[1-9]\\d{6,14}$", message = "El teléfono es invalido. Ejemplos válidos: +5491122334455, 5491122334455, 91122334455")
     private String phone;
@@ -70,5 +66,28 @@ public class CompanyCreate {
     @DecimalMax(value = "180.0", message = "La longitud debe estar entre -180 y 180")
     @Schema(description = "Longitud de la dirección de la empresa", example = "-58.3816")
     private Double longitude;
+
+    /**
+     * Constructor completo.
+     *
+     * @param name      Nombre de la empresa
+     * @param email     Email de la empresa
+     * @param phone     Teléfono de la empresa
+     * @param latitude  Latitud de la dirección de la empresa
+     * @param longitude Longitud de la dirección de la empresa
+     * 
+     */
+
+    public CompanyCreate(String name, String email, String phone, Double latitude, Double longitude) {
+        this.name = name;
+        this.email = email != null ? email.trim().toLowerCase() : null;
+        this.phone = phone;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public void setEmail(String email) {
+        this.email = email != null ? email.trim().toLowerCase() : null;
+    }
 
 }

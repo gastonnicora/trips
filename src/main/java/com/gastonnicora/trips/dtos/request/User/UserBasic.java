@@ -68,7 +68,7 @@ public abstract class UserBasic {
     public UserBasic(String name, String lastname, String email) {
         this.name = name;
         this.lastname = lastname;
-        this.email = email.trim().toLowerCase();
+        this.email = email != null ? email.trim().toLowerCase() : null;
     }
 
     public String getName() {
@@ -92,7 +92,7 @@ public abstract class UserBasic {
     }
 
     public void setEmail(String email) {
-        this.email = email.trim().toLowerCase();
+        this.email = email != null ? email.trim().toLowerCase() : null;
     }
 
 }
