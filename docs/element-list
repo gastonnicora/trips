@@ -4,7 +4,7 @@ com.gastonnicora.trips.controllers.api
 com.gastonnicora.trips.dtos.entities
 com.gastonnicora.trips.dtos.request.auth
 com.gastonnicora.trips.dtos.request.company
-com.gastonnicora.trips.dtos.request.User
+com.gastonnicora.trips.dtos.request.user
 com.gastonnicora.trips.dtos.response
 com.gastonnicora.trips.dtos.response.auth
 com.gastonnicora.trips.dtos.response.company

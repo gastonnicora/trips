@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.controllers.api;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.services.CompanyService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -51,12 +53,6 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @GetMapping
-    @SecurityRequirement(name = "bearerAuth")
-    public List<CompanyDTO> getCompanies() {
-        return companyService.getCompanies();
-    }
-
     /**
      * Crea una nueva empresa en el sistema.
      * <p>
@@ -85,6 +81,22 @@ public class CompanyController {
     @SecurityRequirement(name = "bearerAuth")
     public CompanyDTO postMethodName(@Valid @RequestBody CompanyCreate company) {
         return companyService.createCompany(company);
+    }
+
+    /**
+     * Obtiene los detalles de una empresa por su UUID.
+     * <p>
+     * Este endpoint obtiene los detalles de una empresa por su UUID.
+     * </p>
+     * @param uuid UUID de la empresa que se quiere obtener.
+     * @return CompanyDTO con los detalles de la empresa.
+     * @see CompanyService #getCompany(UUID)
+     */
+    @GetMapping
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Obtener empresa", description = "Obtiene los detalles de una empresa por su uuid")
+    public CompanyDTO getCompany(UUID uuid){
+        return companyService.getCompany(uuid);
     }
 
 }

@@ -3,6 +3,7 @@ package com.gastonnicora.trips.services;
 import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -93,6 +94,31 @@ public class CompanyService {
                 companyCreate.getEmail(), companyCreate.getPhone());
         return companyMapper.toDTO(companyRepository.save(company));
     }
+
+    /**
+     * Obtiene los detalles de una empresa por su UUID.
+     * <p>
+     * Este método realiza lo siguiente:
+     * </p>
+     * <ul>
+     * <li>Busca la empresa en la base de datos mediante {@link CompanyRepository}.</li>
+     * <li>Si no se encuentra, lanza una excepción {@link BadRequestException} con
+     * mensaje descriptivo.</li>
+     * <li>Convierte la empresa en un DTO con sus datos utilizando {@link CompanyMapper}.</li>
+     * </ul>
+     * 
+     * @param uuid UUID de la empresa que se quiere obtener.
+     * @return {@link CompanyDTO} Datos de la empresa con el UUID especificado.
+     * @throws BadRequestException Si la empresa no existe.
+     * @see CompanyRepository #findByUuid(UUID)
+     * @see CompanyMapper #toDTO(Company)
+     * @see BadRequestException
+     */
+    public CompanyDTO getCompany(UUID uuid) {
+        Company company = companyRepository.findByUuid(uuid).orElseThrow(() -> new BadRequestException("Empresa no encontrada"));
+        return companyMapper.toDTO(company);
+    }
+
 
     public List<CompanyDTO> getCompanies() {
         List<Company> companies = companyRepository.findAll();

@@ -1,5 +1,6 @@
 package com.gastonnicora.trips.repositories;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,8 @@ import com.gastonnicora.trips.entities.Company;
  * </p>
  */
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
+
+    Optional<Company> findByUuid(UUID uuid);
+
 
 }
