@@ -1,6 +1,9 @@
 package com.gastonnicora.trips.helpers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import java.util.UUID;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,6 +51,15 @@ public class CompanyApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test")
                 .content(json));
+    }
+
+    public ResultActions getCompany(UUID uuid)
+            throws Exception {
+
+        return mockMvc.perform(get("/api/companies/" + uuid)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test"));
     }
 
 }

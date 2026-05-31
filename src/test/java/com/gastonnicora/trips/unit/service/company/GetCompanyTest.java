@@ -27,6 +27,7 @@ import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.exceptions.BadRequestException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.security.UserDetailsImpl;
@@ -35,7 +36,7 @@ import com.gastonnicora.trips.services.GeocodingService;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateCompanyTest {
+public class GetCompanyTest {
     @InjectMocks
     private CompanyService companyService;
 
@@ -51,75 +52,44 @@ public class CreateCompanyTest {
     @Mock
     private CompanyMapper companyMapper;
 
-    @AfterEach
-    void cleanup() {
-        SecurityContextHolder.clearContext();
-    }
-
     @Test
-    void shouldCreateCompanySuccessfully() {
-
-        
-        UUID userId = UUID.randomUUID();
+    void shouldGetCompanySuccessfully() {
 
         User user = new User();
-        user.setUuid(userId);
 
-        CompanyCreate request = new CompanyCreate();
-        request.setName("Test");
-        request.setEmail("test@mail.com");
-        request.setPhone("123");
-        request.setLatitude(-34.6037);
-        request.setLongitude(-58.3816);
+        Company company = new Company("Test", user, "Buenos Aires, Argentina", -34.6037, -58.3816,
+                "test@mail.com", "123");
+        company.setUuid(UUID.randomUUID());
 
-        AddressResponse addressResponse = new AddressResponse("Buenos Aires, Argentina", new Address(
-                "calle 2", "123", "barrio", "ciudad", "departamento", "estado", "pais"));
-
-        Company company = new Company();
+        when(companyRepository.findByUuid(company.getUuid())).thenReturn(java.util.Optional.of(company));
 
         CompanyDTO expectedDTO = new CompanyDTO();
-        context(userId);
-        when(userService.getUser(userId)).thenReturn(user);
-        when(geocodingService.obtenerDireccion(-34.6037, -58.3816))
-                .thenReturn(addressResponse);
 
-        when(companyRepository.save(any())).thenReturn(company);
         when(companyMapper.toDTO(company)).thenReturn(expectedDTO);
 
-        CompanyDTO result = companyService.createCompany(request);
+        CompanyDTO result = companyService.getCompany(company.getUuid());
 
         assertEquals(expectedDTO, result);
 
-        verify(geocodingService).obtenerDireccion(-34.6037, -58.3816);
-        verify(companyRepository).save(any(Company.class));
+        verify(companyRepository).findByUuid(company.getUuid());
+        verify(companyMapper).toDTO(company);
+
+        assertEquals(expectedDTO, result);
+
     }
 
     @Test
-    void shouldThrowBadRequestWhenAddressIsNull() {
+    void shouldThrowBadRequestWhenCompanyNotFound() {
 
-        CompanyCreate request = new CompanyCreate();
-        request.setLatitude(-34.6037);
-        request.setLongitude(-58.3816);
+        when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.empty());
 
-        AddressResponse response = new AddressResponse(null, null);
+        NotFoundException ex = assertThrows(
+                NotFoundException.class,
+                () -> companyService.getCompany(UUID.randomUUID()));
 
-        when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
-                .thenReturn(response);
+        assertEquals("Empresa no encontrada", ex.getMessage());
 
-        assertThrows(BadRequestException.class, () -> companyService.createCompany(request));
-    }
+        verify(companyRepository).findByUuid(any());
 
-    private void context(UUID uuid) {
-        // 🔧 Mock SecurityContext
-        UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-        when(userDetails.getUuid()).thenReturn(uuid);
-
-        Authentication auth = mock(Authentication.class);
-        when(auth.getPrincipal()).thenReturn(userDetails);
-
-        SecurityContext context = mock(SecurityContext.class);
-        when(context.getAuthentication()).thenReturn(auth);
-
-        SecurityContextHolder.setContext(context);
     }
 }

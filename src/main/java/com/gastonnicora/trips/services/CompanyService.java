@@ -13,6 +13,7 @@ import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.exceptions.BadRequestException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 
@@ -101,10 +102,12 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Busca la empresa en la base de datos mediante {@link CompanyRepository}.</li>
+     * <li>Busca la empresa en la base de datos mediante
+     * {@link CompanyRepository}.</li>
      * <li>Si no se encuentra, lanza una excepción {@link BadRequestException} con
      * mensaje descriptivo.</li>
-     * <li>Convierte la empresa en un DTO con sus datos utilizando {@link CompanyMapper}.</li>
+     * <li>Convierte la empresa en un DTO con sus datos utilizando
+     * {@link CompanyMapper}.</li>
      * </ul>
      * 
      * @param uuid UUID de la empresa que se quiere obtener.
@@ -115,10 +118,10 @@ public class CompanyService {
      * @see BadRequestException
      */
     public CompanyDTO getCompany(UUID uuid) {
-        Company company = companyRepository.findByUuid(uuid).orElseThrow(() -> new BadRequestException("Empresa no encontrada"));
+        Company company = companyRepository.findByUuid(uuid)
+                .orElseThrow(() -> new NotFoundException("Empresa no encontrada"));
         return companyMapper.toDTO(company);
     }
-
 
     public List<CompanyDTO> getCompanies() {
         List<Company> companies = companyRepository.findAll();

@@ -1,9 +1,9 @@
 package com.gastonnicora.trips.controllers.api;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,10 +92,10 @@ public class CompanyController {
      * @return CompanyDTO con los detalles de la empresa.
      * @see CompanyService #getCompany(UUID)
      */
-    @GetMapping
+    @GetMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener empresa", description = "Obtiene los detalles de una empresa por su uuid")
-    public CompanyDTO getCompany(UUID uuid){
+    public CompanyDTO getCompany(@PathVariable UUID uuid){
         return companyService.getCompany(uuid);
     }
 
