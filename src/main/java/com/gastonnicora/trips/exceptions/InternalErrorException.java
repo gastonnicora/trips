@@ -36,6 +36,7 @@ public class InternalErrorException extends RuntimeException {
      * Constructor que inicializa la excepción con un mensaje descriptivo.
      *
      * @param message Mensaje de error
+     * @param explain Mensaje de explicación
      */
     public InternalErrorException(String message, String explain) {
         super(message);
