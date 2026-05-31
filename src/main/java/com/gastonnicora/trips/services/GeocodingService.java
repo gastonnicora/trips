@@ -20,7 +20,9 @@ public class GeocodingService {
 
     /**
      * Constructor de la clase GeocodingService.
-     *@throws InternalErrorException Si ocurre un error al inicializar el servicio de geocodificación
+     * 
+     * @throws InternalErrorException Si ocurre un error al inicializar el servicio
+     *                                de geocodificación
      */
     public GeocodingService() {
         try {

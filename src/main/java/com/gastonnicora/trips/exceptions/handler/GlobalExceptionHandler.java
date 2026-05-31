@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,8 +29,6 @@ import com.gastonnicora.trips.exceptions.dtos.InternalServerErrorApiError;
 import com.gastonnicora.trips.exceptions.dtos.NotFoundApiError;
 import com.gastonnicora.trips.exceptions.dtos.UnauthorizedApiError;
 import com.gastonnicora.trips.exceptions.dtos.ValidationApiError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.media.Content;

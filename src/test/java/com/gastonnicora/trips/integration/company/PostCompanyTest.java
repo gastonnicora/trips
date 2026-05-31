@@ -1,8 +1,8 @@
 package com.gastonnicora.trips.integration.company;
 
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.stream.Stream;
 
@@ -80,7 +80,7 @@ public class PostCompanyTest {
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
                         .value(notNullValue()))
-                .andDo(result -> System.out.println("Errors "+result.getResponse().getContentAsString()));
+                .andDo(result -> System.out.println("Errors " + result.getResponse().getContentAsString()));
     }
 
     static Stream<Arguments> invalidCompanyFields() {

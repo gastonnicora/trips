@@ -39,11 +39,9 @@ public class VerifyTokenTest {
     @Test
     void shouldVerifyToken() {
 
-        
         User user = new User("username", "latName", "test@test.com", "password", null);
-        
-        userRepository.save(user);
 
+        userRepository.save(user);
 
         RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
 
@@ -108,9 +106,9 @@ public class VerifyTokenTest {
 
     @Test
     void shouldThrowsUnauthorizedException_whenTokenIsInactive() {
-        
+
         User user = new User("username", "latName", "test@test.com", "password", null);
-        
+
         userRepository.save(user);
 
         RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
@@ -131,11 +129,10 @@ public class VerifyTokenTest {
 
     @Test
     void shouldThrowsUnauthorizedException_whenTokenIsExpired() {
-        
-        User user = new User("username", "latName", "test@test.com", "password", null);
-        
-        userRepository.save(user);
 
+        User user = new User("username", "latName", "test@test.com", "password", null);
+
+        userRepository.save(user);
 
         RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
         refreshToken.setExpiryDate(refreshToken.getExpiryDate().minus(8, ChronoUnit.DAYS));
@@ -154,11 +151,10 @@ public class VerifyTokenTest {
 
     @Test
     void shouldThrowsUnauthorizedException_whenCurrentIpIsDifferent() {
-        
-        User user = new User("username", "latName", "test@test.com", "password", null);
-        
-        userRepository.save(user);
 
+        User user = new User("username", "latName", "test@test.com", "password", null);
+
+        userRepository.save(user);
 
         RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
 
@@ -171,13 +167,13 @@ public class VerifyTokenTest {
         assertEquals("Token inválido o expirado", ex.getMessage());
 
         verify(refreshTokenRepository, times(2)).findByRefreshToken("token");
-    } 
+    }
 
     @Test
     void shouldThrowsUnauthorizedException_whenCurrentUserAgentIsDifferent() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
-        
+
         userRepository.save(user);
 
         RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
@@ -191,5 +187,5 @@ public class VerifyTokenTest {
         assertEquals("Token inválido o expirado", ex.getMessage());
 
         verify(refreshTokenRepository, times(2)).findByRefreshToken("token");
-    } 
+    }
 }

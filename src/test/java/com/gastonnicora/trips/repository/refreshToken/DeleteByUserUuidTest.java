@@ -21,38 +21,38 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DeleteByUserUuidTest {
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+        @Autowired
+        private RefreshTokenRepository refreshTokenRepository;
 
-    @Test
-    void shouldDeleteByUserUuid() {
-        User user = new User(
-                "username",
-                "latName",
-                "test@test.com",
-                "password",
-                Set.of(Role.USER));
+        @Test
+        void shouldDeleteByUserUuid() {
+                User user = new User(
+                                "username",
+                                "latName",
+                                "test@test.com",
+                                "password",
+                                Set.of(Role.USER));
 
-        user.setEnabled(true);
-        userRepository.save(user);
+                user.setEnabled(true);
+                userRepository.save(user);
 
-        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
-        RefreshToken rt2 = new RefreshToken("token", user, "127.0.0.1",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+                RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+                RefreshToken rt2 = new RefreshToken("token", user, "127.0.0.1",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
-        refreshTokenRepository.save(rt);
-        refreshTokenRepository.save(rt2);
+                refreshTokenRepository.save(rt);
+                refreshTokenRepository.save(rt2);
 
-        refreshTokenRepository.deleteAllByUser_Uuid(user.getUuid());
+                refreshTokenRepository.deleteAllByUser_Uuid(user.getUuid());
 
-        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
+                List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
-        assertTrue(found.isEmpty());
+                assertTrue(found.isEmpty());
 
-    }
+        }
 
 }

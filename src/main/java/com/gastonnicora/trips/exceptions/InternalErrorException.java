@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
  * </p>
  * <ul>
  * <li>Error al conectar a la base de datos</li>
- * <li> Error en la codificación</li>
+ * <li>Error en la codificación</li>
  * </ul>
  *
  * <p>
@@ -52,6 +52,7 @@ public class InternalErrorException extends RuntimeException {
     public int getStatus() {
         return status;
     }
+
     public String getExplain() {
         return explain;
     }

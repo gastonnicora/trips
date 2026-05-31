@@ -29,19 +29,16 @@ public class RevokeTokenTest {
     @Mock
     private UserRepository userRepository;
 
-
     @InjectMocks
     private RefreshTokenService refreshTokenService;
 
     @Test
     void shouldRevokeTokenIsPresent() {
 
-        
         User user = new User("username", "latName", "test@test.com", "password", null);
-        
+
         userRepository.save(user);
 
-        
         RefreshToken refreshToken = new RefreshToken("token", user, "127.0.0.1", "user-agent", "web", 0);
 
         when(refreshTokenRepository.findByRefreshToken(any(String.class)))

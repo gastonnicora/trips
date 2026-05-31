@@ -8,14 +8,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,12 +26,9 @@ import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.BadRequestException;
-import com.gastonnicora.trips.helpers.UserTestFactory;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
-import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.UserDetailsImpl;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.GeocodingService;
@@ -107,7 +101,7 @@ public class CreateCompanyTest {
         request.setLatitude(-34.6037);
         request.setLongitude(-58.3816);
 
-        AddressResponse response = new AddressResponse(null,null);
+        AddressResponse response = new AddressResponse(null, null);
 
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
                 .thenReturn(response);

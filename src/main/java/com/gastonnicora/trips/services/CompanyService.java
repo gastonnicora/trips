@@ -94,7 +94,6 @@ public class CompanyService {
         return companyMapper.toDTO(companyRepository.save(company));
     }
 
-
     public List<CompanyDTO> getCompanies() {
         List<Company> companies = companyRepository.findAll();
         return companyMapper.toDTOList(companies);

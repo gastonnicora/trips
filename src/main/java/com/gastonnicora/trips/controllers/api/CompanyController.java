@@ -77,7 +77,7 @@ public class CompanyController {
      * </p>
      * 
      * @param company ({@link CompanyCreate}) con los datos válidos para la
-     *                      nueva empresa.
+     *                nueva empresa.
      * @return {@link CompanyDTO} con los datos de la empresa recién creada.
      * @see CompanyService #createCompany(CompanyCreate)
      */

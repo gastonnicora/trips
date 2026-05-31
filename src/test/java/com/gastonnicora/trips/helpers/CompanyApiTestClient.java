@@ -14,7 +14,7 @@ public class CompanyApiTestClient {
 
     private ObjectMapper objectMapper;
 
-    public CompanyApiTestClient(MockMvc mockMvc,ObjectMapper objectMapper) {
+    public CompanyApiTestClient(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
     }

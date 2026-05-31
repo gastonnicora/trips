@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOG_FILE" value="logs/trips.log"/>
+    <property name="LOG_FILE" value="logs/trips.log" />
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
 
@@ -16,7 +16,7 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE" />
     </root>
 
 </configuration>
