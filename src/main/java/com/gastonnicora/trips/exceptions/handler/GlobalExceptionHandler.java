@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -214,7 +215,7 @@ public class GlobalExceptionHandler {
         }
 
         /**
-         * Maneja la excepción personalizada de falta de permisos.
+         * Maneja la excepción personalizada de acceso prohibido.
          * 
          * Devuelve un {@link ForbiddenApiError} con los detalles proporcionados en la
          * excepción y un código HTTP 403.
@@ -222,7 +223,7 @@ public class GlobalExceptionHandler {
          * @param ex ({@link ForbiddenException}) personalizada de la aplicación
          * @return {@link ForbiddenApiError} con los detalles de la excepción
          */
-        @ExceptionHandler(ForbiddenException.class)
+        @ExceptionHandler({ ForbiddenException.class, AuthorizationDeniedException.class })
         @ResponseStatus(HttpStatus.FORBIDDEN)
         public ForbiddenApiError handleForbidden(ForbiddenException ex) {
                 return new ForbiddenApiError(ex.getMessage());
