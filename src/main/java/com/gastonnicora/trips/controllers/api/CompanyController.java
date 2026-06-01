@@ -101,6 +101,16 @@ public class CompanyController {
         return companyService.getCompany(uuid);
     }
 
+    /**
+     * Obtiene todas las empresas del usuario.
+     * <p>
+     * Este endpoint obtiene todas las empresas del usuario.
+     * </p>
+     * 
+     * @param uuid UUID del usuario.
+     * @return Lista de empresas del usuario.
+     * @see CompanyService #getCompaniesByUser(UUID)
+     */
     @GetMapping("/owner/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener empresas del usuario", description = "Obtiene las empresas del usuario")
