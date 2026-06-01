@@ -101,7 +101,7 @@ public class CompanyController {
         return companyService.getCompany(uuid);
     }
 
-    @GetMapping("/user/{uuid}")
+    @GetMapping("/owner/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener empresas del usuario", description = "Obtiene las empresas del usuario")
     public ListResponse<CompanyDTO> getCompaniesByUser(@PathVariable UUID uuid) {
