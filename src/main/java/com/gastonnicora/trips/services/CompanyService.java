@@ -17,6 +17,7 @@ import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
+import com.gastonnicora.trips.utils.SecurityUtils;
 
 /**
  * Servicio de gestión de empresas.
@@ -132,15 +133,48 @@ public class CompanyService {
      * @see CompanyRepository #findAllByOwner_Uuid(UUID)
      */
     public ListResponse<CompanyDTO> getCompaniesByUser(UUID uuid) {
+        return getCompaniesByOwner(uuid);
+    }
+
+    /**
+     * Obtiene todas las empresas del usuario actual.
+     * <p>
+     * Este método realiza lo siguiente:
+     * </p>
+     * <ul>
+     * <li>Obtiene el UUID del usuario actual mediante {@link SecurityUtils}.</li>
+     * <li>Llama al método {@link #getCompaniesByOwner(UUID)} para obtener las
+     * empresas del usuario.</li>
+     * </ul>
+     * 
+     * @return Lista de empresas del usuario actual.
+     * 
+     * @see ListResponse
+     * @see SecurityUtils #getCurrentUserUuid()
+     * @see #getCompaniesByOwner(UUID)
+     */
+    public ListResponse<CompanyDTO> getCompaniesByCurrentUser() {
+       return getCompaniesByOwner(getCurrentUserUuid());
+    }
+
+    /**
+     * Obtiene todas las empresas del usuario por su UUID.
+     * <p>
+     * Este método realiza lo siguiente:
+     * </p>
+     * <ul>
+     * <li>Busca las empresas en la base de datos mediante
+     * {@link CompanyRepository}.</li>
+     * <li>Convierte las empresas en una lista de DTOs con sus datos utilizando
+     * {@link CompanyMapper}.</li>
+     * </ul>
+     * @return Lista de empresas del usuario.
+     * @see CompanyRepository #findAllByOwner_Uuid(UUID)
+     * @see CompanyMapper #toDTOList(List)
+     * @see ListResponse
+     */
+    private ListResponse<CompanyDTO> getCompaniesByOwner(UUID uuid) {
         List<Company> companies = companyRepository.findAllByOwner_Uuid(uuid);
         return new ListResponse<CompanyDTO>(companyMapper.toDTOList(companies));
     }
-
-
-
-    public List<CompanyDTO> getCompanies() {
-        List<Company> companies = companyRepository.findAll();
-        return companyMapper.toDTOList(companies);
-    }
-
 }

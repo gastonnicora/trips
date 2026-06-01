@@ -118,4 +118,11 @@ public class CompanyController {
         return companyService.getCompaniesByUser(uuid);
     }
 
+    @GetMapping("/me")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Obtener empresas del usuario actual", description = "Obtiene las empresas del usuario actual")
+    public ListResponse<CompanyDTO> getCompaniesByCurrentUser() {
+        return companyService.getCompaniesByCurrentUser();
+    }
+
 }

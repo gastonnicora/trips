@@ -71,4 +71,13 @@ public class CompanyApiTestClient {
                 .header("User-Agent", "JUnit-Test"));
     }
 
+    public ResultActions getCompaniesByCurrentUser()
+            throws Exception {
+
+        return mockMvc.perform(get("/api/companies/me")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test"));
+            }
+
 }
