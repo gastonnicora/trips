@@ -1,5 +1,6 @@
 package com.gastonnicora.trips.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +19,8 @@ import com.gastonnicora.trips.entities.Company;
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     Optional<Company> findByUuid(UUID uuid);
+
+    List<Company> findAllByOwner_Uuid(UUID uuid);
 
 
 }

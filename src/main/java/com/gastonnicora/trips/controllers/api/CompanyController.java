@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
+import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.services.CompanyService;
@@ -19,6 +20,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * Controlador para la gestión de empresas.
@@ -99,4 +102,13 @@ public class CompanyController {
         return companyService.getCompany(uuid);
     }
 
+    @GetMapping("/user/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Obtener empresas del usuario", description = "Obtiene las empresas del usuario")
+    public ListResponse<CompanyDTO> getCompaniesByUser(@PathVariable UUID uuid) {
+        return companyService.getCompaniesByUser(uuid);
+    }
+
+    
+    
 }

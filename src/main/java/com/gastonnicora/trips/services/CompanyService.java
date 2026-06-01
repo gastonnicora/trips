@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
+import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
@@ -122,6 +123,20 @@ public class CompanyService {
                 .orElseThrow(() -> new NotFoundException("Empresa no encontrada"));
         return companyMapper.toDTO(company);
     }
+
+    /**
+     * Obtiene todas las empresas del usuario.
+     *
+     * @param uuid UUID del usuario.
+     * @return Lista de empresas del usuario.
+     * @see CompanyRepository #findAllByOwner_Uuid(UUID)
+     */
+    public ListResponse<CompanyDTO> getCompaniesByUser(UUID uuid) {
+        List<Company> companies = companyRepository.findAllByOwner_Uuid(uuid);
+        return new ListResponse<CompanyDTO>(companyMapper.toDTOList(companies));
+    }
+
+
 
     public List<CompanyDTO> getCompanies() {
         List<Company> companies = companyRepository.findAll();
