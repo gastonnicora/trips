@@ -20,8 +20,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 /**
  * Controlador para la gestión de empresas.
@@ -91,6 +89,7 @@ public class CompanyController {
      * <p>
      * Este endpoint obtiene los detalles de una empresa por su UUID.
      * </p>
+     * 
      * @param uuid UUID de la empresa que se quiere obtener.
      * @return CompanyDTO con los detalles de la empresa.
      * @see CompanyService #getCompany(UUID)
@@ -98,7 +97,7 @@ public class CompanyController {
     @GetMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener empresa", description = "Obtiene los detalles de una empresa por su uuid")
-    public CompanyDTO getCompany(@PathVariable UUID uuid){
+    public CompanyDTO getCompany(@PathVariable UUID uuid) {
         return companyService.getCompany(uuid);
     }
 
@@ -109,6 +108,4 @@ public class CompanyController {
         return companyService.getCompaniesByUser(uuid);
     }
 
-    
-    
 }
