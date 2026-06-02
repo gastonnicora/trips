@@ -154,7 +154,61 @@ public class CompanyService {
      * @see #getCompaniesByOwner(UUID)
      */
     public ListResponse<CompanyDTO> getCompaniesByCurrentUser() {
-       return getCompaniesByOwner(getCurrentUserUuid());
+        return getCompaniesByOwner(getCurrentUserUuid());
+    }
+
+    /**
+     * Actualiza los detalles de una empresa por su UUID.
+     * <p>
+     * Este método realiza lo siguiente:
+     * </p>
+     * <ul>
+     * <li>Busca la empresa en la base de datos mediante
+     * {@link CompanyRepository}.</li>
+     * <li>Si no se encuentra, lanza una excepción {@link NotFoundException} con
+     * mensaje descriptivo.</li>
+     * <li>Si el usuario no es el dueño de la empresa, lanza una excepción
+     * {@link BadRequestException} con mensaje descriptivo.</li>
+     * <li>Convierte las coordenadas en una dirección a partir de
+     * {@link GeocodingService}.</li>
+     * <li>Si la dirección no es válida, lanza una excepción
+     * {@link BadRequestException}
+     * con mensaje descriptivo.</li>
+     * <li>Actualiza los campos de la empresa con los datos proporcionados.</li>
+     * <li>Guarda la empresa actualizada en la base de datos.</li>
+     * <li>Convierte la empresa en {@link CompanyDTO} utilizando
+     * {@link CompanyMapper}.</li>
+     * </ul>
+     * 
+     * @param uuid          UUID de la empresa que se quiere actualizar.
+     * @param companyCreate {@link CompanyCreate} con los nuevos datos de la
+     *                      empresa.
+     * @return {@link CompanyDTO} Datos de la empresa actualizada.
+     * @throws NotFoundException   Si la empresa no existe.
+     * @throws BadRequestException Si el usuario no es el dueño de la empresa.
+     * @throws BadRequestException Si la dirección no es válida.
+     * @see CompanyMapper #toDTO(Company)
+     * @see CompanyRepository #findByUuid(UUID)
+     */
+    public CompanyDTO updateCompany(UUID uuid, CompanyCreate companyCreate) {
+        Company company = companyRepository.findByUuid(uuid).orElseThrow(
+                () -> new NotFoundException("Empresa no encontrada"));
+        if (!company.getOwner().getUuid().equals(getCurrentUserUuid())) {
+            throw new BadRequestException("No tienes permiso para actualizar esta empresa");
+        }
+        AddressResponse addressR = geocodingService.obtenerDireccion(companyCreate.getLatitude(),
+                companyCreate.getLongitude());
+        if (addressR.displayName() == null) {
+            throw new BadRequestException("Dirección inválida");
+        }
+        String address = addressR.displayName();
+        company.setName(companyCreate.getName());
+        company.setEmail(companyCreate.getEmail());
+        company.setPhone(companyCreate.getPhone());
+        company.setLatitude(companyCreate.getLatitude());
+        company.setLongitude(companyCreate.getLongitude());
+        company.setAddress(address);
+        return companyMapper.toDTO(companyRepository.save(company));
     }
 
     /**
@@ -168,6 +222,7 @@ public class CompanyService {
      * <li>Convierte las empresas en una lista de DTOs con sus datos utilizando
      * {@link CompanyMapper}.</li>
      * </ul>
+     * 
      * @return Lista de empresas del usuario.
      * @see CompanyRepository #findAllByOwner_Uuid(UUID)
      * @see CompanyMapper #toDTOList(List)

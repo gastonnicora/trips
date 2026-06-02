@@ -1,9 +1,6 @@
 package com.gastonnicora.trips.unit.service.company;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,23 +19,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-
-import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
-import com.gastonnicora.trips.dtos.response.company.AddressResponse;
-import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
 import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.security.UserDetailsImpl;
 import com.gastonnicora.trips.services.CompanyService;
-import com.gastonnicora.trips.services.GeocodingService;
-import com.gastonnicora.trips.services.UserService;
-
-import jakarta.inject.Inject;
 
 @ExtendWith(MockitoExtension.class)
 public class GetCompaniesBYCurrentUserTest {

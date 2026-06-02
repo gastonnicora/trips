@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -118,6 +119,14 @@ public class CompanyController {
         return companyService.getCompaniesByUser(uuid);
     }
 
+    /**
+     * Obtiene todas las empresas del usuario actual.
+     * <p>
+     * Este endpoint obtiene todas las empresas del usuario actual.
+     * </p>
+     * @return Lista de empresas del usuario actual.
+     * @see CompanyService #getCompaniesByCurrentUser()
+     */
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener empresas del usuario actual", description = "Obtiene las empresas del usuario actual")
@@ -125,4 +134,24 @@ public class CompanyController {
         return companyService.getCompaniesByCurrentUser();
     }
 
+    /**
+     * Actualiza los detalles de una empresa por su UUID.
+     * <p>
+     * Este endpoint actualiza los detalles de una empresa por su UUID.
+     * </p>
+     * <p>
+     * Valida los datos antes de guardar los cambios.
+     * </p>
+     *
+     * @param uuid UUID de la empresa que se quiere actualizar.
+     * @param company {@link CompanyCreate} con los nuevos datos de la empresa.
+     * @return CompanyDTO con los detalles de la empresa actualizada.
+     * @see CompanyService #updateCompany(UUID, CompanyCreate)
+     */
+    @PutMapping("/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Modificar empresa", description = "Modifica una empresa por su uuid")
+    public CompanyDTO updateCompany(@PathVariable UUID uuid, @Valid @RequestBody CompanyCreate company) {
+        return companyService.updateCompany(uuid, company);
+    }
 }
