@@ -2,6 +2,7 @@ package com.gastonnicora.trips.controllers.api;
 
 import java.util.UUID;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -154,4 +155,21 @@ public class CompanyController {
     public CompanyDTO updateCompany(@PathVariable UUID uuid, @Valid @RequestBody CompanyCreate company) {
         return companyService.updateCompany(uuid, company);
     }
+
+    /**
+     * Elimina una empresa por su UUID.
+     * <p>
+     * Este endpoint elimina una empresa por su UUID.
+     * </p>
+     * 
+     * @param uuid UUID de la empresa que se quiere eliminar.
+     * @see CompanyService #deleteCompany(UUID)
+     */
+    @DeleteMapping("/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Eliminar empresa", description = "Elimina una empresa por su uuid")
+    public void deleteCompany(@PathVariable UUID uuid) {
+        companyService.deleteCompany(uuid);
+    }
+
 }
