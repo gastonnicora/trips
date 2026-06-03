@@ -140,13 +140,13 @@ public class PutCompanyTest {
     }
 
     @Test
-    void shouldReturnBadRequest_whenUserIsNotOwner() throws Exception {
+    void shouldReturUnauthorized_whenUserIsNotOwner() throws Exception {
         UserDTO user = UserTestFactory.registerUser(mockMvc, "User2", password);
         String token2 = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
         companyApi.withToken(token2);
         companyApi
                 .updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", -34.6037,
                         -58.3816)
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 }

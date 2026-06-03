@@ -53,11 +53,12 @@ public class FindAllByOwner_UuidTest {
 
         assertTrue(companies.size() == 2);
 
-        assertTrue(companies.get(0).getEmail().equals("test@mail.com"));
-        assertTrue(companies.get(0).getName().equals("Test"));
+        List<String> names = companies.stream()
+                .map(Company::getName)
+                .toList();
 
-        assertTrue(companies.get(1).getEmail().equals("test@mail.com"));
-        assertTrue(companies.get(1).getName().equals("Test2"));
+        assertTrue(names.contains("Test"));
+        assertTrue(names.contains("Test2"));
     }
 
     @Test

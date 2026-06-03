@@ -27,7 +27,7 @@ import com.gastonnicora.trips.security.UserDetailsImpl;
 import com.gastonnicora.trips.services.CompanyService;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteCompany {
+public class DeleteCompanyTest {
 
     @InjectMocks
     private CompanyService companyService;
@@ -83,7 +83,7 @@ public class DeleteCompany {
     }
 
     @Test
-    void shouldThrowBadRequestExceptionWhenUserNotOwner() {
+    void shouldThrowUnauthorizedExceptionWhenUserNotOwner() {
         UUID userId = UUID.randomUUID();
 
         User user = new User();
@@ -97,7 +97,7 @@ public class DeleteCompany {
         when(companyRepository.findByUuid(company.getUuid())).thenReturn(java.util.Optional.of(company));
 
         assertThrows(UnauthorizedException.class, () -> companyService.deleteCompany(company.getUuid()));
-        
+
         verify(companyRepository).findByUuid(company.getUuid());
     }
 

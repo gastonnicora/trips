@@ -3,6 +3,7 @@ package com.gastonnicora.trips.helpers;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import java.util.UUID;
 
@@ -96,6 +97,15 @@ public class CompanyApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test")
                 .content(json));
+    }
+
+    public ResultActions deleteCompany(UUID uuid)
+            throws Exception {
+
+        return mockMvc.perform(delete("/api/companies/" + uuid)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test"));
     }
 
 }
