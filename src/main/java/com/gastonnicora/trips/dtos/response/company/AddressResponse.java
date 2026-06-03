@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Address", description = "Dirección generada a partir de coordenadas")
 public record AddressResponse(
                 @Schema(description = "Dirección exacta", example = "Calle 123 #456") @JsonProperty("display_name") String displayName,
-                @Schema(description = "Coordenadas de la dirección") Address address) {
+                @Schema(description = "Dirección desglosada") Address address) {
         /**
          * Dirección desglosada.
          * <p>

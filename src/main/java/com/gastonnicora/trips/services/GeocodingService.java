@@ -31,6 +31,7 @@ public class GeocodingService {
                     .defaultHeader("User-Agent", "Trips/1.0 (gastonmatias.21@gmail.com)")
                     .build();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new InternalErrorException("Error al inicializar el servicio de geocodificación",
                     e.getMessage() + " Error al intentar inicializar el servicio de geocodificación");
         }
@@ -58,6 +59,7 @@ public class GeocodingService {
                     .body(AddressResponse.class);
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new InternalErrorException("Error al obtener la dirección",
                     ex.getMessage() + " Error al intentar obtener la dirección");
         }

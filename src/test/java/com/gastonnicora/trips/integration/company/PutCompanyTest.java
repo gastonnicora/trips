@@ -19,7 +19,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
@@ -34,7 +36,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class PostCompanyTest {
+public class PutCompanyTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -43,27 +45,36 @@ public class PostCompanyTest {
 
     @MockitoBean
     private GeocodingService geocodingService;
-    
+
     private String token;
     private CompanyApiTestClient companyApi;
 
     private String email;
     private final String password = "goodPassword";
+    private CompanyDTO company;
 
     @BeforeEach
     void setup() throws Exception {
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
-        .thenReturn(new AddressResponse("calle falsa 123",new Address ("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
+                .thenReturn(new AddressResponse("calle falsa 123",
+                        new Address("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
         UserDTO user = UserTestFactory.registerUser(mockMvc, "User", password);
         this.email = user.getEmail();
         token = UserTestFactory.login(mockMvc, email, password).getToken();
         this.companyApi = new CompanyApiTestClient(mockMvc, objectMapper).withToken(token);
+        MvcResult result = companyApi
+                .createCompany("Name", "email@mail.com", "+549112233446", -34.6036, -54.3815)
+                .andExpect(status().isOk()).andReturn();
+        String responseJson = result.getResponse().getContentAsString();
+        this.company = objectMapper.readValue(responseJson, CompanyDTO.class);
 
     }
 
     @Test
     void shouldReturnOk() throws Exception {
-        companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", -34.6037, -58.3816)
+        companyApi
+                .updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", -34.6037,
+                        -58.3816)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Good Name"))
                 .andExpect(jsonPath("$.email").value("goodemail@mail.com"))
@@ -85,7 +96,7 @@ public class PostCompanyTest {
             Double longitude,
             String expectedField) throws Exception {
 
-        companyApi.createCompany(name, email, phone, latitude, longitude)
+        companyApi.updateCompany(company.getUuid(), name, email, phone, latitude, longitude)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
@@ -115,15 +126,27 @@ public class PostCompanyTest {
     @Test
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         companyApi.withToken("");
-        companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", -34.6037, -58.3816)
+        companyApi
+                .updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", -34.6037,
+                        -58.3816)
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldReturnBadRequest_whenAddressNotFound() throws Exception {
-        companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", 100.0, -100.0)
+        companyApi.updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", 100.0, -100.0)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists());
     }
 
+    @Test
+    void shouldReturnBadRequest_whenUserIsNotOwner() throws Exception {
+        UserDTO user = UserTestFactory.registerUser(mockMvc, "User2", password);
+        String token2 = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
+        companyApi.withToken(token2);
+        companyApi
+                .updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", -34.6037,
+                        -58.3816)
+                .andExpect(status().isBadRequest());
+    }
 }

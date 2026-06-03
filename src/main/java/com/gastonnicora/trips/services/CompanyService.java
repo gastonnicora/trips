@@ -19,6 +19,8 @@ import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.utils.SecurityUtils;
 
+import jakarta.transaction.Transactional;
+
 /**
  * Servicio de gestión de empresas.
  * <p>
@@ -190,6 +192,7 @@ public class CompanyService {
      * @see CompanyMapper #toDTO(Company)
      * @see CompanyRepository #findByUuid(UUID)
      */
+    @Transactional
     public CompanyDTO updateCompany(UUID uuid, CompanyCreate companyCreate) {
         Company company = companyRepository.findByUuid(uuid).orElseThrow(
                 () -> new NotFoundException("Empresa no encontrada"));
