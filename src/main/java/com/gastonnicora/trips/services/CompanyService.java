@@ -15,6 +15,7 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
+import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.utils.SecurityUtils;
@@ -197,7 +198,7 @@ public class CompanyService {
         Company company = companyRepository.findByUuid(uuid).orElseThrow(
                 () -> new NotFoundException("Empresa no encontrada"));
         if (!company.getOwner().getUuid().equals(getCurrentUserUuid())) {
-            throw new BadRequestException("No tienes permiso para actualizar esta empresa");
+            throw new UnauthorizedException("No tienes permiso para actualizar esta empresa");
         }
         AddressResponse addressR = geocodingService.obtenerDireccion(companyCreate.getLatitude(),
                 companyCreate.getLongitude());
@@ -220,26 +221,26 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Busca la empresa en la base de datos mediante su UUID </li>
+     * <li>Busca la empresa en la base de datos mediante su UUID</li>
      * <li>Si la empresa no existe, lanza una excepción {@link NotFoundException}
      * con mensaje descriptivo.</li>
-     * <li> Corrobora que la empresa sea propiedad del usuario actual</li>
-     * <li> Si no es el dueño lanza una excepción {@link BadRequestException}
+     * <li>Corrobora que la empresa sea propiedad del usuario actual</li>
+     * <li>Si no es el dueño lanza una excepción {@link BadRequestException}
      * con mensaje descriptivo.</li>
      * <li>Desactiva la empresa en la base de datos.</li>
      * </ul>
      * 
      * @param uuid UUID de la empresa que se quiere eliminar.
-     * @throws NotFoundException con mensaje descriptivo.
+     * @throws NotFoundException   con mensaje descriptivo.
      * @throws BadRequestException con mensaje descriptivo.
      * @see CompanyRepository #findByUuid(UUID)
      */
     @Transactional
     public void deleteCompany(UUID uuid) {
-        Company company = companyRepository.findByUuid(uuid).orElseThrow(()->
-        new NotFoundException("Empresa no encontrada"));
-        if(!company.getOwner().getUuid().equals(getCurrentUserUuid())){
-            throw new BadRequestException("No tienes permiso para eliminar esta empresa");
+        Company company = companyRepository.findByUuid(uuid)
+                .orElseThrow(() -> new NotFoundException("Empresa no encontrada"));
+        if (!company.getOwner().getUuid().equals(getCurrentUserUuid())) {
+            throw new UnauthorizedException("No tienes permiso para eliminar esta empresa");
         }
         company.setActive(false);
         companyRepository.save(company);

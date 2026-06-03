@@ -28,6 +28,7 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
+import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.security.UserDetailsImpl;
@@ -141,7 +142,7 @@ public class UpdateCompanyTest {
         context(UUID.randomUUID());
         when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.of(company));
 
-        assertThrows(BadRequestException.class, () -> companyService.updateCompany(company.getUuid(), request));
+        assertThrows(UnauthorizedException.class, () -> companyService.updateCompany(company.getUuid(), request));
         verify(companyRepository).findByUuid(any());
     }
 
@@ -167,7 +168,7 @@ public class UpdateCompanyTest {
 
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
                 .thenReturn(response);
-        assertThrows(BadRequestException.class,()-> companyService.updateCompany(company.getUuid(), request));
+        assertThrows(BadRequestException.class, () -> companyService.updateCompany(company.getUuid(), request));
         verify(companyRepository).findByUuid(any());
         verify(geocodingService).obtenerDireccion(anyDouble(), anyDouble());
 
