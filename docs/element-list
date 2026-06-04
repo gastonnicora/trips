@@ -8,6 +8,7 @@ com.gastonnicora.trips.dtos.request.user
 com.gastonnicora.trips.dtos.response
 com.gastonnicora.trips.dtos.response.auth
 com.gastonnicora.trips.dtos.response.company
+com.gastonnicora.trips.dtos.response.worker
 com.gastonnicora.trips.entities
 com.gastonnicora.trips.enums
 com.gastonnicora.trips.exceptions
