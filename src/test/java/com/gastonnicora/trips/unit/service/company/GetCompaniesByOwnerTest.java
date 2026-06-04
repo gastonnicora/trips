@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,14 @@ import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.entities.Worker;
+import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.GeocodingService;
 import com.gastonnicora.trips.services.UserService;
+import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
 public class GetCompaniesByOwnerTest {
@@ -31,6 +35,10 @@ public class GetCompaniesByOwnerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private WorkerService workerService;
+
 
     @Mock
     private GeocodingService geocodingService;
@@ -46,19 +54,25 @@ public class GetCompaniesByOwnerTest {
 
         User user = new User();
 
-        Company company = new Company("Test", user, "Buenos Aires, Argentina", -34.6037, -58.3816,
+        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
         company.setUuid(UUID.randomUUID());
 
-        Company company2 = new Company("Test2", user, "Buenos Aires, Argentina", -34.6037, -58.3846,
+        Company company2 = new Company("Test2", "Buenos Aires, Argentina", -34.6037, -58.3846,
                 "test@mail.com", "123");
         company2.setUuid(UUID.randomUUID());
 
         List<Company> companies = List.of(company, company2);
 
-        when(companyRepository.findAllByOwner_Uuid(any())).thenReturn(companies);
 
         List<CompanyDTO> expectedDTOs = List.of(new CompanyDTO(), new CompanyDTO());
+
+        Worker worker = new Worker(user, company, Set.of(RoleCompany.OWNER));
+        Worker worker2 = new Worker(user, company2, Set.of(RoleCompany.OWNER));
+        List<Worker> workers = List.of(worker, worker2);
+
+        when(workerService.getWorkersByOwner(any())).thenReturn(workers);
+
 
         when(companyMapper.toDTOList(companies)).thenReturn(expectedDTOs);
 
@@ -68,7 +82,6 @@ public class GetCompaniesByOwnerTest {
         assertEquals(2, result.getData().size());
         assertEquals(2, result.getTotal());
 
-        verify(companyRepository).findAllByOwner_Uuid(any());
         verify(companyMapper).toDTOList(companies);
 
     }
@@ -78,9 +91,10 @@ public class GetCompaniesByOwnerTest {
 
         List<Company> companies = List.of();
 
-        when(companyRepository.findAllByOwner_Uuid(any())).thenReturn(companies);
 
         List<CompanyDTO> expectedDTOs = List.of();
+        when(workerService.getWorkersByOwner(any())).thenReturn(List.of());
+
 
         when(companyMapper.toDTOList(companies)).thenReturn(expectedDTOs);
 
@@ -90,7 +104,6 @@ public class GetCompaniesByOwnerTest {
         assertEquals(0, result.getData().size());
         assertEquals(0, result.getTotal());
 
-        verify(companyRepository).findAllByOwner_Uuid(any());
         verify(companyMapper).toDTOList(companies);
 
     }

@@ -70,7 +70,6 @@ public class PostCompanyTest {
                 .andExpect(jsonPath("$.phone").value("+5491122334455"))
                 .andExpect(jsonPath("$.latitude").value(-34.6037))
                 .andExpect(jsonPath("$.longitude").value(-58.3816))
-                .andExpect(jsonPath("$.owner.email").value(email))
                 .andExpect(jsonPath("$.address").value(notNullValue()));
 
     }

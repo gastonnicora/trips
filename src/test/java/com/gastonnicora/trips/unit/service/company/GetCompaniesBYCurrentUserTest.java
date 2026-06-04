@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
@@ -21,10 +22,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.entities.Worker;
+import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.security.UserDetailsImpl;
 import com.gastonnicora.trips.services.CompanyService;
+import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
 public class GetCompaniesBYCurrentUserTest {
@@ -33,6 +38,10 @@ public class GetCompaniesBYCurrentUserTest {
 
     @Mock
     private CompanyRepository companyRepository;
+
+    @Mock
+    private WorkerService workerService;
+
 
     @Mock
     private CompanyMapper companyMapper;
@@ -48,10 +57,13 @@ public class GetCompaniesBYCurrentUserTest {
         context(userId);
 
         Company company = new Company();
-        java.util.List<Company> companies = java.util.List.of(company);
-        java.util.List<CompanyDTO> expectedDTOs = java.util.List.of(new CompanyDTO());
+        List<Company> companies = List.of(company);
+        List<CompanyDTO> expectedDTOs = List.of(new CompanyDTO());
+        User user = new User();
+        user.setUuid(userId);
+        Worker worker = new Worker(user, company, Set.of(RoleCompany.OWNER));
 
-        when(companyRepository.findAllByOwner_Uuid(userId)).thenReturn(companies);
+        when(workerService.getWorkersByOwner(userId)).thenReturn(List.of(worker));
         when(companyMapper.toDTOList(companies)).thenReturn(expectedDTOs);
 
         com.gastonnicora.trips.dtos.response.ListResponse<CompanyDTO> result = companyService
@@ -60,7 +72,6 @@ public class GetCompaniesBYCurrentUserTest {
         assertEquals(expectedDTOs, result.getData());
         assertEquals(1, result.getTotal());
 
-        verify(companyRepository).findAllByOwner_Uuid(userId);
         verify(companyMapper).toDTOList(companies);
     }
 
@@ -73,7 +84,7 @@ public class GetCompaniesBYCurrentUserTest {
         List<Company> companies = List.of();
         List<CompanyDTO> expectedDTOs = List.of();
 
-        when(companyRepository.findAllByOwner_Uuid(userId)).thenReturn(companies);
+
         when(companyMapper.toDTOList(companies)).thenReturn(expectedDTOs);
 
         ListResponse<CompanyDTO> result = companyService
@@ -82,7 +93,6 @@ public class GetCompaniesBYCurrentUserTest {
         assertEquals(expectedDTOs, result.getData());
         assertEquals(0, result.getTotal());
 
-        verify(companyRepository).findAllByOwner_Uuid(userId);
         verify(companyMapper).toDTOList(companies);
     }
 

@@ -30,7 +30,6 @@ import lombok.Setter;
  * <ul>
  * <li>{@code uuid}: Identificador único de la empresa.</li>
  * <li>{@code name}: Nombre de la empresa.</li>
- * <li>{@code owner}: Dueño de la empresa.</li>
  * <li>{@code address}: Dirección de la empresa.</li>
  * <li>{@code email}: Dirección de correo electrónico de la empresa.</li>
  * <li>{@code phone}: Número de teléfono de la empresa.</li>
@@ -63,10 +62,6 @@ public class Company {
 
     @Column(name = "name", nullable = false)
     private String name;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "owner_uuid", nullable = false)
-    private User owner;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -101,17 +96,15 @@ public class Company {
      * </p>
      * 
      * @param name      Nombre de la empresa
-     * @param owner     Dueño de la empresa
      * @param address   Dirección de la empresa
      * @param latitude  Latitud de la empresa
      * @param longitude Longitud de la empresa
      * @param email     Dirección de correo electrónico de la empresa
      * @param phone     Número de teléfono de la empresa
      */
-    public Company(String name, User owner, String address, double latitude, double longitude, String email,
+    public Company(String name, String address, double latitude, double longitude, String email,
             String phone) {
         this.name = name;
-        this.owner = owner;
         this.address = address;
         this.email = email;
         this.phone = phone;

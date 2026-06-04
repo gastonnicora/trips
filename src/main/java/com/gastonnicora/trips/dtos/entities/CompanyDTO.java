@@ -23,7 +23,6 @@ import lombok.ToString;
  * <ul>
  * <li>{@code uuid}: Identificador único de la empresa.</li>
  * <li>{@code name}: Nombre de la empresa.</li>
- * <li>{@code owner}: Dueño de la empresa.</li>
  * <li>{@code address}: Dirección de la empresa.</li>
  * <li>{@code latitude}: Latitud de la dirección de la empresa.</li>
  * <li>{@code longitude}: Longitud de la dirección de la empresa.</li>
@@ -42,16 +41,6 @@ import lombok.ToString;
  * {
  *   "uuid": "550e8400-e29b-41d4-a716-446655440000",
  *   "name": "Viajes LP",
- *   "owner": {
- *     "uuid": "550e8400-e29b-41d4-a716-446655440000",
- *     "name": "Juan",
- *     "lastname": "Perez",
- *     "email": "juanperez@mail.com",
- *     "role": ["USER"],
- *     "enabled": true,
- *     "createdAt": "2026-01-01T00:00:00",
- *     "updatedAt": "2026-01-01T00:00:00"
- *   },
  *   "address": "Calle Falsa 123,La Plata,Bs As, Argentina",
  *   "latitude": 500,
  *   "longitude": 500,
@@ -79,9 +68,6 @@ public class CompanyDTO {
 
     @Schema(description = "Nombre de la empresa", example = "Viajes LP")
     private String name;
-
-    @Schema(description = "Dueño de la empresa", implementation = UserDTO.class)
-    private UserDTO owner;
 
     @Schema(description = "Dirección de la empresa", example = "Calle Falsa 123,La Plata,Bs As, Argentina")
     private String address;

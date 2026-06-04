@@ -2,6 +2,7 @@ package com.gastonnicora.trips.controllers.api;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -114,7 +115,8 @@ public class CompanyController {
      * @see CompanyService #getCompaniesByUser(UUID)
      */
     @GetMapping("/owner/{uuid}")
-    @SecurityRequirement(name = "bearerAuth") // FIXME 🐛: agregar pre para admin y super y test
+    @SecurityRequirement(name = "bearerAuth")
+     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "Obtener empresas del usuario", description = "Obtiene las empresas del usuario")
     public ListResponse<CompanyDTO> getCompaniesByUser(@PathVariable UUID uuid) {
         return companyService.getCompaniesByUser(uuid);
@@ -125,6 +127,7 @@ public class CompanyController {
      * <p>
      * Este endpoint obtiene todas las empresas del usuario actual.
      * </p>
+     * 
      * @return Lista de empresas del usuario actual.
      * @see CompanyService #getCompaniesByCurrentUser()
      */
@@ -144,15 +147,22 @@ public class CompanyController {
      * Valida los datos antes de guardar los cambios.
      * </p>
      *
-     * @param uuid UUID de la empresa que se quiere actualizar.
+     * @param uuid    UUID de la empresa que se quiere actualizar.
      * @param company {@link CompanyCreate} con los nuevos datos de la empresa.
      * @return CompanyDTO con los detalles de la empresa actualizada.
      * @see CompanyService #updateCompany(UUID, CompanyCreate)
      */
     @PutMapping("/{uuid}")
-    @SecurityRequirement(name = "bearerAuth") // FIXME 🐛: agregar pre para usuarios con permisos y dueño y test
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("""
+                @companySecurity.hasAnyRole(
+                    #uuid,
+                    T(com.gastonnicora.trips.enums.RoleCompany).OWNER,
+                    T(com.gastonnicora.trips.enums.RoleCompany).COMPANY_ADMIN
+                )
+            """)
     @Operation(summary = "Modificar empresa", description = "Modifica una empresa por su uuid")
-    public CompanyDTO updateCompany(@PathVariable UUID uuid, @Valid @RequestBody CompanyCreate company) {
+    public CompanyDTO updateCompany(@PathVariable("uuid") UUID uuid, @Valid @RequestBody CompanyCreate company) {
         return companyService.updateCompany(uuid, company);
     }
 
@@ -167,8 +177,9 @@ public class CompanyController {
      */
     @DeleteMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasRole(#uuid, T(com.gastonnicora.trips.enums.RoleCompany).OWNER)")
     @Operation(summary = "Eliminar empresa", description = "Elimina una empresa por su uuid")
-    public void deleteCompany(@PathVariable UUID uuid) {
+    public void deleteCompany(@PathVariable("uuid") UUID uuid) {
         companyService.deleteCompany(uuid);
     }
 

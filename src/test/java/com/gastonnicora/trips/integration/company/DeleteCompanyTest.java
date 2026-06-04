@@ -71,17 +71,17 @@ public class DeleteCompanyTest {
     }
 
     @Test
-    void shouldReturnNotFound_whenCompanyDoesNotExist() throws Exception {
+    void shouldReturnForbidden_whenCompanyDoesNotExist() throws Exception {
         companyApi.deleteCompany(UUID.randomUUID())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden());
     }
 
     @Test
-    void shouldReturnUnauthorized_whenUserIsNotOwner() throws Exception {
+    void shouldReturnForbidden_whenUserIsNotOwner() throws Exception {
         UserDTO user2 = UserTestFactory.registerUser(mockMvc, "User2", password);
         String token2 = UserTestFactory.login(mockMvc, user2.getEmail(), password).getToken();
         companyApi.withToken(token2);
         companyApi.deleteCompany(company.getUuid())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

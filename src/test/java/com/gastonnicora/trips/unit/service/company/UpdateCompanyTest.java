@@ -77,12 +77,11 @@ public class UpdateCompanyTest {
                 "calle 2", "123", "barrio", "ciudad", "departamento", "estado", "pais"));
 
         Company company = new Company();
-        Company company2 = new Company("Test2", user, "Test2", -34.6037, -58.3816, "test2@mail.com", "123");
+        Company company2 = new Company("Test2", "Test2", -34.6037, -58.3816, "test2@mail.com", "123");
         company2.setUuid(UUID.randomUUID());
 
         CompanyDTO expectedDTO = new CompanyDTO();
 
-        context(userId);
         when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.of(company2));
         when(geocodingService.obtenerDireccion(-34.6037, -58.3816))
                 .thenReturn(addressResponse);
@@ -120,31 +119,7 @@ public class UpdateCompanyTest {
         verify(companyRepository).findByUuid(any());
     }
 
-    @Test
-    void shouldThrowsBadRequestWhenUserNotOwner() {
-
-        UUID userId = UUID.randomUUID();
-
-        User user = new User();
-        user.setUuid(userId);
-
-        CompanyCreate request = new CompanyCreate();
-        request.setName("Test");
-        request.setEmail("test@mail.com");
-        request.setPhone("123");
-        request.setLatitude(-34.6037);
-        request.setLongitude(-58.3816);
-
-        Company company = new Company();
-        company.setOwner(user);
-        company.setUuid(UUID.randomUUID());
-
-        context(UUID.randomUUID());
-        when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.of(company));
-
-        assertThrows(UnauthorizedException.class, () -> companyService.updateCompany(company.getUuid(), request));
-        verify(companyRepository).findByUuid(any());
-    }
+   
 
     @Test
     void shouldThrowBadRequestWhenAddressIsNull() {
@@ -154,10 +129,9 @@ public class UpdateCompanyTest {
         user.setUuid(userId);
 
         Company company = new Company();
-        company.setOwner(user);
         company.setUuid(UUID.randomUUID());
 
-        context(userId);
+
         when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.of(company));
 
         CompanyCreate request = new CompanyCreate();
@@ -174,17 +148,4 @@ public class UpdateCompanyTest {
 
     }
 
-    private void context(UUID uuid) {
-        // 🔧 Mock SecurityContext
-        UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-        when(userDetails.getUuid()).thenReturn(uuid);
-
-        Authentication auth = mock(Authentication.class);
-        when(auth.getPrincipal()).thenReturn(userDetails);
-
-        SecurityContext context = mock(SecurityContext.class);
-        when(context.getAuthentication()).thenReturn(auth);
-
-        SecurityContextHolder.setContext(context);
-    }
 }

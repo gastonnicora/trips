@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
@@ -21,11 +22,14 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.dtos.entities.WorkerDTO;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.entities.Worker;
+import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
@@ -33,6 +37,7 @@ import com.gastonnicora.trips.security.UserDetailsImpl;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.GeocodingService;
 import com.gastonnicora.trips.services.UserService;
+import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
 public class CreateCompanyTest {
@@ -44,6 +49,10 @@ public class CreateCompanyTest {
 
     @Mock
     private GeocodingService geocodingService;
+
+    @Mock
+    private WorkerService workerService;
+
 
     @Mock
     private CompanyRepository companyRepository;
@@ -79,6 +88,11 @@ public class CreateCompanyTest {
 
         CompanyDTO expectedDTO = new CompanyDTO();
         context(userId);
+        
+        Worker worker = new Worker(user, company, Set.of(RoleCompany.OWNER));
+        when(workerService.createWorker(user, company, Set.of(RoleCompany.OWNER))).thenReturn(new WorkerDTO());
+
+
         when(userService.getUser(userId)).thenReturn(user);
         when(geocodingService.obtenerDireccion(-34.6037, -58.3816))
                 .thenReturn(addressResponse);
@@ -92,6 +106,8 @@ public class CreateCompanyTest {
 
         verify(geocodingService).obtenerDireccion(-34.6037, -58.3816);
         verify(companyRepository).save(any(Company.class));
+        verify(companyMapper).toDTO(company);
+        verify(workerService).createWorker(user, company, Set.of(RoleCompany.OWNER));
     }
 
     @Test

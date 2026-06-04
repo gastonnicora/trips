@@ -20,7 +20,6 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     Optional<Company> findByUuid(UUID uuid);
 
-    List<Company> findAllByOwner_Uuid(UUID uuid);
 
 
 }

@@ -81,7 +81,6 @@ public class PutCompanyTest {
                 .andExpect(jsonPath("$.phone").value("+5491122334455"))
                 .andExpect(jsonPath("$.latitude").value(-34.6037))
                 .andExpect(jsonPath("$.longitude").value(-58.3816))
-                .andExpect(jsonPath("$.owner.email").value(email))
                 .andExpect(jsonPath("$.address").value(notNullValue()));
 
     }
@@ -140,13 +139,13 @@ public class PutCompanyTest {
     }
 
     @Test
-    void shouldReturUnauthorized_whenUserIsNotOwner() throws Exception {
+    void shouldReturForbidden_whenUserIsNotOwner() throws Exception {
         UserDTO user = UserTestFactory.registerUser(mockMvc, "User2", password);
         String token2 = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
         companyApi.withToken(token2);
         companyApi
                 .updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", -34.6037,
                         -58.3816)
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

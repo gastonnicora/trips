@@ -3,6 +3,7 @@ package com.gastonnicora.trips.services;
 import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.exceptions.UnauthorizedException;
@@ -40,6 +42,8 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
     private final GeocodingService geocodingService;
+    private final WorkerService workerService;
+
 
     /**
      * Constructor que inicializa los servicios necesarios para la gestión de
@@ -52,13 +56,15 @@ public class CompanyService {
      *                          DTOs {@link CompanyDTO}.
      * @param geocodingService  Servicio para obtener direcciones a partir de
      *                          coordenadas.
+     * @param workerService     Servicio de gestión de trabajadores.
      */
     public CompanyService(UserService userService, CompanyRepository companyRepository, CompanyMapper companyMapper,
-            GeocodingService geocodingService) {
+            GeocodingService geocodingService, WorkerService workerService) {
         this.userService = userService;
         this.companyRepository = companyRepository;
         this.companyMapper = companyMapper;
         this.geocodingService = geocodingService;
+        this.workerService = workerService;
     }
 
     /**
@@ -72,6 +78,7 @@ public class CompanyService {
      * {@link GeocodingService}.</li>
      * <li>Crea una nueva instancia de {@link Company} con los datos proporcionados
      * </li>
+     * <li>Crea un nuevo trabajador con el rol de dueño.</li>
      * <li>Guarda la nueva empresa en la base de datos</li>
      * <li>Convierte la nueva empresa en {@link CompanyDTO} utilizando
      * {@link CompanyMapper}.</li>
@@ -80,11 +87,12 @@ public class CompanyService {
      * @param companyCreate {@link CompanyCreate} con los datos de la nueva
      *                      empresa.
      * @return {@link CompanyDTO} Datos de la nueva empresa creada.
+     * @throws BadRequestException Si la dirección no es válida.
      * @see UserService #getUser(java.util.UUID)
      * @see GeocodingService #obtenerDireccion(double, double)
+     * @see WorkerService #createWorker(User, Company, Set)
      * @see CompanyMapper #toDTO(Company)
      * @see CompanyRepository #save(Company)
-     * @throws BadRequestException Si la dirección no es válida.
      */
     public CompanyDTO createCompany(CompanyCreate companyCreate) {
         User currentUser = userService.getUser(getCurrentUserUuid());
@@ -95,10 +103,12 @@ public class CompanyService {
         }
         String address = addressR.displayName();
 
-        Company company = new Company(companyCreate.getName(), currentUser, address, companyCreate.getLatitude(),
+        Company company = new Company(companyCreate.getName(), address, companyCreate.getLatitude(),
                 companyCreate.getLongitude(),
                 companyCreate.getEmail(), companyCreate.getPhone());
-        return companyMapper.toDTO(companyRepository.save(company));
+        company = companyRepository.save(company);
+        workerService.createWorker(currentUser, company, Set.of(RoleCompany.OWNER));
+        return companyMapper.toDTO(company);
     }
 
     /**
@@ -197,9 +207,6 @@ public class CompanyService {
     public CompanyDTO updateCompany(UUID uuid, CompanyCreate companyCreate) {
         Company company = companyRepository.findByUuid(uuid).orElseThrow(
                 () -> new NotFoundException("Empresa no encontrada"));
-        if (!company.getOwner().getUuid().equals(getCurrentUserUuid())) {
-            throw new UnauthorizedException("No tienes permiso para actualizar esta empresa");
-        }
         AddressResponse addressR = geocodingService.obtenerDireccion(companyCreate.getLatitude(),
                 companyCreate.getLongitude());
         if (addressR.displayName() == null) {
@@ -239,9 +246,6 @@ public class CompanyService {
     public void deleteCompany(UUID uuid) {
         Company company = companyRepository.findByUuid(uuid)
                 .orElseThrow(() -> new NotFoundException("Empresa no encontrada"));
-        if (!company.getOwner().getUuid().equals(getCurrentUserUuid())) {
-            throw new UnauthorizedException("No tienes permiso para eliminar esta empresa");
-        }
         company.setActive(false);
         companyRepository.save(company);
     }
@@ -252,8 +256,7 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Busca las empresas en la base de datos mediante
-     * {@link CompanyRepository}.</li>
+     * <li>Le pide a {@link WorkerService} todas las empresas en la que el usuario es dueño.</li>
      * <li>Convierte las empresas en una lista de DTOs con sus datos utilizando
      * {@link CompanyMapper}.</li>
      * </ul>
@@ -262,9 +265,12 @@ public class CompanyService {
      * @see CompanyRepository #findAllByOwner_Uuid(UUID)
      * @see CompanyMapper #toDTOList(List)
      * @see ListResponse
+     * @see WorkerService #getWorkersByOwner(UUID)
      */
     private ListResponse<CompanyDTO> getCompaniesByOwner(UUID uuid) {
-        List<Company> companies = companyRepository.findAllByOwner_Uuid(uuid);
+        List<Company> companies = workerService.getWorkersByOwner(uuid).stream()
+                .map(worker -> worker.getCompany())
+                .toList();
         return new ListResponse<CompanyDTO>(companyMapper.toDTOList(companies));
     }
 }

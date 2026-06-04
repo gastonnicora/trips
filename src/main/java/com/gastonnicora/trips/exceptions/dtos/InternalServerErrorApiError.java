@@ -45,7 +45,7 @@ public class InternalServerErrorApiError extends ApiError {
      * Constructor por defecto.
      */
     public InternalServerErrorApiError() {
-        super(HttpStatus.NOT_FOUND.value(), "Error del servidor");
+        super(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error del servidor");
     }
 
     /**

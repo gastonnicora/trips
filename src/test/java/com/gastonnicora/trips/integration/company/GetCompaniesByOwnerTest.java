@@ -5,12 +5,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import static org.hamcrest.Matchers.hasItems;
 
-
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
@@ -36,26 +36,29 @@ public class GetCompaniesByOwnerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String token;
+    private String tokenAdmin;
     private CompanyApiTestClient companyApi;
-
+    @Value("${superadmin.email}")
     private String email;
+    @Value("${superadmin.password}")
+    private String password;
     private UserDTO user;
-    private final String password = "goodPassword";
+    private String token;
 
     private CompanyDTO company;
 
     @BeforeEach
     void setup() throws Exception {
         this.user = UserTestFactory.registerUser(mockMvc, "User", password);
-        this.email = user.getEmail();
-        this.token = UserTestFactory.login(mockMvc, email, password).getToken();
+        this.token = UserTestFactory.login(mockMvc, this.user.getEmail(), password).getToken();
         this.companyApi = new CompanyApiTestClient(mockMvc, objectMapper).withToken(token);
         MvcResult result = companyApi
                 .createCompany("Good Name", "goodemail@mail.com", "+549112233445", -34.6037, -54.3816)
                 .andExpect(status().isOk()).andReturn();
         String responseJson = result.getResponse().getContentAsString();
         this.company = objectMapper.readValue(responseJson, CompanyDTO.class);
+        this.tokenAdmin = UserTestFactory.login(mockMvc, email, password).getToken();
+        this.companyApi.withToken(tokenAdmin);
     }
 
     @Test
@@ -67,17 +70,18 @@ public class GetCompaniesByOwnerTest {
                 .andExpect(jsonPath("$.data[0].phone").value(company.getPhone()))
                 .andExpect(jsonPath("$.data[0].latitude").value(company.getLatitude()))
                 .andExpect(jsonPath("$.data[0].longitude").value(company.getLongitude()))
-                .andExpect(jsonPath("$.data[0].owner.email").value(email))
                 .andExpect(jsonPath("$.data[0].address").value(company.getAddress()));
     }
 
     @Test
     void shouldReturnOk_whenUserHaveTwoCompany() throws Exception {
+        companyApi.withToken(token);
         MvcResult result = companyApi
                 .createCompany("Good Name2", "goodemail@mail.com", "+549112233445", -34.6037, -54.3816)
                 .andExpect(status().isOk()).andReturn();
         String responseJson = result.getResponse().getContentAsString();
         CompanyDTO company2 = objectMapper.readValue(responseJson, CompanyDTO.class);
+        companyApi.withToken(tokenAdmin);
         companyApi.getCompaniesByOwner(user.getUuid())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[*].name", hasItems(company.getName(), company2.getName())))
@@ -99,5 +103,12 @@ public class GetCompaniesByOwnerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isEmpty())
                 .andExpect(jsonPath("$.total").value(0));
+    }
+
+    @Test
+    void shouldReturnForbidden_whenUserIsNotIsAdmin() throws Exception {
+        companyApi.withToken(token);
+        companyApi.getCompaniesByOwner(user.getUuid())
+                .andExpect(status().isForbidden());
     }
 }

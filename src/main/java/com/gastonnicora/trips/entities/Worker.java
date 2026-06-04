@@ -102,7 +102,6 @@ public class Worker {
      */
     public Worker(User user, Company company, Set<RoleCompany> roles) {
         this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
-        this.addRole(RoleCompany.SELLER);
         this.user = user;
         this.company = company;
     }

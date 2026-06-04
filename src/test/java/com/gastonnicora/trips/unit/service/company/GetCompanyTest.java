@@ -46,7 +46,7 @@ public class GetCompanyTest {
 
         User user = new User();
 
-        Company company = new Company("Test", user, "Buenos Aires, Argentina", -34.6037, -58.3816,
+        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
         company.setUuid(UUID.randomUUID());
 

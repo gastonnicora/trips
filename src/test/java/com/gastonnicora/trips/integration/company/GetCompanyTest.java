@@ -63,7 +63,6 @@ public class GetCompanyTest {
                 .andExpect(jsonPath("$.phone").value(company.getPhone()))
                 .andExpect(jsonPath("$.latitude").value(company.getLatitude()))
                 .andExpect(jsonPath("$.longitude").value(company.getLongitude()))
-                .andExpect(jsonPath("$.owner.email").value(email))
                 .andExpect(jsonPath("$.address").value(company.getAddress()));
     }
 

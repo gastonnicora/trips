@@ -13,6 +13,12 @@ package com.gastonnicora.trips.enums;
  * @since 2026-06-03
  */
 public enum RoleCompany {
+
+    /**
+     * Dueño de la empresa que puede tiene todos los permisos sobre la misma.
+     */
+    OWNER,
+
     /**
      * Vendedor que gestiona viajes (crear, modificar, eliminar), reservas (ver,
      * cancelar)

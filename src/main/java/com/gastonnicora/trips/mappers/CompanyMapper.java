@@ -27,7 +27,6 @@ public class CompanyMapper {
         return new CompanyDTO(
                 company.getUuid(),
                 company.getName(),
-                new UserMapper().toDTO(company.getOwner()),
                 company.getAddress(),
                 company.getLatitude(),
                 company.getLongitude(),
