@@ -30,30 +30,8 @@ public enum Role {
      */
     SUPER_ADMIN,
 
-    /**
-     * Pasajero que puede buscar viajes, reservarlos, cancelarlos y consultar su
-     * historial.
-     */
-    PASSENGER,
 
-    /**
-     * Vendedor que gestiona viajes (crear, modificar, eliminar), reservas (ver,
-     * cancelar)
-     * y genera reportes de ventas.
-     */
-    SELLER,
-
-    /**
-     * Conductor que ve sus viajes asignados, actualiza el estado de los viajes
-     * (en curso, completado) y gestiona su perfil.
-     */
-    DRIVER,
-
-    /**
-     * Administrador de empresa que gestiona usuarios, viajes y genera reportes
-     * de ventas y usuarios dentro de su empresa.
-     */
-    COMPANY_ADMIN,
+    
 
     /**
      * Administrador de plataforma con permisos para gestionar empresas, usuarios,
@@ -83,6 +61,6 @@ public enum Role {
      * Responsable de recursos humanos que gestiona empleados y genera reportes
      * de personal.
      */
-    HR_MANAGER,
+    HR_MANAGER
 
 }

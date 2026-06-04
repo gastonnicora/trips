@@ -49,7 +49,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         // Crea un objeto de error personalizado
         ForbiddenApiError error = new ForbiddenApiError(
-                "No tenés permisos para acceder a este recurso");
+                "No tenes permisos para acceder a este recurso");
 
         // Escribe la respuesta JSON
         mapper.writeValue(response.getOutputStream(), error);

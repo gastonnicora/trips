@@ -100,11 +100,13 @@ public class Company {
      * Genera una nueva {@code Company}
      * </p>
      * 
-     * @param name    Nombre de la empresa
-     * @param owner   Dueño de la empresa
-     * @param address Dirección de la empresa
-     * @param email   Dirección de correo electrónico de la empresa
-     * @param phone   Número de teléfono de la empresa
+     * @param name      Nombre de la empresa
+     * @param owner     Dueño de la empresa
+     * @param address   Dirección de la empresa
+     * @param latitude  Latitud de la empresa
+     * @param longitude Longitud de la empresa
+     * @param email     Dirección de correo electrónico de la empresa
+     * @param phone     Número de teléfono de la empresa
      */
     public Company(String name, User owner, String address, double latitude, double longitude, String email,
             String phone) {

@@ -10,18 +10,14 @@ public record AddressResponse(
                 @Schema(description = "Dirección desglosada") Address address) {
         /**
          * Dirección desglosada.
-         * <p>
-         * Cuenta con los siguientes campos:
-         * </p>
-         * <ul>
-         * <li>{@code road}: Calle</li>
-         * <li>{@code number}: Número de calle</li>
-         * <li>{@code suburb}: Barrio</li>
-         * <li>{@code city}: Ciudad</li>
-         * <li>{@code department}: Departamento</li>
-         * <li>{@code state}: Estado</li>
-         * <li>{@code country}: País</li>
-         * </ul>
+         * 
+         * @param road Calle
+         * @param number Número de calle
+         * @param suburb Barrio
+         * @param city Ciudad
+         * @param department Departamento
+         * @param state Estado
+         * @param country País
          * 
          * @author Gastón
          * @version 1.0

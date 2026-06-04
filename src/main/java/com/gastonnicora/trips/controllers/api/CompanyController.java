@@ -114,7 +114,7 @@ public class CompanyController {
      * @see CompanyService #getCompaniesByUser(UUID)
      */
     @GetMapping("/owner/{uuid}")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "bearerAuth") // FIXME 🐛: agregar pre para admin y super y test
     @Operation(summary = "Obtener empresas del usuario", description = "Obtiene las empresas del usuario")
     public ListResponse<CompanyDTO> getCompaniesByUser(@PathVariable UUID uuid) {
         return companyService.getCompaniesByUser(uuid);
@@ -150,7 +150,7 @@ public class CompanyController {
      * @see CompanyService #updateCompany(UUID, CompanyCreate)
      */
     @PutMapping("/{uuid}")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "bearerAuth") // FIXME 🐛: agregar pre para usuarios con permisos y dueño y test
     @Operation(summary = "Modificar empresa", description = "Modifica una empresa por su uuid")
     public CompanyDTO updateCompany(@PathVariable UUID uuid, @Valid @RequestBody CompanyCreate company) {
         return companyService.updateCompany(uuid, company);

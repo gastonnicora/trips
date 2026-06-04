@@ -1,6 +1,5 @@
 package com.gastonnicora.trips.integration.company;
 
-import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,8 +60,9 @@ public class DeleteCompanyTest {
         companyApi.deleteCompany(company.getUuid()).andExpect(status().isOk());
         companyApi.getCompany(company.getUuid()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.active").value(false));
-    
+
     }
+
     @Test
     void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
         companyApi.withToken(null);
@@ -75,6 +75,7 @@ public class DeleteCompanyTest {
         companyApi.deleteCompany(UUID.randomUUID())
                 .andExpect(status().isNotFound());
     }
+
     @Test
     void shouldReturnUnauthorized_whenUserIsNotOwner() throws Exception {
         UserDTO user2 = UserTestFactory.registerUser(mockMvc, "User2", password);
