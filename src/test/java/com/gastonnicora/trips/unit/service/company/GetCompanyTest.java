@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
@@ -43,8 +42,6 @@ public class GetCompanyTest {
 
     @Test
     void shouldGetCompanySuccessfully() {
-
-        User user = new User();
 
         Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");

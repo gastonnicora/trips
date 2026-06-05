@@ -43,7 +43,7 @@ public class FindByUuidTest {
 
         userRepository.save(user);
 
-        Company company = new Company("Test",  "Buenos Aires, Argentina", -34.6037, -58.3816,
+        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
 
         Company c = companyRepository.save(company);

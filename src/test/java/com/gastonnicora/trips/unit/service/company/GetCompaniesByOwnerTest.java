@@ -39,7 +39,6 @@ public class GetCompaniesByOwnerTest {
     @Mock
     private WorkerService workerService;
 
-
     @Mock
     private GeocodingService geocodingService;
 
@@ -64,7 +63,6 @@ public class GetCompaniesByOwnerTest {
 
         List<Company> companies = List.of(company, company2);
 
-
         List<CompanyDTO> expectedDTOs = List.of(new CompanyDTO(), new CompanyDTO());
 
         Worker worker = new Worker(user, company, Set.of(RoleCompany.OWNER));
@@ -72,7 +70,6 @@ public class GetCompaniesByOwnerTest {
         List<Worker> workers = List.of(worker, worker2);
 
         when(workerService.getWorkersByOwner(any())).thenReturn(workers);
-
 
         when(companyMapper.toDTOList(companies)).thenReturn(expectedDTOs);
 
@@ -91,10 +88,8 @@ public class GetCompaniesByOwnerTest {
 
         List<Company> companies = List.of();
 
-
         List<CompanyDTO> expectedDTOs = List.of();
         when(workerService.getWorkersByOwner(any())).thenReturn(List.of());
-
 
         when(companyMapper.toDTOList(companies)).thenReturn(expectedDTOs);
 

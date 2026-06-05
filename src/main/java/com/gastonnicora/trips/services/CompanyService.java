@@ -17,7 +17,6 @@ import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
-import com.gastonnicora.trips.exceptions.UnauthorizedException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.utils.SecurityUtils;
@@ -43,7 +42,6 @@ public class CompanyService {
     private final CompanyMapper companyMapper;
     private final GeocodingService geocodingService;
     private final WorkerService workerService;
-
 
     /**
      * Constructor que inicializa los servicios necesarios para la gestión de
@@ -256,7 +254,8 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Le pide a {@link WorkerService} todas las empresas en la que el usuario es dueño.</li>
+     * <li>Le pide a {@link WorkerService} todas las empresas en la que el usuario
+     * es dueño.</li>
      * <li>Convierte las empresas en una lista de DTOs con sus datos utilizando
      * {@link CompanyMapper}.</li>
      * </ul>

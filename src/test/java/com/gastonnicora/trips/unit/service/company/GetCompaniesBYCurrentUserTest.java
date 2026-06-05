@@ -42,7 +42,6 @@ public class GetCompaniesBYCurrentUserTest {
     @Mock
     private WorkerService workerService;
 
-
     @Mock
     private CompanyMapper companyMapper;
 
@@ -83,7 +82,6 @@ public class GetCompaniesBYCurrentUserTest {
 
         List<Company> companies = List.of();
         List<CompanyDTO> expectedDTOs = List.of();
-
 
         when(companyMapper.toDTOList(companies)).thenReturn(expectedDTOs);
 

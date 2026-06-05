@@ -30,9 +30,6 @@ public enum Role {
      */
     SUPER_ADMIN,
 
-
-    
-
     /**
      * Administrador de plataforma con permisos para gestionar empresas, usuarios,
      * viajes y generar reportes generales.

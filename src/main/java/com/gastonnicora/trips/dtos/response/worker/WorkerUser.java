@@ -78,7 +78,7 @@ public class WorkerUser {
      */
     @Schema(description = "Roles dentro de la empresa")
     private Set<RoleCompany> roles;
-    
+
     /**
      * Indica si el trabajador está activo.
      */

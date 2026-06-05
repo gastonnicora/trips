@@ -43,7 +43,7 @@ public class PostCompanyTest {
 
     @MockitoBean
     private GeocodingService geocodingService;
-    
+
     private String token;
     private CompanyApiTestClient companyApi;
 
@@ -53,7 +53,8 @@ public class PostCompanyTest {
     @BeforeEach
     void setup() throws Exception {
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
-        .thenReturn(new AddressResponse("calle falsa 123",new Address ("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
+                .thenReturn(new AddressResponse("calle falsa 123",
+                        new Address("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
         UserDTO user = UserTestFactory.registerUser(mockMvc, "User", password);
         this.email = user.getEmail();
         token = UserTestFactory.login(mockMvc, email, password).getToken();

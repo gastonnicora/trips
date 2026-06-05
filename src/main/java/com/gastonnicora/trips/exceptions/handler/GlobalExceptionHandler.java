@@ -218,7 +218,7 @@ public class GlobalExceptionHandler {
          * Maneja la excepción personalizada de acceso prohibido.
          * 
          * Devuelve un {@link ForbiddenApiError} con los detalles proporcionados en la
-         * excepción y un código HTTP 403. 
+         * excepción y un código HTTP 403.
          * 
          * @param ex ({@link ForbiddenException}) personalizada de la aplicación
          * @return {@link ForbiddenApiError} con los detalles de la excepción

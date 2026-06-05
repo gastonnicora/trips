@@ -13,11 +13,10 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
+import com.gastonnicora.trips.mappers.WorkerMapper;
 import com.gastonnicora.trips.repositories.WorkerRepository;
 
 import jakarta.transaction.Transactional;
-
-import com.gastonnicora.trips.mappers.WorkerMapper;
 
 /**
  * Servicio para gestionar la entidad {@link Worker}.
@@ -104,7 +103,7 @@ public class WorkerService {
      * 
      * @param user    UUID del usuario.
      * @param company UUID de la empresa.
-     */ 
+     */
     @Transactional
     public void deleteWorker(UUID user, UUID company) {
         Worker worker = this.getWorker(user, company);
@@ -147,8 +146,8 @@ public class WorkerService {
      * @param owner UUID del usuario.
      * @return Lista de {@link Worker} del worker.
      */
-    public List<Worker> getWorkersByOwner(UUID owner){
-        return workerRepository.findAllByUserUuidAndRolesContains(owner,RoleCompany.OWNER);
-    } 
+    public List<Worker> getWorkersByOwner(UUID owner) {
+        return workerRepository.findAllByUserUuidAndRolesContains(owner, RoleCompany.OWNER);
+    }
 
 }

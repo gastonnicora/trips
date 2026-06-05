@@ -116,7 +116,7 @@ public class CompanyController {
      */
     @GetMapping("/owner/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
-     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "Obtener empresas del usuario", description = "Obtiene las empresas del usuario")
     public ListResponse<CompanyDTO> getCompaniesByUser(@PathVariable UUID uuid) {
         return companyService.getCompaniesByUser(uuid);

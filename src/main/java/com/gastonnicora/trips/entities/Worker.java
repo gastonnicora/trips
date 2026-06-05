@@ -98,7 +98,7 @@ public class Worker {
      * 
      * @param user    ({@link User}) Usuario asociado
      * @param company ({@link Company}) Empresa asociada
-     * @param roles    ({@link Set}) Conjunto de {@link RoleCompany} a asignar
+     * @param roles   ({@link Set}) Conjunto de {@link RoleCompany} a asignar
      */
     public Worker(User user, Company company, Set<RoleCompany> roles) {
         this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();

@@ -93,31 +93,31 @@ public class WorkerDTO {
      */
     @Schema(description = "DTO del usuario", implementation = UserDTO.class)
     private UserDTO user;
-    
+
     /**
      * {@link CompanyDTO} de la empresa.
      */
     @Schema(description = "DTO de la empresa", implementation = CompanyDTO.class)
     private CompanyDTO company;
-    
+
     /**
      * Conjunto de roles asignados al trabajador.
      */
     @Schema(description = "Roles del worker", example = "[\"DRIVER\"]")
     private Set<RoleCompany> roles;
-    
+
     /**
      * Indica si el trabajador está activo.
      */
     @Schema(description = "Estado del worker", example = "true")
     private boolean active;
-    
+
     /**
      * Fecha de creación del worker.
      */
     @Schema(description = "Fecha de creacion del worker", example = "2026-01-01T00:00:00")
     private LocalDateTime createdAt;
-    
+
     /**
      * Fecha de actualización del worker.
      */

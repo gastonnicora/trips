@@ -11,13 +11,13 @@ public record AddressResponse(
         /**
          * Dirección desglosada.
          * 
-         * @param road Calle
-         * @param number Número de calle
-         * @param suburb Barrio
-         * @param city Ciudad
+         * @param road       Calle
+         * @param number     Número de calle
+         * @param suburb     Barrio
+         * @param city       Ciudad
          * @param department Departamento
-         * @param state Estado
-         * @param country País
+         * @param state      Estado
+         * @param country    País
          * 
          * @author Gastón
          * @version 1.0

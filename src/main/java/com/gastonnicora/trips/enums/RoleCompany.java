@@ -37,7 +37,7 @@ public enum RoleCompany {
      * de ventas y usuarios dentro de su empresa.
      */
     COMPANY_ADMIN,
-    
+
     /**
      * Responsable de recursos humanos que gestiona empleados y genera reportes
      * de personal.

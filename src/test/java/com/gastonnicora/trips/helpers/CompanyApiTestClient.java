@@ -1,9 +1,9 @@
 package com.gastonnicora.trips.helpers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import java.util.UUID;
 
@@ -81,31 +81,33 @@ public class CompanyApiTestClient {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("User-Agent", "JUnit-Test"));
         }
-        public ResultActions updateCompany(UUID uuid,String name, String email, String phone, Double latitude, Double longitude)
-            throws Exception {
-        CompanyCreateTest body = new CompanyCreateTest(
-                name,
-                email,
-                phone,
-                latitude,
-                longitude);
 
-        String json = objectMapper.writeValueAsString(body);
+        public ResultActions updateCompany(UUID uuid, String name, String email, String phone, Double latitude,
+                        Double longitude)
+                        throws Exception {
+                CompanyCreateTest body = new CompanyCreateTest(
+                                name,
+                                email,
+                                phone,
+                                latitude,
+                                longitude);
 
-        return mockMvc.perform(put("/api/companies/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test")
-                .content(json));
-    }
+                String json = objectMapper.writeValueAsString(body);
 
-    public ResultActions deleteCompany(UUID uuid)
-            throws Exception {
+                return mockMvc.perform(put("/api/companies/" + uuid)
+                                .header("Authorization", "Bearer " + token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("User-Agent", "JUnit-Test")
+                                .content(json));
+        }
 
-        return mockMvc.perform(delete("/api/companies/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
-    }
+        public ResultActions deleteCompany(UUID uuid)
+                        throws Exception {
+
+                return mockMvc.perform(delete("/api/companies/" + uuid)
+                                .header("Authorization", "Bearer " + token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("User-Agent", "JUnit-Test"));
+        }
 
 }

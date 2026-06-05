@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Data Transfer Object (DTO) que representa la información de una empresa y sus trabajadores.
+ * Data Transfer Object (DTO) que representa la información de una empresa y sus
+ * trabajadores.
  * <p>
- * Se utiliza para exponer los datos de empresa y sus trabajadores en respuestas de la API, sin
+ * Se utiliza para exponer los datos de empresa y sus trabajadores en respuestas
+ * de la API, sin
  * incluir información sensible como la contraseña.
  * </p>
  * 
@@ -66,7 +68,7 @@ import lombok.Setter;
  * @author Gastón
  * @version 1.0
  * @since 2026-06-03
- * */
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -83,6 +85,5 @@ public class WorkersByCompany {
      */
     @Schema(description = "Lista de trabajadores")
     private List<WorkerUser> workers;
-
 
 }

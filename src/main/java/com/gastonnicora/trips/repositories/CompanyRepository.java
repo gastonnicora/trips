@@ -1,6 +1,5 @@
 package com.gastonnicora.trips.repositories;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

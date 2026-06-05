@@ -28,7 +28,6 @@ import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
@@ -53,7 +52,6 @@ public class CreateCompanyTest {
     @Mock
     private WorkerService workerService;
 
-
     @Mock
     private CompanyRepository companyRepository;
 
@@ -68,7 +66,6 @@ public class CreateCompanyTest {
     @Test
     void shouldCreateCompanySuccessfully() {
 
-        
         UUID userId = UUID.randomUUID();
 
         User user = new User();
@@ -88,10 +85,8 @@ public class CreateCompanyTest {
 
         CompanyDTO expectedDTO = new CompanyDTO();
         context(userId);
-        
-        Worker worker = new Worker(user, company, Set.of(RoleCompany.OWNER));
-        when(workerService.createWorker(user, company, Set.of(RoleCompany.OWNER))).thenReturn(new WorkerDTO());
 
+        when(workerService.createWorker(user, company, Set.of(RoleCompany.OWNER))).thenReturn(new WorkerDTO());
 
         when(userService.getUser(userId)).thenReturn(user);
         when(geocodingService.obtenerDireccion(-34.6037, -58.3816))

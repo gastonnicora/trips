@@ -15,7 +15,8 @@ import lombok.RequiredArgsConstructor;
 /**
  * Clase de seguridad para empresas.
  * <p>
- * Se utiliza para verificar si el usuario actual tiene permisos para realizar ciertas acciones en una empresa.
+ * Se utiliza para verificar si el usuario actual tiene permisos para realizar
+ * ciertas acciones en una empresa.
  * </p>
  * 
  * @author Gastón
@@ -37,16 +38,14 @@ public class CompanySecurity {
      */
     public boolean hasRole(
             UUID companyUuid,
-            RoleCompany role
-    ) {
+            RoleCompany role) {
 
         UUID userUuid = SecurityUtils.getCurrentUserUuid();
 
         Worker worker = workerRepository
                 .findByUserUuidAndCompanyUuid(
                         userUuid,
-                        companyUuid
-                )
+                        companyUuid)
                 .orElse(null);
 
         return worker != null &&
@@ -54,7 +53,8 @@ public class CompanySecurity {
     }
 
     /**
-     * Verifica si el usuario actual tiene al menos un rol específico en una empresa.
+     * Verifica si el usuario actual tiene al menos un rol específico en una
+     * empresa.
      * 
      * @param companyUuid UUID de la empresa
      * @param roles       Roles a verificar
@@ -62,16 +62,14 @@ public class CompanySecurity {
      */
     public boolean hasAnyRole(
             UUID companyUuid,
-            RoleCompany... roles
-    ) {
+            RoleCompany... roles) {
 
         UUID userUuid = SecurityUtils.getCurrentUserUuid();
 
         Worker worker = workerRepository
                 .findByUserUuidAndCompanyUuid(
                         userUuid,
-                        companyUuid
-                )
+                        companyUuid)
                 .orElse(null);
 
         if (worker == null) {
@@ -87,18 +85,19 @@ public class CompanySecurity {
      * 
      * @param companyUuid UUID de la empresa
      * @return true si el usuario es vendedor, false en caso contrario
-    */
-    public boolean isSeller(UUID companyUuid){
+     */
+    public boolean isSeller(UUID companyUuid) {
         return hasRole(companyUuid, RoleCompany.SELLER);
-    
+
     }
+
     /**
      * Verifica si el usuario actual es conductor en una empresa.
      * 
-     *@param companyUuid UUID de la empresa
+     * @param companyUuid UUID de la empresa
      * @return true si el usuario es conductor, false en caso contrario
-    */
-    public boolean isDriver(UUID companyUuid){
+     */
+    public boolean isDriver(UUID companyUuid) {
         return hasRole(companyUuid, RoleCompany.DRIVER);
     }
 
@@ -106,19 +105,22 @@ public class CompanySecurity {
      * Verifica si el usuario actual es administrador de empresa en una empresa.
      * 
      * @param companyUuid UUID de la empresa
-     * @return true si el usuario es administrador de empresa, false en caso contrario
+     * @return true si el usuario es administrador de empresa, false en caso
+     *         contrario
      */
-    public boolean isCompanyAdmin(UUID companyUuid){
+    public boolean isCompanyAdmin(UUID companyUuid) {
         return hasRole(companyUuid, RoleCompany.COMPANY_ADMIN);
     }
 
     /**
-     * Verifica si el usuario actual es responsable de recursos humanos en una empresa.
+     * Verifica si el usuario actual es responsable de recursos humanos en una
+     * empresa.
      * 
      * @param companyUuid UUID de la empresa
-     * @return true si el usuario es responsable de recursos humanos, false en caso contrario
+     * @return true si el usuario es responsable de recursos humanos, false en caso
+     *         contrario
      */
-    public boolean isHrManager(UUID companyUuid){
+    public boolean isHrManager(UUID companyUuid) {
         return hasRole(companyUuid, RoleCompany.HR_MANAGER);
     }
 }

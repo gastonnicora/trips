@@ -64,19 +64,19 @@ public class WorkerCompany {
      */
     @Schema(description = "UUID de la relación")
     private UUID uuid;
-    
+
     /**
      * {@link CompanyDTO} de la empresa.
      */
     @Schema(description = "DTO de la empresa")
     private CompanyDTO company;
-    
+
     /**
      * Conjunto de roles asignados al trabajador.
      */
     @Schema(description = "Roles dentro de la empresa")
     private Set<RoleCompany> roles;
-    
+
     /**
      * Indica si el trabajador está activo.
      */
