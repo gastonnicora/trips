@@ -41,8 +41,11 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 @Service
 public class RefreshTokenService {
 
-    @Autowired
-    private RefreshTokenRepository repo;
+    private final RefreshTokenRepository repo;
+
+    RefreshTokenService(RefreshTokenRepository repo) {
+        this.repo = repo;
+    }
 
     /**
      * Crea un nuevo refresh token y lo persiste.

@@ -32,8 +32,11 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 @Service
 public class TokenCleanupService {
 
-    @Autowired
-    private RefreshTokenRepository repo;
+    private final RefreshTokenRepository repo;
+
+    TokenCleanupService(RefreshTokenRepository repo) {
+        this.repo = repo;
+    }
 
     /**
      * Elimina todos los refresh tokens cuya fecha de expiración es anterior al

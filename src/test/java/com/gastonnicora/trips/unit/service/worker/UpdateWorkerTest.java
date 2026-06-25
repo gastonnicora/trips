@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,12 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gastonnicora.trips.dtos.response.worker.WorkersByUser;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
-import com.gastonnicora.trips.mappers.WorkerMapper;
 import com.gastonnicora.trips.repositories.WorkerRepository;
 import com.gastonnicora.trips.services.WorkerService;
 

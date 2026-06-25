@@ -38,7 +38,7 @@ import com.gastonnicora.trips.services.RefreshTokenService;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdatePaswwordTest {
+public class UpdatePasswordTest {
 
     @Mock
     private UserRepository userRepository;
