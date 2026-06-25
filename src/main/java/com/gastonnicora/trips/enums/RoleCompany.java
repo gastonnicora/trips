@@ -36,7 +36,7 @@ public enum RoleCompany {
      * Administrador de empresa que gestiona usuarios, viajes y genera reportes
      * de ventas y usuarios dentro de su empresa.
      */
-    COMPANY_ADMIN,
+    COMPANY_ADMIN, //TODO cambiar por ADMIN
 
     /**
      * Responsable de recursos humanos que gestiona empleados y genera reportes

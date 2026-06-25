@@ -61,7 +61,7 @@ public class UpdatePaswwordTest {
     }
 
     @Test
-    void shouldReturnUserDT() {
+    void shouldReturnUserDTO() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("John", "Doe", "mail", "pass", new HashSet<>(Set.of(Role.USER)));

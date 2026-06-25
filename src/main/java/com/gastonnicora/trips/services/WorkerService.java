@@ -71,7 +71,9 @@ public class WorkerService {
      * @return {@link WorkerDTO} del worker.
      */
     public WorkerDTO getWorkerByUserAndCompany(UUID user, UUID company) {
-        Worker worker = workerRepository.findByUserUuidAndCompanyUuid(user, company).orElse(null);
+        Worker worker = workerRepository.findByUserUuidAndCompanyUuid(user, company).orElse(null); // TODO 🚀: cambiar
+                                                                                                   // por funcion
+                                                                                                   // privada
         return WorkerMapper.toDTO(worker);
     }
 
@@ -107,10 +109,8 @@ public class WorkerService {
     @Transactional
     public void deleteWorker(UUID user, UUID company) {
         Worker worker = this.getWorker(user, company);
-        if (worker != null) {
-            worker.setActive(false);
-            workerRepository.save(worker);
-        }
+        worker.setActive(false);
+        workerRepository.save(worker);
     }
 
     /**
@@ -123,10 +123,8 @@ public class WorkerService {
     @Transactional
     public void updateWorker(UUID user, UUID company, Set<RoleCompany> roles) {
         Worker worker = this.getWorker(user, company);
-        if (worker != null) {
-            worker.setRoles(roles);
-            workerRepository.save(worker);
-        }
+        worker.setRoles(roles);
+        workerRepository.save(worker);
     }
 
     /**
@@ -137,7 +135,7 @@ public class WorkerService {
      * @return {@link Worker} del worker.
      */
     private Worker getWorker(UUID user, UUID company) {
-        return workerRepository.findByUserUuidAndCompanyUuid(user, company).orElse(null);
+        return workerRepository.findByUserUuidAndCompanyUuid(user, company).orElse(null);// TODO 🚀: agregar error
     }
 
     /**
