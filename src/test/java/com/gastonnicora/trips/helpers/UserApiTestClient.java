@@ -1,17 +1,16 @@
 package com.gastonnicora.trips.helpers;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.gastonnicora.trips.enums.Role;
 
@@ -105,6 +104,22 @@ public class UserApiTestClient {
                         {
                         "roles": %s
                         }""".formatted(setToJson(role))));
+    }
+
+    public ResultActions getWorkersByCurrentUser() throws Exception {
+        return mockMvc.perform(get("/api/users/workers")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    public ResultActions getWorkersByUser(String uuid) throws Exception {
+        return mockMvc.perform(get("/api/users/workers/" + uuid + "/workers")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
     private String setToJson(Set<Role> roles) {

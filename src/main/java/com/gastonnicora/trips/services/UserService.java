@@ -16,6 +16,7 @@ import com.gastonnicora.trips.dtos.request.user.UserChangeRole;
 import com.gastonnicora.trips.dtos.request.user.UserCreate;
 import com.gastonnicora.trips.dtos.request.user.UserPut;
 import com.gastonnicora.trips.dtos.response.ListResponse;
+import com.gastonnicora.trips.dtos.response.worker.WorkersByUser;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.ConflictException;
@@ -49,6 +50,8 @@ public class UserService {
 
     private final UserMapper userMapper;
 
+    private final WorkerService workerService;
+
     /**
      * Constructor que inicializa los servicios necesarios para la gestión de
      * usuarios.
@@ -62,13 +65,15 @@ public class UserService {
      * 
      * @param userMapper          Mapper para convertir entidades {@link User} a
      *                            DTOs {@link UserDTO}.
+     * @param workerService       Servicio para manejar los trabajadores.
      */
     public UserService(UserRepository userRepository,
-            PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService, UserMapper userMapper) {
+            PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService, UserMapper userMapper, WorkerService workerService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.refreshTokenService = refreshTokenService;
         this.userMapper = userMapper;
+        this.workerService = workerService;
     }
 
     /**
@@ -377,5 +382,34 @@ public class UserService {
             return user.get();
         }
         throw new NotFoundException("El usuario solicitado no existe");
+    }
+
+   /**
+     * Obtiene todos los trabajadores asociados a un usuario específico.
+     * <p>
+     * Este método utiliza {@link WorkerService} para obtener todos los trabajadores
+     * relacionados con el usuario identificado por su UUID.
+     * </p>
+     * 
+     * @param uuid UUID del usuario cuyos trabajadores se desean obtener.
+     * @return {@link WorkersByUser} con los datos del usuario y todos sus
+     *         trabajadores.
+     */
+    public WorkersByUser getWorkersByUser(UUID uuid) {
+        User user = getUser(uuid);
+        return workerService.getWorkersByUser(user.getUuid());   
+    }
+
+    /**
+     * Obtiene todos los trabajos asociados al usuario actual.
+     * <p>
+     * Este método utiliza {@link WorkerService} para obtener todos los trabajos
+     * relacionados con el usuario actualmente autenticado.
+     * </p>
+     * 
+     * @return {@link WorkersByUser} con los datos del usuario y todos sus trabajos.
+     */
+    public WorkersByUser getWorkersByCurrentUser() {
+        return this.getWorkersByUser(getCurrentUserUuid());
     }
 }
