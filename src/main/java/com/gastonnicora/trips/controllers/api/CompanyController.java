@@ -158,7 +158,7 @@ public class CompanyController {
                 @companySecurity.hasAnyRole(
                     #uuid,
                     T(com.gastonnicora.trips.enums.RoleCompany).OWNER,
-                    T(com.gastonnicora.trips.enums.RoleCompany).COMPANY_ADMIN
+                    T(com.gastonnicora.trips.enums.RoleCompany).ADMIN
                 )
             """)
     @Operation(summary = "Modificar empresa", description = "Modifica una empresa por su uuid")

@@ -46,14 +46,14 @@ public class UpdateWorkerTest {
 
         ArgumentCaptor<Worker> captor = ArgumentCaptor.forClass(Worker.class);
 
-        workerService.updateWorker(userUuid, companyUuid, Set.of(RoleCompany.COMPANY_ADMIN));
+        workerService.updateWorker(userUuid, companyUuid, Set.of(RoleCompany.ADMIN));
 
         verify(workerRepository).save(worker);
 
         verify(workerRepository).save(captor.capture());
 
         Worker updated = captor.getValue();
-        assertEquals(Set.of(RoleCompany.COMPANY_ADMIN), updated.getRoles());
+        assertEquals(Set.of(RoleCompany.ADMIN), updated.getRoles());
 
         verify(workerRepository).findByUserUuidAndCompanyUuid(userUuid, companyUuid);
     }
@@ -67,7 +67,7 @@ public class UpdateWorkerTest {
                 .thenReturn(java.util.Optional.empty());
 
         org.junit.jupiter.api.Assertions.assertThrows(com.gastonnicora.trips.exceptions.NotFoundException.class, () -> {
-            workerService.updateWorker(userUuid, companyUuid, Set.of(RoleCompany.COMPANY_ADMIN));
+            workerService.updateWorker(userUuid, companyUuid, Set.of(RoleCompany.ADMIN));
         });
     }
 

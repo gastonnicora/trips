@@ -108,8 +108,8 @@ public class CompanySecurity {
      * @return true si el usuario es administrador de empresa, false en caso
      *         contrario
      */
-    public boolean isCompanyAdmin(UUID companyUuid) {
-        return hasRole(companyUuid, RoleCompany.COMPANY_ADMIN);
+    public boolean isAdmin(UUID companyUuid) {
+        return hasRole(companyUuid, RoleCompany.ADMIN);
     }
 
     /**

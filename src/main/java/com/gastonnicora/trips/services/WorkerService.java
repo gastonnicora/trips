@@ -13,6 +13,7 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.WorkerMapper;
 import com.gastonnicora.trips.repositories.WorkerRepository;
 
@@ -71,9 +72,7 @@ public class WorkerService {
      * @return {@link WorkerDTO} del worker.
      */
     public WorkerDTO getWorkerByUserAndCompany(UUID user, UUID company) {
-        Worker worker = workerRepository.findByUserUuidAndCompanyUuid(user, company).orElse(null); // TODO 🚀: cambiar
-                                                                                                   // por funcion
-                                                                                                   // privada
+        Worker worker = this.getWorker(user, company);
         return WorkerMapper.toDTO(worker);
     }
 
@@ -135,7 +134,7 @@ public class WorkerService {
      * @return {@link Worker} del worker.
      */
     private Worker getWorker(UUID user, UUID company) {
-        return workerRepository.findByUserUuidAndCompanyUuid(user, company).orElse(null);// TODO 🚀: agregar error
+        return workerRepository.findByUserUuidAndCompanyUuid(user, company).orElseThrow(() -> new NotFoundException("Relación entre usuario y empresa no encontrada"));
     }
 
     /**
