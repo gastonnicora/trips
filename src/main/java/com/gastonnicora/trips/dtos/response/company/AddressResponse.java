@@ -4,6 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * DTO de respuesta para la dirección generada a partir de coordenadas.
+ * 
+ * <p>
+ * Este DTO representa la respuesta que se obtiene al consultar la dirección
+ * generada a partir de coordenadas geográficas. Contiene la dirección exacta y
+ * la dirección desglosada en sus componentes.
+ * </p>
+ * 
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-05-21
+ */
 @Schema(name = "Address", description = "Dirección generada a partir de coordenadas")
 public record AddressResponse(
                 @Schema(description = "Dirección exacta", example = "Calle 123 #456") @JsonProperty("display_name") String displayName,

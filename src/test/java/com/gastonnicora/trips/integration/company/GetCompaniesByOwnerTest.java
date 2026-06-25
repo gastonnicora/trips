@@ -1,6 +1,8 @@
 package com.gastonnicora.trips.integration.company;
 
 import static org.hamcrest.Matchers.hasItems;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,13 +15,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.dtos.response.company.AddressResponse;
+import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
 import com.gastonnicora.trips.helpers.CompanyApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
 
 import jakarta.transaction.Transactional;
 import tools.jackson.databind.ObjectMapper;
@@ -35,6 +41,9 @@ public class GetCompaniesByOwnerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockitoBean
+    private GeocodingService geocodingService;
+
     private String tokenAdmin;
     private CompanyApiTestClient companyApi;
     @Value("${superadmin.email}")
@@ -48,6 +57,9 @@ public class GetCompaniesByOwnerTest {
 
     @BeforeEach
     void setup() throws Exception {
+        when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
+                .thenReturn(new AddressResponse("calle falsa 123",
+                        new Address("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
         this.user = UserTestFactory.registerUser(mockMvc, "User", password);
         this.token = UserTestFactory.login(mockMvc, this.user.getEmail(), password).getToken();
         this.companyApi = new CompanyApiTestClient(mockMvc, objectMapper).withToken(token);
