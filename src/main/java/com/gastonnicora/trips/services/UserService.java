@@ -244,8 +244,7 @@ public class UserService {
      *                             {@link Role#SUPER_ADMIN}.
      */
     public UserDTO setRole(UUID uuid, UserChangeRole role) {
-        User user = userRepository.findByUuid(uuid).orElseThrow(
-                () -> new NotFoundException("El usuario solicitado no existe"));
+        User user = this.getUser(uuid);
         if (user.getRole().contains(Role.SUPER_ADMIN)) {
             ValidationException ex = new ValidationException("Error en la validación");
             ex.addError("role", "No se puede modificar los roles del SUPER_ADMIN");
@@ -294,8 +293,9 @@ public class UserService {
      */
 
     public void createSuperAdminIfNotExists(String email, String password) {
+        System.out.println("Verificando existencia de SUPER_ADMIN...");
         boolean exists = userRepository.existsByRoleContains(Role.SUPER_ADMIN);
-
+        System.out.println("SUPER_ADMIN existe: " + exists);
         if (!exists && email != null && password != null && !userRepository.existsByEmailAndEnabledTrue(email)) {
             User superAdmin = new User(
                     "Super",
@@ -341,8 +341,7 @@ public class UserService {
      */
     @Transactional
     private UserDTO updateUser(UUID uuid, UserPut userPut) {
-        User userEntity = userRepository.findByUuid(uuid).orElseThrow(
-                () -> new NotFoundException("El usuario solicitado no existe"));
+        User userEntity = this.getUser(uuid);
         userEntity.setName(userPut.getName());
         userEntity.setLastname(userPut.getLastname());
         if (!userPut.getEmail().equals(userEntity.getEmail())) {

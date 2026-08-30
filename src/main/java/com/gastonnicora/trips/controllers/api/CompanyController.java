@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.dtos.entities.WorkerDTO;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
+import com.gastonnicora.trips.dtos.request.company.WorkerCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
+import com.gastonnicora.trips.dtos.response.worker.WorkersByCompany;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.services.CompanyService;
@@ -31,12 +34,12 @@ import jakarta.validation.Valid;
  * como la creación, modificación, eliminación y obtención de empresas a través
  * de los endpoints definidos en la URL "/api/companies".
  * </p>
- * 
+ *
  * <p>
  * Este controlador utiliza el servicio {@link CompanyService} para realizar las
  * operaciones de negocio relacionadas con la gestión de empresas.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-20
@@ -45,13 +48,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/companies")
 @Tag(name = "Company", description = "Gestión de empresas")
 public class CompanyController {
+
     private final CompanyService companyService;
 
     /**
      * Constructor del controlador CompanyController.
-     * 
+     *
      * @param companyService Servicio de empresa que maneja la lógica de negocio
-     *                       relacionada con las empresas.
+     * relacionada con las empresas.
      */
     public CompanyController(CompanyService companyService) {
         this.companyService = companyService;
@@ -60,24 +64,23 @@ public class CompanyController {
     /**
      * Crea una nueva empresa en el sistema.
      * <p>
-     * Este endpoint crea una nueva empresa con los datos proporcionados. Se realiza
-     * la validación de los datos antes de crear la empresa, y se verifica que la
-     * dirección sea válida.
+     * Este endpoint crea una nueva empresa con los datos proporcionados. Se
+     * realiza la validación de los datos antes de crear la empresa, y se
+     * verifica que la dirección sea válida.
      * </p>
      * <p>
      * En caso que los datos no sean válidos, se lanzará una excepción de tipo
-     * {@link ValidationException}.
-     * En caso que la dirección no exista se lanzará una excepción de tipo
-     * {@link BadRequestException}.
+     * {@link ValidationException}. En caso que la dirección no exista se
+     * lanzará una excepción de tipo {@link BadRequestException}.
      *
      * </p>
      * <p>
      * Este endpoint hace uso del servicio {@link CompanyService} para crear la
      * empresa en la base de datos.
      * </p>
-     * 
+     *
      * @param company ({@link CompanyCreate}) con los datos válidos para la
-     *                nueva empresa.
+     * nueva empresa.
      * @return {@link CompanyDTO} con los datos de la empresa recién creada.
      * @see CompanyService #createCompany(CompanyCreate)
      */
@@ -92,7 +95,7 @@ public class CompanyController {
      * <p>
      * Este endpoint obtiene los detalles de una empresa por su UUID.
      * </p>
-     * 
+     *
      * @param uuid UUID de la empresa que se quiere obtener.
      * @return CompanyDTO con los detalles de la empresa.
      * @see CompanyService #getCompany(UUID)
@@ -109,7 +112,7 @@ public class CompanyController {
      * <p>
      * Este endpoint obtiene todas las empresas del usuario.
      * </p>
-     * 
+     *
      * @param uuid UUID del usuario.
      * @return Lista de empresas del usuario.
      * @see CompanyService #getCompaniesByUser(UUID)
@@ -127,7 +130,7 @@ public class CompanyController {
      * <p>
      * Este endpoint obtiene todas las empresas del usuario actual.
      * </p>
-     * 
+     *
      * @return Lista de empresas del usuario actual.
      * @see CompanyService #getCompaniesByCurrentUser()
      */
@@ -147,7 +150,7 @@ public class CompanyController {
      * Valida los datos antes de guardar los cambios.
      * </p>
      *
-     * @param uuid    UUID de la empresa que se quiere actualizar.
+     * @param uuid UUID de la empresa que se quiere actualizar.
      * @param company {@link CompanyCreate} con los nuevos datos de la empresa.
      * @return CompanyDTO con los detalles de la empresa actualizada.
      * @see CompanyService #updateCompany(UUID, CompanyCreate)
@@ -171,7 +174,7 @@ public class CompanyController {
      * <p>
      * Este endpoint elimina una empresa por su UUID.
      * </p>
-     * 
+     *
      * @param uuid UUID de la empresa que se quiere eliminar.
      * @see CompanyService #deleteCompany(UUID)
      */
@@ -181,6 +184,34 @@ public class CompanyController {
     @Operation(summary = "Eliminar empresa", description = "Elimina una empresa por su uuid")
     public void deleteCompany(@PathVariable("uuid") UUID uuid) {
         companyService.deleteCompany(uuid);
+    }
+
+    /**
+     * Agrega un worker a una empresa.
+     * <p>
+     * Este endpoint agrega un worker a una empresa por sus uuids.
+     * </p>
+     *
+     * @param uuid UUID de la empresa a la que se quiere agregar el worker.
+     * @param workerCreate {@link WorkerCreate} con los datos del worker a
+     * agregar.
+     * @return {@link WorkerDTO} con los datos del worker agregado.
+     * @see CompanyService #createWorker(UUID, UUID, Set<RoleCompany>)
+     */
+    @PostMapping("/{uuid}/Worker")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#uuid, T(com.gastonnicora.trips.enums.RoleCompany).OWNER, T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Agregar worker a empresa", description = "Agrega un worker a una empresa por sus uuids")
+    public WorkerDTO createWorker(@PathVariable("uuid") UUID uuid, @RequestBody @Valid WorkerCreate workerCreate) {
+        return companyService.createWorker(workerCreate.getUserUuid(), uuid, workerCreate.getRoles());
+    }
+
+    @GetMapping("/{uuid}/workers")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#uuid, T(com.gastonnicora.trips.enums.RoleCompany).OWNER, T(com.gastonnicora.trips.enums.RoleCompany).ADMIN),T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
+    @Operation(summary = "Obtener workers de empresa", description = "Obtiene los workers de una empresa por su uuid")
+    public WorkersByCompany getWorkersByCompany(@PathVariable("uuid") UUID uuid) {
+        return companyService.getWorkersByCompany(uuid);
     }
 
 }

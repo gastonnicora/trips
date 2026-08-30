@@ -45,7 +45,9 @@ public class DataInitializer {
     @Bean
     CommandLineRunner init(UserService userService) {
         return args -> {
+            System.out.println("Iniciando la creación del usuario SUPER_ADMIN si no existe...");
             userService.createSuperAdminIfNotExists(email, password);
+            System.out.println("Proceso de inicialización completado.");
         };
     }
 }

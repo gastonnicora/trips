@@ -92,10 +92,6 @@ public class Worker {
     /**
      * Constructor con los datos necesarios.
      *
-     * <p>
-     * Asigna automáticamente el rol {@link RoleCompany#SELLER}.
-     * </p>
-     * 
      * @param user    ({@link User}) Usuario asociado
      * @param company ({@link Company}) Empresa asociada
      * @param roles   ({@link Set}) Conjunto de {@link RoleCompany} a asignar

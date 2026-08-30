@@ -181,7 +181,7 @@ public class GlobalExceptionHandler {
         })
         @ResponseStatus(HttpStatus.BAD_REQUEST)
         public BadRequestApiError handleBadRequest(Exception ex) {
-                return new BadRequestApiError("Solicitud inválida");
+                return new BadRequestApiError("Solicitud inválida: " + ex.getMessage());
         }
 
         /**

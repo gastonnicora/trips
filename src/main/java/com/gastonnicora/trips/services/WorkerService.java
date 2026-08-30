@@ -100,7 +100,7 @@ public class WorkerService {
     }
 
     /**
-     * Elimina un worker.
+     * Elimina una relación entre un usuario y una empresa.
      * 
      * @param user    UUID del usuario.
      * @param company UUID de la empresa.
@@ -120,11 +120,12 @@ public class WorkerService {
      * @param roles   Set de {@link RoleCompany} del worker.
      */
     @Transactional
-    public void updateWorker(UUID user, UUID company, Set<RoleCompany> roles) {
+    public WorkerDTO updateWorker(UUID user, UUID company, Set<RoleCompany> roles) {
         Worker worker = this.getWorker(user, company);
         worker.setRoles(roles);
-        workerRepository.save(worker);
-    }
+        worker = workerRepository.save(worker);
+        return WorkerMapper.toDTO(worker);
+    } 
 
     /**
      * Obtiene un worker .
