@@ -1,17 +1,18 @@
 package com.gastonnicora.trips.unit.service.worker;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Set;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
@@ -24,7 +25,8 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateWorkerTest {
+class CreateWorkerTest {
+
     @InjectMocks
     private WorkerService workerService;
 
@@ -36,26 +38,43 @@ public class CreateWorkerTest {
 
     @Test
     void shouldCreateWorkerSuccessfully() {
-
         User user = new User();
         user.setUuid(UUID.randomUUID());
 
         Company company = new Company();
         company.setUuid(UUID.randomUUID());
 
-        Worker worker = new Worker();
+        Set<RoleCompany> roles = Set.of(RoleCompany.DRIVER);
 
+        Worker savedWorker = new Worker(user, company, roles);
         WorkerDTO expectedDTO = new WorkerDTO();
 
-        when(workerRepository.save(any())).thenReturn(worker);
-        when(workerMapper.toDTO(any())).thenReturn(expectedDTO);
+        when(workerRepository.save(any(Worker.class)))
+                .thenReturn(savedWorker);
 
-        WorkerDTO result = workerService.createWorker(user, company, Set.of(RoleCompany.DRIVER));
+        when(workerMapper.toDTO(savedWorker))
+                .thenReturn(expectedDTO);
 
+        WorkerDTO result = workerService.createWorker(
+                user,
+                company,
+                roles
+        );
+
+        assertNotNull(result);
         assertEquals(expectedDTO, result);
 
-        verify(workerRepository).save(any(Worker.class));
-        verify(workerMapper).toDTO(worker);
-    }
+        ArgumentCaptor<Worker> captor
+                = ArgumentCaptor.forClass(Worker.class);
 
+        verify(workerRepository).save(captor.capture());
+
+        Worker workerSaved = captor.getValue();
+
+        assertEquals(user, workerSaved.getUser());
+        assertEquals(company, workerSaved.getCompany());
+        assertEquals(roles, workerSaved.getRoles());
+
+        verify(workerMapper).toDTO(savedWorker);
+    }
 }

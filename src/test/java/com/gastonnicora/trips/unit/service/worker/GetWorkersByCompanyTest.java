@@ -1,17 +1,16 @@
 package com.gastonnicora.trips.unit.service.worker;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.dtos.response.worker.WorkersByCompany;
@@ -24,7 +23,8 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
-public class GetWorkersByCompanyTest {
+class GetWorkersByCompanyTest {
+
     @InjectMocks
     private WorkerService workerService;
 
@@ -38,27 +38,37 @@ public class GetWorkersByCompanyTest {
     void shouldGetWorkersByCompanySuccessfully() {
         User driver = new User();
         driver.setUuid(UUID.randomUUID());
+
         User owner = new User();
         owner.setUuid(UUID.randomUUID());
 
-        Company company = new Company();
         UUID companyUuid = UUID.randomUUID();
 
-        List<Worker> workers = List.of(new Worker(driver, company, Set.of(RoleCompany.DRIVER)),
-                new Worker(owner, company, Set.of(RoleCompany.OWNER)));
+        Company company = new Company();
+        company.setUuid(companyUuid);
 
-        when(workerRepository.findAllByCompanyUuid(companyUuid)).thenReturn(workers);
+        List<Worker> workers = List.of(
+                new Worker(driver, company, Set.of(RoleCompany.DRIVER)),
+                new Worker(owner, company, Set.of(RoleCompany.OWNER))
+        );
 
         WorkersByCompany expected = new WorkersByCompany();
 
-        when(workerMapper.toWorkersByCompanyDTO(workers)).thenReturn(expected);
+        when(workerRepository.findAllByCompanyUuid(companyUuid))
+                .thenReturn(workers);
 
-        WorkersByCompany result = workerService.getWorkersByCompany(companyUuid);
+        when(workerMapper.toWorkersByCompanyDTO(workers))
+                .thenReturn(expected);
+
+        WorkersByCompany result =
+                workerService.getWorkersByCompany(companyUuid);
 
         assertEquals(expected, result);
 
-        verify(workerRepository).findAllByCompanyUuid(companyUuid);
+        verify(workerRepository)
+                .findAllByCompanyUuid(companyUuid);
 
-        verify(workerMapper).toWorkersByCompanyDTO(workers);
+        verify(workerMapper)
+                .toWorkersByCompanyDTO(workers);
     }
 }

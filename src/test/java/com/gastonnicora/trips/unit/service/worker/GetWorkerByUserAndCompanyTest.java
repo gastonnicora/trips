@@ -1,20 +1,19 @@
 package com.gastonnicora.trips.unit.service.worker;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
@@ -28,7 +27,8 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
-public class GetWorkerByUserAndCompanyTest {
+class GetWorkerByUserAndCompanyTest {
+
     @InjectMocks
     private WorkerService workerService;
 
@@ -41,40 +41,68 @@ public class GetWorkerByUserAndCompanyTest {
     @Test
     void shouldGetWorkerByUserAndCompanySuccessfully() {
         User user = new User();
-        UUID user_uuid = UUID.randomUUID();
-        user.setUuid(user_uuid);
+        UUID userUuid = UUID.randomUUID();
+        user.setUuid(userUuid);
 
         Company company = new Company();
-        UUID company_uuid = UUID.randomUUID();
-        company.setUuid(company_uuid);
+        UUID companyUuid = UUID.randomUUID();
+        company.setUuid(companyUuid);
 
-        Worker worker = new Worker(user, company, Set.of(RoleCompany.DRIVER));
+        Worker worker = new Worker(
+                user,
+                company,
+                Set.of(RoleCompany.DRIVER)
+        );
 
-        when(workerRepository.findByUserUuidAndCompanyUuid(user_uuid, company_uuid)).thenReturn(Optional.of(worker));
+        WorkerDTO expectedWorkerDTO = new WorkerDTO();
 
-        WorkerDTO expWorkerDTO = new WorkerDTO();
-        when(workerMapper.toDTO(worker)).thenReturn(expWorkerDTO);
+        when(workerRepository.findByUserUuidAndCompanyUuid(
+                userUuid,
+                companyUuid
+        )).thenReturn(Optional.of(worker));
 
-        WorkerDTO result = workerService.getWorkerByUserAndCompany(user_uuid, company_uuid);
+        when(workerMapper.toDTO(worker))
+                .thenReturn(expectedWorkerDTO);
 
-        assertEquals(expWorkerDTO, result);
+        WorkerDTO result =
+                workerService.getWorkerByUserAndCompany(
+                        userUuid,
+                        companyUuid
+                );
 
-        verify(workerRepository).findByUserUuidAndCompanyUuid(user_uuid, company_uuid);
-        verify(workerMapper).toDTO(worker);
+        assertEquals(expectedWorkerDTO, result);
+
+        verify(workerRepository)
+                .findByUserUuidAndCompanyUuid(userUuid, companyUuid);
+
+        verify(workerMapper)
+                .toDTO(worker);
     }
 
     @Test
-    void shouldThrowNotFoundException_whenWorkerDoesNotExist() {
-        when(workerRepository.findByUserUuidAndCompanyUuid(any(), any())).thenReturn(Optional.empty());
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
-            workerService.getWorkerByUserAndCompany(UUID.randomUUID(), UUID.randomUUID());
-        });
+    void shouldThrowNotFoundExceptionWhenWorkerDoesNotExist() {
+        UUID userUuid = UUID.randomUUID();
+        UUID companyUuid = UUID.randomUUID();
 
-        assertEquals(404, ex.getStatus());
+        when(workerRepository.findByUserUuidAndCompanyUuid(
+                userUuid,
+                companyUuid
+        )).thenReturn(Optional.empty());
 
-        verify(workerRepository).findByUserUuidAndCompanyUuid(any(), any());
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                () -> workerService.getWorkerByUserAndCompany(
+                        userUuid,
+                        companyUuid
+                )
+        );
 
-        verify(workerMapper, never()).toDTO(any(Worker.class));
+        assertEquals(404, exception.getStatus());
+
+        verify(workerRepository)
+                .findByUserUuidAndCompanyUuid(userUuid, companyUuid);
+
+        verify(workerMapper, never())
+                .toDTO(any(Worker.class));
     }
-
 }

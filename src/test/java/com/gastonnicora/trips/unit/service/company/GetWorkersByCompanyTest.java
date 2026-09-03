@@ -1,13 +1,14 @@
 package com.gastonnicora.trips.unit.service.company;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
@@ -25,7 +26,7 @@ import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
-public class GetWorkersByCompanyTest {
+class GetWorkersByCompanyTest {
 
     @InjectMocks
     private CompanyService companyService;
@@ -35,53 +36,129 @@ public class GetWorkersByCompanyTest {
 
     @Mock
     private WorkerService workerService;
+
     @Mock
     private CompanyMapper companyMapper;
 
+
     @Test
     void shouldGetWorkersByCompanySuccessfully() {
-        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
-        company.setUuid(UUID.randomUUID());
 
-        when(companyRepository.findByUuid(company.getUuid())).thenReturn(java.util.Optional.of(company));
-        when(companyMapper.toDTO(company)).thenReturn(new CompanyDTO());
+        // Arrange
+        UUID companyUuid = UUID.randomUUID();
 
-        when(workerService.getWorkersByCompany(company.getUuid())).thenReturn(new WorkersByCompany());
+        Company company = new Company(
+                "Test",
+                "Buenos Aires, Argentina",
+                -34.6037,
+                -58.3816,
+                "test@mail.com",
+                "123"
+        );
+        company.setUuid(companyUuid);
 
-        WorkersByCompany result = companyService.getWorkersByCompany(company.getUuid());
-        System.out.println(result);
-        assertEquals(0, result.getWorkers().size());
+        CompanyDTO companyDTO = new CompanyDTO();
+        WorkersByCompany expected = new WorkersByCompany(
+                companyDTO,
+                List.of()
+        );
+
+        when(companyRepository.findByUuid(companyUuid))
+                .thenReturn(Optional.of(company));
+
+        when(companyMapper.toDTO(company))
+                .thenReturn(companyDTO);
+
+        when(workerService.getWorkersByCompany(companyUuid))
+                .thenReturn(expected);
+
+        // Act
+        WorkersByCompany result =
+                companyService.getWorkersByCompany(companyUuid);
+
+        // Assert
+        assertSame(expected, result);
+
+        verify(companyRepository)
+                .findByUuid(companyUuid);
+
+        verify(workerService)
+                .getWorkersByCompany(companyUuid);
     }
 
+
     @Test
-    void shouldGetWorkersByCompanySuccessfullywhenHaveWorkers() {
-        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
-        company.setUuid(UUID.randomUUID());
+    void shouldGetWorkersByCompanySuccessfullyWhenCompanyHasWorkers() {
 
-        when(companyRepository.findByUuid(company.getUuid())).thenReturn(java.util.Optional.of(company));
-        when(companyMapper.toDTO(company)).thenReturn(new CompanyDTO());
+        // Arrange
+        UUID companyUuid = UUID.randomUUID();
 
-        when(workerService.getWorkersByCompany(company.getUuid())).thenReturn(new WorkersByCompany(new CompanyDTO(), List.of(new WorkerUser(), new WorkerUser())));
+        Company company = new Company(
+                "Test",
+                "Buenos Aires, Argentina",
+                -34.6037,
+                -58.3816,
+                "test@mail.com",
+                "123"
+        );
+        company.setUuid(companyUuid);
 
-        WorkersByCompany result = companyService.getWorkersByCompany(company.getUuid());
-        System.out.println(result);
+        CompanyDTO companyDTO = new CompanyDTO();
+
+        WorkerUser worker1 = new WorkerUser();
+        WorkerUser worker2 = new WorkerUser();
+
+        WorkersByCompany expected = new WorkersByCompany(
+                companyDTO,
+                List.of(worker1, worker2)
+        );
+
+        when(companyRepository.findByUuid(companyUuid))
+                .thenReturn(Optional.of(company));
+
+        when(companyMapper.toDTO(company))
+                .thenReturn(companyDTO);
+
+        when(workerService.getWorkersByCompany(companyUuid))
+                .thenReturn(expected);
+
+        // Act
+        WorkersByCompany result =
+                companyService.getWorkersByCompany(companyUuid);
+
+        // Assert
+        assertSame(expected, result);
         assertEquals(2, result.getWorkers().size());
+
+        verify(companyRepository)
+                .findByUuid(companyUuid);
+
+        verify(workerService)
+                .getWorkersByCompany(companyUuid);
     }
 
+
     @Test
-    void shouldThrowBadRequestWhenCompanyNotFound() {
+    void shouldThrowNotFoundExceptionWhenCompanyDoesNotExist() {
 
-        when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.empty());
+        // Arrange
+        UUID companyUuid = UUID.randomUUID();
 
-        NotFoundException ex = assertThrows(
+        when(companyRepository.findByUuid(companyUuid))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        NotFoundException exception = assertThrows(
                 NotFoundException.class,
-                () -> companyService.getWorkersByCompany(UUID.randomUUID()));
+                () -> companyService.getWorkersByCompany(companyUuid)
+        );
 
-        assertEquals("Empresa no encontrada", ex.getMessage());
+        assertEquals(
+                "Empresa no encontrada",
+                exception.getMessage()
+        );
 
-        verify(companyRepository).findByUuid(any());
-
+        verify(companyRepository)
+                .findByUuid(companyUuid);
     }
 }
