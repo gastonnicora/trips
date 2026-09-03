@@ -280,7 +280,7 @@ public class CompanyService {
     }
 
     /**
-     * Obtiene todos los workers de una empresa.
+     * Obtiene todos los trabajadores de una empresa.
      *
      * @param companyUuid UUID de la empresa.
      * @return {@link WorkersByCompany} con los datos de la empresa y todos sus
@@ -304,13 +304,13 @@ public class CompanyService {
     }
 
     /**
-     * Crea un nuevo worker en una empresa.
+     * Crea un nuevo trabajador en una empresa.
      *
-     * @param userUuid UUID del usuario que se quiere agregar como worker.
+     * @param userUuid UUID del usuario que se quiere agregar como trabajador.
      * @param companyUuid UUID de la empresa a la que se quiere agregar el
-     * worker.
-     * @param roles Set de {@link RoleCompany} que se le asignarán al worker.
-     * @return {@link WorkerDTO} Datos del worker creado.
+     * trabajador.
+     * @param roles Set de {@link RoleCompany} que se le asignarán al trabajador.
+     * @return {@link WorkerDTO} Datos del trabajador creado.
      * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
      * asignar el rol de OWNER.
      * @throws ConflictException Si el usuario ya es trabajador de la empresa.
@@ -336,11 +336,11 @@ public class CompanyService {
     }
 
     /**
-     * Elimina un worker de una empresa.
+     * Elimina un trabajador de una empresa.
      *
-     * @param userUuid UUID del usuario que se quiere eliminar como worker.
+     * @param userUuid UUID del usuario que se quiere eliminar como trabajador.
      * @param companyUuid UUID de la empresa de la que se quiere eliminar el
-     * worker.
+     * trabajador.
      */
     public void deleteWorker(UUID userUuid, UUID companyUuid) {
         this.getCompanyEntity(companyUuid);
@@ -349,13 +349,13 @@ public class CompanyService {
     }
 
     /**
-     * Actualiza los roles de un worker en una empresa.
+     * Actualiza los roles de un trabajador en una empresa.
      *
-     * @param userUuid UUID del usuario que se quiere actualizar como worker.
+     * @param userUuid UUID del usuario que se quiere actualizar como trabajador.
      * @param companyUuid UUID de la empresa en la que se quiere actualizar el
-     * worker.
-     * @param roles Set de {@link RoleCompany} que se le asignarán al worker.
-     * @return {@link WorkerDTO} Datos del worker actualizado.
+     * trabajador.
+     * @param roles Set de {@link RoleCompany} que se le asignarán al trabajador.
+     * @return {@link WorkerDTO} Datos del trabajador actualizado.
      * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
      * asignar el rol de OWNER.
      */

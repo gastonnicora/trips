@@ -187,15 +187,15 @@ public class CompanyController {
     }
 
     /**
-     * Agrega un worker a una empresa.
+     * Agrega un trabajador a una empresa.
      * <p>
-     * Este endpoint agrega un worker a una empresa por sus uuids.
+     * Este endpoint agrega un trabajador a una empresa por sus uuids.
      * </p>
      *
-     * @param uuid UUID de la empresa a la que se quiere agregar el worker.
-     * @param workerCreate {@link WorkerCreate} con los datos del worker a
+     * @param uuid UUID de la empresa a la que se quiere agregar el trabajador.
+     * @param workerCreate {@link WorkerCreate} con los datos del trabajador a
      * agregar.
-     * @return {@link WorkerDTO} con los datos del worker agregado.
+     * @return {@link WorkerDTO} con los datos del trabajador agregado.
      * @see CompanyService #createWorker(UUID, UUID, Set<RoleCompany>)
      */
     @PostMapping("/{uuid}/Worker")
@@ -206,10 +206,22 @@ public class CompanyController {
         return companyService.createWorker(workerCreate.getUserUuid(), uuid, workerCreate.getRoles());
     }
 
+    /**
+     * Obtiene los trabajadores de una empresa.
+     * <p>
+     * Este endpoint obtiene los trabajadores de una empresa por su uuid.
+     * </p>
+     *
+     * @param uuid UUID de la empresa de la que se quieren obtener los
+     * trabajadores.
+     * @return {@link WorkersByCompany} con los datos de los trabajadores de la
+     * empresa.
+     * @see CompanyService #getWorkersByCompany(UUID)
+     */
     @GetMapping("/{uuid}/workers")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("@companySecurity.hasAnyRole(#uuid, T(com.gastonnicora.trips.enums.RoleCompany).OWNER, T(com.gastonnicora.trips.enums.RoleCompany).ADMIN),T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
-    @Operation(summary = "Obtener workers de empresa", description = "Obtiene los workers de una empresa por su uuid")
+    @Operation(summary = "Obtener trabajadores de empresa", description = "Obtiene los trabajadores de una empresa por su uuid")
     public WorkersByCompany getWorkersByCompany(@PathVariable("uuid") UUID uuid) {
         return companyService.getWorkersByCompany(uuid);
     }

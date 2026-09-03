@@ -12,7 +12,7 @@ import com.gastonnicora.trips.enums.RoleCompany;
 /**
  * Repositorio para gestionar la entidad {@link Worker}.
  * <p>
- * Proporciona métodos para consultar workers por UUID entre otras opciones
+ * Proporciona métodos para consultar trabajadores por UUID entre otras opciones
  * Utiliza Spring Data JPA para el acceso a la base de datos.
  * </p>
  * 
@@ -23,38 +23,38 @@ import com.gastonnicora.trips.enums.RoleCompany;
 public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     /**
-     * Busca un worker por su UUID y la empresa asociada.
+     * Busca un trabajador por su UUID y la empresa asociada.
      * 
      * @param userUuid    UUID del usuario
      * @param companyUuid UUID de la empresa
-     * @return {@link Optional} con el worker si existe
+     * @return {@link Optional} con el trabajador si existe
      */
     Optional<Worker> findByUserUuidAndCompanyUuid(
             UUID userUuid,
             UUID companyUuid);
 
     /**
-     * Busca todos los workers asociados a una empresa.
+     * Busca todos los trabajadores asociados a una empresa.
      * 
      * @param companyUuid UUID de la empresa
-     * @return Lista de workers asociados a la empresa
+     * @return Lista de trabajadores asociados a la empresa
      */
     List<Worker> findAllByCompanyUuid(UUID companyUuid);
 
     /**
-     * Busca todos los workers asociados a un usuario.
+     * Busca todos los trabajadores asociados a un usuario.
      * 
      * @param userUuid UUID del usuario
-     * @return Lista de workers asociados al usuario
+     * @return Lista de trabajadores asociados al usuario
      */
     List<Worker> findAllByUserUuid(UUID userUuid);
 
     /**
-     * Busca todos los workers asociados a un usuario con un rol específico.
+     * Busca todos los trabajadores asociados a un usuario con un rol específico.
      * 
      * @param userUuid UUID del usuario
-     * @param role     Rol del worker
-     * @return Lista de workers asociados al usuario con el rol específico
+     * @param role     Rol del trabajador
+     * @return Lista de trabajadores asociados al usuario con el rol específico
      */
     List<Worker> findAllByUserUuidAndRolesContains(UUID userUuid, RoleCompany role);
 }

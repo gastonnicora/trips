@@ -17,7 +17,7 @@ import lombok.ToString;
  * Data Transfer Object (DTO) que representa la información de la relación
  * trabajador empresa.
  * <p>
- * Se utiliza para exponer los datos de worker en respuestas de la API, sin
+ * Se utiliza para exponer los datos de trabajador en respuestas de la API, sin
  * incluir información sensible como la contraseña.
  * </p>
  * 
@@ -26,12 +26,12 @@ import lombok.ToString;
  * </p>
  * <ul>
  * <li>{@code uuid}: Identificador único de la relación.</li>
- * <li>{@code user}: {@link UserDTO} del worker.</li>
+ * <li>{@code user}: {@link UserDTO} del trabajador.</li>
  * <li>{@code company}: {@link CompanyDTO} de la empresa.</li>
- * <li>{@code roles}: Conjunto de roles asignados al worker.</li>
- * <li>{@code active}: Estado del worker (activo o no).</li>
- * <li>{@code createdAt}: Fecha de creación del worker.</li>
- * <li>{@code updatedAt}: Fecha de última actualización del worker.</li>
+ * <li>{@code roles}: Conjunto de roles asignados al trabajador.</li>
+ * <li>{@code active}: Estado del trabajador (activo o no).</li>
+ * <li>{@code createdAt}: Fecha de creación del trabajador.</li>
+ * <li>{@code updatedAt}: Fecha de última actualización del trabajador.</li>
  * </ul>
  * 
  * <p>
@@ -89,7 +89,7 @@ public class WorkerDTO {
     private UUID uuid;
 
     /**
-     * {@link UserDTO} del worker.
+     * {@link UserDTO} del trabajador.
      */
     @Schema(description = "DTO del usuario", implementation = UserDTO.class)
     private UserDTO user;
@@ -103,24 +103,24 @@ public class WorkerDTO {
     /**
      * Conjunto de roles asignados al trabajador.
      */
-    @Schema(description = "Roles del worker", example = "[\"DRIVER\"]")
+    @Schema(description = "Roles del trabajador", example = "[\"DRIVER\"]")
     private Set<RoleCompany> roles;
 
     /**
      * Indica si el trabajador está activo.
      */
-    @Schema(description = "Estado del worker", example = "true")
+    @Schema(description = "Estado del trabajador", example = "true")
     private boolean active;
 
     /**
-     * Fecha de creación del worker.
+     * Fecha de creación del trabajador.
      */
-    @Schema(description = "Fecha de creacion del worker", example = "2026-01-01T00:00:00")
+    @Schema(description = "Fecha de creacion del trabajador", example = "2026-01-01T00:00:00")
     private LocalDateTime createdAt;
 
     /**
-     * Fecha de actualización del worker.
+     * Fecha de actualización del trabajador.
      */
-    @Schema(description = "Fecha de actualizacion del worker", example = "2026-01-01T00:00:00")
+    @Schema(description = "Fecha de actualizacion del trabajador", example = "2026-01-01T00:00:00")
     private LocalDateTime updatedAt;
 }

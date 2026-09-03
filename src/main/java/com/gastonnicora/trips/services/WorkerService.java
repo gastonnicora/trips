@@ -25,7 +25,7 @@ import jakarta.transaction.Transactional;
  * <p>
  * Este servicio maneja todas las operaciones relacionadas con la gestión de
  * trabajadores, como la creación, actualización, eliminación y obtención de
- * workers.
+ * información.
  * Ademas permite el cambio y asignación de roles a los trabajadores.
  * </p>
  * 
