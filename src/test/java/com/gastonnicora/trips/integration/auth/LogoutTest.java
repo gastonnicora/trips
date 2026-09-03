@@ -1,8 +1,5 @@
 package com.gastonnicora.trips.integration.auth;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
@@ -67,7 +66,7 @@ public class LogoutTest {
     }
 
     @Test
-    void shouldLogoutFailsWhenTokenIsMissing() throws Exception {
+    void shouldLogoutFailWhenTokenIsMissing() throws Exception {
         this.authApi = authApi.withToken("");
         authApi.logout(refreshToken).andExpect(status().isUnauthorized());
     }
@@ -100,7 +99,7 @@ public class LogoutTest {
     }
 
     @Test
-    void shouldLogoutFailsWhenRefreshTokenIsMissing() throws Exception {
+    void shouldLogoutFailWhenRefreshTokenIsMissing() throws Exception {
         LoginResponse log = UserTestFactory.loginWithAndroid(mockMvc, email, pass);
         this.authApi = authApi.withToken(log.getToken());
         authApi.logoutAndroid("").andExpect(status().isUnauthorized());

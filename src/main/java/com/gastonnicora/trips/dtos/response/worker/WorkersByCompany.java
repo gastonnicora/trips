@@ -7,7 +7,6 @@ import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -71,7 +70,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "DTO de empresa y sus trabajadores")
 public class WorkersByCompany {
@@ -86,4 +84,7 @@ public class WorkersByCompany {
     @Schema(description = "Lista de trabajadores")
     private List<WorkerUser> workers;
 
+    public WorkersByCompany() {
+        this.workers = List.of();
+    }
 }

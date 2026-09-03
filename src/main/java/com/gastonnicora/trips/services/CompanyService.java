@@ -299,7 +299,7 @@ public class CompanyService {
      */
     public WorkerDTO getWorker(UUID userUuid, UUID companyUuid) {
         this.getCompany(companyUuid);
-        userService.getUser(userUuid);
+        userService.getUser(userUuid); 
         return workerService.getWorkerByUserAndCompany(userUuid, companyUuid);
     }
 
