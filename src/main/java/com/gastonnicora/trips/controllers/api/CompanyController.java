@@ -231,7 +231,6 @@ public class CompanyController {
         return companyService.getWorkersByCompany(uuid);
     }
 
-
     /**
      * Actualiza los roles de un trabajador en una empresa.
      * <p>
@@ -240,7 +239,7 @@ public class CompanyController {
      * </p>
      *
      * @param companyUuid UUID de la empresa.
-     * @param userUuid    UUID del trabajador.
+     * @param userUuid UUID del trabajador.
      * @param workerCreate {@link WorkerCreate} con los nuevos roles del
      * trabajador.
      * @return {@link WorkerDTO} con los datos del trabajador actualizado.
@@ -254,9 +253,31 @@ public class CompanyController {
             + "T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
     @Operation(summary = "Actualizar roles de trabajador en empresa", description = "Actualiza los roles de un trabajador en una empresa por sus uuids")
     public WorkerDTO updateWorkerRoles(@PathVariable("companyUuid") UUID companyUuid,
-                                       @PathVariable("userUuid") UUID userUuid,
-                                       @RequestBody @Valid WorkerCreate workerCreate) {
+            @PathVariable("userUuid") UUID userUuid,
+            @RequestBody @Valid WorkerCreate workerCreate) {
         return companyService.updateWorker(userUuid, companyUuid, workerCreate.getRoles());
+    }
+
+    /**
+     * Elimina un trabajador de una empresa.
+     * <p>
+     * Este endpoint elimina un trabajador de una empresa por sus uuids.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa.
+     * @param userUuid UUID del trabajador.
+     * @see CompanyService#deleteWorker(UUID, UUID)
+     */
+    @DeleteMapping("/{companyUuid}/worker/{userUuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
+    @Operation(summary = "Eliminar trabajador de empresa", description = "Elimina un trabajador de una empresa por sus uuids")
+    public void deleteWorker(@PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("userUuid") UUID userUuid) {
+        companyService.deleteWorker(userUuid, companyUuid);
     }
 
 }

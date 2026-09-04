@@ -162,4 +162,14 @@ public class CompanyApiTestClient {
                 .content(json));
     }
 
+    public ResultActions deleteWorker(UUID companyUuid, UUID userUuid)
+            throws Exception {
+
+        return mockMvc.perform(delete(
+                "/api/companies/" + companyUuid + "/worker/" + userUuid)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test"));
+    }
+
 }
