@@ -1,5 +1,6 @@
 package com.gastonnicora.trips.integration.company;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
+import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.helpers.CompanyApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 import com.gastonnicora.trips.services.GeocodingService;
@@ -36,14 +38,12 @@ class GetWorkersByCompanyTest {
     @Autowired
     private MockMvc mockMvc;
 
-    
     @MockitoBean
     private GeocodingService geocodingService;
 
     private CompanyApiTestClient companyApi;
 
     private UserDTO user;
-    private String token;
     private UUID companyUuid;
 
     private final String name = "user";
@@ -59,16 +59,25 @@ class GetWorkersByCompanyTest {
                 pass
         );
 
-        token = login.getToken();
-
         companyApi = new CompanyApiTestClient(
                 mockMvc,
-                new tools.jackson.databind.ObjectMapper()
-        ).withToken(token);
-         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
-                .thenReturn(new AddressResponse("calle falsa 123",
-                        new Address("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
-       
+                new ObjectMapper()
+        ).withToken(login.getToken());
+
+        when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
+                .thenReturn(new AddressResponse(
+                        "calle falsa 123",
+                        new Address(
+                                "calle falsa",
+                                "123",
+                                "barrio",
+                                "ciudad",
+                                "departamento",
+                                "estado",
+                                "pais"
+                        )
+                ));
+
         companyUuid = createCompany();
     }
 
@@ -86,15 +95,45 @@ class GetWorkersByCompanyTest {
                 .getResponse()
                 .getContentAsString();
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        CompanyDTO company = mapper.readValue(response, CompanyDTO.class);
+        CompanyDTO company = new ObjectMapper()
+                .readValue(response, CompanyDTO.class);
 
         return company.getUuid();
     }
 
+    private CompanyApiTestClient loginAs(UserDTO user) throws Exception {
+        LoginResponse login = UserTestFactory.login(
+                mockMvc,
+                user.getEmail(),
+                pass
+        );
+
+        return new CompanyApiTestClient(
+                mockMvc,
+                new ObjectMapper()
+        ).withToken(login.getToken());
+    }
+
+    private UserDTO createWorkerWithRole(RoleCompany role) throws Exception {
+        UserDTO worker = UserTestFactory.registerUser(
+                mockMvc,
+                "worker_" + role.name(),
+                pass
+        );
+
+        companyApi
+                .createWorker(
+                        companyUuid,
+                        worker.getUuid(),
+                        Set.of(role)
+                )
+                .andExpect(status().isOk());
+
+        return worker;
+    }
+
     @Test
-    void shouldGetWorkersByCompanySuccessfully() throws Exception {
+    void shouldGetWorkersByCompanySuccessfullyAsOwner() throws Exception {
         companyApi
                 .getWorkersByCompany(companyUuid)
                 .andExpect(status().isOk())
@@ -103,12 +142,74 @@ class GetWorkersByCompanyTest {
     }
 
     @Test
+    void shouldGetWorkersByCompanySuccessfullyAsAdmin() throws Exception {
+        UserDTO admin = createWorkerWithRole(RoleCompany.ADMIN);
+
+        CompanyApiTestClient adminApi = loginAs(admin);
+
+        adminApi
+                .getWorkersByCompany(companyUuid)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.workers").exists())
+                .andExpect(jsonPath("$.workers").isArray());
+    }
+
+    @Test
+    void shouldGetWorkersByCompanySuccessfullyAsHrManager() throws Exception {
+        UserDTO hrManager = createWorkerWithRole(RoleCompany.HR_MANAGER);
+
+        CompanyApiTestClient hrManagerApi = loginAs(hrManager);
+
+        hrManagerApi
+                .getWorkersByCompany(companyUuid)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.workers").exists())
+                .andExpect(jsonPath("$.workers").isArray());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenDriverTriesToGetWorkers() throws Exception {
+        UserDTO driver = createWorkerWithRole(RoleCompany.DRIVER);
+
+        CompanyApiTestClient driverApi = loginAs(driver);
+
+        driverApi
+                .getWorkersByCompany(companyUuid)
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenSellerTriesToGetWorkers() throws Exception {
+        UserDTO seller = createWorkerWithRole(RoleCompany.SELLER);
+
+        CompanyApiTestClient sellerApi = loginAs(seller);
+
+        sellerApi
+                .getWorkersByCompany(companyUuid)
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenUserTriesToGetWorkers() throws Exception {
+        UserDTO normalUser = UserTestFactory.registerUser(
+                mockMvc,
+                "normal_user",
+                pass
+        );
+
+        CompanyApiTestClient userApi = loginAs(normalUser);
+
+        userApi
+                .getWorkersByCompany(companyUuid)
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-        CompanyApiTestClient unauthorizedApi
-                = new CompanyApiTestClient(
-                        mockMvc,
-                        new ObjectMapper()
-                );
+        CompanyApiTestClient unauthorizedApi = new CompanyApiTestClient(
+                mockMvc,
+                new ObjectMapper()
+        );
 
         unauthorizedApi
                 .getWorkersByCompany(companyUuid)

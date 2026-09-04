@@ -127,7 +127,6 @@ class DeleteWorkerByCompanyTest {
                 .andExpect(status().isOk());
     }
 
-    
     @Test
     void shouldReturnOkWhenAdminDeletesWorker() throws Exception {
         companyApi
@@ -157,7 +156,6 @@ class DeleteWorkerByCompanyTest {
                 .andExpect(status().isOk());
     }
 
-     
     @Test
     void shouldReturnOkWhenHR_ManagerDeletesWorker() throws Exception {
         companyApi

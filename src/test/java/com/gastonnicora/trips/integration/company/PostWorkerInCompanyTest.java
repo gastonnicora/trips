@@ -73,9 +73,18 @@ class PostWorkerInCompanyTest {
                 mockMvc,
                 objectMapper)
                 .withToken(login.getToken());
+
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
-                .thenReturn(new AddressResponse("calle falsa 123",
-                        new Address("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
+                .thenReturn(new AddressResponse(
+                        "calle falsa 123",
+                        new Address(
+                                "calle falsa",
+                                "123",
+                                "barrio",
+                                "ciudad",
+                                "departamento",
+                                "estado",
+                                "pais")));
 
         MvcResult result = companyApi
                 .createCompany(
@@ -192,25 +201,113 @@ class PostWorkerInCompanyTest {
     }
 
     @Test
-    void shouldReturnForbiddenWhenUserDoesNotHavePermission() throws Exception {
+    void shouldAllowOwnerToCreateWorker() throws Exception {
 
-        LoginResponse workerLogin = UserTestFactory.login(
+        UserDTO anotherUser = UserTestFactory.registerUser(
+                mockMvc,
+                "ownerCreate",
+                "goodPassword");
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        anotherUser.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldAllowAdminToCreateWorker() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.ADMIN))
+                .andExpect(status().isOk());
+
+        LoginResponse adminLogin = UserTestFactory.login(
                 mockMvc,
                 worker.getEmail(),
                 "goodPassword");
 
-        CompanyApiTestClient workerApi
-                = new CompanyApiTestClient(
-                        mockMvc,
-                        objectMapper)
-                        .withToken(workerLogin.getToken());
+        CompanyApiTestClient adminApi = new CompanyApiTestClient(
+                mockMvc,
+                objectMapper)
+                .withToken(adminLogin.getToken());
 
         UserDTO anotherUser = UserTestFactory.registerUser(
                 mockMvc,
-                "another",
+                "adminCreate",
                 "goodPassword");
 
-        workerApi
+        adminApi
+                .createWorker(
+                        company.getUuid(),
+                        anotherUser.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldAllowHrManagerToCreateWorker() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.HR_MANAGER))
+                .andExpect(status().isOk());
+
+        LoginResponse hrLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword");
+
+        CompanyApiTestClient hrApi = new CompanyApiTestClient(
+                mockMvc,
+                objectMapper)
+                .withToken(hrLogin.getToken());
+
+        UserDTO anotherUser = UserTestFactory.registerUser(
+                mockMvc,
+                "hrCreate",
+                "goodPassword");
+
+        hrApi
+                .createWorker(
+                        company.getUuid(),
+                        anotherUser.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenSellerTriesToCreateWorker() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.SELLER))
+                .andExpect(status().isOk());
+
+        LoginResponse sellerLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword");
+
+        CompanyApiTestClient sellerApi = new CompanyApiTestClient(
+                mockMvc,
+                objectMapper)
+                .withToken(sellerLogin.getToken());
+
+        UserDTO anotherUser = UserTestFactory.registerUser(
+                mockMvc,
+                "sellerCreate",
+                "goodPassword");
+
+        sellerApi
                 .createWorker(
                         company.getUuid(),
                         anotherUser.getUuid(),
@@ -219,12 +316,75 @@ class PostWorkerInCompanyTest {
     }
 
     @Test
+    void shouldReturnForbiddenWhenDriverTriesToCreateWorker() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isOk());
+
+        LoginResponse driverLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword");
+
+        CompanyApiTestClient driverApi = new CompanyApiTestClient(
+                mockMvc,
+                objectMapper)
+                .withToken(driverLogin.getToken());
+
+        UserDTO anotherUser = UserTestFactory.registerUser(
+                mockMvc,
+                "driverCreate",
+                "goodPassword");
+
+        driverApi
+                .createWorker(
+                        company.getUuid(),
+                        anotherUser.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenUserDoesNotHaveCompanyRole() throws Exception {
+
+        UserDTO anotherUser = UserTestFactory.registerUser(
+                mockMvc,
+                "another",
+                "goodPassword");
+
+        LoginResponse userLogin = UserTestFactory.login(
+                mockMvc,
+                anotherUser.getEmail(),
+                "goodPassword");
+
+        CompanyApiTestClient userApi = new CompanyApiTestClient(
+                mockMvc,
+                objectMapper)
+                .withToken(userLogin.getToken());
+
+        UserDTO targetUser = UserTestFactory.registerUser(
+                mockMvc,
+                "target",
+                "goodPassword");
+
+        userApi
+                .createWorker(
+                        company.getUuid(),
+                        targetUser.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
 
-        CompanyApiTestClient apiWithoutToken
-                = new CompanyApiTestClient(
-                        mockMvc,
-                        objectMapper);
+        CompanyApiTestClient apiWithoutToken = new CompanyApiTestClient(
+                mockMvc,
+                objectMapper);
 
         apiWithoutToken
                 .createWorker(
