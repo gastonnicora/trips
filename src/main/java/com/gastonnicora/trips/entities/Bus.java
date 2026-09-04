@@ -44,7 +44,7 @@ import lombok.Setter;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-20
+ * @since 2026-09-04
  */
 @Entity
 @Table(name = "buses")
@@ -73,9 +73,6 @@ public class Bus {
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
-    @Column(name = "status", nullable = false)
-    private String status;
-
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -85,15 +82,15 @@ public class Bus {
     private LocalDateTime updatedAt;
 
     @Column(name = "active", nullable = false)
-    private Boolean active;
+    private boolean active;
 
     /**
      * Constructor para crear un nuevo autobús.
      *
-     * @param company  La empresa a la que pertenece el autobús.
-     * @param model    El modelo del autobús.
+     * @param company La empresa a la que pertenece el autobús.
+     * @param plate La matrícula del autobús.
+     * @param model El modelo del autobús.
      * @param capacity La capacidad del autobús.
-     * @param status   El estado del autobús.
      */
     public Bus(Company company, String plate, String model, Integer capacity) {
         this.company = company;

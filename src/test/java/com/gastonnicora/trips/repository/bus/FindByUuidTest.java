@@ -33,7 +33,7 @@ public class FindByUuidTest {
         Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
 
-        Company c = companyRepository.save(company);
+        company = companyRepository.save(company);
 
         Bus bus = new Bus(company, "ABC123", "Model X", 50);
 
@@ -43,7 +43,7 @@ public class FindByUuidTest {
 
         assertTrue(found.isPresent());
         assertTrue(found.get().getUuid().equals(b.getUuid()));
-        assertTrue(found.get().getCompany().getUuid().equals(c.getUuid()));
+        assertTrue(found.get().getCompany().getUuid().equals(company.getUuid()));
         assertTrue(found.get().getPlate().equals("ABC123"));
     }
 
@@ -61,7 +61,7 @@ public class FindByUuidTest {
         Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
 
-        Company c = companyRepository.save(company);
+        company = companyRepository.save(company);
 
         Bus bus = new Bus(company, "ABC123", "Model X", 50);
         Bus b = busRepository.save(bus);
