@@ -33,7 +33,6 @@ import lombok.Setter;
  * <li>{@code plate}: Matrícula del autobús.</li>
  * <li>{@code model}: Modelo del autobús.</li>
  * <li>{@code capacity}: Capacidad del autobús.</li>
- * <li>{@code status}: Estado del autobús.</li>
  * <li>{@code createdAt}: Fecha de creación del autobús.</li>
  * <li>{@code updatedAt}: Fecha de última actualización del autobús.</li>
  * <li>{@code active}: Indica si el autobús está activo.</li>
@@ -96,11 +95,11 @@ public class Bus {
      * @param capacity La capacidad del autobús.
      * @param status   El estado del autobús.
      */
-    public Bus(Company company, String model, Integer capacity, String status) {
+    public Bus(Company company, String plate, String model, Integer capacity) {
         this.company = company;
+        this.plate = plate;
         this.model = model;
         this.capacity = capacity;
-        this.status = status;
         this.active = true;
     }
 }

@@ -19,7 +19,7 @@ public interface BusRepository extends JpaRepository<Bus, UUID> {
 
     Optional<Bus> findByUuid(UUID uuid);
 
-    List<Bus> findByCompanyUuid(UUID companyUuid);
+    List<Bus> findAllByCompanyUuid(UUID companyUuid);
 
-    Optional<Bus> findByPlate(String plate);
+    Optional<Bus> findByCompanyUuidAndPlate(UUID companyUuid, String plate);
 }
