@@ -1,0 +1,224 @@
+package com.gastonnicora.trips.integration.company;
+
+import java.util.Set;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
+import com.gastonnicora.trips.enums.RoleCompany;
+import com.gastonnicora.trips.helpers.CompanyApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+
+import jakarta.transaction.Transactional;
+import tools.jackson.databind.ObjectMapper;
+
+@ActiveProfiles("test")
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
+class PostWorkerInCompanyTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private UserDTO owner;
+    private UserDTO worker;
+    private CompanyDTO company;
+
+    private CompanyApiTestClient companyApi;
+
+    @BeforeEach
+    void setup() throws Exception {
+
+        owner = UserTestFactory.registerUser(
+                mockMvc,
+                "owner",
+                "goodPassword");
+
+        worker = UserTestFactory.registerUser(
+                mockMvc,
+                "worker",
+                "goodPassword");
+
+        LoginResponse login = UserTestFactory.login(
+                mockMvc,
+                owner.getEmail(),
+                "goodPassword");
+
+        companyApi = new CompanyApiTestClient(
+                mockMvc,
+                objectMapper)
+                .withToken(login.getToken());
+
+        MvcResult result = companyApi
+                .createCompany(
+                        "Test Company",
+                        "company_" + System.currentTimeMillis() + "@test.com",
+                        "123456789",
+                        -34.6037,
+                        -58.3816)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        company = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                CompanyDTO.class);
+    }
+
+    @Test
+    void shouldCreateWorkerSuccessfully() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid").exists())
+                .andExpect(jsonPath("$.user.uuid")
+                        .value(worker.getUuid().toString()))
+                .andExpect(jsonPath("$.company.uuid")
+                        .value(company.getUuid().toString()))
+                .andExpect(jsonPath("$.roles")
+                        .isArray())
+                .andExpect(jsonPath("$.roles[0]")
+                        .value("DRIVER"))
+                .andExpect(jsonPath("$.active")
+                        .value(true));
+    }
+
+    @Test
+    void shouldCreateWorkerWithMultipleRoles() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(
+                                RoleCompany.DRIVER,
+                                RoleCompany.SELLER))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles.length()").value(2));
+    }
+
+    @Test
+    void shouldReturnConflictWhenUserIsAlreadyWorker() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isOk());
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.SELLER))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenOwnerRoleIsAssigned() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.OWNER))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenRolesAreEmpty() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
+
+        companyApi
+                .createWorker(
+                        company.getUuid(),
+                        UUID.randomUUID(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
+
+        companyApi
+                .createWorker(
+                        UUID.randomUUID(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenUserDoesNotHavePermission() throws Exception {
+
+        LoginResponse workerLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword");
+
+        CompanyApiTestClient workerApi =
+                new CompanyApiTestClient(
+                        mockMvc,
+                        objectMapper)
+                        .withToken(workerLogin.getToken());
+
+        UserDTO anotherUser = UserTestFactory.registerUser(
+                mockMvc,
+                "another",
+                "goodPassword");
+
+        workerApi
+                .createWorker(
+                        company.getUuid(),
+                        anotherUser.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+
+        CompanyApiTestClient apiWithoutToken =
+                new CompanyApiTestClient(
+                        mockMvc,
+                        objectMapper);
+
+        apiWithoutToken
+                .createWorker(
+                        company.getUuid(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER))
+                .andExpect(status().isUnauthorized());
+    }
+}
