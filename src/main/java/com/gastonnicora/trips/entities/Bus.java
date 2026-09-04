@@ -30,6 +30,7 @@ import lombok.Setter;
  * <ul>
  * <li>{@code uuid}: Identificador único del autobús.</li>
  * <li>{@code company}: Empresa a la que pertenece el autobús.</li>
+ * <li>{@code plate}: Matrícula del autobús.</li>
  * <li>{@code model}: Modelo del autobús.</li>
  * <li>{@code capacity}: Capacidad del autobús.</li>
  * <li>{@code status}: Estado del autobús.</li>
@@ -64,6 +65,9 @@ public class Bus {
     @Column(name = "company_uuid", nullable = false)
     private Company company;
 
+    @Column(name = "plate", nullable = false)
+    private String plate;
+
     @Column(name = "model", nullable = false)
     private String model;
 
@@ -84,7 +88,14 @@ public class Bus {
     @Column(name = "active", nullable = false)
     private Boolean active;
 
-
+    /**
+     * Constructor para crear un nuevo autobús.
+     *
+     * @param company  La empresa a la que pertenece el autobús.
+     * @param model    El modelo del autobús.
+     * @param capacity La capacidad del autobús.
+     * @param status   El estado del autobús.
+     */
     public Bus(Company company, String model, Integer capacity, String status) {
         this.company = company;
         this.model = model;
