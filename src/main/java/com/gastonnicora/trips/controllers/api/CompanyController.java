@@ -200,7 +200,10 @@ public class CompanyController {
      */
     @PostMapping("/{uuid}/worker")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("@companySecurity.hasAnyRole(#uuid, T(com.gastonnicora.trips.enums.RoleCompany).OWNER, T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @PreAuthorize("@companySecurity.hasAnyRole(#uuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
     @Operation(summary = "Agregar worker a empresa", description = "Agrega un worker a una empresa por sus uuids")
     public WorkerDTO createWorker(@PathVariable("uuid") UUID uuid, @RequestBody @Valid WorkerCreate workerCreate) {
         return companyService.createWorker(workerCreate.getUserUuid(), uuid, workerCreate.getRoles());
@@ -226,6 +229,34 @@ public class CompanyController {
     @Operation(summary = "Obtener trabajadores de empresa", description = "Obtiene los trabajadores de una empresa por su uuid")
     public WorkersByCompany getWorkersByCompany(@PathVariable("uuid") UUID uuid) {
         return companyService.getWorkersByCompany(uuid);
+    }
+
+
+    /**
+     * Actualiza los roles de un trabajador en una empresa.
+     * <p>
+     * Este endpoint actualiza los roles de un trabajador en una empresa por sus
+     * uuids.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa.
+     * @param userUuid    UUID del trabajador.
+     * @param workerCreate {@link WorkerCreate} con los nuevos roles del
+     * trabajador.
+     * @return {@link WorkerDTO} con los datos del trabajador actualizado.
+     * @see CompanyService#updateWorker(UUID, UUID, Set<RoleCompany>)
+     */
+    @PutMapping("/{companyUuid}/worker/{userUuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
+    @Operation(summary = "Actualizar roles de trabajador en empresa", description = "Actualiza los roles de un trabajador en una empresa por sus uuids")
+    public WorkerDTO updateWorkerRoles(@PathVariable("companyUuid") UUID companyUuid,
+                                       @PathVariable("userUuid") UUID userUuid,
+                                       @RequestBody @Valid WorkerCreate workerCreate) {
+        return companyService.updateWorker(userUuid, companyUuid, workerCreate.getRoles());
     }
 
 }

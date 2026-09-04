@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
+import com.gastonnicora.trips.dtos.request.company.WorkerCreate;
 import com.gastonnicora.trips.enums.RoleCompany;
 
 import tools.jackson.databind.ObjectMapper;
@@ -139,6 +140,26 @@ public class CompanyApiTestClient {
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test"));
+    }
+
+    public ResultActions updateWorkerRoles(
+            UUID companyUuid,
+            UUID userUuid,
+            Set<RoleCompany> roles) throws Exception {
+
+        WorkerCreate body = new WorkerCreate(
+                userUuid,
+                roles
+        );
+
+        String json = objectMapper.writeValueAsString(body);
+
+        return mockMvc.perform(put(
+                "/api/companies/" + companyUuid + "/worker/" + userUuid)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test")
+                .content(json));
     }
 
 }

@@ -5,10 +5,13 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -17,9 +20,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
+import com.gastonnicora.trips.dtos.response.company.AddressResponse;
+import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
 import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.helpers.CompanyApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
 
 import jakarta.transaction.Transactional;
 import tools.jackson.databind.ObjectMapper;
@@ -32,6 +38,9 @@ class PostWorkerInCompanyTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private GeocodingService geocodingService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -64,6 +73,9 @@ class PostWorkerInCompanyTest {
                 mockMvc,
                 objectMapper)
                 .withToken(login.getToken());
+        when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
+                .thenReturn(new AddressResponse("calle falsa 123",
+                        new Address("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
 
         MvcResult result = companyApi
                 .createCompany(
@@ -187,8 +199,8 @@ class PostWorkerInCompanyTest {
                 worker.getEmail(),
                 "goodPassword");
 
-        CompanyApiTestClient workerApi =
-                new CompanyApiTestClient(
+        CompanyApiTestClient workerApi
+                = new CompanyApiTestClient(
                         mockMvc,
                         objectMapper)
                         .withToken(workerLogin.getToken());
@@ -209,8 +221,8 @@ class PostWorkerInCompanyTest {
     @Test
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
 
-        CompanyApiTestClient apiWithoutToken =
-                new CompanyApiTestClient(
+        CompanyApiTestClient apiWithoutToken
+                = new CompanyApiTestClient(
                         mockMvc,
                         objectMapper);
 
