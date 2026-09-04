@@ -127,6 +127,66 @@ class DeleteWorkerByCompanyTest {
                 .andExpect(status().isOk());
     }
 
+    
+    @Test
+    void shouldReturnOkWhenAdminDeletesWorker() throws Exception {
+        companyApi
+                .createWorker(
+                        companyUuid,
+                        worker.getUuid(),
+                        Set.of(RoleCompany.ADMIN)
+                )
+                .andExpect(status().isOk());
+
+        LoginResponse adminLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword"
+        );
+
+        CompanyApiTestClient adminApi = new CompanyApiTestClient(
+                mockMvc,
+                new ObjectMapper()
+        ).withToken(adminLogin.getToken());
+
+        adminApi
+                .deleteWorker(
+                        companyUuid,
+                        worker.getUuid()
+                )
+                .andExpect(status().isOk());
+    }
+
+     
+    @Test
+    void shouldReturnOkWhenHR_ManagerDeletesWorker() throws Exception {
+        companyApi
+                .createWorker(
+                        companyUuid,
+                        worker.getUuid(),
+                        Set.of(RoleCompany.HR_MANAGER)
+                )
+                .andExpect(status().isOk());
+
+        LoginResponse adminLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword"
+        );
+
+        CompanyApiTestClient adminApi = new CompanyApiTestClient(
+                mockMvc,
+                new ObjectMapper()
+        ).withToken(adminLogin.getToken());
+
+        adminApi
+                .deleteWorker(
+                        companyUuid,
+                        worker.getUuid()
+                )
+                .andExpect(status().isOk());
+    }
+
     @Test
     void shouldReturnNotFoundWhenWorkerDoesNotExist() throws Exception {
         companyApi
@@ -161,4 +221,56 @@ class DeleteWorkerByCompanyTest {
                 )
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    void shouldReturnForbiddenWhenDriverTriesToDeleteWorker() throws Exception {
+        companyApi
+                .createWorker(
+                        companyUuid,
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER)
+                )
+                .andExpect(status().isOk());
+
+        LoginResponse driverLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword"
+        );
+
+        CompanyApiTestClient driverApi = new CompanyApiTestClient(
+                mockMvc,
+                new ObjectMapper()
+        ).withToken(driverLogin.getToken());
+
+        driverApi
+                .deleteWorker(
+                        companyUuid,
+                        worker.getUuid()
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenUserTriesToDeleteWorker() throws Exception {
+
+        LoginResponse userLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword"
+        );
+
+        CompanyApiTestClient userApi = new CompanyApiTestClient(
+                mockMvc,
+                new ObjectMapper()
+        ).withToken(userLogin.getToken());
+
+        userApi
+                .deleteWorker(
+                        companyUuid,
+                        owner.getUuid()
+                )
+                .andExpect(status().isForbidden());
+    }
+
 }
