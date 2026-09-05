@@ -1,11 +1,10 @@
 package com.gastonnicora.trips.repository.worker;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -24,6 +23,7 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class FindAllByUserUuidTest {
+
     @Autowired
     private WorkerRepository workerRepository;
 
@@ -61,7 +61,7 @@ public class FindAllByUserUuidTest {
     }
 
     @Test
-    void shouldFindAllByUserUuidwhenNoWorkers() {
+    void shouldFindAllByUserUuidWhenNoWorkers() {
         User user = new User(
                 "username",
                 "latName",

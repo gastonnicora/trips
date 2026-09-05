@@ -21,31 +21,32 @@ import jakarta.transaction.Transactional;
 
 /**
  * Servicio para gestionar la entidad {@link Worker}.
- * 
+ *
  * <p>
  * Este servicio maneja todas las operaciones relacionadas con la gestión de
  * trabajadores, como la creación, actualización, eliminación y obtención de
- * información.
- * Ademas permite el cambio y asignación de roles a los trabajadores.
+ * información. Ademas permite el cambio y asignación de roles a los
+ * trabajadores.
  * </p>
- * 
- * 
+ *
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-06-03
  */
 @Service
 public class WorkerService {
+
     private final WorkerRepository workerRepository;
     private final WorkerMapper WorkerMapper;
 
     /**
      * Constructor del servicio WorkerService.
-     * 
-     * @param workerRepository Repositorio de workers utilizado para acceder a la
-     *                         base de datos.
-     * @param WorkerMapper     Mapper para convertir entidades {@link Worker} a
-     *                         {@link WorkerDTO}.
+     *
+     * @param workerRepository Repositorio de workers utilizado para acceder a
+     * la base de datos.
+     * @param WorkerMapper Mapper para convertir entidades {@link Worker} a
+     * {@link WorkerDTO}.
      */
     public WorkerService(WorkerRepository workerRepository, WorkerMapper WorkerMapper) {
         this.workerRepository = workerRepository;
@@ -54,10 +55,10 @@ public class WorkerService {
 
     /**
      * Crea un nuevo worker.
-     * 
-     * @param user    {@link User} del worker.
+     *
+     * @param user {@link User} del worker.
      * @param company {@link Company} de la empresa.
-     * @param roles   Set de {@link RoleCompany} del worker.
+     * @param roles Set de {@link RoleCompany} del worker.
      * @return {@link WorkerDTO} del worker creado.
      */
     public WorkerDTO createWorker(User user, Company company, Set<RoleCompany> roles) {
@@ -66,8 +67,8 @@ public class WorkerService {
 
     /**
      * Obtiene un worker por su UUID.
-     * 
-     * @param user    UUID del usuario.
+     *
+     * @param user UUID del usuario.
      * @param company UUID de la empresa.
      * @return {@link WorkerDTO} del worker.
      */
@@ -78,10 +79,10 @@ public class WorkerService {
 
     /**
      * Obtiene todos los workers de una empresa.
-     * 
+     *
      * @param company UUID de la empresa.
      * @return {@link WorkersByCompany} con los datos de la empresa y todos sus
-     *         trabajadores.
+     * trabajadores.
      */
     public WorkersByCompany getWorkersByCompany(UUID company) {
         List<Worker> workers = workerRepository.findAllByCompanyUuid(company);
@@ -90,13 +91,14 @@ public class WorkerService {
 
     /**
      * Obtiene todos los workers de un usuario.
-     * 
+     *
      * @param user UUID del usuario.
-     * @return {@link WorkersByUser} con los datos del usuario y todos sus trabajos.
+     * @return {@link WorkersByUser} con los datos del usuario y todos sus
+     * trabajos.
      */
     public WorkersByUser getWorkersByUser(UUID user) {
         List<Worker> workers = workerRepository.findAllByUserUuid(user);
-        if (workers == null || workers.isEmpty()) {
+        if (workers == null || workers.isEmpty()) { //TODO: Falta testear este caso
             throw new NotFoundException("El usuario no tiene trabajadores");
         }
         return WorkerMapper.toWorkersByUserDTO(workers);
@@ -104,8 +106,8 @@ public class WorkerService {
 
     /**
      * Elimina una relación entre un usuario y una empresa.
-     * 
-     * @param user    UUID del usuario.
+     *
+     * @param user UUID del usuario.
      * @param company UUID de la empresa.
      */
     @Transactional
@@ -117,10 +119,10 @@ public class WorkerService {
 
     /**
      * Actualiza los roles de un worker.
-     * 
-     * @param user    UUID del usuario.
+     *
+     * @param user UUID del usuario.
      * @param company UUID de la empresa.
-     * @param roles   Set de {@link RoleCompany} del worker.
+     * @param roles Set de {@link RoleCompany} del worker.
      */
     @Transactional
     public WorkerDTO updateWorker(UUID user, UUID company, Set<RoleCompany> roles) {
@@ -128,12 +130,12 @@ public class WorkerService {
         worker.setRoles(roles);
         worker = workerRepository.save(worker);
         return WorkerMapper.toDTO(worker);
-    } 
+    }
 
     /**
      * Obtiene un worker .
-     * 
-     * @param user    UUID del usuario.
+     *
+     * @param user UUID del usuario.
      * @param company UUID de la empresa.
      * @return {@link Worker} del worker.
      */
@@ -143,7 +145,7 @@ public class WorkerService {
 
     /**
      * Obtiene todos los workers de un usuario con el rol owner.
-     * 
+     *
      * @param owner UUID del usuario.
      * @return Lista de {@link Worker} del worker.
      */

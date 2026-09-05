@@ -11,7 +11,7 @@ package com.gastonnicora.trips.utils;
  * <li>iOS: si el User-Agent contiene "iphone" o "ios"</li>
  * <li>Web: por defecto, si no coincide con ninguno de los anteriores</li>
  * </ul>
- * 
+ *
  */
 public class UserAgent {
 

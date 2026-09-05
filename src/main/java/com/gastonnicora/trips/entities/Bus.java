@@ -62,7 +62,7 @@ public class Bus {
     private UUID uuid;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "company_uuid", nullable = false) 
+    @JoinColumn(name = "company_uuid", nullable = false)
     private Company company;
 
     @Column(name = "plate", nullable = false)

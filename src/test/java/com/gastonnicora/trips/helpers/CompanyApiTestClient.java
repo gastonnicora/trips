@@ -22,7 +22,7 @@ public class CompanyApiTestClient {
     private final MockMvc mockMvc;
     private String token;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public CompanyApiTestClient(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
@@ -173,7 +173,7 @@ public class CompanyApiTestClient {
                 .header("User-Agent", "JUnit-Test"));
     }
 
-    public ResultActions createBus(UUID companyUuid,String plate, String model, Integer capacity) throws Exception {
+    public ResultActions createBus(UUID companyUuid, String plate, String model, Integer capacity) throws Exception {
 
         BusCreate body = new BusCreate(
                 plate,

@@ -11,15 +11,15 @@ import com.gastonnicora.trips.repositories.UserRepository;
 /**
  * Implementación de {@link UserDetailsService} de Spring Security.
  * <p>
- * Se encarga de cargar la información del usuario desde la base de datos
- * para la autenticación.
+ * Se encarga de cargar la información del usuario desde la base de datos para
+ * la autenticación.
  * </p>
  * <p>
  * Utiliza {@link UserRepository} para buscar usuarios activos por email.
- * Retorna un {@link UserDetailsImpl} para que Spring Security gestione
- * la autenticación y autorización.
+ * Retorna un {@link UserDetailsImpl} para que Spring Security gestione la
+ * autenticación y autorización.
  * </p>
- * 
+ *
  * Flujo principal:
  * <ol>
  * <li>Recibe un username (email) a autenticar.</li>
@@ -29,7 +29,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
  * <li>Si lo encuentra, retorna un {@link UserDetailsImpl} que envuelve al
  * usuario.</li>
  * </ol>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -45,11 +45,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     /**
      * Carga un usuario por su username (email) para autenticación.
-     * 
+     *
      * @param username Email del usuario a autenticar
      * @return {@link UserDetails} con la información del usuario
      * @throws UsernameNotFoundException Si el usuario no existe o no está
-     *                                   habilitado
+     * habilitado
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

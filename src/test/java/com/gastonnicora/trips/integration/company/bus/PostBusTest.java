@@ -105,7 +105,6 @@ class PostBusTest {
     @Test
     void shouldCreateBusSuccessfully() throws Exception {
 
-
         companyApi
                 .createBus(
                         company.getUuid(),
@@ -152,7 +151,6 @@ class PostBusTest {
     @Test
     void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
 
-
         companyApi
                 .createBus(
                         UUID.randomUUID(),
@@ -166,12 +164,11 @@ class PostBusTest {
     @Test
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
 
-        CompanyApiTestClient apiWithoutToken =
-                new CompanyApiTestClient(
+        CompanyApiTestClient apiWithoutToken
+                = new CompanyApiTestClient(
                         mockMvc,
                         objectMapper
                 );
-
 
         apiWithoutToken
                 .createBus(

@@ -16,7 +16,7 @@ import lombok.ToString;
  * Se utiliza para exponer los datos de empresa en respuestas de la API, sin
  * incluir información sensible como la contraseña del dueño.
  * </p>
- * 
+ *
  * <p>
  * Campos principales:
  * </p>
@@ -32,11 +32,11 @@ import lombok.ToString;
  * <li>{@code updatedAt}: Fecha de última actualización de la empresa.</li>
  * <li>{@code active}: Estado de la empresa (activo o no).</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
  *   "uuid": "550e8400-e29b-41d4-a716-446655440000",
@@ -51,7 +51,7 @@ import lombok.ToString;
  *   "active": true
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-20
@@ -63,6 +63,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Schema(description = "DTO de empresa")
 public class CompanyDTO {
+
     @Schema(description = "UUID de la empresa", example = "550e8400-e29b-41d4-a716-446655440000")
     private UUID uuid;
 

@@ -14,12 +14,13 @@ import com.gastonnicora.trips.entities.Worker;
 /**
  * Mapper que convierte entidades {@link Worker} a {@link WorkerDTO}.
  * <p>
- * Se utiliza para exponer datos de trabajador de manera segura en la API,
- * sin incluir información sensible como la contraseña.
+ * Se utiliza para exponer datos de trabajador de manera segura en la API, sin
+ * incluir información sensible como la contraseña.
  * </p>
  */
 @Component
 public class WorkerMapper {
+
     private final UserMapper userMapper;
     private final CompanyMapper companyMapper;
 
@@ -30,7 +31,7 @@ public class WorkerMapper {
 
     /**
      * Convierte un {@link Worker} en {@link WorkerDTO}.
-     * 
+     *
      * @param worker Entidad de trabajador
      * @return DTO de trabajador correspondiente
      */
@@ -47,7 +48,7 @@ public class WorkerMapper {
 
     /**
      * Convierte una lista de {@link Worker} en una lista de {@link WorkerDTO}.
-     * 
+     *
      * @param workers Lista de entidades de trabajador
      * @return Lista de DTOs de trabajador correspondientes
      */
@@ -59,7 +60,7 @@ public class WorkerMapper {
 
     /**
      * Convierte un {@link Worker} en {@link WorkerUser}.
-     * 
+     *
      * @param worker Entidad de trabajador
      * @return DTO de trabajador correspondiente
      */
@@ -73,7 +74,7 @@ public class WorkerMapper {
 
     /**
      * Convierte una lista de {@link Worker} en {@link WorkersByCompany}.
-     * 
+     *
      * @param worker Lista de entidades de trabajador
      * @return DTO de trabajador correspondiente
      */
@@ -87,7 +88,7 @@ public class WorkerMapper {
 
     /**
      * Convierte un {@link Worker} en {@link WorkerCompany}.
-     * 
+     *
      * @param worker Entidad de trabajador
      * @return DTO de trabajador correspondiente
      */
@@ -101,7 +102,7 @@ public class WorkerMapper {
 
     /**
      * Convierte una lista de {@link Worker} en {@link WorkersByUser}.
-     * 
+     *
      * @param worker Lista de entidades de trabajador
      * @return DTO de trabajador correspondiente
      */

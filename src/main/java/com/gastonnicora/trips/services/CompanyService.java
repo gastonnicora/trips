@@ -280,7 +280,7 @@ public class CompanyService {
         List<Company> companies = workerService.getWorkersByOwner(uuid).stream()
                 .map(worker -> worker.getCompany())
                 .toList();
-        return new ListResponse<CompanyDTO>(companyMapper.toDTOList(companies));
+        return new ListResponse<>(companyMapper.toDTOList(companies));
     }
 
     /**
@@ -303,41 +303,42 @@ public class CompanyService {
      */
     public WorkerDTO getWorker(UUID userUuid, UUID companyUuid) {
         this.getCompany(companyUuid);
-        userService.getUser(userUuid); 
+        userService.getUser(userUuid);
         return workerService.getWorkerByUserAndCompany(userUuid, companyUuid);
     }
 
-        /**
-         * Crea un nuevo trabajador en una empresa.
-         *
-         * @param userUuid UUID del usuario que se quiere agregar como trabajador.
-         * @param companyUuid UUID de la empresa a la que se quiere agregar el
-         * trabajador.
-         * @param roles Set de {@link RoleCompany} que se le asignarán al trabajador.
-         * @return {@link WorkerDTO} Datos del trabajador creado.
-         * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
-         * asignar el rol de OWNER.
-         * @throws ConflictException Si el usuario ya es trabajador de la empresa.
-         */
-        public WorkerDTO createWorker(UUID userUuid, UUID companyUuid, Set<RoleCompany> roles) {
-            Company company = this.getCompanyEntity(companyUuid);
-            User user = userService.getUser(userUuid);
+    /**
+     * Crea un nuevo trabajador en una empresa.
+     *
+     * @param userUuid UUID del usuario que se quiere agregar como trabajador.
+     * @param companyUuid UUID de la empresa a la que se quiere agregar el
+     * trabajador.
+     * @param roles Set de {@link RoleCompany} que se le asignarán al
+     * trabajador.
+     * @return {@link WorkerDTO} Datos del trabajador creado.
+     * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
+     * asignar el rol de OWNER.
+     * @throws ConflictException Si el usuario ya es trabajador de la empresa.
+     */
+    public WorkerDTO createWorker(UUID userUuid, UUID companyUuid, Set<RoleCompany> roles) {
+        Company company = this.getCompanyEntity(companyUuid);
+        User user = userService.getUser(userUuid);
 
-            if (workerService.getWorkersByCompany(companyUuid).getWorkers().stream()
-                    .anyMatch(worker -> worker.getUser().getUuid().equals(userUuid))) {
-                throw new ConflictException("El usuario ya es trabajador de la empresa");
-            }
-
-            if (roles == null || roles.isEmpty()) {
-                throw new BadRequestException("Se debe asignar al menos un rol al trabajador");
-            }
-
-            if (roles.contains(RoleCompany.OWNER)) {
-                throw new BadRequestException("No se puede asignar el rol de OWNER a un trabajador");
-            }
-
-            return workerService.createWorker(user, company, roles);
+        if (workerService.getWorkersByCompany(companyUuid).getWorkers().stream()
+                .anyMatch(worker -> worker.getUser().getUuid().equals(userUuid))) {
+            throw new ConflictException("El usuario ya es trabajador de la empresa");
         }
+
+        if (roles == null || roles.isEmpty()) {
+            throw new BadRequestException("Se debe asignar al menos un rol al trabajador");
+        }
+
+        if (roles.contains(RoleCompany.OWNER)) {
+            throw new BadRequestException("No se puede asignar el rol de OWNER a un trabajador");
+        }
+
+        return workerService.createWorker(user, company, roles);
+    }
 
     /**
      * Elimina un trabajador de una empresa.
@@ -355,10 +356,12 @@ public class CompanyService {
     /**
      * Actualiza los roles de un trabajador en una empresa.
      *
-     * @param userUuid UUID del usuario que se quiere actualizar como trabajador.
+     * @param userUuid UUID del usuario que se quiere actualizar como
+     * trabajador.
      * @param companyUuid UUID de la empresa en la que se quiere actualizar el
      * trabajador.
-     * @param roles Set de {@link RoleCompany} que se le asignarán al trabajador.
+     * @param roles Set de {@link RoleCompany} que se le asignarán al
+     * trabajador.
      * @return {@link WorkerDTO} Datos del trabajador actualizado.
      * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
      * asignar el rol de OWNER.

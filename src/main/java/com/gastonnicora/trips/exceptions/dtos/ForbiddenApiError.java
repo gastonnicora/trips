@@ -8,15 +8,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Representa un error de acceso prohibido (HTTP 403).
  * <p>
  * Se utiliza cuando un usuario intenta acceder a un recurso para el que no
- * tiene permisos.
- * Hereda de {@link ApiError} y establece automáticamente el código de estado a
- * 403.
+ * tiene permisos. Hereda de {@link ApiError} y establece automáticamente el
+ * código de estado a 403.
  * </p>
- * 
+ *
  * <p>
  * Ejemplo de respuesta JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
  *   "status": 403,
@@ -25,7 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *   "errors": null
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04

@@ -15,21 +15,19 @@ import lombok.Setter;
 /**
  * DTO para crear una nueva empresa de transporte.
  * <p>
- * Contiene el nombre, email, teléfono y dirección de la empresa.
- * Aplica validaciones para que los campos no estén vacíos, no superen cierto
- * tamaño y
+ * Contiene el nombre, email, teléfono y dirección de la empresa. Aplica
+ * validaciones para que los campos no estén vacíos, no superen cierto tamaño y
  * sean válidos.
  * </p>
  * <p>
  * Se utiliza típicamente en los endpoints de creación de empresas.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-20
- * 
+ *
  */
-
 @Schema(description = "DTO de empresa para creación (POST)")
 @NoArgsConstructor
 @Getter
@@ -68,14 +66,13 @@ public class CompanyCreate {
     /**
      * Constructor completo.
      *
-     * @param name      Nombre de la empresa
-     * @param email     Email de la empresa
-     * @param phone     Teléfono de la empresa
-     * @param latitude  Latitud de la dirección de la empresa
+     * @param name Nombre de la empresa
+     * @param email Email de la empresa
+     * @param phone Teléfono de la empresa
+     * @param latitude Latitud de la dirección de la empresa
      * @param longitude Longitud de la dirección de la empresa
-     * 
+     *
      */
-
     public CompanyCreate(String name, String email, String phone, Double latitude, Double longitude) {
         this.name = name;
         this.email = email != null ? email.trim().toLowerCase() : null;

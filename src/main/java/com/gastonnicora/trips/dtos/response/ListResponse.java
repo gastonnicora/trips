@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
  * <li>{@code data}: Lista de elementos devueltos.</li>
  * <li>{@code total}: Total de elementos en la lista.</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de uso:
  * </p>
- * 
+ *
  * <pre>
  * ListResponse&lt;UserDTO&gt; response = new ListResponse&lt;&gt;(userList);
  * int totalUsers = response.getTotal();
@@ -38,10 +38,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ListResponse<T> {
 
-    /** Lista de elementos devueltos */
+    /**
+     * Lista de elementos devueltos
+     */
     private List<T> data = new ArrayList<>();
 
-    /** Total de elementos en la lista */
+    /**
+     * Total de elementos en la lista
+     */
     private int total = 0;
 
     /**
@@ -51,7 +55,7 @@ public class ListResponse<T> {
      */
     public ListResponse(List<T> data) {
         this.data = (data != null) ? new ArrayList<>(data) : new ArrayList<>();
-        this.total = data.size();
+        this.total = data != null ? data.size() : 0;
     }
 
     /**
@@ -64,7 +68,8 @@ public class ListResponse<T> {
     }
 
     /**
-     * Establece una nueva lista de elementos y actualiza automáticamente el total.
+     * Establece una nueva lista de elementos y actualiza automáticamente el
+     * total.
      *
      * @param data Nueva lista de elementos
      */
@@ -83,9 +88,9 @@ public class ListResponse<T> {
     }
 
     /**
-     * Este método recalcula el total según la lista actual.
-     * Si se desea establecer un total manualmente, se puede pasar un valor,
-     * pero se recomienda dejar que se calcule automáticamente.
+     * Este método recalcula el total según la lista actual. Si se desea
+     * establecer un total manualmente, se puede pasar un valor, pero se
+     * recomienda dejar que se calcule automáticamente.
      *
      */
     public void setTotal() {

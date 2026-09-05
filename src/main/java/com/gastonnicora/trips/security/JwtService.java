@@ -22,14 +22,14 @@ import jakarta.annotation.PostConstruct;
  * Utiliza HS256 con una clave secreta definida en
  * {@code application.properties}.
  * </p>
- * 
+ *
  * Funcionalidades:
  * <ul>
  * <li>Generar tokens JWT con email, versión y UUID del usuario.</li>
  * <li>Extraer información del token (email, versión, UUID).</li>
  * <li>Validar que un token sea válido.</li>
  * </ul>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -52,10 +52,10 @@ public class JwtService {
 
     /**
      * Genera un token JWT para un usuario.
-     * 
-     * @param email   Correo electrónico del usuario
+     *
+     * @param email Correo electrónico del usuario
      * @param version Versión del token
-     * @param uuid    UUID del usuario
+     * @param uuid UUID del usuario
      * @return JWT como String
      */
     public String generateToken(String email, int version, UUID uuid) {
@@ -72,7 +72,7 @@ public class JwtService {
 
     /**
      * Parsea un JWT y obtiene sus claims.
-     * 
+     *
      * @param token JWT
      * @return Claims del token
      * @throws JwtException si el token no es válido
@@ -87,7 +87,7 @@ public class JwtService {
 
     /**
      * Extrae el email (subject) del token.
-     * 
+     *
      * @param token JWT
      * @return Email del usuario
      */
@@ -97,7 +97,7 @@ public class JwtService {
 
     /**
      * Extrae la versión del token.
-     * 
+     *
      * @param token JWT
      * @return Versión como Integer
      */
@@ -107,7 +107,7 @@ public class JwtService {
 
     /**
      * Extrae el UUID del usuario del token.
-     * 
+     *
      * @param token JWT
      * @return UUID del usuario
      */
@@ -117,7 +117,7 @@ public class JwtService {
 
     /**
      * Valida si un token es válido.
-     * 
+     *
      * @param token JWT
      * @return true si es válido, false si no lo es
      */

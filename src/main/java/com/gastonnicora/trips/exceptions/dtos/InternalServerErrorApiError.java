@@ -8,9 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Representa un error del Servidor (HTTP 500).
  * <p>
  * Se utiliza cuando el servidor no puede procesar la solicitud debido a un
- * error interno.
- * Hereda de {@link ApiError} y establece automáticamente el código de estado a
- * 500.
+ * error interno. Hereda de {@link ApiError} y establece automáticamente el
+ * código de estado a 500.
  * </p>
  *
  * <p>
@@ -25,12 +24,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *   "errors": null
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-22
  */
-
 @Schema(description = "Error del servidor", example = """
             {
               "status": 500,

@@ -19,7 +19,7 @@ import lombok.Setter;
  * Se utiliza para exponer los datos de trabajador en respuestas de la API, sin
  * incluir información sensible como la contraseña.
  * </p>
- * 
+ *
  * <p>
  * Campos principales:
  * </p>
@@ -32,7 +32,7 @@ import lombok.Setter;
  * <p>
  * Ejemplo de JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
  *   "uuid": "550e8400-e29b-41d4-a716-4466554400",
@@ -50,7 +50,7 @@ import lombok.Setter;
  *   "active": true
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-06-03
@@ -61,6 +61,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Schema(description = "DTO de relación trabajador empresa sin información de la empresa")
 public class WorkerUser {
+
     /**
      * Identificador único de la relación.
      */

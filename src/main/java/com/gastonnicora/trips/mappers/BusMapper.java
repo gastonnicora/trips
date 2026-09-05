@@ -10,12 +10,13 @@ import com.gastonnicora.trips.entities.Bus;
 /**
  * Mapper que convierte entidades {@link Bus} a {@link BusDTO}.
  * <p>
- * Se utiliza para exponer datos de autobús de manera segura en la API,
- * sin incluir información sensible.
+ * Se utiliza para exponer datos de autobús de manera segura en la API, sin
+ * incluir información sensible.
  * </p>
  */
 @Component
 public class BusMapper {
+
     private final CompanyMapper companyMapper;
 
     public BusMapper(CompanyMapper companyMapper) {
@@ -24,7 +25,7 @@ public class BusMapper {
 
     /**
      * Convierte un {@link Bus} en {@link BusDTO}.
-     * 
+     *
      * @param bus Entidad de autobús
      * @return DTO de autobús correspondiente
      */
@@ -40,10 +41,10 @@ public class BusMapper {
                 bus.getUpdatedAt(),
                 bus.isActive());
     }
- 
+
     /**
      * Convierte una lista de {@link Bus} en una lista de {@link BusDTO}.
-     * 
+     *
      * @param buses Lista de entidades de autobús
      * @return Lista de DTOs de autobús correspondientes
      */

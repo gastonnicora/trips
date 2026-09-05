@@ -16,7 +16,7 @@ import lombok.ToString;
  * Se utiliza para exponer los datos de autobús en respuestas de la API, sin
  * incluir información sensible.
  * </p>
- * 
+ *
  * <p>
  * Campos principales:
  * </p>
@@ -35,7 +35,6 @@ import lombok.ToString;
  * @version 1.0
  * @since 2026-09-04
  */
-
 @Getter
 @Setter
 @ToString
@@ -43,6 +42,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Schema(description = "DTO de autobús.")
 public class BusDTO {
+
     @Schema(description = "UUID del autobús.", example = "550e8400-e29b-41d4-a716-446655440000")
     private UUID uuid;
 

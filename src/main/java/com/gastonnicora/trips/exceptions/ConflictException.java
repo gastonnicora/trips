@@ -18,8 +18,8 @@ import org.springframework.http.HttpStatus;
  *
  * <p>
  * Esta excepción se utiliza en conjunto con
- * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler}
- * para generar respuestas API estandarizadas.
+ * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler} para
+ * generar respuestas API estandarizadas.
  * </p>
  *
  * @author Gastón
@@ -28,7 +28,9 @@ import org.springframework.http.HttpStatus;
  */
 public class ConflictException extends RuntimeException {
 
-    /** Código HTTP asociado al error (409 - Conflict) */
+    /**
+     * Código HTTP asociado al error (409 - Conflict)
+     */
     private final int status = HttpStatus.CONFLICT.value();
 
     /**

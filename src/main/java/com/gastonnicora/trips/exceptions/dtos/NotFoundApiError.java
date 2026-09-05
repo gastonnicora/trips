@@ -7,9 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * Representa un error de recurso no encontrado (HTTP 404).
  * <p>
- * Se utiliza cuando el recurso solicitado no existe.
- * Hereda de {@link ApiError} y establece automáticamente el código de estado a
- * 404.
+ * Se utiliza cuando el recurso solicitado no existe. Hereda de {@link ApiError}
+ * y establece automáticamente el código de estado a 404.
  * </p>
  *
  * <p>
@@ -24,7 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *   "errors": null
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-06

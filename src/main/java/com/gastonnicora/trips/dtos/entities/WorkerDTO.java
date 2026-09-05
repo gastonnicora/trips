@@ -20,7 +20,7 @@ import lombok.ToString;
  * Se utiliza para exponer los datos de trabajador en respuestas de la API, sin
  * incluir información sensible como la contraseña.
  * </p>
- * 
+ *
  * <p>
  * Campos principales:
  * </p>
@@ -33,11 +33,11 @@ import lombok.ToString;
  * <li>{@code createdAt}: Fecha de creación del trabajador.</li>
  * <li>{@code updatedAt}: Fecha de última actualización del trabajador.</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de JSON:
  * </p>
- * 
+ *
  * <pre>
  *{
  * "uuid": "550e8400-e29b-41d4-a716-446655440000",
@@ -69,7 +69,7 @@ import lombok.ToString;
  * "updatedAt": "2026-01-01T00:00:00"
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-06-03
@@ -82,6 +82,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Schema(description = "DTO de relación trabajador empresa")
 public class WorkerDTO {
+
     /**
      * Identificador único de la relación.
      */
@@ -115,12 +116,12 @@ public class WorkerDTO {
     /**
      * Fecha de creación del trabajador.
      */
-    @Schema(description = "Fecha de creacion del trabajador", example = "2026-01-01T00:00:00")
+    @Schema(description = "Fecha de creación del trabajador", example = "2026-01-01T00:00:00")
     private LocalDateTime createdAt;
 
     /**
      * Fecha de actualización del trabajador.
      */
-    @Schema(description = "Fecha de actualizacion del trabajador", example = "2026-01-01T00:00:00")
+    @Schema(description = "Fecha de actualización del trabajador", example = "2026-01-01T00:00:00")
     private LocalDateTime updatedAt;
 }

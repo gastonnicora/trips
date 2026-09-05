@@ -23,11 +23,11 @@ import jakarta.validation.Payload;
  * </pre>
  *
  * <p>
- * Esta anotación se aplica a nivel de clase ({@link ElementType#TYPE}) y
- * es procesada por la clase {@link FieldsMatchValidator}.
+ * Esta anotación se aplica a nivel de clase ({@link ElementType#TYPE}) y es
+ * procesada por la clase {@link FieldsMatchValidator}.
  * </p>
  */
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FieldsMatchValidator.class)
 @Documented

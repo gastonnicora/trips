@@ -7,8 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * Validador personalizado que verifica que dos campos de un objeto sean
- * iguales.
- * Se usa junto con la anotación {@link FieldsMatch}.
+ * iguales. Se usa junto con la anotación {@link FieldsMatch}.
  */
 public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Object> {
 
@@ -35,11 +34,11 @@ public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Ob
     /**
      * Valida que los dos campos especificados tengan valores iguales.
      *
-     * @param value   el objeto que se va a validar
+     * @param value el objeto que se va a validar
      * @param context contexto de validación para agregar mensajes de error
-     *                personalizados
-     * @return {@code true} si los campos son iguales, {@code false} si no lo son o
-     *         si ocurre algún error
+     * personalizados
+     * @return {@code true} si los campos son iguales, {@code false} si no lo
+     * son o si ocurre algún error
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {

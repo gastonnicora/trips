@@ -22,6 +22,7 @@ import jakarta.transaction.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 public class LogoutTest {
+
     @Autowired
     private MockMvc mockMvc;
 

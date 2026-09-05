@@ -24,8 +24,7 @@ import lombok.Setter;
  * Representa un token de refresco para mantener sesiones de usuario.
  * <p>
  * Contiene información sobre el token de acceso, token de refresco, usuario
- * asociado,
- * dispositivo y fecha de expiración.
+ * asociado, dispositivo y fecha de expiración.
  * </p>
  * <p>
  * Campos principales:
@@ -43,12 +42,12 @@ import lombok.Setter;
  * <li>{@code expiryDate}: Fecha de expiración del token.</li>
  * <li>{@code version}: Versión del token (incrementa al actualizar).</li>
  * </ul>
- * 
+ *
  * <p>
  * Se utiliza para la gestión de sesiones y renovación de tokens en la
  * aplicación.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -103,16 +102,15 @@ public class RefreshToken {
      * Constructor para crear un nuevo RefreshToken.
      * <p>
      * Genera automáticamente un {@code refreshToken} único y define la fecha de
-     * expiración
-     * a 7 días a partir de la creación.
+     * expiración a 7 días a partir de la creación.
      * </p>
-     * 
-     * @param token     JWT de acceso asociado
-     * @param user      usuario relacionado con el token
-     * @param ip        Dirección IP desde donde se crea el token
+     *
+     * @param token JWT de acceso asociado
+     * @param user usuario relacionado con el token
+     * @param ip Dirección IP desde donde se crea el token
      * @param userAgent Información del cliente (navegador, app, etc.)
-     * @param device    Tipo de dispositivo (web, android, etc.)
-     * @param version   Versión inicial del token
+     * @param device Tipo de dispositivo (web, android, etc.)
+     * @param version Versión inicial del token
      */
     public RefreshToken(String token, User user, String ip, String userAgent, String device, int version) {
         this.token = token;

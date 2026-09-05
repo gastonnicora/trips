@@ -35,11 +35,11 @@ import lombok.Setter;
  * <li>{@code updatedAt}: Fecha de última actualización de la empresa.</li>
  * <li>{@code active}: Indica si la empresa está activa.</li>
  * </ul>
- * 
+ *
  * <p>
  * Se utiliza para la gestión de empresas de transporte.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-20
@@ -92,13 +92,13 @@ public class Company {
      * <p>
      * Genera una nueva {@code Company}
      * </p>
-     * 
-     * @param name      Nombre de la empresa
-     * @param address   Dirección de la empresa
-     * @param latitude  Latitud de la empresa
+     *
+     * @param name Nombre de la empresa
+     * @param address Dirección de la empresa
+     * @param latitude Latitud de la empresa
      * @param longitude Longitud de la empresa
-     * @param email     Dirección de correo electrónico de la empresa
-     * @param phone     Número de teléfono de la empresa
+     * @param email Dirección de correo electrónico de la empresa
+     * @param phone Número de teléfono de la empresa
      */
     public Company(String name, String address, double latitude, double longitude, String email,
             String phone) {

@@ -15,7 +15,7 @@ import com.gastonnicora.trips.enums.RoleCompany;
  * Proporciona métodos para consultar trabajadores por UUID entre otras opciones
  * Utiliza Spring Data JPA para el acceso a la base de datos.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-06-03
@@ -24,8 +24,8 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     /**
      * Busca un trabajador por su UUID y la empresa asociada.
-     * 
-     * @param userUuid    UUID del usuario
+     *
+     * @param userUuid UUID del usuario
      * @param companyUuid UUID de la empresa
      * @return {@link Optional} con el trabajador si existe
      */
@@ -35,7 +35,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     /**
      * Busca todos los trabajadores asociados a una empresa.
-     * 
+     *
      * @param companyUuid UUID de la empresa
      * @return Lista de trabajadores asociados a la empresa
      */
@@ -43,17 +43,18 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     /**
      * Busca todos los trabajadores asociados a un usuario.
-     * 
+     *
      * @param userUuid UUID del usuario
      * @return Lista de trabajadores asociados al usuario
      */
     List<Worker> findAllByUserUuid(UUID userUuid);
 
     /**
-     * Busca todos los trabajadores asociados a un usuario con un rol específico.
-     * 
+     * Busca todos los trabajadores asociados a un usuario con un rol
+     * específico.
+     *
      * @param userUuid UUID del usuario
-     * @param role     Rol del trabajador
+     * @param role Rol del trabajador
      * @return Lista de trabajadores asociados al usuario con el rol específico
      */
     List<Worker> findAllByUserUuidAndRolesContains(UUID userUuid, RoleCompany role);

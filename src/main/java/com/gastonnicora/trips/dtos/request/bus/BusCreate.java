@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor 
+@AllArgsConstructor
 public class BusCreate {
 
     @NotBlank(message = "Debe introducir una placa")
@@ -30,7 +30,7 @@ public class BusCreate {
     @Schema(description = "Modelo del bus", example = "Model X")
     private String model;
 
-    @NotNull (message = "Debe introducir la capacidad del bus")
+    @NotNull(message = "Debe introducir la capacidad del bus")
     @Min(value = 1, message = "La capacidad del bus debe ser mayor a 0")
     @Schema(description = "Cantidad de asientos del bus", example = "50")
     private Integer capacity;

@@ -14,8 +14,8 @@ import lombok.Setter;
 
 /**
  * Data Transfer Object (DTO) que representa la información de la relación
- * usuraio empresa sin mostrar la informacion del usuario
- * 
+ * usuario empresa sin mostrar la información del usuario
+ *
  * <p>
  * Campos principales:
  * </p>
@@ -28,7 +28,7 @@ import lombok.Setter;
  * <p>
  * Ejemplo de JSON:
  * </p>
- * 
+ *
  * <pre>
  *  {
  *   "uuid": "550e8400-e29b-41d4-a716-446655440000",
@@ -48,7 +48,7 @@ import lombok.Setter;
  *   "active": true
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-06-03
@@ -59,6 +59,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Schema(description = "DTO de relación trabajador empresa sin información de usuario")
 public class WorkerCompany {
+
     /**
      * Identificador único de la relación.
      */

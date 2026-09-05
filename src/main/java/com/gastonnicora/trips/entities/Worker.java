@@ -32,8 +32,8 @@ import lombok.Setter;
  * Representa un trabajador en una empresa.
  * <p>
  * Contiene información personal, roles, estado y fechas de
- * creación/actualización.
- * Por defecto, se asigna el rol {@link RoleCompany#SELLER}.
+ * creación/actualización. Por defecto, se asigna el rol
+ * {@link RoleCompany#SELLER}.
  * </p>
  * <p>
  * Campos principales:
@@ -53,12 +53,13 @@ import lombok.Setter;
  * @since 2026-06-03
  */
 @Entity
-@Table(name = "workers", uniqueConstraints = @UniqueConstraint(columnNames = { "user_uuid", "company_uuid" }))
+@Table(name = "workers", uniqueConstraints = @UniqueConstraint(columnNames = {"user_uuid", "company_uuid"}))
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Worker {
+
     @Id
     @Column(name = "uuid", nullable = false, unique = true)
     @GeneratedValue
@@ -92,9 +93,9 @@ public class Worker {
     /**
      * Constructor con los datos necesarios.
      *
-     * @param user    ({@link User}) Usuario asociado
+     * @param user ({@link User}) Usuario asociado
      * @param company ({@link Company}) Empresa asociada
-     * @param roles   ({@link Set}) Conjunto de {@link RoleCompany} a asignar
+     * @param roles ({@link Set}) Conjunto de {@link RoleCompany} a asignar
      */
     public Worker(User user, Company company, Set<RoleCompany> roles) {
         this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
@@ -104,7 +105,7 @@ public class Worker {
 
     /**
      * Método para agregar un rol al trabajador.
-     * 
+     *
      * @param role ({@link RoleCompany}) Rol a agregar
      */
     public void addRole(RoleCompany role) {
@@ -113,7 +114,7 @@ public class Worker {
 
     /**
      * Método para agregar varios roles al trabajador.
-     * 
+     *
      * @param roles ({@link Set}) Conjunto de roles a agregar
      */
     public void addRoles(Set<RoleCompany> roles) {
@@ -122,10 +123,10 @@ public class Worker {
 
     /**
      * Método para verificar si el trabajador tiene un rol específico.
-     * 
+     *
      * @param role ({@link RoleCompany}) Rol a verificar
      * @return {@code true} si el trabajador tiene el rol, {@code false} en caso
-     *         contrario
+     * contrario
      */
     public boolean hasRole(RoleCompany role) {
         return this.roles.contains(role);
@@ -133,7 +134,7 @@ public class Worker {
 
     /**
      * Método para eliminar un rol del trabajador.
-     * 
+     *
      * @param role ({@link RoleCompany}) Rol a eliminar
      */
     public void removeRole(RoleCompany role) {

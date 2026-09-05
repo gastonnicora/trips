@@ -1,13 +1,12 @@
 package com.gastonnicora.trips.repository.refreshToken;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -24,57 +23,58 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DeleteAllByExpiryDateBeforeTest {
-        @Autowired
-        private UserRepository userRepository;
 
-        @Autowired
-        private RefreshTokenRepository refreshTokenRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-        @Test
-        void shouldDeleteAllByExpiryDateBefore() {
-                User user = new User(
-                                "username",
-                                "latName",
-                                "test@test.com",
-                                "password",
-                                Set.of(Role.USER));
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
-                user.setEnabled(true);
-                userRepository.save(user);
+    @Test
+    void shouldDeleteAllByExpiryDateBefore() {
+        User user = new User(
+                "username",
+                "latName",
+                "test@test.com",
+                "password",
+                Set.of(Role.USER));
 
-                RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
-                refreshTokenRepository.save(rt);
+        user.setEnabled(true);
+        userRepository.save(user);
 
-                refreshTokenRepository.deleteAllByExpiryDateBefore(rt.getExpiryDate().plusSeconds(1));
+        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+        refreshTokenRepository.save(rt);
 
-                List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
+        refreshTokenRepository.deleteAllByExpiryDateBefore(rt.getExpiryDate().plusSeconds(1));
 
-                assertTrue(found.isEmpty());
-        }
+        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
-        @Test
-        void shouldNotDeleteAllByExpiryDateBeforeIfAllAfter() {
-                User user = new User(
-                                "username",
-                                "latName",
-                                "test@email.com",
-                                "password",
-                                Set.of(Role.USER));
+        assertTrue(found.isEmpty());
+    }
 
-                user.setEnabled(true);
-                userRepository.save(user);
+    @Test
+    void shouldNotDeleteAllByExpiryDateBeforeIfAllAfter() {
+        User user = new User(
+                "username",
+                "latName",
+                "test@email.com",
+                "password",
+                Set.of(Role.USER));
 
-                RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+        user.setEnabled(true);
+        userRepository.save(user);
 
-                refreshTokenRepository.save(rt);
+        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
-                refreshTokenRepository.deleteAllByExpiryDateBefore(Instant.now());
+        refreshTokenRepository.save(rt);
 
-                List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
+        refreshTokenRepository.deleteAllByExpiryDateBefore(Instant.now());
 
-                assertFalse(found.isEmpty());
-                assertEquals(1, refreshTokenRepository.count());
-        }
+        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
+
+        assertFalse(found.isEmpty());
+        assertEquals(1, refreshTokenRepository.count());
+    }
 }

@@ -16,7 +16,6 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.repositories.BusRepository;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 
-
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -40,7 +39,7 @@ public class FindByCompanyUuidAndPlateTest {
 
         Bus b = busRepository.save(bus);
 
-        Optional<Bus> found = busRepository.findByCompanyUuidAndPlate(company.getUuid(),"ABC123");
+        Optional<Bus> found = busRepository.findByCompanyUuidAndPlate(company.getUuid(), "ABC123");
 
         assertFalse(found.isEmpty());
         assertTrue(found.get().getUuid().equals(b.getUuid()));

@@ -7,14 +7,12 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 
 /**
- * Excepción personalizada de la aplicación utilizada para representar
- * errores de validación de múltiples campos en la solicitud (HTTP 400 - Bad
- * Request).
+ * Excepción personalizada de la aplicación utilizada para representar errores
+ * de validación de múltiples campos en la solicitud (HTTP 400 - Bad Request).
  *
  * <p>
  * Se utiliza cuando los datos enviados por el cliente no cumplen con las reglas
- * de negocio
- * o con la validación de los campos, por ejemplo:
+ * de negocio o con la validación de los campos, por ejemplo:
  * </p>
  * <ul>
  * <li>Campos requeridos faltantes</li>
@@ -24,26 +22,29 @@ import org.springframework.http.HttpStatus;
  *
  * <p>
  * Esta excepción permite enviar un mapa de errores donde la clave es el nombre
- * del campo
- * y el valor es una lista de mensajes de error asociados al mismo.
+ * del campo y el valor es una lista de mensajes de error asociados al mismo.
  * </p>
  *
  * <p>
  * Se utiliza en conjunto con
- * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler}
- * para generar respuestas API estandarizadas.
+ * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler} para
+ * generar respuestas API estandarizadas.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-06
  */
 public class ValidationException extends RuntimeException {
 
-    /** Código HTTP asociado al error (400 - Bad Request) */
+    /**
+     * Código HTTP asociado al error (400 - Bad Request)
+     */
     private final int status = HttpStatus.BAD_REQUEST.value();
 
-    /** Mapa de errores por campo */
+    /**
+     * Mapa de errores por campo
+     */
     private Map<String, List<String>> errors = null;
 
     /**
@@ -56,11 +57,11 @@ public class ValidationException extends RuntimeException {
     }
 
     /**
-     * Constructor que inicializa la excepción con un mensaje descriptivo
-     * y un mapa de errores por campo.
+     * Constructor que inicializa la excepción con un mensaje descriptivo y un
+     * mapa de errores por campo.
      *
      * @param message Mensaje de error
-     * @param errors  Mapa de errores por campo
+     * @param errors Mapa de errores por campo
      */
     public ValidationException(String message, Map<String, List<String>> errors) {
         super(message);
@@ -95,10 +96,10 @@ public class ValidationException extends RuntimeException {
     }
 
     /**
-     * Agrega un error para un campo específico.
-     * Si el campo no existe en el mapa, se crea la lista automáticamente.
+     * Agrega un error para un campo específico. Si el campo no existe en el
+     * mapa, se crea la lista automáticamente.
      *
-     * @param field   Campo asociado al error
+     * @param field Campo asociado al error
      * @param message Mensaje de error
      */
     public void addError(String field, String message) {

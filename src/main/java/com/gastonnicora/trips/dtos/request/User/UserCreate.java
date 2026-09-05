@@ -19,13 +19,13 @@ import lombok.NoArgsConstructor;
  * <li>{@code password}: Contraseña del usuario</li>
  * <li>{@code confirmPassword}: Confirmación de la contraseña</li>
  * </ul>
- * 
+ *
  * <p>
  * Se utiliza en los endpoints de registro de usuarios (POST).
  * </p>
- * 
+ *
  * Ejemplo de JSON:
- * 
+ *
  * <pre>
  * {
  *   "name": "Gastón",
@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
  *   "confirmPassword": "123456"
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -70,11 +70,11 @@ public class UserCreate extends UserBasic {
 
     /**
      * Constructor completo.
-     * 
-     * @param name        Nombre del usuario
-     * @param lastname    Apellido del usuario
-     * @param email       Email del usuario
-     * @param password    Contraseña del usuario
+     *
+     * @param name Nombre del usuario
+     * @param lastname Apellido del usuario
+     * @param email Email del usuario
+     * @param password Contraseña del usuario
      * @param confirmPass Confirmación de la contraseña
      */
     public UserCreate(String name, String lastname, String email, String password, String confirmPass) {

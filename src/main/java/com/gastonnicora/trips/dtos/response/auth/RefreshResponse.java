@@ -17,18 +17,18 @@ import lombok.NoArgsConstructor;
  * <li>{@code refreshToken}: Nuevo token UUID de refresco (puede ser null para
  * web si se usa cookie).</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de respuesta JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
  *   "token": "eyJhbGciOiJIUzI1NiJ9...",
  *   "refreshToken": "550e8400-e29b-41d4-a716-446655440000"
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -45,8 +45,8 @@ public class RefreshResponse {
 
     /**
      * Constructor completo de respuesta de refresh.
-     * 
-     * @param token        Nuevo token JWT de acceso
+     *
+     * @param token Nuevo token JWT de acceso
      * @param refreshToken Nuevo token de refresco UUID (opcional para web)
      */
     public RefreshResponse(String token, String refreshToken) {
@@ -56,7 +56,7 @@ public class RefreshResponse {
 
     /**
      * Obtiene el nuevo token JWT de acceso.
-     * 
+     *
      * @return Token JWT de acceso
      */
     public String getToken() {
@@ -65,7 +65,7 @@ public class RefreshResponse {
 
     /**
      * Establece el nuevo token JWT de acceso.
-     * 
+     *
      * @param token Token JWT de acceso
      */
     public void setToken(String token) {
@@ -74,7 +74,7 @@ public class RefreshResponse {
 
     /**
      * Obtiene el nuevo token de refresco UUID.
-     * 
+     *
      * @return Token de refresco UUID
      */
     public String getRefreshToken() {

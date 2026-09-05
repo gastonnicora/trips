@@ -19,16 +19,16 @@ import io.swagger.v3.oas.models.tags.Tag;
 /**
  * Configuración de personalización de Swagger/OpenAPI.
  * <p>
- * Esta clase agrega información de roles requeridos a la documentación de
- * la API generada por SpringDoc para métodos protegidos con la anotación
+ * Esta clase agrega información de roles requeridos a la documentación de la
+ * API generada por SpringDoc para métodos protegidos con la anotación
  * {@link PreAuthorize}.
  * </p>
- * 
+ *
  * <p>
- * Cada operación protegida mostrará en su descripción los roles necesarios
- * para acceder, por ejemplo: "🔒 Requiere rol: ADMIN, USER".
+ * Cada operación protegida mostrará en su descripción los roles necesarios para
+ * acceder, por ejemplo: "🔒 Requiere rol: ADMIN, USER".
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -41,12 +41,12 @@ public class SwaggerConfigCustomer {
      * de seguridad basada en {@link PreAuthorize}.
      * <p>
      * Recorre cada método expuesto en la API y, si tiene la anotación
-     * {@link PreAuthorize}, extrae los roles y los añade a la descripción
-     * de la operación.
+     * {@link PreAuthorize}, extrae los roles y los añade a la descripción de la
+     * operación.
      * </p>
-     * 
-     * @return {@link OperationCustomizer} para agregar información de roles a las
-     *         operaciones
+     *
+     * @return {@link OperationCustomizer} para agregar información de roles a
+     * las operaciones
      */
     @Bean
     public OperationCustomizer customizePreAuthorize() {
@@ -65,7 +65,7 @@ public class SwaggerConfigCustomer {
 
                 operation.setDescription(
                         (existingDescription == null ? "" : existingDescription + "\n\n")
-                                + securityInfo);
+                        + securityInfo);
             }
 
             return operation;
@@ -74,14 +74,15 @@ public class SwaggerConfigCustomer {
 
     /**
      * Bean que ordena las etiquetas de Swagger/OpenAPI alfabéticamente.
-     * 
+     *
      */
     @Bean
     public OpenApiCustomizer sortTagsAlphabetically() {
         return openApi -> {
 
-            if (openApi.getTags() == null)
+            if (openApi.getTags() == null) {
                 return;
+            }
 
             openApi.setTags(
                     openApi.getTags().stream()
@@ -98,10 +99,10 @@ public class SwaggerConfigCustomer {
      * <li>hasRole('ROL')</li>
      * <li>hasAnyRole('ROL1','ROL2')</li>
      * </ul>
-     * y devuelve los roles como una cadena separada por comas.
-     * Si no se encuentra ningún rol, devuelve la expresión completa.
+     * y devuelve los roles como una cadena separada por comas. Si no se
+     * encuentra ningún rol, devuelve la expresión completa.
      * </p>
-     * 
+     *
      * @param expression expresión de {@link PreAuthorize} a analizar
      * @return {@link String} roles extraídos separados por coma
      */

@@ -100,7 +100,7 @@ public class GetWorkersByCurrentUserTest {
                 .andExpect(jsonPath("$.workers[0].roles").isArray())
                 .andExpect(jsonPath("$.workers[0].roles[0]").value("DRIVER"));
     }
-    
+
     @Test
     void shouldReturnNotFound_whenUserDontHaveAnyWorker() throws Exception {
         registerAndLoginUser("newUser");

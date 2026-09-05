@@ -10,11 +10,10 @@ import lombok.NoArgsConstructor;
  * DTO para el inicio de sesión del usuario.
  * <p>
  * Contiene los datos necesarios para autenticarse en el sistema: email y
- * contraseña.
- * Se valida que el email tenga formato correcto y que los campos no estén en
- * blanco.
+ * contraseña. Se valida que el email tenga formato correcto y que los campos no
+ * estén en blanco.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -49,7 +48,7 @@ public class LoginRequest {
 
     /**
      * Obtiene el email del usuario.
-     * 
+     *
      * @return email en minúsculas y sin espacios al inicio o final
      */
     public String getEmail() {
@@ -61,7 +60,7 @@ public class LoginRequest {
      * <p>
      * Se convierte a minúsculas y se elimina espacios al inicio y final.
      * </p>
-     * 
+     *
      * @param email email del usuario
      */
     public void setEmail(String email) {
@@ -70,7 +69,7 @@ public class LoginRequest {
 
     /**
      * Obtiene la contraseña del usuario.
-     * 
+     *
      * @return contraseña
      */
     public String getPassword() {
@@ -79,7 +78,7 @@ public class LoginRequest {
 
     /**
      * Establece la contraseña del usuario.
-     * 
+     *
      * @param password contraseña
      */
     public void setPassword(String password) {
@@ -88,9 +87,9 @@ public class LoginRequest {
 
     /**
      * Constructor completo de LoginRequest.
-     * 
-     * @param email    email del usuario (se normaliza a minúsculas y se quitan
-     *                 espacios)
+     *
+     * @param email email del usuario (se normaliza a minúsculas y se quitan
+     * espacios)
      * @param password contraseña del usuario
      */
     public LoginRequest(String email, String password) {

@@ -14,11 +14,10 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 /**
  * Servicio para la gestión de Refresh Tokens.
  * <p>
- * Permite crear, verificar, revocar y desactivar tokens de refresco.
- * Se asegura de que cada token sea válido, activo y asociado al dispositivo
- * e IP correcta.
+ * Permite crear, verificar, revocar y desactivar tokens de refresco. Se asegura
+ * de que cada token sea válido, activo y asociado al dispositivo e IP correcta.
  * </p>
- * 
+ *
  * Flujo principal de verificación:
  * <ol>
  * <li>Se valida que el token no sea nulo.</li>
@@ -28,11 +27,11 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
  * <li>Se asegura que provenga del mismo dispositivo y IP que al momento de
  * crearlo.</li>
  * </ol>
- * 
+ *
  * Además permite revocar un token específico o desactivar todos los tokens
- * activos
- * de un usuario, incrementando su versión para invalidar tokens previos.
- * 
+ * activos de un usuario, incrementando su versión para invalidar tokens
+ * previos.
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -48,13 +47,13 @@ public class RefreshTokenService {
 
     /**
      * Crea un nuevo refresh token y lo persiste.
-     * 
-     * @param token     Token generado
-     * @param user      Usuario asociado al refresh token
+     *
+     * @param token Token generado
+     * @param user Usuario asociado al refresh token
      * @param userAgent Información del navegador/dispositivo
-     * @param ip        Dirección IP
-     * @param device    Nombre del dispositivo
-     * @param version   Versión del token
+     * @param ip Dirección IP
+     * @param device Nombre del dispositivo
+     * @param version Versión del token
      * @return {@link RefreshToken} persistido
      */
     public RefreshToken createToken(String token, User user, String userAgent, String ip, String device,
@@ -65,7 +64,7 @@ public class RefreshTokenService {
 
     /**
      * Verifica si un refresh token existe en la base de datos.
-     * 
+     *
      * @param refreshToken Token a verificar
      * @return {@code true} si existe, {@code false} si no
      */
@@ -74,19 +73,19 @@ public class RefreshTokenService {
     }
 
     /**
-     * Verifica que el refresh token sea válido, activo, no expirado y que provenga
-     * del mismo dispositivo y IP.
+     * Verifica que el refresh token sea válido, activo, no expirado y que
+     * provenga del mismo dispositivo y IP.
      * <p>
-     * Si falla alguna verificación, lanza {@link UnauthorizedException} con código
-     * 401.
+     * Si falla alguna verificación, lanza {@link UnauthorizedException} con
+     * código 401.
      * </p>
-     * 
+     *
      * @param refreshToken Token a verificar
-     * @param currentIp    IP del dispositivo actual
-     * @param currentUA    User agent del dispositivo actual
+     * @param currentIp IP del dispositivo actual
+     * @param currentUA User agent del dispositivo actual
      * @return {@link RefreshToken} válido
      * @throws UnauthorizedException Si el token es inválido, expirado o
-     *                               deshabilitado
+     * deshabilitado
      */
     public RefreshToken verifyToken(String refreshToken, String currentIp, String currentUA) {
 
@@ -114,8 +113,9 @@ public class RefreshTokenService {
     }
 
     /**
-     * Revoca un refresh token específico, desactivándolo y aumentando su versión.
-     * 
+     * Revoca un refresh token específico, desactivándolo y aumentando su
+     * versión.
+     *
      * @param refreshToken Token a revocar
      */
     public void revokeToken(String refreshToken) {
@@ -127,9 +127,9 @@ public class RefreshTokenService {
     }
 
     /**
-     * Desactiva todos los refresh tokens activos de un usuario, incrementando la
-     * versión de cada uno.
-     * 
+     * Desactiva todos los refresh tokens activos de un usuario, incrementando
+     * la versión de cada uno.
+     *
      * @param uuid UUID del usuario
      */
     public void deactivateAllByUserUuid(UUID uuid) {
@@ -142,7 +142,7 @@ public class RefreshTokenService {
 
     /**
      * Busca un refresh token en la base de datos.
-     * 
+     *
      * @param refreshToken Token a buscar
      * @return {@link Optional} con el token si existe
      */

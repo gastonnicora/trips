@@ -3,13 +3,12 @@ package com.gastonnicora.trips.exceptions;
 import org.springframework.http.HttpStatus;
 
 /**
- * Excepción personalizada de la aplicación utilizada para representar
- * recursos no encontrados (HTTP 404 - Not Found).
+ * Excepción personalizada de la aplicación utilizada para representar recursos
+ * no encontrados (HTTP 404 - Not Found).
  *
  * <p>
  * Se utiliza cuando un cliente solicita un recurso que no existe o ha sido
- * eliminado,
- * por ejemplo:
+ * eliminado, por ejemplo:
  * </p>
  * <ul>
  * <li>Buscar un usuario por ID inexistente</li>
@@ -20,17 +19,19 @@ import org.springframework.http.HttpStatus;
  *
  * <p>
  * Esta excepción se utiliza en conjunto con
- * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler}
- * para generar respuestas API estandarizadas.
+ * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler} para
+ * generar respuestas API estandarizadas.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-06
  */
 public class NotFoundException extends RuntimeException {
 
-    /** Código HTTP asociado al error (404 - Not Found) */
+    /**
+     * Código HTTP asociado al error (404 - Not Found)
+     */
     private final int status = HttpStatus.NOT_FOUND.value();
 
     /**

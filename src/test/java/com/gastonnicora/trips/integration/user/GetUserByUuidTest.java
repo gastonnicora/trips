@@ -1,13 +1,10 @@
 package com.gastonnicora.trips.integration.user;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.Set;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.enums.Role;
@@ -50,7 +49,7 @@ public class GetUserByUuidTest {
     }
 
     @Test
-    void shouldReturnOk_whenSuperAdminSeachAndUserExists() throws Exception {
+    void shouldReturnOk_whenSuperAdminSearchAndUserExists() throws Exception {
         userApi.getUser(user.getUuid().toString())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(user.getName()))
@@ -62,7 +61,7 @@ public class GetUserByUuidTest {
     }
 
     @Test
-    void shouldReturnOk_whenAdminSeachAndUserExists() throws Exception {
+    void shouldReturnOk_whenAdminSearchAndUserExists() throws Exception {
         userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
                 .andExpect(status().isOk());
         String tokenUser = UserTestFactory.login(mockMvc, user.getEmail(), userPassword).getToken();

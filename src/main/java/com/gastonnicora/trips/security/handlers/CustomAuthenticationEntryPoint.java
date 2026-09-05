@@ -16,8 +16,8 @@ import tools.jackson.databind.ObjectMapper;
  * Entry point personalizado para manejar errores de autenticación en Spring
  * Security.
  * <p>
- * Cuando un usuario no autenticado intenta acceder a un recurso protegido,
- * este entry point devuelve un JSON con mensaje de error y código HTTP 401
+ * Cuando un usuario no autenticado intenta acceder a un recurso protegido, este
+ * entry point devuelve un JSON con mensaje de error y código HTTP 401
  * (Unauthorized).
  * </p>
  * <p>
@@ -27,14 +27,16 @@ import tools.jackson.databind.ObjectMapper;
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    /** Mapper de Jackson para convertir objetos a JSON */
+    /**
+     * Mapper de Jackson para convertir objetos a JSON
+     */
     private final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Maneja la excepción de autenticación no válida o ausente.
-     * 
-     * @param request       Solicitud HTTP
-     * @param response      Respuesta HTTP
+     *
+     * @param request Solicitud HTTP
+     * @param response Respuesta HTTP
      * @param authException Excepción lanzada por Spring Security
      * @throws IOException si ocurre un error al escribir la respuesta JSON
      */

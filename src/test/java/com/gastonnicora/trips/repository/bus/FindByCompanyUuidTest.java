@@ -55,45 +55,46 @@ public class FindByCompanyUuidTest {
 
         assertTrue(found.isEmpty());
     }
-@Test
-void shouldFindByCompanyUuidIfExistMultiple() {
 
-    Company company = new Company(
-            "Test",
-            "Buenos Aires, Argentina",
-            -34.6037,
-            -58.3816,
-            "test@mail.com",
-            "123"
-    );
+    @Test
+    void shouldFindByCompanyUuidIfExistMultiple() {
 
-    company = companyRepository.save(company);
+        Company company = new Company(
+                "Test",
+                "Buenos Aires, Argentina",
+                -34.6037,
+                -58.3816,
+                "test@mail.com",
+                "123"
+        );
 
-    Bus bus = busRepository.save(
-            new Bus(company, "ABC123", "Model X", 50)
-    );
+        company = companyRepository.save(company);
 
-    Bus bus2 = busRepository.save(
-            new Bus(company, "DEF456", "Model Y", 60)
-    );
+        Bus bus = busRepository.save(
+                new Bus(company, "ABC123", "Model X", 50)
+        );
 
-    Bus bus3 = busRepository.save(
-            new Bus(company, "GHI789", "Model Z", 70)
-    );
+        Bus bus2 = busRepository.save(
+                new Bus(company, "DEF456", "Model Y", 60)
+        );
 
-    List<Bus> found =
-            busRepository.findAllByCompanyUuid(company.getUuid());
+        Bus bus3 = busRepository.save(
+                new Bus(company, "GHI789", "Model Z", 70)
+        );
 
-    assertEquals(3, found.size());
+        List<Bus> found
+                = busRepository.findAllByCompanyUuid(company.getUuid());
 
-    assertTrue(found.stream()
-            .anyMatch(b -> b.getUuid().equals(bus.getUuid())));
+        assertEquals(3, found.size());
 
-    assertTrue(found.stream()
-            .anyMatch(b -> b.getUuid().equals(bus2.getUuid())));
+        assertTrue(found.stream()
+                .anyMatch(b -> b.getUuid().equals(bus.getUuid())));
 
-    assertTrue(found.stream()
-            .anyMatch(b -> b.getUuid().equals(bus3.getUuid())));
-}
+        assertTrue(found.stream()
+                .anyMatch(b -> b.getUuid().equals(bus2.getUuid())));
+
+        assertTrue(found.stream()
+                .anyMatch(b -> b.getUuid().equals(bus3.getUuid())));
+    }
 
 }

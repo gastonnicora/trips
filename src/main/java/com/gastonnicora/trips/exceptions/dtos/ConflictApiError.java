@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Representa un error de recurso en conflicto (HTTP 409).
  * <p>
  * Se utiliza cuando el estado actual del recurso entra en conflicto con la
- * operación solicitada,
- * por ejemplo: intento de crear un usuario con un email ya registrado.
+ * operación solicitada, por ejemplo: intento de crear un usuario con un email
+ * ya registrado.
  * </p>
  *
  * <p>
@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *   "errors": null
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-06

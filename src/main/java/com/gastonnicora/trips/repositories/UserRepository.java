@@ -13,16 +13,16 @@ import com.gastonnicora.trips.enums.Role;
  * Repositorio para gestionar la entidad {@link User}.
  * <p>
  * Proporciona métodos para consultar usuarios por correo electrónico, UUID y
- * roles entre otras opciones.
- * Utiliza Spring Data JPA para el acceso a la base de datos.
+ * roles entre otras opciones. Utiliza Spring Data JPA para el acceso a la base
+ * de datos.
  * </p>
  */
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     /**
      * Busca un usuario por su correo electrónico y su estado de habilitación.
-     * 
-     * @param email   Correo electrónico
+     *
+     * @param email Correo electrónico
      * @param enabled Estado de habilitación
      * @return {@link Optional} con el usuario si existe
      */
@@ -30,15 +30,16 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     /**
      * Busca un usuario por su correo electrónico solo si está habilitado.
-     * 
+     *
      * @param email Correo electrónico
      * @return {@link Optional} con el usuario si existe y está habilitado
      */
     Optional<User> findByEmailAndEnabledTrue(String email);
 
     /**
-     * Verifica si existe un usuario habilitado con el correo electrónico indicado.
-     * 
+     * Verifica si existe un usuario habilitado con el correo electrónico
+     * indicado.
+     *
      * @param email Correo electrónico
      * @return true si existe, false en caso contrario
      */
@@ -47,7 +48,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     /**
      * Busca todos los usuarios con el correo electrónico indicado,
      * independientemente de su estado.
-     * 
+     *
      * @param email Correo electrónico
      * @return Lista de usuarios encontrados
      */
@@ -55,7 +56,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     /**
      * Busca un usuario por su UUID.
-     * 
+     *
      * @param uuid UUID del usuario
      * @return {@link Optional} con el usuario si existe
      */
@@ -63,7 +64,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     /**
      * Verifica si existe al menos un usuario con un rol específico.
-     * 
+     *
      * @param role Rol a verificar
      * @return true si hay usuarios con ese rol, false en caso contrario
      */

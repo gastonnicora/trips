@@ -7,10 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * Representa un error de solicitud incorrecta (HTTP 400).
  * <p>
- * Se utiliza cuando la petición no puede ser procesada debido a un error
- * del cliente que no está relacionado con validaciones de campos.
- * Hereda de {@link ApiError} y establece automáticamente el código de estado a
- * 400.
+ * Se utiliza cuando la petición no puede ser procesada debido a un error del
+ * cliente que no está relacionado con validaciones de campos. Hereda de
+ * {@link ApiError} y establece automáticamente el código de estado a 400.
  * </p>
  *
  * <p>
@@ -48,8 +47,8 @@ public class BadRequestApiError extends ApiError {
     }
 
     /**
-     * Constructor opcional si querés personalizar el mensaje.
-     * 
+     * Constructor con mensaje personalizado.
+     *
      * @param message Mensaje descriptivo del error
      */
     public BadRequestApiError(String message) {
