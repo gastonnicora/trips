@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.dtos.entities;
 
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,7 +43,7 @@ import lombok.ToString;
 @Schema(description = "DTO de autobús.")
 public class BusDTO {
     @Schema(description = "UUID del autobús.", example = "550e8400-e29b-41d4-a716-446655440000")
-    private String uuid;
+    private UUID uuid;
 
     @Schema(description = "DTO de la empresa", implementation = CompanyDTO.class)
     private CompanyDTO company;
