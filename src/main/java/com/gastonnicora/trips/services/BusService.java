@@ -27,7 +27,11 @@ public class BusService {
 
     public Bus findByUuid(UUID busUuid) {
 
-        return busRepository.findByUuid(busUuid).orElseThrow(() -> new NotFoundException("Bus no encontrado"));
+        Bus bus =busRepository.findByUuid(busUuid).orElseThrow(() -> new NotFoundException("Bus no encontrado"));
+        if (!bus.isActive()) {
+            throw new NotFoundException("Bus no encontrado");
+        }
+        return bus;
     }
 
     /**

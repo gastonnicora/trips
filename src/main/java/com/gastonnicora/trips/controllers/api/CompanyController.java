@@ -303,4 +303,25 @@ public class CompanyController {
         return companyService.createBus(companyUuid, busCreate);
     }
 
+    /**
+     * Elimina un bus de una empresa.
+     * <p>
+     * Este endpoint elimina un bus de una empresa por sus UUIDs.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa.
+     * @param busUuid UUID del bus.
+     * @see CompanyService#deleteBus(UUID, UUID)
+     */
+    @DeleteMapping ("/{companyUuid}/bus/{busUuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Eliminar bus de empresa", description = "Elimina un bus de una empresa por sus UUIDs")
+    public void deleteBus(@PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("busUuid") UUID busUuid) {
+        companyService.deleteBus(companyUuid, busUuid);
+    }
+
 }

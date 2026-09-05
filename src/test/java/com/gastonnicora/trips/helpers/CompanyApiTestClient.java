@@ -189,5 +189,14 @@ public class CompanyApiTestClient {
                 .header("User-Agent", "JUnit-Test")
                 .content(json));
     }
+    public ResultActions deleteBus(UUID companyUuid, UUID busUuid)
+            throws Exception {
+
+        return mockMvc.perform(delete(
+                "/api/companies/" + companyUuid + "/bus/" + busUuid)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test"));
+    }
 
 }
