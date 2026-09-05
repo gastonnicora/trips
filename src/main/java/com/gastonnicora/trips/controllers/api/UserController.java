@@ -189,7 +189,7 @@ public class UserController {
      * los datos del usuario.
      * </p>
      *
-     * @param userPutReques ({@link UserPut}) con los datos válidos para el
+     * @param userPutRequest ({@link UserPut}) con los datos válidos para el
      * nuevo usuario.
      * @return {@link UserDTO} con los datos actualizados del usuario.
      * @see UserService #updateCurrentUser(UserPut)
@@ -197,8 +197,8 @@ public class UserController {
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi usuario", description = "Modifica mi usuario")
-    public UserDTO updateUserProfile(@Valid @RequestBody UserPut userPutReques) {
-        return userService.updateCurrentUser(userPutReques);
+    public UserDTO updateUserProfile(@Valid @RequestBody UserPut userPutRequest) {
+        return userService.updateCurrentUser(userPutRequest);
     }
 
     /**
@@ -335,7 +335,7 @@ public class UserController {
      * @param uuid ({@link UUID}) del usuario a obtener.
      * @return {@link WorkersByUser} con los trabajos del usuario especificado.
      * @see UserService #getWorkersByUser(UUID)
-     */
+     */ 
     @GetMapping("/workers/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")

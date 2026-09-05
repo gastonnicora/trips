@@ -96,6 +96,9 @@ public class WorkerService {
      */
     public WorkersByUser getWorkersByUser(UUID user) {
         List<Worker> workers = workerRepository.findAllByUserUuid(user);
+        if (workers == null || workers.isEmpty()) {
+            throw new NotFoundException("El usuario no tiene trabajadores");
+        }
         return WorkerMapper.toWorkersByUserDTO(workers);
     }
 
