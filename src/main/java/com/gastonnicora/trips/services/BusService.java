@@ -9,6 +9,7 @@ import com.gastonnicora.trips.dtos.request.bus.BusCreate;
 import com.gastonnicora.trips.entities.Bus;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.exceptions.ConflictException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.BusMapper;
 import com.gastonnicora.trips.repositories.BusRepository;
 
@@ -39,6 +40,21 @@ public class BusService {
         }
         var bus = busRepository.save(new Bus(company, busCreate.getPlate(), busCreate.getModel(), busCreate.getCapacity()));
         return busMapper.toDTO(bus);
+    }
+
+    /**
+     * Elimina un bus asociado a una empresa.
+     *
+     * @param company  Empresa a la que está asociado el bus.
+     * @param plate    Placa del bus a eliminar.
+     * @throws NotFoundException si no existe un bus con la placa especificada para la empresa.
+     */
+    public void deleteBus(Company company, String plate) {
+        Optional<Bus> existingBus = busRepository.findByCompanyUuidAndPlate(company.getUuid(), plate);
+        if (existingBus.isEmpty()) {
+            throw new NotFoundException("No existe un bus con la placa especificada para esta empresa");
+        }
+        busRepository.delete(existingBus.get());
     }
 
 }

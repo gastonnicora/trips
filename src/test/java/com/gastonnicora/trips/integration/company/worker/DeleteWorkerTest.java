@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.integration.company;
+package com.gastonnicora.trips.integration.company.worker;
 
 import java.util.Set;
 import java.util.UUID;
@@ -32,7 +32,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class DeleteWorkerByCompanyTest {
+class DeleteWorkerTest {
 
     @Autowired
     private MockMvc mockMvc;

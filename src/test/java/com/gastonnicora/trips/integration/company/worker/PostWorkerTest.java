@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.integration.company;
+package com.gastonnicora.trips.integration.company.worker;
 
 import java.util.Set;
 import java.util.UUID;
@@ -34,7 +34,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class PostWorkerInCompanyTest {
+class PostWorkerTest {
 
     @Autowired
     private MockMvc mockMvc;

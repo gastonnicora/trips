@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.integration.user;
+package com.gastonnicora.trips.integration.user.worker;
 
 import java.util.Set;
 
