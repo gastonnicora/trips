@@ -392,4 +392,16 @@ public class CompanyService {
         Company company = this.getCompanyEntity(companyUuid);
         return busService.createBus(company, busCreate);
     }
+
+    /**
+     * Elimina un bus existente asociado a una empresa.
+     *
+     * @param companyUuid UUID de la empresa a la que está asociado el bus.
+     * @param busUuid UUID del bus a eliminar.
+     * @throws NotFoundException si no existe un bus con el UUID proporcionado.
+     */
+    public void deleteBus(UUID companyUuid, UUID busUuid) {
+        this.getCompanyEntity(companyUuid);
+        busService.deleteBus(busUuid);
+    }
 }

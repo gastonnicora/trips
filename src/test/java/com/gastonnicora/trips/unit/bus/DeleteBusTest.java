@@ -35,8 +35,8 @@ public class DeleteBusTest {
         Bus bus = new Bus();
         bus.setActive(true);
         bus.setCompany(company);
-        when(busRepository.findByCompanyUuidAndPlate(company.getUuid(), bus.getPlate())).thenReturn(Optional.of(bus));
-        busService.deleteBus(company, bus.getPlate());
+        when(busRepository.findByUuid(bus.getUuid())).thenReturn(Optional.of(bus));
+        busService.deleteBus(bus.getUuid());
         verify(busRepository).save(bus);
         assertFalse(bus.isActive());
     }
@@ -45,10 +45,11 @@ public class DeleteBusTest {
     void shouldNotDeleteBusIfNotFound() {
         Company company = new Company();
         company.setUuid(java.util.UUID.randomUUID());
-        String plate = "ABC123";
-        when(busRepository.findByCompanyUuidAndPlate(company.getUuid(), plate)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> busService.deleteBus(company, plate));
-        verify(busRepository).findByCompanyUuidAndPlate(company.getUuid(), plate);
+        Bus bus = new Bus();
+        bus.setCompany(company);
+        when(busRepository.findByUuid(bus.getUuid())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> busService.deleteBus(bus.getUuid()));
+        verify(busRepository).findByUuid(bus.getUuid());
         verify(busRepository, never()).save(new Bus());
     }
 }

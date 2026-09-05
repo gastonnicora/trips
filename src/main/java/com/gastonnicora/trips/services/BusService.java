@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.services;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,11 @@ public class BusService {
         this.busMapper = busMapper;
     }
 
+    public Bus findByUuid(UUID busUuid) {
+
+        return busRepository.findByUuid(busUuid).orElseThrow(() -> new NotFoundException("Bus no encontrado"));
+    }
+
     /**
      * Crea un nuevo bus asociado a una empresa.
      *
@@ -43,20 +49,15 @@ public class BusService {
     }
 
     /**
-     * Elimina un bus asociado a una empresa.
-     *
-     * @param company Empresa a la que está asociado el bus.
-     * @param plate Placa del bus a eliminar.
-     * @throws NotFoundException si no existe un bus con la placa especificada
-     * para la empresa.
+     * Elimina un bus existente marcándolo como inactivo.
+     * 
+     * @param busUuid UUID del bus a eliminar.
+     * @throws NotFoundException si no existe un bus con el UUID proporcionado.
      */
-    public void deleteBus(Company company, String plate) {
-        Optional<Bus> existingBus = busRepository.findByCompanyUuidAndPlate(company.getUuid(), plate);
-        if (existingBus.isEmpty()) {
-            throw new NotFoundException("No existe un bus con la placa especificada para esta empresa");
-        }
-        existingBus.get().setActive(false);
-        busRepository.save(existingBus.get());
+    public void deleteBus(UUID busUuid) {
+        Bus existingBus = findByUuid(busUuid);
+        existingBus.setActive(false);
+        busRepository.save(existingBus);
     }
 
 }
