@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gastonnicora.trips.dtos.entities.BusDTO;
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
+import com.gastonnicora.trips.dtos.request.bus.BusCreate;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.request.company.WorkerCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
@@ -278,6 +280,27 @@ public class CompanyController {
     public void deleteWorker(@PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("userUuid") UUID userUuid) {
         companyService.deleteWorker(userUuid, companyUuid);
+    }
+
+    /**
+     * Agrega un bus a una empresa.
+     * <p>
+     * Este endpoint agrega un bus a una empresa por sus uuids.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa.
+     * @param busCreate {@link BusCreate} con los datos del bus a agregar.
+     * @return {@link BusDTO} con los datos del bus agregado.
+     * @see CompanyService#createBus(UUID, BusCreate)
+     */
+    @PostMapping ("/{companyUuid}/bus")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Agregar bus a empresa", description = "Agrega un bus a una empresa por sus uuids")
+    public BusDTO createBus(@PathVariable("companyUuid") UUID companyUuid, @RequestBody @Valid BusCreate busCreate) {
+        return companyService.createBus(companyUuid, busCreate);
     }
 
 }

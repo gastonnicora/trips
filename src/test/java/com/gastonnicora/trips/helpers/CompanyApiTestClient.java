@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
+import com.gastonnicora.trips.dtos.request.bus.BusCreate;
 import com.gastonnicora.trips.dtos.request.company.WorkerCreate;
 import com.gastonnicora.trips.enums.RoleCompany;
 
@@ -170,6 +171,23 @@ public class CompanyApiTestClient {
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test"));
+    }
+
+    public ResultActions createBus(UUID companyUuid,String plate, String model, Integer capacity) throws Exception {
+
+        BusCreate body = new BusCreate(
+                plate,
+                model,
+                capacity
+        );
+
+        String json = objectMapper.writeValueAsString(body);
+
+        return mockMvc.perform(post("/api/companies/" + companyUuid + "/bus")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test")
+                .content(json));
     }
 
 }

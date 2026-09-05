@@ -6,8 +6,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.gastonnicora.trips.dtos.entities.BusDTO;
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
+import com.gastonnicora.trips.dtos.request.bus.BusCreate;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
@@ -45,6 +47,7 @@ public class CompanyService {
     private final CompanyMapper companyMapper;
     private final GeocodingService geocodingService;
     private final WorkerService workerService;
+    private final BusService busService;
 
     /**
      * Constructor que inicializa los servicios necesarios para la gestión de
@@ -60,12 +63,13 @@ public class CompanyService {
      * @param workerService Servicio de gestión de trabajadores.
      */
     public CompanyService(UserService userService, CompanyRepository companyRepository, CompanyMapper companyMapper,
-            GeocodingService geocodingService, WorkerService workerService) {
+            GeocodingService geocodingService, WorkerService workerService, BusService busService) {
         this.userService = userService;
         this.companyRepository = companyRepository;
         this.companyMapper = companyMapper;
         this.geocodingService = geocodingService;
         this.workerService = workerService;
+        this.busService = busService;
     }
 
     /**
@@ -372,4 +376,17 @@ public class CompanyService {
         return workerService.updateWorker(userUuid, companyUuid, roles);
     }
 
+    /**
+     * Crea un nuevo bus asociado a una empresa.
+     *
+     * @param companyUuid UUID de la empresa a la que se asociará el bus.
+     * @param busCreate DTO que contiene los datos del bus a crear.
+     * @return DTO del bus creado.
+     * @throws ConflictException si ya existe un bus con la misma placa para la
+     * empresa.
+     */
+    public BusDTO createBus(UUID companyUuid, BusCreate busCreate) {
+        Company company = this.getCompanyEntity(companyUuid);
+        return busService.createBus(company, busCreate);
+    }
 }

@@ -1,7 +1,6 @@
 package com.gastonnicora.trips.services;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -17,26 +16,23 @@ import com.gastonnicora.trips.repositories.BusRepository;
 public class BusService {
     
     private final BusRepository busRepository;
-    private final CompanyService companyService;
     private final BusMapper busMapper ;
 
 
-    public BusService(BusRepository busRepository, CompanyService companyService,BusMapper busMapper) {
+    public BusService(BusRepository busRepository,BusMapper busMapper) {
         this.busRepository = busRepository;
-        this.companyService = companyService;
         this.busMapper = busMapper;
     }
 
     /**
      * Crea un nuevo bus asociado a una empresa.
      *
-     * @param companyId  UUID de la empresa a la que se asociará el bus.
+     * @param company  Empresa a la que se asociará el bus.
      * @param busCreate  DTO que contiene los datos del bus a crear.
      * @return           DTO del bus creado.
      * @throws ConflictException si ya existe un bus con la misma placa para la empresa.
      */
-    public BusDTO createBus(UUID companyId, BusCreate busCreate) {
-        Company company = companyService.getCompanyEntity(companyId);
+    public BusDTO createBus(Company company, BusCreate busCreate) {
         Optional<Bus> existingBus = busRepository.findByCompanyUuidAndPlate(company.getUuid(), busCreate.getPlate());
         if (existingBus.isPresent()) {
             throw new ConflictException("Ya existe un bus con la misma placa para esta empresa");

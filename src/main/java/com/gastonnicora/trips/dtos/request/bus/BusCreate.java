@@ -3,6 +3,7 @@ package com.gastonnicora.trips.dtos.request.bus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class BusCreate {
     @Schema(description = "Modelo del bus", example = "Model X")
     private String model;
 
-    @NotBlank(message = "Debe introducir la capacidad del bus")
+    @NotNull (message = "Debe introducir la capacidad del bus")
     @Min(value = 1, message = "La capacidad del bus debe ser mayor a 0")
     @Schema(description = "Cantidad de asientos del bus", example = "50")
     private Integer capacity;
