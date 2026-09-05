@@ -1,5 +1,6 @@
 package com.gastonnicora.trips.dtos.entities;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -58,10 +59,10 @@ public class BusDTO {
     private int capacity;
 
     @Schema(description = "Fecha de creación del autobús.", example = "2026-01-01T00:00:00")
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @Schema(description = "Fecha de actualización del autobús.", example = "2026-01-01T00:00:00")
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
     @Schema(description = "Indica si el autobús está activo.", example = "true")
     private boolean active;

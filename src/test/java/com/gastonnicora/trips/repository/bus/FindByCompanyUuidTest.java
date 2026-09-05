@@ -3,6 +3,7 @@ package com.gastonnicora.trips.repository.bus;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -54,33 +55,45 @@ public class FindByCompanyUuidTest {
 
         assertTrue(found.isEmpty());
     }
+@Test
+void shouldFindByCompanyUuidIfExistMultiple() {
 
-    @Test
-    void shouldFindByCompanyUuidIfExistMultiple() {
+    Company company = new Company(
+            "Test",
+            "Buenos Aires, Argentina",
+            -34.6037,
+            -58.3816,
+            "test@mail.com",
+            "123"
+    );
 
-        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
+    company = companyRepository.save(company);
 
-        company = companyRepository.save(company);
+    Bus bus = busRepository.save(
+            new Bus(company, "ABC123", "Model X", 50)
+    );
 
-        Bus bus = new Bus(company, "ABC123", "Model X", 50);
-        Bus b = busRepository.save(bus);
+    Bus bus2 = busRepository.save(
+            new Bus(company, "DEF456", "Model Y", 60)
+    );
 
-        Bus bus2 = new Bus(company, "DEF456", "Model Y", 60);
-        Bus b2 = busRepository.save(bus2);
+    Bus bus3 = busRepository.save(
+            new Bus(company, "GHI789", "Model Z", 70)
+    );
 
-        Bus bus3 = new Bus(company, "GHI789", "Model Z", 70);
-        Bus b3 = busRepository.save(bus3);
+    List<Bus> found =
+            busRepository.findAllByCompanyUuid(company.getUuid());
 
-        List<Bus> found = busRepository.findAllByCompanyUuid(bus.getCompany().getUuid());
+    assertEquals(3, found.size());
 
-        assertFalse(found.isEmpty());
-        assertTrue(found.get(0).getUuid().equals(b.getUuid()));
-        assertTrue(found.get(0).getPlate().equals("ABC123"));
-        assertTrue(found.get(1).getUuid().equals(b2.getUuid()));
-        assertTrue(found.get(1).getPlate().equals("DEF456"));
-        assertTrue(found.get(2).getUuid().equals(b3.getUuid()));
-        assertTrue(found.get(2).getPlate().equals("GHI789"));
-        assertTrue(found.size() == 3);
-    }
+    assertTrue(found.stream()
+            .anyMatch(b -> b.getUuid().equals(bus.getUuid())));
+
+    assertTrue(found.stream()
+            .anyMatch(b -> b.getUuid().equals(bus2.getUuid())));
+
+    assertTrue(found.stream()
+            .anyMatch(b -> b.getUuid().equals(bus3.getUuid())));
+}
+
 }

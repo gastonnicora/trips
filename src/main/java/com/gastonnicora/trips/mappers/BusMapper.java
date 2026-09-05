@@ -31,13 +31,13 @@ public class BusMapper {
     public BusDTO toDTO(Bus bus) {
 
         return new BusDTO(
-                bus.getUuid().toString(),
+                bus.getUuid(),
                 companyMapper.toDTO(bus.getCompany()),
                 bus.getPlate(),
                 bus.getModel(),
                 bus.getCapacity(),
-                bus.getCreatedAt().toString(),
-                bus.getUpdatedAt().toString(),
+                bus.getCreatedAt(),
+                bus.getUpdatedAt(),
                 bus.isActive());
     }
  
