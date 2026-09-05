@@ -111,38 +111,19 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.3.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>javadoc</goal>
-						</goals>
-						<configuration>
-							<doclet>com.sun.tools.javadoc.Main</doclet>
-							<additionalJoptions>
-								<additionalJoption>-Xdoclint:none</additionalJoption>
-							</additionalJoptions>
-							<sourcePath>${project.basedir}/src/main/java</sourcePath>
-							<useDefaultExcludes>false</useDefaultExcludes>
-							<links>
-								<link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
-							</links>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.6.3</version>
 				<configuration>
-					<!-- Guarda la web del Javadoc en la carpeta docs de la raíz -->
 					<reportOutputDirectory>${project.basedir}</reportOutputDirectory>
 					<destDir>docs</destDir>
+					<source>17</source>
+					<doclint>none</doclint>
+					<links>
+						<link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
+					</links>
 				</configuration>
 				<executions>
 					<execution>
-						<id>attach-javadocs</id>
+						<id>generate-javadocs</id>
 						<phase>package</phase>
 						<goals>
 							<goal>javadoc</goal>
@@ -151,10 +132,11 @@
 				</executions>
 			</plugin>
 
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.12</version> 
+				<version>0.8.12</version>
 				<executions>
 					<execution>
 						<goals>

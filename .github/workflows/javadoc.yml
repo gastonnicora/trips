@@ -24,10 +24,10 @@ jobs:
           cache: maven
 
       - name: Generate Javadoc
-        run: mvn javadoc:javadoc
+        run: mvn package -DskipTests
 
       - name: Deploy Javadoc
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/site/apidocs
+          publish_dir: ./docs
