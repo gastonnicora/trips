@@ -1,13 +1,10 @@
 package com.gastonnicora.trips.integration.company;
 
 import static org.hamcrest.Matchers.hasItems;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -15,6 +12,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.UserDTO;
@@ -90,6 +89,17 @@ public class GetCompaniesByCurrentUserTest {
                 .andExpect(jsonPath("$.data[*].name", hasItems(company.getName(), company2.getName())))
                 .andExpect(jsonPath("$.data[*].email", hasItems(company.getEmail(), company2.getEmail())))
                 .andExpect(jsonPath("$.total").value(2));
+    }
+     @Test
+    void shouldReturnOk_whenUserDontHaveCompany() throws Exception {
+         this.user = UserTestFactory.registerUser(mockMvc, "User", password);
+        this.email = user.getEmail();
+        this.token = UserTestFactory.login(mockMvc, email, password).getToken();
+        this.companyApi = this.companyApi.withToken(token);
+        companyApi.getCompaniesByCurrentUser()
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isEmpty())
+                .andExpect(jsonPath("$.total").value(0));
     }
 
     @Test

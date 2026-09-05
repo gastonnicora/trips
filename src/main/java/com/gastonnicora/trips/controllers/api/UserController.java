@@ -189,7 +189,7 @@ public class UserController {
      * los datos del usuario.
      * </p>
      *
-     * @param userPutReques ({@link UserPut}) con los datos válidos para el
+     * @param userPutRequest ({@link UserPut}) con los datos válidos para el
      * nuevo usuario.
      * @return {@link UserDTO} con los datos actualizados del usuario.
      * @see UserService #updateCurrentUser(UserPut)
@@ -197,8 +197,8 @@ public class UserController {
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Modificar mi usuario", description = "Modifica mi usuario")
-    public UserDTO updateUserProfile(@Valid @RequestBody UserPut userPutReques) {
-        return userService.updateCurrentUser(userPutReques);
+    public UserDTO updateUserProfile(@Valid @RequestBody UserPut userPutRequest) {
+        return userService.updateCurrentUser(userPutRequest);
     }
 
     /**
@@ -312,36 +312,6 @@ public class UserController {
     @Operation(summary = "Obtener trabajos del usuario actual", description = "Obtiene los trabajos asociados al usuario actual")
     public WorkersByUser getWorkersByCurrentUser() {
         return userService.getWorkersByCurrentUser();
-    }
-
-    /**
-     * Obtiene los trabajos asociados a un usuario por su UUID.
-     * <p>
-     * <strong>Requiere autenticación y autorización</strong>
-     * </p>
-     * <p>
-     * <strong>Importante:</strong> Este endpoint solo es accesible para
-     * usuarios con roles "ADMIN", "SUPER_ADMIN" o "HR_MANAGER".
-     * </p>
-     * <p>
-     * Este endpoint obtiene los trabajos asociados a un usuario por su UUID. Se
-     * realiza la validación de los datos antes de obtener los trabajos.
-     * </p>
-     * <p>
-     * Este endpoint hace uso del servicio {@link UserService} para obtener los
-     * trabajos del usuario especificado.
-     * </p>
-     *
-     * @param uuid ({@link UUID}) del usuario a obtener.
-     * @return {@link WorkersByUser} con los trabajos del usuario especificado.
-     * @see UserService #getWorkersByUser(UUID)
-     */
-    @GetMapping("/workers/{uuid}")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
-    @Operation(summary = "Obtener trabajos de un usuario", description = "Obtiene los trabajos asociados a un usuario por su uuid")
-    public WorkersByUser getWorkersByUser(@PathVariable UUID uuid) {
-        return userService.getWorkersByUser(uuid);
     }
 
 }

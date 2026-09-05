@@ -54,6 +54,6 @@ public class InternalServerErrorApiError extends ApiError {
      * @param message Mensaje específico del error
      */
     public InternalServerErrorApiError(String message) {
-        super(HttpStatus.NOT_FOUND.value(), message);
+        super(HttpStatus.INTERNAL_SERVER_ERROR.value(), message);
     }
 }

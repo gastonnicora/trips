@@ -15,11 +15,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.NotFoundException;
+import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.UserService;
@@ -33,6 +35,9 @@ class GetWorkersTest {
 
     @Mock
     private CompanyRepository companyRepository;
+
+    @Mock
+    private CompanyMapper companyMapper;
 
     @Mock
     private UserService userService;
@@ -65,10 +70,14 @@ class GetWorkersTest {
         );
         user.setUuid(userUuid);
 
+        CompanyDTO companyDTO = new CompanyDTO();
         WorkerDTO expectedWorker = new WorkerDTO();
 
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(Optional.of(company));
+
+        when(companyMapper.toDTO(company))
+                .thenReturn(companyDTO);
 
         when(userService.getUser(userUuid))
                 .thenReturn(user);
@@ -88,6 +97,9 @@ class GetWorkersTest {
 
         verify(companyRepository)
                 .findByUuid(companyUuid);
+
+        verify(companyMapper)
+                .toDTO(company);
 
         verify(userService)
                 .getUser(userUuid);
@@ -133,6 +145,9 @@ class GetWorkersTest {
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(Optional.of(company));
 
+        when(companyMapper.toDTO(company))
+                .thenReturn(new CompanyDTO());
+
         when(userService.getUser(userUuid))
                 .thenThrow(new NotFoundException("User not found"));
 
@@ -144,8 +159,10 @@ class GetWorkersTest {
         verify(companyRepository)
                 .findByUuid(companyUuid);
 
+        verify(companyMapper)
+                .toDTO(company);
+
         verify(userService)
                 .getUser(userUuid);
     }
-
 }

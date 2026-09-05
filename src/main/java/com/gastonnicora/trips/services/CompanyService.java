@@ -303,37 +303,37 @@ public class CompanyService {
         return workerService.getWorkerByUserAndCompany(userUuid, companyUuid);
     }
 
-    /**
-     * Crea un nuevo trabajador en una empresa.
-     *
-     * @param userUuid UUID del usuario que se quiere agregar como trabajador.
-     * @param companyUuid UUID de la empresa a la que se quiere agregar el
-     * trabajador.
-     * @param roles Set de {@link RoleCompany} que se le asignarán al trabajador.
-     * @return {@link WorkerDTO} Datos del trabajador creado.
-     * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
-     * asignar el rol de OWNER.
-     * @throws ConflictException Si el usuario ya es trabajador de la empresa.
-     */
-    public WorkerDTO createWorker(UUID userUuid, UUID companyUuid, Set<RoleCompany> roles) {
-        Company company = this.getCompanyEntity(companyUuid);
-        User user = userService.getUser(userUuid);
+        /**
+         * Crea un nuevo trabajador en una empresa.
+         *
+         * @param userUuid UUID del usuario que se quiere agregar como trabajador.
+         * @param companyUuid UUID de la empresa a la que se quiere agregar el
+         * trabajador.
+         * @param roles Set de {@link RoleCompany} que se le asignarán al trabajador.
+         * @return {@link WorkerDTO} Datos del trabajador creado.
+         * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
+         * asignar el rol de OWNER.
+         * @throws ConflictException Si el usuario ya es trabajador de la empresa.
+         */
+        public WorkerDTO createWorker(UUID userUuid, UUID companyUuid, Set<RoleCompany> roles) {
+            Company company = this.getCompanyEntity(companyUuid);
+            User user = userService.getUser(userUuid);
 
-        if (workerService.getWorkersByCompany(companyUuid).getWorkers().stream()
-                .anyMatch(worker -> worker.getUser().getUuid().equals(userUuid))) {
-            throw new ConflictException("El usuario ya es trabajador de la empresa");
+            if (workerService.getWorkersByCompany(companyUuid).getWorkers().stream()
+                    .anyMatch(worker -> worker.getUser().getUuid().equals(userUuid))) {
+                throw new ConflictException("El usuario ya es trabajador de la empresa");
+            }
+
+            if (roles == null || roles.isEmpty()) {
+                throw new BadRequestException("Se debe asignar al menos un rol al trabajador");
+            }
+
+            if (roles.contains(RoleCompany.OWNER)) {
+                throw new BadRequestException("No se puede asignar el rol de OWNER a un trabajador");
+            }
+
+            return workerService.createWorker(user, company, roles);
         }
-
-        if (roles == null || roles.isEmpty()) {
-            throw new BadRequestException("Se debe asignar al menos un rol al trabajador");
-        }
-
-        if (roles.contains(RoleCompany.OWNER)) {
-            throw new BadRequestException("No se puede asignar el rol de OWNER a un trabajador");
-        }
-
-        return workerService.createWorker(user, company, roles);
-    }
 
     /**
      * Elimina un trabajador de una empresa.
