@@ -198,7 +198,7 @@ public class CompanyController {
      * @param workerCreate {@link WorkerCreate} con los datos del trabajador a
      * agregar.
      * @return {@link WorkerDTO} con los datos del trabajador agregado.
-     * @see CompanyService #createWorker(UUID, UUID, Set<RoleCompany>)
+     * @see CompanyService#createWorker(UUID, UUID, Set<RoleCompany>)
      */
     @PostMapping("/{uuid}/worker")
     @SecurityRequirement(name = "bearerAuth")

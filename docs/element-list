@@ -3,6 +3,7 @@ com.gastonnicora.trips.config
 com.gastonnicora.trips.controllers.api
 com.gastonnicora.trips.dtos.entities
 com.gastonnicora.trips.dtos.request.auth
+com.gastonnicora.trips.dtos.request.bus
 com.gastonnicora.trips.dtos.request.company
 com.gastonnicora.trips.dtos.request.user
 com.gastonnicora.trips.dtos.response
