@@ -84,7 +84,7 @@ public class CompanyController {
      * @param company ({@link CompanyCreate}) con los datos válidos para la
      * nueva empresa.
      * @return {@link CompanyDTO} con los datos de la empresa recién creada.
-     * @see CompanyService #createCompany(CompanyCreate)
+     * @see CompanyService#createCompany(CompanyCreate)
      */
     @PostMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -100,7 +100,7 @@ public class CompanyController {
      *
      * @param uuid UUID de la empresa que se quiere obtener.
      * @return CompanyDTO con los detalles de la empresa.
-     * @see CompanyService #getCompany(UUID)
+     * @see CompanyService#getCompany(UUID)
      */
     @GetMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
@@ -117,7 +117,7 @@ public class CompanyController {
      *
      * @param uuid UUID del usuario.
      * @return Lista de empresas del usuario.
-     * @see CompanyService #getCompaniesByUser(UUID)
+     * @see CompanyService#getCompaniesByUser(UUID)
      */
     @GetMapping("/owner/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
@@ -134,7 +134,7 @@ public class CompanyController {
      * </p>
      *
      * @return Lista de empresas del usuario actual.
-     * @see CompanyService #getCompaniesByCurrentUser()
+     * @see CompanyService#getCompaniesByCurrentUser()
      */
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
@@ -155,7 +155,7 @@ public class CompanyController {
      * @param uuid UUID de la empresa que se quiere actualizar.
      * @param company {@link CompanyCreate} con los nuevos datos de la empresa.
      * @return CompanyDTO con los detalles de la empresa actualizada.
-     * @see CompanyService #updateCompany(UUID, CompanyCreate)
+     * @see CompanyService#updateCompany(UUID, CompanyCreate)
      */
     @PutMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
@@ -178,7 +178,7 @@ public class CompanyController {
      * </p>
      *
      * @param uuid UUID de la empresa que se quiere eliminar.
-     * @see CompanyService #deleteCompany(UUID)
+     * @see CompanyService#deleteCompany(UUID)
      */
     @DeleteMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
@@ -198,7 +198,7 @@ public class CompanyController {
      * @param workerCreate {@link WorkerCreate} con los datos del trabajador a
      * agregar.
      * @return {@link WorkerDTO} con los datos del trabajador agregado.
-     * @see CompanyService #createWorker(UUID, UUID, Set<RoleCompany>)
+     * @see CompanyService#createWorker(UUID, UUID, Set<RoleCompany>)
      */
     @PostMapping("/{uuid}/worker")
     @SecurityRequirement(name = "bearerAuth")

@@ -94,11 +94,11 @@ public class CompanyService {
      * empresa.
      * @return {@link CompanyDTO} Datos de la nueva empresa creada.
      * @throws BadRequestException Si la dirección no es válida.
-     * @see UserService #getUser(java.util.UUID)
-     * @see GeocodingService #obtenerDireccion(double, double)
-     * @see WorkerService #createWorker(User, Company, Set)
-     * @see CompanyMapper #toDTO(Company)
-     * @see CompanyRepository #save(Company)
+     * @see UserService#getUser(java.util.UUID)
+     * @see GeocodingService#obtenerDireccion(double, double)
+     * @see WorkerService#createWorker(User, Company, Set)
+     * @see CompanyMapper#toDTO(Company)
+     * @see CompanyRepository#save(Company)
      */
     public CompanyDTO createCompany(CompanyCreate companyCreate) {
         User currentUser = userService.getUser(getCurrentUserUuid());
@@ -134,8 +134,8 @@ public class CompanyService {
      * @param uuid UUID de la empresa que se quiere obtener.
      * @return {@link CompanyDTO} Datos de la empresa con el UUID especificado.
      * @throws BadRequestException Si la empresa no existe.
-     * @see CompanyRepository #findByUuid(UUID)
-     * @see CompanyMapper #toDTO(Company)
+     * @see CompanyRepository#findByUuid(UUID)
+     * @see CompanyMapper#toDTO(Company)
      * @see BadRequestException
      */
     public CompanyDTO getCompany(UUID uuid) {
@@ -153,7 +153,7 @@ public class CompanyService {
      *
      * @param uuid UUID del usuario.
      * @return Lista de empresas del usuario.
-     * @see CompanyRepository #findAllByOwner_Uuid(UUID)
+     * @see CompanyRepository#findAllByOwner_Uuid(UUID)
      */
     public ListResponse<CompanyDTO> getCompaniesByUser(UUID uuid) {
         return getCompaniesByOwner(uuid);
@@ -174,7 +174,7 @@ public class CompanyService {
      * @return Lista de empresas del usuario actual.
      *
      * @see ListResponse
-     * @see SecurityUtils #getCurrentUserUuid()
+     * @see SecurityUtils#getCurrentUserUuid()
      * @see #getCompaniesByOwner(UUID)
      */
     public ListResponse<CompanyDTO> getCompaniesByCurrentUser() {
@@ -210,8 +210,8 @@ public class CompanyService {
      * @throws NotFoundException Si la empresa no existe.
      * @throws BadRequestException Si el usuario no es el dueño de la empresa.
      * @throws BadRequestException Si la dirección no es válida.
-     * @see CompanyMapper #toDTO(Company)
-     * @see CompanyRepository #findByUuid(UUID)
+     * @see CompanyMapper#toDTO(Company)
+     * @see CompanyRepository#findByUuid(UUID)
      */
     @Transactional
     public CompanyDTO updateCompany(UUID uuid, CompanyCreate companyCreate) {
@@ -249,7 +249,7 @@ public class CompanyService {
      * @param uuid UUID de la empresa que se quiere eliminar.
      * @throws NotFoundException con mensaje descriptivo.
      * @throws BadRequestException con mensaje descriptivo.
-     * @see CompanyRepository #findByUuid(UUID)
+     * @see CompanyRepository#findByUuid(UUID)
      */
     @Transactional
     public void deleteCompany(UUID uuid) {
@@ -271,10 +271,10 @@ public class CompanyService {
      * </ul>
      *
      * @return Lista de empresas del usuario.
-     * @see CompanyRepository #findAllByOwner_Uuid(UUID)
-     * @see CompanyMapper #toDTOList(List)
+     * @see CompanyRepository#findAllByOwner_Uuid(UUID)
+     * @see CompanyMapper#toDTOList(List)
      * @see ListResponse
-     * @see WorkerService #getWorkersByOwner(UUID)
+     * @see WorkerService#getWorkersByOwner(UUID)
      */
     private ListResponse<CompanyDTO> getCompaniesByOwner(UUID uuid) {
         List<Company> companies = workerService.getWorkersByOwner(uuid).stream()
@@ -289,6 +289,8 @@ public class CompanyService {
      * @param companyUuid UUID de la empresa.
      * @return {@link WorkersByCompany} con los datos de la empresa y todos sus
      * trabajadores.
+     * @see WorkerService#getWorkersByCompany(UUID)
+     * @see CompanyService#getCompanyEntity(UUID)
      */
     public WorkersByCompany getWorkersByCompany(UUID companyUuid) {
         this.getCompany(companyUuid);
@@ -300,6 +302,8 @@ public class CompanyService {
      *
      * @param userUuid UUID del usuario.
      * @return {@link WorkerDTO} con los datos del usuario y la empresa.
+     * @see WorkerService#getWorkerByUserAndCompany(UUID, UUID)
+     * @see CompanyService#getCompanyEntity(UUID)
      */
     public WorkerDTO getWorker(UUID userUuid, UUID companyUuid) {
         this.getCompany(companyUuid);
@@ -319,6 +323,8 @@ public class CompanyService {
      * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
      * asignar el rol de OWNER.
      * @throws ConflictException Si el usuario ya es trabajador de la empresa.
+     * @see WorkerService#createWorker(User, Company, Set)
+     * @see CompanyService#getCompanyEntity(UUID)
      */
     public WorkerDTO createWorker(UUID userUuid, UUID companyUuid, Set<RoleCompany> roles) {
         Company company = this.getCompanyEntity(companyUuid);
@@ -346,6 +352,10 @@ public class CompanyService {
      * @param userUuid UUID del usuario que se quiere eliminar como trabajador.
      * @param companyUuid UUID de la empresa de la que se quiere eliminar el
      * trabajador.
+     * @throws NotFoundException Si el usuario no es trabajador de la empresa.
+     * @see WorkerService#deleteWorker(UUID, UUID)
+     * @see CompanyService#getCompanyEntity(UUID)
+     * @see UserService#getUser(UUID)
      */
     public void deleteWorker(UUID userUuid, UUID companyUuid) {
         this.getCompanyEntity(companyUuid);
@@ -365,6 +375,8 @@ public class CompanyService {
      * @return {@link WorkerDTO} Datos del trabajador actualizado.
      * @throws BadRequestException Si no se asigna ningún rol, o si se intenta
      * asignar el rol de OWNER.
+     * @see WorkerService#updateWorker(UUID, UUID, Set)
+     * @see CompanyService#getCompanyEntity(UUID)
      */
     public WorkerDTO updateWorker(UUID userUuid, UUID companyUuid, Set<RoleCompany> roles) {
         this.getCompanyEntity(companyUuid);
@@ -387,6 +399,8 @@ public class CompanyService {
      * @return DTO del bus creado.
      * @throws ConflictException si ya existe un bus con la misma placa para la
      * empresa.
+     * @see BusService#createBus(Company, BusCreate)
+     * @see CompanyService#getCompanyEntity(UUID)
      */
     public BusDTO createBus(UUID companyUuid, BusCreate busCreate) {
         Company company = this.getCompanyEntity(companyUuid);
@@ -399,6 +413,8 @@ public class CompanyService {
      * @param companyUuid UUID de la empresa a la que está asociado el bus.
      * @param busUuid UUID del bus a eliminar.
      * @throws NotFoundException si no existe un bus con el UUID proporcionado.
+     * @see CompanyService#getCompanyEntity(UUID)
+     * @see BusService#deleteBus(UUID)
      */
     public void deleteBus(UUID companyUuid, UUID busUuid) {
         this.getCompanyEntity(companyUuid);
