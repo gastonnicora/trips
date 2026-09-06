@@ -323,5 +323,6 @@ public class CompanyController {
             @PathVariable("busUuid") UUID busUuid) {
         companyService.deleteBus(companyUuid, busUuid);
     }
+    //TODO: Agregar endpoint para obtener todas las empresas
 
 }
