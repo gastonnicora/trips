@@ -15,7 +15,9 @@ import com.gastonnicora.trips.security.UserDetailsImpl;
  * autenticado en el contexto de Spring Security.
  * </p>
  *
- * Autor: Gastón Versión: 1.0 Desde: 2026-05-04
+ * @author Gastón 
+ * @version 1.0 
+ * @since 2026-05-04
  */
 public class SecurityUtils {
 

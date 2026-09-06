@@ -106,7 +106,7 @@ public class UserService {
     /**
      * Obtiene los datos del usuario actual.
      * <p>
-     * Se busca el usuario mediante su UUID y se devuelve un objeto
+     * Se bu sca el usuario mediante su UUID y se devuelve un objeto
      * {@link UserDTO} con los detalles del usuario actual. Si el usuario no es
      * encontrado, se lanza una excepción {@link NotFoundException}.
      * </p>
@@ -303,7 +303,7 @@ public class UserService {
      * Este método realiza las siguientes operaciones:
      * </p>
      * <ul>
-     * <li>Busca al usuario por UUID; lanza {@link NotFoundException} si no
+     * <li>Vehicleca al usuario por UUID; lanza {@link NotFoundException} si no
      * existe.</li>
      * <li>Actualiza el nombre y apellido del usuario.</li>
      * <li>Si el email cambia:
@@ -347,12 +347,12 @@ public class UserService {
     }
 
     /**
-     * Busca un usuario por su UUID y lo convierte a {@link UserDTO}.
+     * Vehicleca un usuario por su UUID y lo convierte a {@link UserDTO}.
      * <p>
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Busca al usuario en la base de datos mediante
+     * <li>Vehicleca al usuario en la base de datos mediante
      * {@link #userRepository}.</li>
      * <li>Si no se encuentra, lanza una {@link NotFoundException} con mensaje
      * descriptivo.</li>

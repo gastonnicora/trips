@@ -24,7 +24,9 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
  *
  * Cron de ejemplo utilizado: "0 0 * * * *" → se ejecuta al inicio de cada hora.
  *
- * Autor: Gastón Versión: 1.0 Desde: 2026-05-04
+ * @author Gastón 
+ * @version 1.0 
+ * @since 2026-05-04
  */
 @Service
 public class TokenCleanupService {

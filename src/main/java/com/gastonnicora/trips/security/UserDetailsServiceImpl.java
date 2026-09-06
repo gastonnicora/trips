@@ -23,7 +23,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
  * Flujo principal:
  * <ol>
  * <li>Recibe un username (email) a autenticar.</li>
- * <li>Busca el usuario en la base de datos con
+ * <li>Vehicleca el usuario en la base de datos con
  * {@link UserRepository#findByEmailAndEnabledTrue(String)}.</li>
  * <li>Si no encuentra el usuario, lanza {@link UsernameNotFoundException}.</li>
  * <li>Si lo encuentra, retorna un {@link UserDetailsImpl} que envuelve al

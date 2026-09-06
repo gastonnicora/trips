@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.repository.bus;
+package com.gastonnicora.trips.repository.vehicle;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -11,9 +11,9 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.entities.Bus;
+import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.repositories.BusRepository;
+import com.gastonnicora.trips.repositories.VehicleRepository;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 
 @ActiveProfiles("test")
@@ -22,7 +22,7 @@ import com.gastonnicora.trips.repositories.CompanyRepository;
 public class FindByUuidTest {
 
     @Autowired
-    private BusRepository busRepository;
+    private VehicleRepository vehicleRepository;
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -35,11 +35,11 @@ public class FindByUuidTest {
 
         company = companyRepository.save(company);
 
-        Bus bus = new Bus(company, "ABC123", "Model X", 50);
+        Vehicle vehicle = new Vehicle(company, "ABC123", "Model X", 50);
 
-        Bus b = busRepository.save(bus);
+        Vehicle b = vehicleRepository.save(vehicle);
 
-        Optional<Bus> found = busRepository.findByUuid(bus.getUuid());
+        Optional<Vehicle> found = vehicleRepository.findByUuid(vehicle.getUuid());
 
         assertTrue(found.isPresent());
         assertTrue(found.get().getUuid().equals(b.getUuid()));
@@ -50,7 +50,7 @@ public class FindByUuidTest {
     @Test
     void shouldFindByUuidIfNotExist() {
 
-        Optional<Bus> found = busRepository.findByUuid(UUID.randomUUID());
+        Optional<Vehicle> found = vehicleRepository.findByUuid(UUID.randomUUID());
 
         assertFalse(found.isPresent());
     }
@@ -63,10 +63,10 @@ public class FindByUuidTest {
 
         company = companyRepository.save(company);
 
-        Bus bus = new Bus(company, "ABC123", "Model X", 50);
-        Bus b = busRepository.save(bus);
+        Vehicle vehicle = new Vehicle(company, "ABC123", "Model X", 50);
+        Vehicle b = vehicleRepository.save(vehicle);
 
-        Optional<Bus> found = busRepository.findById(b.getUuid());
+        Optional<Vehicle> found = vehicleRepository.findById(b.getUuid());
 
         assertTrue(found.isPresent());
         assertTrue(found.get().getUuid().equals(b.getUuid()));

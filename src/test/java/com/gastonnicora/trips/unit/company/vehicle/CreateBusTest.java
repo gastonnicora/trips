@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.unit.company.bus;
+package com.gastonnicora.trips.unit.company.vehicle;
 
 import java.util.UUID;
 
@@ -14,31 +14,31 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gastonnicora.trips.dtos.entities.BusDTO;
-import com.gastonnicora.trips.dtos.request.bus.BusCreate;
+import com.gastonnicora.trips.dtos.entities.VehicleDTO;
+import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.exceptions.ConflictException;
 import com.gastonnicora.trips.repositories.CompanyRepository;
-import com.gastonnicora.trips.services.BusService;
+import com.gastonnicora.trips.services.VehicleService;
 import com.gastonnicora.trips.services.CompanyService;
 
 @ExtendWith(MockitoExtension.class)
-class CreateBusTest {
+class CreateVehicleTest {
 
     @InjectMocks
     private CompanyService companyService;
 
     @Mock
-    private BusService busService;
+    private VehicleService vehicleService;
 
     @Mock
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldCreateBusSuccessfully() {
+    void shouldCreateVehicleSuccessfully() {
 
         UUID companyUuid = UUID.randomUUID();
-        UUID busUuid = UUID.randomUUID();
+        UUID vehicleUuid = UUID.randomUUID();
 
         Company company = new Company(
                 "Test Company",
@@ -50,31 +50,31 @@ class CreateBusTest {
         );
         company.setUuid(companyUuid);
 
-        BusCreate busCreate = new BusCreate(
+        VehicleCreate vehicleCreate = new VehicleCreate(
                 "AA123BB",
                 "Mercedes Benz",
                 50
         );
 
-        BusDTO expectedDTO = new BusDTO();
-        expectedDTO.setUuid(busUuid);
+        VehicleDTO expectedDTO = new VehicleDTO();
+        expectedDTO.setUuid(vehicleUuid);
 
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.of(company));
 
-        when(busService.createBus(company, busCreate))
+        when(vehicleService.createVehicle(company, vehicleCreate))
                 .thenReturn(expectedDTO);
 
-        BusDTO result = companyService.createBus(
+        VehicleDTO result = companyService.createVehicle(
                 companyUuid,
-                busCreate
+                vehicleCreate
         );
 
         assertNotNull(result);
         assertEquals(expectedDTO, result);
 
-        verify(busService)
-                .createBus(company, busCreate);
+        verify(vehicleService)
+                .createVehicle(company, vehicleCreate);
         verify(companyRepository)
                 .findByUuid(companyUuid);
     }
@@ -82,7 +82,7 @@ class CreateBusTest {
     @Test
     void shouldThrowExceptionWhenCompanyNotFound() {
         UUID companyUuid = UUID.randomUUID();
-        BusCreate busCreate = new BusCreate(
+        VehicleCreate vehicleCreate = new VehicleCreate(
                 "AA123BB",
                 "Mercedes Benz",
                 50
@@ -92,17 +92,17 @@ class CreateBusTest {
                 .thenReturn(java.util.Optional.empty());
 
         try {
-            companyService.createBus(companyUuid, busCreate);
+            companyService.createVehicle(companyUuid, vehicleCreate);
         } catch (RuntimeException e) {
             assertEquals("Empresa no encontrada", e.getMessage());
         }
 
-        verify(busService, never()).createBus(any(), any());
+        verify(vehicleService, never()).createVehicle(any(), any());
         verify(companyRepository).findByUuid(companyUuid);
     }
 
     @Test
-    void shouldPropagateExceptionWhenBusAlreadyExists() {
+    void shouldPropagateExceptionWhenVehicleAlreadyExists() {
 
         UUID companyUuid = UUID.randomUUID();
 
@@ -116,7 +116,7 @@ class CreateBusTest {
         );
         company.setUuid(companyUuid);
 
-        BusCreate busCreate = new BusCreate(
+        VehicleCreate vehicleCreate = new VehicleCreate(
                 "AA123BB",
                 "Mercedes Benz",
                 50
@@ -126,26 +126,26 @@ class CreateBusTest {
                 .thenReturn(java.util.Optional.of(company));
 
         ConflictException exception = new ConflictException(
-                "Ya existe un bus con la misma placa para esta empresa"
+                "Ya existe un vehicle con la misma patente para esta empresa"
         );
 
-        when(busService.createBus(company, busCreate))
+        when(vehicleService.createVehicle(company, vehicleCreate))
                 .thenThrow(exception);
 
         ConflictException result = org.junit.jupiter.api.Assertions.assertThrows(
                 ConflictException.class,
-                () -> companyService.createBus(companyUuid, busCreate)
+                () -> companyService.createVehicle(companyUuid, vehicleCreate)
         );
 
         assertEquals(
-                "Ya existe un bus con la misma placa para esta empresa",
+                "Ya existe un vehicle con la misma patente para esta empresa",
                 result.getMessage()
         );
 
         verify(companyRepository)
                 .findByUuid(companyUuid);
 
-        verify(busService)
-                .createBus(company, busCreate);
+        verify(vehicleService)
+                .createVehicle(company, vehicleCreate);
     }
 }

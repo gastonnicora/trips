@@ -20,27 +20,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Representa un autobús.
+ * Representa un vehículo.
  * <p>
- * Contiene información sobre el autobús, como su identificador, modelo,
+ * Contiene información sobre el vehículo, como su identificador, modelo,
  * capacidad y estado.
  * </p>
  * <p>
  * Campos principales:
  * </p>
  * <ul>
- * <li>{@code uuid}: Identificador único del autobús.</li>
- * <li>{@code company}: Empresa a la que pertenece el autobús.</li>
- * <li>{@code plate}: Matrícula del autobús.</li>
- * <li>{@code model}: Modelo del autobús.</li>
- * <li>{@code capacity}: Capacidad del autobús.</li>
- * <li>{@code createdAt}: Fecha de creación del autobús.</li>
- * <li>{@code updatedAt}: Fecha de última actualización del autobús.</li>
- * <li>{@code active}: Indica si el autobús está activo.</li>
+ * <li>{@code uuid}: Identificador único del vehículo.</li>
+ * <li>{@code company}: Empresa a la que pertenece el vehículo.</li>
+ * <li>{@code plate}: Matrícula del vehículo.</li>
+ * <li>{@code model}: Modelo del vehículo.</li>
+ * <li>{@code capacity}: Capacidad del vehículo.</li>
+ * <li>{@code createdAt}: Fecha de creación del vehículo.</li>
+ * <li>{@code updatedAt}: Fecha de última actualización del vehículo.</li>
+ * <li>{@code active}: Indica si el vehículo está activo.</li>
  * </ul>
  *
  * <p>
- * Se utiliza para la gestión de autobuses.
+ * Se utiliza para la gestión de vehículos.
  * </p>
  *
  * @author Gastón
@@ -48,12 +48,12 @@ import lombok.Setter;
  * @since 2026-09-04
  */
 @Entity
-@Table(name = "buses")
+@Table(name = "vehicles")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bus {
+public class Vehicle {
 
     @Id
     @Column(name = "uuid", nullable = false, unique = true)
@@ -86,14 +86,14 @@ public class Bus {
     private boolean active;
 
     /**
-     * Constructor para crear un nuevo autobús.
+     * Constructor para crear un nuevo vehículo.
      *
-     * @param company La empresa a la que pertenece el autobús.
-     * @param plate La matrícula del autobús.
-     * @param model El modelo del autobús.
-     * @param capacity La capacidad del autobús.
+     * @param company La empresa a la que pertenece el vehículo.
+     * @param plate La matrícula del vehículo.
+     * @param model El modelo del vehículo.
+     * @param capacity La capacidad del vehículo.
      */
-    public Bus(Company company, String plate, String model, Integer capacity) {
+    public Vehicle(Company company, String plate, String model, Integer capacity) {
         this.company = company;
         this.plate = plate;
         this.model = model;

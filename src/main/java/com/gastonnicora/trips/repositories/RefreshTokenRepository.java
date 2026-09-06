@@ -21,7 +21,7 @@ import com.gastonnicora.trips.entities.RefreshToken;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
 
     /**
-     * Busca un token de refresco por su valor.
+     * Vehicleca un token de refresco por su valor.
      *
      * @param refreshToken Token de refresco
      * @return {@link Optional} con el token si existe
@@ -71,7 +71,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     void deleteByRefreshToken(String refreshToken);
 
     /**
-     * Busca un token por su UUID.
+     * Vehicleca un token por su UUID.
      *
      * @param uuid UUID del token
      * @return {@link Optional} con el token si existe
@@ -79,7 +79,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     Optional<RefreshToken> findByUuid(UUID uuid);
 
     /**
-     * Busca un token de acceso por su valor.
+     * Vehicleca un token de acceso por su valor.
      *
      * @param token Token JWT
      * @return {@link Optional} con el token si existe

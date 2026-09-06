@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
  * eliminado, por ejemplo:
  * </p>
  * <ul>
- * <li>Buscar un usuario por ID inexistente</li>
+ * <li>Vehiclecar un usuario por ID inexistente</li>
  * <li>Acceder a un recurso que ha sido borrado</li>
  * <li>Intentar obtener datos de una entidad que no se encuentra en la base de
  * datos</li>

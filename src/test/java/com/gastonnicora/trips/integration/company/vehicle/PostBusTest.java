@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.integration.company.bus;
+package com.gastonnicora.trips.integration.company.vehicle;
 
 import java.util.UUID;
 
@@ -12,11 +12,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.gastonnicora.trips.dtos.entities.BusDTO;
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
@@ -33,7 +31,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class DeleteBusTest {
+class PostVehicleTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,8 +46,6 @@ class DeleteBusTest {
 
     private UserDTO owner;
     private CompanyDTO company;
-
-    private UUID busUuid;
 
     @BeforeEach
     void setup() throws Exception {
@@ -104,58 +100,63 @@ class DeleteBusTest {
                 response,
                 CompanyDTO.class
         );
+    }
 
-        MvcResult busResponse = companyApi
-                .createBus(
+    @Test
+    void shouldCreateVehicleSuccessfully() throws Exception {
+
+        companyApi
+                .createVehicle(
                         company.getUuid(),
                         "AA123BB",
                         "Mercedes Benz",
                         50
                 )
                 .andExpect(status().isOk())
-                .andReturn();
-                
-        String responseJson = busResponse.getResponse().getContentAsString();
-        busUuid = objectMapper.readValue(responseJson, BusDTO.class).getUuid();
-
+                .andExpect(jsonPath("$.uuid").exists())
+                .andExpect(jsonPath("$.company.uuid")
+                        .value(company.getUuid().toString()))
+                .andExpect(jsonPath("$.plate")
+                        .value("AA123BB"))
+                .andExpect(jsonPath("$.model")
+                        .value("Mercedes Benz"))
+                .andExpect(jsonPath("$.capacity")
+                        .value(50))
+                .andExpect(jsonPath("$.active")
+                        .value(true));
     }
 
     @Test
-    void shouldDeleteBusSuccessfully() throws Exception {
+    void shouldReturnConflictWhenPlateAlreadyExists() throws Exception {
 
         companyApi
-                .deleteBus(
+                .createVehicle(
                         company.getUuid(),
-                        busUuid
+                        "AA123BB",
+                        "Mercedes Benz",
+                        50
                 )
                 .andExpect(status().isOk());
 
         companyApi
-                .deleteBus(
+                .createVehicle(
                         company.getUuid(),
-                        busUuid
+                        "AA123BB",
+                        "Mercedes Benz",
+                        50
                 )
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void shouldReturnNotFoundWhenBusDoesNotExist() throws Exception {
-
-        companyApi
-                .deleteBus(
-                        company.getUuid(),
-                        UUID.randomUUID()
-                )
-                .andExpect(status().isNotFound());
+                .andExpect(status().isConflict());
     }
 
     @Test
     void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
 
         companyApi
-                .deleteBus(
+                .createVehicle(
                         UUID.randomUUID(),
-                        busUuid
+                        "AA123BB",
+                        "Mercedes Benz",
+                        50
                 )
                 .andExpect(status().isForbidden());
     }
@@ -163,46 +164,32 @@ class DeleteBusTest {
     @Test
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
 
-        CompanyApiTestClient apiWithoutToken =
-                new CompanyApiTestClient(
+        CompanyApiTestClient apiWithoutToken
+                = new CompanyApiTestClient(
                         mockMvc,
                         objectMapper
                 );
 
         apiWithoutToken
-                .deleteBus(
+                .createVehicle(
                         company.getUuid(),
-                        busUuid
+                        "AA123BB",
+                        "Mercedes Benz",
+                        50
                 )
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturnForbiddenWhenUserDoesNotHavePermission() throws Exception {
+    void shouldReturnBadRequestWhenVehicleDataIsInvalid() throws Exception {
 
-        UserDTO anotherUser = UserTestFactory.registerUser(
-                mockMvc,
-                "anotherUser",
-                "goodPassword"
-        );
-
-        LoginResponse login = UserTestFactory.login(
-                mockMvc,
-                anotherUser.getEmail(),
-                "goodPassword"
-        );
-
-        CompanyApiTestClient anotherUserApi =
-                new CompanyApiTestClient(
-                        mockMvc,
-                        objectMapper
-                ).withToken(login.getToken());
-
-        anotherUserApi
-                .deleteBus(
+        companyApi
+                .createVehicle(
                         company.getUuid(),
-                        busUuid
+                        "",
+                        "Mercedes Benz",
+                        50
                 )
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
     }
 }

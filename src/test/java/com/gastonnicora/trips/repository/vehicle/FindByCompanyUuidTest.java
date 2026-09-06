@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.repository.bus;
+package com.gastonnicora.trips.repository.vehicle;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,9 +12,9 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.entities.Bus;
+import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.repositories.BusRepository;
+import com.gastonnicora.trips.repositories.VehicleRepository;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 
 @ActiveProfiles("test")
@@ -23,7 +23,7 @@ import com.gastonnicora.trips.repositories.CompanyRepository;
 public class FindByCompanyUuidTest {
 
     @Autowired
-    private BusRepository busRepository;
+    private VehicleRepository vehicleRepository;
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -36,11 +36,11 @@ public class FindByCompanyUuidTest {
 
         company = companyRepository.save(company);
 
-        Bus bus = new Bus(company, "ABC123", "Model X", 50);
+        Vehicle vehicle = new Vehicle(company, "ABC123", "Model X", 50);
 
-        Bus b = busRepository.save(bus);
+        Vehicle b = vehicleRepository.save(vehicle);
 
-        List<Bus> found = busRepository.findAllByCompanyUuid(bus.getCompany().getUuid());
+        List<Vehicle> found = vehicleRepository.findAllByCompanyUuid(vehicle.getCompany().getUuid());
 
         assertFalse(found.isEmpty());
         assertTrue(found.get(0).getUuid().equals(b.getUuid()));
@@ -51,7 +51,7 @@ public class FindByCompanyUuidTest {
     @Test
     void shouldFindByCompanyUuidIfNotExist() {
 
-        List<Bus> found = busRepository.findAllByCompanyUuid(UUID.randomUUID());
+        List<Vehicle> found = vehicleRepository.findAllByCompanyUuid(UUID.randomUUID());
 
         assertTrue(found.isEmpty());
     }
@@ -70,31 +70,31 @@ public class FindByCompanyUuidTest {
 
         company = companyRepository.save(company);
 
-        Bus bus = busRepository.save(
-                new Bus(company, "ABC123", "Model X", 50)
+        Vehicle vehicle = vehicleRepository.save(
+                new Vehicle(company, "ABC123", "Model X", 50)
         );
 
-        Bus bus2 = busRepository.save(
-                new Bus(company, "DEF456", "Model Y", 60)
+        Vehicle vehicle2 = vehicleRepository.save(
+                new Vehicle(company, "DEF456", "Model Y", 60)
         );
 
-        Bus bus3 = busRepository.save(
-                new Bus(company, "GHI789", "Model Z", 70)
+        Vehicle vehicle3 = vehicleRepository.save(
+                new Vehicle(company, "GHI789", "Model Z", 70)
         );
 
-        List<Bus> found
-                = busRepository.findAllByCompanyUuid(company.getUuid());
+        List<Vehicle> found
+                = vehicleRepository.findAllByCompanyUuid(company.getUuid());
 
         assertEquals(3, found.size());
 
         assertTrue(found.stream()
-                .anyMatch(b -> b.getUuid().equals(bus.getUuid())));
+                .anyMatch(b -> b.getUuid().equals(vehicle.getUuid())));
 
         assertTrue(found.stream()
-                .anyMatch(b -> b.getUuid().equals(bus2.getUuid())));
+                .anyMatch(b -> b.getUuid().equals(vehicle2.getUuid())));
 
         assertTrue(found.stream()
-                .anyMatch(b -> b.getUuid().equals(bus3.getUuid())));
+                .anyMatch(b -> b.getUuid().equals(vehicle3.getUuid())));
     }
 
 }

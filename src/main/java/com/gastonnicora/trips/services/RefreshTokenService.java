@@ -141,7 +141,7 @@ public class RefreshTokenService {
     }
 
     /**
-     * Busca un refresh token en la base de datos.
+     * Vehicleca un refresh token en la base de datos.
      *
      * @param refreshToken Token a buscar
      * @return {@link Optional} con el token si existe

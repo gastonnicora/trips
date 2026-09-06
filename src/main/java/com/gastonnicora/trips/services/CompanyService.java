@@ -6,10 +6,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.gastonnicora.trips.dtos.entities.BusDTO;
+import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
-import com.gastonnicora.trips.dtos.request.bus.BusCreate;
+import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
@@ -47,7 +47,7 @@ public class CompanyService {
     private final CompanyMapper companyMapper;
     private final GeocodingService geocodingService;
     private final WorkerService workerService;
-    private final BusService busService;
+    private final VehicleService vehicleService;
 
     /**
      * Constructor que inicializa los servicios necesarios para la gestión de
@@ -63,13 +63,13 @@ public class CompanyService {
      * @param workerService Servicio de gestión de trabajadores.
      */
     public CompanyService(UserService userService, CompanyRepository companyRepository, CompanyMapper companyMapper,
-            GeocodingService geocodingService, WorkerService workerService, BusService busService) {
+            GeocodingService geocodingService, WorkerService workerService, VehicleService vehicleService) {
         this.userService = userService;
         this.companyRepository = companyRepository;
         this.companyMapper = companyMapper;
         this.geocodingService = geocodingService;
         this.workerService = workerService;
-        this.busService = busService;
+        this.vehicleService = vehicleService;
     }
 
     /**
@@ -123,7 +123,7 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Busca la empresa en la base de datos mediante
+     * <li>Vehicleca la empresa en la base de datos mediante
      * {@link CompanyRepository}.</li>
      * <li>Si no se encuentra, lanza una excepción {@link BadRequestException}
      * con mensaje descriptivo.</li>
@@ -187,7 +187,7 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Busca la empresa en la base de datos mediante
+     * <li>Vehicleca la empresa en la base de datos mediante
      * {@link CompanyRepository}.</li>
      * <li>Si no se encuentra, lanza una excepción {@link NotFoundException} con
      * mensaje descriptivo.</li>
@@ -237,7 +237,7 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Busca la empresa en la base de datos mediante su UUID</li>
+     * <li>Vehicleca la empresa en la base de datos mediante su UUID</li>
      * <li>Si la empresa no existe, lanza una excepción
      * {@link NotFoundException} con mensaje descriptivo.</li>
      * <li>Corrobora que la empresa sea propiedad del usuario actual</li>
@@ -392,32 +392,32 @@ public class CompanyService {
     }
 
     /**
-     * Crea un nuevo bus asociado a una empresa.
+     * Crea un nuevo vehículo asociado a una empresa.
      *
-     * @param companyUuid UUID de la empresa a la que se asociará el bus.
-     * @param busCreate DTO que contiene los datos del bus a crear.
-     * @return DTO del bus creado.
-     * @throws ConflictException si ya existe un bus con la misma placa para la
+     * @param companyUuid UUID de la empresa a la que se asociará el vehicle.
+     * @param vehicleCreate DTO que contiene los datos del vehículo a crear.
+     * @return DTO del vehículo creado.
+     * @throws ConflictException si ya existe un vehículo con la misma patente para la
      * empresa.
-     * @see BusService#createBus(Company, BusCreate)
+     * @see VehicleService#createVehicle(Company, VehicleCreate)
      * @see CompanyService#getCompanyEntity(UUID)
      */
-    public BusDTO createBus(UUID companyUuid, BusCreate busCreate) {
+    public VehicleDTO createVehicle(UUID companyUuid, VehicleCreate vehicleCreate) {
         Company company = this.getCompanyEntity(companyUuid);
-        return busService.createBus(company, busCreate);
+        return vehicleService.createVehicle(company, vehicleCreate);
     }
 
     /**
-     * Elimina un bus existente asociado a una empresa.
+     * Elimina un vehículo existente asociado a una empresa.
      *
-     * @param companyUuid UUID de la empresa a la que está asociado el bus.
-     * @param busUuid UUID del bus a eliminar.
-     * @throws NotFoundException si no existe un bus con el UUID proporcionado.
+     * @param companyUuid UUID de la empresa a la que está asociado el vehicle.
+     * @param vehicleUuid UUID del vehículo a eliminar.
+     * @throws NotFoundException si no existe un vehículo con el UUID proporcionado.
      * @see CompanyService#getCompanyEntity(UUID)
-     * @see BusService#deleteBus(UUID)
+     * @see VehicleService#deleteVehicle(UUID)
      */
-    public void deleteBus(UUID companyUuid, UUID busUuid) {
+    public void deleteVehicle(UUID companyUuid, UUID vehicleUuid) {
         this.getCompanyEntity(companyUuid);
-        busService.deleteBus(busUuid);
+        vehicleService.deleteVehicle(vehicleUuid);
     }
 }

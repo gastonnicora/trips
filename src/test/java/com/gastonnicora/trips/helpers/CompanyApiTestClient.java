@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import com.gastonnicora.trips.dtos.request.bus.BusCreate;
+import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.dtos.request.company.WorkerCreate;
 import com.gastonnicora.trips.enums.RoleCompany;
 
@@ -173,9 +173,9 @@ public class CompanyApiTestClient {
                 .header("User-Agent", "JUnit-Test"));
     }
 
-    public ResultActions createBus(UUID companyUuid, String plate, String model, Integer capacity) throws Exception {
+    public ResultActions createVehicle(UUID companyUuid, String plate, String model, Integer capacity) throws Exception {
 
-        BusCreate body = new BusCreate(
+        VehicleCreate body = new VehicleCreate(
                 plate,
                 model,
                 capacity
@@ -183,17 +183,17 @@ public class CompanyApiTestClient {
 
         String json = objectMapper.writeValueAsString(body);
 
-        return mockMvc.perform(post("/api/companies/" + companyUuid + "/bus")
+        return mockMvc.perform(post("/api/companies/" + companyUuid + "/vehicle")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test")
                 .content(json));
     }
-    public ResultActions deleteBus(UUID companyUuid, UUID busUuid)
+    public ResultActions deleteVehicle(UUID companyUuid, UUID vehicleUuid)
             throws Exception {
 
         return mockMvc.perform(delete(
-                "/api/companies/" + companyUuid + "/bus/" + busUuid)
+                "/api/companies/" + companyUuid + "/vehicle/" + vehicleUuid)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test"));

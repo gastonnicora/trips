@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gastonnicora.trips.dtos.entities.BusDTO;
+import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
-import com.gastonnicora.trips.dtos.request.bus.BusCreate;
+import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.request.company.WorkerCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
@@ -191,7 +191,7 @@ public class CompanyController {
     /**
      * Agrega un trabajador a una empresa.
      * <p>
-     * Este endpoint agrega un trabajador a una empresa por sus UUIDs.
+     * Este endpoint agrega un trabajador a una empresa por su UUID.
      * </p>
      *
      * @param uuid UUID de la empresa a la que se quiere agregar el trabajador.
@@ -206,7 +206,7 @@ public class CompanyController {
             + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
-    @Operation(summary = "Agregar worker a empresa", description = "Agrega un worker a una empresa por sus UUIDs")
+    @Operation(summary = "Agregar worker a empresa", description = "Agrega un worker a una empresa por su UUID")
     public WorkerDTO createWorker(@PathVariable("uuid") UUID uuid, @RequestBody @Valid WorkerCreate workerCreate) {
         return companyService.createWorker(workerCreate.getUserUuid(), uuid, workerCreate.getRoles());
     }
@@ -236,8 +236,8 @@ public class CompanyController {
     /**
      * Actualiza los roles de un trabajador en una empresa.
      * <p>
-     * Este endpoint actualiza los roles de un trabajador en una empresa por sus
-     * UUIDs.
+     * Este endpoint actualiza los roles de un trabajador en una empresa por su
+     * UUID.
      * </p>
      *
      * @param companyUuid UUID de la empresa.
@@ -253,7 +253,7 @@ public class CompanyController {
             + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
-    @Operation(summary = "Actualizar roles de trabajador en empresa", description = "Actualiza los roles de un trabajador en una empresa por sus UUIDs")
+    @Operation(summary = "Actualizar roles de trabajador en empresa", description = "Actualiza los roles de un trabajador en una empresa por su UUID")
     public WorkerDTO updateWorkerRoles(@PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("userUuid") UUID userUuid,
             @RequestBody @Valid WorkerCreate workerCreate) {
@@ -263,7 +263,7 @@ public class CompanyController {
     /**
      * Elimina un trabajador de una empresa.
      * <p>
-     * Este endpoint elimina un trabajador de una empresa por sus UUIDs.
+     * Este endpoint elimina un trabajador de una empresa por su UUID.
      * </p>
      *
      * @param companyUuid UUID de la empresa.
@@ -276,52 +276,52 @@ public class CompanyController {
             + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
-    @Operation(summary = "Eliminar trabajador de empresa", description = "Elimina un trabajador de una empresa por sus UUIDs")
+    @Operation(summary = "Eliminar trabajador de empresa", description = "Elimina un trabajador de una empresa por su UUID")
     public void deleteWorker(@PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("userUuid") UUID userUuid) {
         companyService.deleteWorker(userUuid, companyUuid);
     }
 
     /**
-     * Agrega un bus a una empresa.
+     * Agrega un vehículo a una empresa.
      * <p>
-     * Este endpoint agrega un bus a una empresa por sus UUIDs.
+     * Este endpoint agrega un vehículo a una empresa por su UUID.
      * </p>
      *
      * @param companyUuid UUID de la empresa.
-     * @param busCreate {@link BusCreate} con los datos del bus a agregar.
-     * @return {@link BusDTO} con los datos del bus agregado.
-     * @see CompanyService#createBus(UUID, BusCreate)
+     * @param vehicleCreate {@link VehicleCreate} con los datos del vehículo a agregar.
+     * @return {@link VehicleDTO} con los datos del vehículo agregado.
+     * @see CompanyService#createVehicle(UUID, VehicleCreate)
      */
-    @PostMapping("/{companyUuid}/bus")
+    @PostMapping("/{companyUuid}/vehicle")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
-    @Operation(summary = "Agregar bus a empresa", description = "Agrega un bus a una empresa por sus UUIDs")
-    public BusDTO createBus(@PathVariable("companyUuid") UUID companyUuid, @RequestBody @Valid BusCreate busCreate) {
-        return companyService.createBus(companyUuid, busCreate);
+    @Operation(summary = "Agregar vehículo a empresa", description = "Agrega un vehículo a una empresa por su UUID")
+    public VehicleDTO createVehicle(@PathVariable("companyUuid") UUID companyUuid, @RequestBody @Valid VehicleCreate vehicleCreate) {
+        return companyService.createVehicle(companyUuid, vehicleCreate);
     }
 
     /**
-     * Elimina un bus de una empresa.
+     * Elimina un vehículo de una empresa.
      * <p>
-     * Este endpoint elimina un bus de una empresa por sus UUIDs.
+     * Este endpoint elimina un vehículo de una empresa por su UUID.
      * </p>
      *
      * @param companyUuid UUID de la empresa.
-     * @param busUuid UUID del bus.
-     * @see CompanyService#deleteBus(UUID, UUID)
+     * @param vehicleUuid UUID del vehículo.
+     * @see CompanyService#deleteVehicle(UUID, UUID)
      */
-    @DeleteMapping ("/{companyUuid}/bus/{busUuid}")
+    @DeleteMapping ("/{companyUuid}/vehicle/{vehicleUuid}")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
-    @Operation(summary = "Eliminar bus de empresa", description = "Elimina un bus de una empresa por sus UUIDs")
-    public void deleteBus(@PathVariable("companyUuid") UUID companyUuid,
-            @PathVariable("busUuid") UUID busUuid) {
-        companyService.deleteBus(companyUuid, busUuid);
+    @Operation(summary = "Eliminar un vehículo de una empresa", description = "Elimina un vehículo de una empresa por su UUID")
+    public void deleteVehicle(@PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("vehicleUuid") UUID vehicleUuid) {
+        companyService.deleteVehicle(companyUuid, vehicleUuid);
     }
     //TODO: Agregar endpoint para obtener todas las empresas
 

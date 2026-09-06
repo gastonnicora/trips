@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.integration.company.bus;
+package com.gastonnicora.trips.integration.company.vehicle;
 
 import java.util.UUID;
 
@@ -12,9 +12,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
@@ -31,7 +33,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class PostBusTest {
+class DeleteVehicleTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,6 +48,8 @@ class PostBusTest {
 
     private UserDTO owner;
     private CompanyDTO company;
+
+    private UUID vehicleUuid;
 
     @BeforeEach
     void setup() throws Exception {
@@ -100,63 +104,58 @@ class PostBusTest {
                 response,
                 CompanyDTO.class
         );
-    }
 
-    @Test
-    void shouldCreateBusSuccessfully() throws Exception {
-
-        companyApi
-                .createBus(
+        MvcResult vehicleResponse = companyApi
+                .createVehicle(
                         company.getUuid(),
                         "AA123BB",
                         "Mercedes Benz",
                         50
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").exists())
-                .andExpect(jsonPath("$.company.uuid")
-                        .value(company.getUuid().toString()))
-                .andExpect(jsonPath("$.plate")
-                        .value("AA123BB"))
-                .andExpect(jsonPath("$.model")
-                        .value("Mercedes Benz"))
-                .andExpect(jsonPath("$.capacity")
-                        .value(50))
-                .andExpect(jsonPath("$.active")
-                        .value(true));
+                .andReturn();
+                
+        String responseJson = vehicleResponse.getResponse().getContentAsString();
+        vehicleUuid = objectMapper.readValue(responseJson, VehicleDTO.class).getUuid();
+
     }
 
     @Test
-    void shouldReturnConflictWhenPlateAlreadyExists() throws Exception {
+    void shouldDeleteVehicleSuccessfully() throws Exception {
 
         companyApi
-                .createBus(
+                .deleteVehicle(
                         company.getUuid(),
-                        "AA123BB",
-                        "Mercedes Benz",
-                        50
+                        vehicleUuid
                 )
                 .andExpect(status().isOk());
 
         companyApi
-                .createBus(
+                .deleteVehicle(
                         company.getUuid(),
-                        "AA123BB",
-                        "Mercedes Benz",
-                        50
+                        vehicleUuid
                 )
-                .andExpect(status().isConflict());
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenVehicleDoesNotExist() throws Exception {
+
+        companyApi
+                .deleteVehicle(
+                        company.getUuid(),
+                        UUID.randomUUID()
+                )
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
 
         companyApi
-                .createBus(
+                .deleteVehicle(
                         UUID.randomUUID(),
-                        "AA123BB",
-                        "Mercedes Benz",
-                        50
+                        vehicleUuid
                 )
                 .andExpect(status().isForbidden());
     }
@@ -164,32 +163,46 @@ class PostBusTest {
     @Test
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
 
-        CompanyApiTestClient apiWithoutToken
-                = new CompanyApiTestClient(
+        CompanyApiTestClient apiWithoutToken =
+                new CompanyApiTestClient(
                         mockMvc,
                         objectMapper
                 );
 
         apiWithoutToken
-                .createBus(
+                .deleteVehicle(
                         company.getUuid(),
-                        "AA123BB",
-                        "Mercedes Benz",
-                        50
+                        vehicleUuid
                 )
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturnBadRequestWhenBusDataIsInvalid() throws Exception {
+    void shouldReturnForbiddenWhenUserDoesNotHavePermission() throws Exception {
 
-        companyApi
-                .createBus(
+        UserDTO anotherUser = UserTestFactory.registerUser(
+                mockMvc,
+                "anotherUser",
+                "goodPassword"
+        );
+
+        LoginResponse login = UserTestFactory.login(
+                mockMvc,
+                anotherUser.getEmail(),
+                "goodPassword"
+        );
+
+        CompanyApiTestClient anotherUserApi =
+                new CompanyApiTestClient(
+                        mockMvc,
+                        objectMapper
+                ).withToken(login.getToken());
+
+        anotherUserApi
+                .deleteVehicle(
                         company.getUuid(),
-                        "",
-                        "Mercedes Benz",
-                        50
+                        vehicleUuid
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 }

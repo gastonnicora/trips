@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.repository.bus;
+package com.gastonnicora.trips.repository.vehicle;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -11,9 +11,9 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.entities.Bus;
+import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.repositories.BusRepository;
+import com.gastonnicora.trips.repositories.VehicleRepository;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 
 @ActiveProfiles("test")
@@ -22,7 +22,7 @@ import com.gastonnicora.trips.repositories.CompanyRepository;
 public class FindByCompanyUuidAndPlateTest {
 
     @Autowired
-    private BusRepository busRepository;
+    private VehicleRepository vehicleRepository;
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -35,11 +35,11 @@ public class FindByCompanyUuidAndPlateTest {
 
         company = companyRepository.save(company);
 
-        Bus bus = new Bus(company, "ABC123", "Model X", 50);
+        Vehicle vehicle = new Vehicle(company, "ABC123", "Model X", 50);
 
-        Bus b = busRepository.save(bus);
+        Vehicle b = vehicleRepository.save(vehicle);
 
-        Optional<Bus> found = busRepository.findByCompanyUuidAndPlate(company.getUuid(), "ABC123");
+        Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndPlate(company.getUuid(), "ABC123");
 
         assertFalse(found.isEmpty());
         assertTrue(found.get().getUuid().equals(b.getUuid()));
@@ -50,7 +50,7 @@ public class FindByCompanyUuidAndPlateTest {
     @Test
     void shouldFindByPlateIfNotExist() {
 
-        Optional<Bus> found = busRepository.findByCompanyUuidAndPlate(UUID.randomUUID(), "XYZ789");
+        Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndPlate(UUID.randomUUID(), "XYZ789");
 
         assertTrue(found.isEmpty());
     }

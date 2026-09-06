@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.unit.company.bus;
+package com.gastonnicora.trips.unit.company.vehicle;
 
 import java.util.UUID;
 
@@ -17,25 +17,25 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.repositories.CompanyRepository;
-import com.gastonnicora.trips.services.BusService;
+import com.gastonnicora.trips.services.VehicleService;
 import com.gastonnicora.trips.services.CompanyService;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteBusTest {
+public class DeleteVehicleTest {
 
     @InjectMocks
     private CompanyService companyService;
 
     @Mock
-    private BusService busService;
+    private VehicleService vehicleService;
 
     @Mock
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldDeleteBusSuccessfully() {
+    void shouldDeleteVehicleSuccessfully() {
         UUID companyUuid = UUID.randomUUID();
-        UUID busUuid = UUID.randomUUID();
+        UUID vehicleUuid = UUID.randomUUID();
 
         Company company = new Company(
                 "Test Company",
@@ -50,34 +50,34 @@ public class DeleteBusTest {
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.of(company));
 
-        companyService.deleteBus(companyUuid, busUuid);
+        companyService.deleteVehicle(companyUuid, vehicleUuid);
 
-        verify(busService).deleteBus(busUuid);
+        verify(vehicleService).deleteVehicle(vehicleUuid);
     }
 
     @Test
     void shouldThrowExceptionWhenCompanyNotFound() {
         UUID companyUuid = UUID.randomUUID();
-        UUID busUuid = UUID.randomUUID();
+        UUID vehicleUuid = UUID.randomUUID();
 
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.empty());
 
         try {
-            companyService.deleteBus(companyUuid, busUuid);
+            companyService.deleteVehicle(companyUuid, vehicleUuid);
         } catch (RuntimeException e) {
             assertEquals("Empresa no encontrada", e.getMessage());
         }
 
-        verify(busService, never()).deleteBus(any());
+        verify(vehicleService, never()).deleteVehicle(any());
         verify(companyRepository).findByUuid(companyUuid);
     }
 
     @Test
-    void shouldPropagateExceptionWhenBusNotExists() {
+    void shouldPropagateExceptionWhenVehicleNotExists() {
 
         UUID companyUuid = UUID.randomUUID();
-        UUID busUuid = UUID.randomUUID();
+        UUID vehicleUuid = UUID.randomUUID();
 
         Company company = new Company(
                 "Test Company",
@@ -91,25 +91,25 @@ public class DeleteBusTest {
 
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.of(company));
-        doThrow(new NotFoundException("Bus no encontrado"))
-                .when(busService)
-                .deleteBus(busUuid);
+        doThrow(new NotFoundException("Vehicle no encontrado"))
+                .when(vehicleService)
+                .deleteVehicle(vehicleUuid);
 
         NotFoundException result = org.junit.jupiter.api.Assertions.assertThrows(
                 NotFoundException.class,
-                () -> companyService.deleteBus(companyUuid, busUuid)
+                () -> companyService.deleteVehicle(companyUuid, vehicleUuid)
         );
 
         assertEquals(
-                "Bus no encontrado",
+                "Vehicle no encontrado",
                 result.getMessage()
         );
 
         verify(companyRepository)
                 .findByUuid(companyUuid);
 
-        verify(busService)
-                .deleteBus(busUuid);
+        verify(vehicleService)
+                .deleteVehicle(vehicleUuid);
     }
 
 }
