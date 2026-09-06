@@ -27,7 +27,7 @@ public class BusService {
 
     public Bus findByUuid(UUID busUuid) {
 
-        Bus bus =busRepository.findByUuid(busUuid).orElseThrow(() -> new NotFoundException("Bus no encontrado"));
+        Bus bus = busRepository.findByUuid(busUuid).orElseThrow(() -> new NotFoundException("Bus no encontrado"));
         if (!bus.isActive()) {
             throw new NotFoundException("Bus no encontrado");
         }
@@ -54,7 +54,7 @@ public class BusService {
 
     /**
      * Elimina un bus existente marcándolo como inactivo.
-     * 
+     *
      * @param busUuid UUID del bus a eliminar.
      * @throws NotFoundException si no existe un bus con el UUID proporcionado.
      */
@@ -62,6 +62,18 @@ public class BusService {
         Bus existingBus = findByUuid(busUuid);
         existingBus.setActive(false);
         busRepository.save(existingBus);
+    }
+
+    /**
+     * Obtiene un bus existente por su UUID.
+     *
+     * @param busUuid UUID del bus a obtener.
+     * @return DTO del bus encontrado.
+     * @throws NotFoundException si no existe un bus con el UUID proporcionado.
+     */
+    public BusDTO getBus(UUID busUuid) {
+        Bus bus = findByUuid(busUuid);
+        return busMapper.toDTO(bus);
     }
 
 }
