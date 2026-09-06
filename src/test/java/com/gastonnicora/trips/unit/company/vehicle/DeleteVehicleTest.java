@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.repositories.CompanyRepository;
-import com.gastonnicora.trips.services.VehicleService;
 import com.gastonnicora.trips.services.CompanyService;
+import com.gastonnicora.trips.services.VehicleService;
 
 @ExtendWith(MockitoExtension.class)
 public class DeleteVehicleTest {
@@ -63,11 +63,15 @@ public class DeleteVehicleTest {
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.empty());
 
-        try {
-            companyService.deleteVehicle(companyUuid, vehicleUuid);
-        } catch (RuntimeException e) {
-            assertEquals("Empresa no encontrada", e.getMessage());
-        }
+        NotFoundException result = org.junit.jupiter.api.Assertions.assertThrows(
+                NotFoundException.class,
+                () -> companyService.deleteVehicle(companyUuid, vehicleUuid)
+        );
+
+        assertEquals(
+                "Empresa no encontrada",
+                result.getMessage()
+        );
 
         verify(vehicleService, never()).deleteVehicle(any());
         verify(companyRepository).findByUuid(companyUuid);
@@ -91,7 +95,7 @@ public class DeleteVehicleTest {
 
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.of(company));
-        doThrow(new NotFoundException("Vehicle no encontrado"))
+        doThrow(new NotFoundException("Vehículo no encontrado"))
                 .when(vehicleService)
                 .deleteVehicle(vehicleUuid);
 
@@ -101,7 +105,7 @@ public class DeleteVehicleTest {
         );
 
         assertEquals(
-                "Vehicle no encontrado",
+                "Vehículo no encontrado",
                 result.getMessage()
         );
 

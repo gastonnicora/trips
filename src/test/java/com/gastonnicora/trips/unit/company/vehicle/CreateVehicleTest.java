@@ -18,6 +18,7 @@ import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.exceptions.ConflictException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.VehicleService;
@@ -91,11 +92,15 @@ class CreateVehicleTest {
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.empty());
 
-        try {
-            companyService.createVehicle(companyUuid, vehicleCreate);
-        } catch (RuntimeException e) {
-            assertEquals("Empresa no encontrada", e.getMessage());
-        }
+         NotFoundException result = org.junit.jupiter.api.Assertions.assertThrows(
+                NotFoundException.class,
+                () -> companyService.createVehicle(companyUuid, vehicleCreate)
+        );
+
+        assertEquals(
+                "Empresa no encontrada",
+                result.getMessage()
+        );
 
         verify(vehicleService, never()).createVehicle(any(), any());
         verify(companyRepository).findByUuid(companyUuid);

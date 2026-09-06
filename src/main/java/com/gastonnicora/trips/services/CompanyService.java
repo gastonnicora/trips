@@ -123,7 +123,7 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Vehicleca la empresa en la base de datos mediante
+     * <li>Busca la empresa en la base de datos mediante
      * {@link CompanyRepository}.</li>
      * <li>Si no se encuentra, lanza una excepción {@link BadRequestException}
      * con mensaje descriptivo.</li>
@@ -187,7 +187,7 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Vehicleca la empresa en la base de datos mediante
+     * <li>Busca la empresa en la base de datos mediante
      * {@link CompanyRepository}.</li>
      * <li>Si no se encuentra, lanza una excepción {@link NotFoundException} con
      * mensaje descriptivo.</li>
@@ -237,7 +237,7 @@ public class CompanyService {
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Vehicleca la empresa en la base de datos mediante su UUID</li>
+     * <li>Busca la empresa en la base de datos mediante su UUID</li>
      * <li>Si la empresa no existe, lanza una excepción
      * {@link NotFoundException} con mensaje descriptivo.</li>
      * <li>Corrobora que la empresa sea propiedad del usuario actual</li>

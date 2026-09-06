@@ -23,7 +23,7 @@ import com.gastonnicora.trips.enums.RoleCompany;
 public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     /**
-     * Vehicleca un trabajador por su UUID y la empresa asociada.
+     * Busca un trabajador por su UUID y la empresa asociada.
      *
      * @param userUuid UUID del usuario
      * @param companyUuid UUID de la empresa
@@ -34,7 +34,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
             UUID companyUuid);
 
     /**
-     * Vehicleca todos los trabajadores asociados a una empresa.
+     * Busca todos los trabajadores asociados a una empresa.
      *
      * @param companyUuid UUID de la empresa
      * @return Lista de trabajadores asociados a la empresa
@@ -42,7 +42,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
     List<Worker> findAllByCompanyUuid(UUID companyUuid);
 
     /**
-     * Vehicleca todos los trabajadores asociados a un usuario.
+     * Busca todos los trabajadores asociados a un usuario.
      *
      * @param userUuid UUID del usuario
      * @return Lista de trabajadores asociados al usuario
@@ -50,7 +50,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
     List<Worker> findAllByUserUuid(UUID userUuid);
 
     /**
-     * Vehicleca todos los trabajadores asociados a un usuario con un rol
+     * Busca todos los trabajadores asociados a un usuario con un rol
      * específico.
      *
      * @param userUuid UUID del usuario

@@ -20,7 +20,7 @@ import com.gastonnicora.trips.enums.Role;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     /**
-     * Vehicleca un usuario por su correo electrónico y su estado de habilitación.
+     * Busca un usuario por su correo electrónico y su estado de habilitación.
      *
      * @param email Correo electrónico
      * @param enabled Estado de habilitación
@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     List<User> findByEmailAndEnabled(String email, boolean enabled);
 
     /**
-     * Vehicleca un usuario por su correo electrónico solo si está habilitado.
+     * Busca un usuario por su correo electrónico solo si está habilitado.
      *
      * @param email Correo electrónico
      * @return {@link Optional} con el usuario si existe y está habilitado
@@ -46,7 +46,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     boolean existsByEmailAndEnabledTrue(String email);
 
     /**
-     * Vehicleca todos los usuarios con el correo electrónico indicado,
+     * Busca todos los usuarios con el correo electrónico indicado,
      * independientemente de su estado.
      *
      * @param email Correo electrónico
@@ -55,7 +55,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     List<User> findByEmail(String email);
 
     /**
-     * Vehicleca un usuario por su UUID.
+     * Busca un usuario por su UUID.
      *
      * @param uuid UUID del usuario
      * @return {@link Optional} con el usuario si existe

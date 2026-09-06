@@ -27,9 +27,9 @@ public class VehicleService {
 
     public Vehicle findByUuid(UUID vehicleUuid) {
 
-        Vehicle vehicle = vehicleRepository.findByUuid(vehicleUuid).orElseThrow(() -> new NotFoundException("Vehicle no encontrado"));
+        Vehicle vehicle = vehicleRepository.findByUuid(vehicleUuid).orElseThrow(() -> new NotFoundException("Vehículo no encontrado"));
         if (!vehicle.isActive()) {
-            throw new NotFoundException("Vehicle no encontrado");
+            throw new NotFoundException("Vehículo no encontrado");
         }
         return vehicle;
     }
