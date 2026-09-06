@@ -27,11 +27,11 @@ import lombok.ToString;
  * <li>{@code errors}: Map de errores detallados (por ejemplo, validaciones de
  * campos).</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de respuesta JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
  *   "status": 400,
@@ -42,7 +42,7 @@ import lombok.ToString;
  *   }
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -69,10 +69,11 @@ public abstract class ApiError {
     /**
      * Constructor simplificado para errores sin detalle de campos.
      * <p>
-     * Inicializa el {@code timestamp} automáticamente con la fecha y hora actual.
+     * Inicializa el {@code timestamp} automáticamente con la fecha y hora
+     * actual.
      * </p>
      *
-     * @param status  Código HTTP del error
+     * @param status Código HTTP del error
      * @param message Mensaje descriptivo del error
      */
     public ApiError(int status, String message) {

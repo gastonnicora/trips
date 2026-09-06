@@ -82,7 +82,7 @@ public class UserController {
      * @return ListResponse ({@link ListResponse}) de objetos UserDTO
      * ({@link UserDTO}) con todos los usuarios.
      * @see UserDTO
-     * @see UserService #getUsers()
+     * @see UserService#getUsers()
      */
     @GetMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -106,7 +106,7 @@ public class UserController {
      * </p>
      *
      * @return {@link UserDTO} con los datos del usuario actual.
-     * @see UserService #getCurrentUser()
+     * @see UserService#getCurrentUser()
      */
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
@@ -132,7 +132,7 @@ public class UserController {
      * @param uuid ({@link UUID}) del usuario a obtener.
      * @return {@link UserDTO} con los datos del usuario con el UUID
      * especificado.
-     * @see UserService #getUserByUuid(UUID)
+     * @see UserService#getUserByUuid(UUID)
      */
     @GetMapping("/{uuid}")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
@@ -161,7 +161,7 @@ public class UserController {
      * @param userCreateRequest ({@link UserCreate}) con los datos válidos para
      * el nuevo usuario.
      * @return {@link UserDTO} con los datos del usuario recién creado.
-     * @see UserService #createUser(UserCreate)
+     * @see UserService#createUser(UserCreate)
      */
     @PostMapping
     @Operation(summary = "Crear Usuario", description = "Crea un nuevo usuario")
@@ -192,7 +192,7 @@ public class UserController {
      * @param userPutRequest ({@link UserPut}) con los datos válidos para el
      * nuevo usuario.
      * @return {@link UserDTO} con los datos actualizados del usuario.
-     * @see UserService #updateCurrentUser(UserPut)
+     * @see UserService#updateCurrentUser(UserPut)
      */
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -224,7 +224,7 @@ public class UserController {
      * @param userChangePasswordRequest ({@link UserChangePassword}) con los
      * datos válidos para el cambio de contraseña.
      * @return {@link UserDTO} con los datos del usuario.
-     * @see UserService #updatePassword(UserChangePassword)
+     * @see UserService#updatePassword(UserChangePassword)
      */
     @PutMapping("/me/password")
     @SecurityRequirement(name = "bearerAuth")
@@ -256,9 +256,8 @@ public class UserController {
      * @param userChangeRoleRequest ({@link UserChangeRole}) con los datos
      * válidos para el cambio de roles.
      * @return {@link UserDTO} con los datos del usuario.
-     * @see UserService #setRole(UUID, UserChangeRole)
+     * @see UserService#setRole(UUID, UserChangeRole)
      */
-    // TEST 🧪: Falta test
     @PutMapping("/{uuid}/role")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','HR_MANAGER')")
     @SecurityRequirement(name = "bearerAuth")
@@ -281,7 +280,7 @@ public class UserController {
      * usuario actual.
      * </p>
      *
-     * @see UserService #deleteCurrentUser()
+     * @see UserService#deleteCurrentUser()
      */
     @DeleteMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -305,7 +304,7 @@ public class UserController {
      * </p>
      *
      * @return {@link WorkersByUser} con los trabajos del usuario actual.
-     * @see UserService #getWorkersByCurrentUser()
+     * @see UserService#getWorkersByCurrentUser()
      */
     @GetMapping("/workers")
     @SecurityRequirement(name = "bearerAuth")

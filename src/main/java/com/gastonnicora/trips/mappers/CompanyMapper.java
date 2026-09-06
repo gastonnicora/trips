@@ -11,15 +11,16 @@ import com.gastonnicora.trips.entities.Company;
 /**
  * Mapper que convierte entidades {@link Company} a {@link CompanyDTO}.
  * <p>
- * Se utiliza para exponer datos de la empresa de manera segura en la API,
- * sin incluir información sensible como la contraseña del dueño.
+ * Se utiliza para exponer datos de la empresa de manera segura en la API, sin
+ * incluir información sensible como la contraseña del dueño.
  * </p>
  */
 @Component
 public class CompanyMapper {
+
     /**
      * Convierte un {@link Company} en {@link CompanyDTO}.
-     * 
+     *
      * @param company Entidad de empresa
      * @return DTO de empresa correspondiente
      */
@@ -38,8 +39,9 @@ public class CompanyMapper {
     }
 
     /**
-     * Convierte una lista de {@link Company} en una lista de {@link CompanyDTO}.
-     * 
+     * Convierte una lista de {@link Company} en una lista de
+     * {@link CompanyDTO}.
+     *
      * @param companies Lista de entidades de empresas
      * @return Lista de DTOs de empresas correspondientes
      */

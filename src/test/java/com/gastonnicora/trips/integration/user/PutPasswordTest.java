@@ -1,8 +1,5 @@
 package com.gastonnicora.trips.integration.user;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.helpers.AuthApiTestClient;
@@ -29,102 +28,101 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class PutPasswordTest {
 
-        @Autowired
-        private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-        private UserDTO user;
-        private String token;
-        private UserApiTestClient userApi;
-        private String name = "Juan";
-        private String password = "goodPassword";
+    private UserDTO user;
+    private String token;
+    private UserApiTestClient userApi;
+    private final String name = "Juan";
+    private final String password = "goodPassword";
 
-        @BeforeEach
-        void setup() throws Exception {
+    @BeforeEach
+    void setup() throws Exception {
 
-                user = UserTestFactory.registerUser(mockMvc, name, password);
-                token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
-                this.userApi = new UserApiTestClient(mockMvc).withToken(token);
-        }
+        user = UserTestFactory.registerUser(mockMvc, name, password);
+        token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
+        this.userApi = new UserApiTestClient(mockMvc).withToken(token);
+    }
 
-        @Test
-        void shouldUpdatePasswordSuccessfully() throws Exception {
-                String newPassword = "newPassword";
-                userApi.updatePassword(password, newPassword, newPassword)
-                                .andExpect(status().isOk());
-        }
+    @Test
+    void shouldUpdatePasswordSuccessfully() throws Exception {
+        String newPassword = "newPassword";
+        userApi.updatePassword(password, newPassword, newPassword)
+                .andExpect(status().isOk());
+    }
 
-        @Test
-        void shouldReturnUnauthorizedWhenChangePassword() throws Exception {
-                String newPassword = "newPassword";
-                userApi.updatePassword(password, newPassword, newPassword)
-                                .andExpect(status().isOk());
-                userApi.updatePassword(newPassword, password, password)
-                                .andExpect(status().isUnauthorized());
-        }
+    @Test
+    void shouldReturnUnauthorizedWhenChangePassword() throws Exception {
+        String newPassword = "newPassword";
+        userApi.updatePassword(password, newPassword, newPassword)
+                .andExpect(status().isOk());
+        userApi.updatePassword(newPassword, password, password)
+                .andExpect(status().isUnauthorized());
+    }
 
-        @Test
-        void shouldBeAbleToLoginWithNewPasswordAfterChange() throws Exception {
-                String newPassword = "newPassword123";
-                userApi.updatePassword(password, newPassword, newPassword)
-                                .andExpect(status().isOk());
+    @Test
+    void shouldBeAbleToLoginWithNewPasswordAfterChange() throws Exception {
+        String newPassword = "newPassword123";
+        userApi.updatePassword(password, newPassword, newPassword)
+                .andExpect(status().isOk());
 
-                // Intentar login con la nueva contraseña
-                AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);
-                authApi.login(user.getEmail(), newPassword)
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.token").exists());
-        }
+        // Intentar login con la nueva contraseña
+        AuthApiTestClient authApi = new AuthApiTestClient(mockMvc);
+        authApi.login(user.getEmail(), newPassword)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists());
+    }
 
-        @ParameterizedTest
-        @MethodSource("invalidFileds")
-        void shouldReturnBadRequestWhenFieldsAreInvalid(String passwordOld,
-                        String password,
-                        String confirmPassword,
-                        String expectedField) throws Exception {
-                userApi.updatePassword(passwordOld, password, confirmPassword)
-                                .andExpect(status().isBadRequest())
-                                .andExpect(jsonPath("$.errors").exists())
-                                .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
-                                .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
-                                                .value(org.hamcrest.Matchers.notNullValue()));
-        }
+    @ParameterizedTest
+    @MethodSource("invalidFields")
+    void shouldReturnBadRequestWhenFieldsAreInvalid(String passwordOld,
+            String password,
+            String confirmPassword,
+            String expectedField) throws Exception {
+        userApi.updatePassword(passwordOld, password, confirmPassword)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").exists())
+                .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
+                .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
+                        .value(org.hamcrest.Matchers.notNullValue()));
+    }
 
-        // Test fallido por que contraseña anterior es errónea
-        @Test
-        void shouldReturnBadRequestWhenPasswordIsWrong() throws Exception {
-                String newPassword = "newPassword";
-                userApi.updatePassword("wrongPassword", newPassword, newPassword)
-                                .andExpect(status().isBadRequest())
-                                .andExpect(jsonPath("$.errors").exists())
-                                .andExpect(jsonPath("$.errors.passwordOld").exists())
-                                .andExpect(jsonPath("$.errors.passwordOld")
-                                                .value(org.hamcrest.Matchers.notNullValue()));
-        }
+    // Test fallido por que contraseña anterior es errónea
+    @Test
+    void shouldReturnBadRequestWhenPasswordIsWrong() throws Exception {
+        String newPassword = "newPassword";
+        userApi.updatePassword("wrongPassword", newPassword, newPassword)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").exists())
+                .andExpect(jsonPath("$.errors.passwordOld").exists())
+                .andExpect(jsonPath("$.errors.passwordOld")
+                        .value(org.hamcrest.Matchers.notNullValue()));
+    }
 
-        @Test
-        void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-                userApi.withToken("");
-                userApi.updatePassword("newPassword", "newPassword", "newPassword")
-                                .andExpect(status().isUnauthorized());
-        }
+    @Test
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+        userApi.withToken("");
+        userApi.updatePassword("newPassword", "newPassword", "newPassword")
+                .andExpect(status().isUnauthorized());
+    }
 
-        static Stream<Arguments> invalidFileds() {
-                return Stream.of(
-                                // Contraseña anterior vacía
-                                Arguments.of("", "newPassword", "newPassword", "passwordOld"),
-                                // Nueva contraseña vacía
-                                Arguments.of("goodPassword", "", "newPassword", "password"),
-                                // Nueva contraseña corta
-                                Arguments.of("goodPassword", "short", "short", "password"),
-                                // Repetición de contraseña vacía
-                                Arguments.of("goodPassword", "newPassword", "", "confirmPassword"),
-                                // Repetición de contraseña incorrecta
-                                Arguments.of("goodPassword", "newPassword", "wrongPassword", "confirmPassword"),
-
-                                // Campos en null
-                                Arguments.of(null, null, null, "passwordOld"),
-                                Arguments.of(null, null, null, "password"),
-                                Arguments.of(null, null, null, "confirmPassword"));
-        }
+    static Stream<Arguments> invalidFields() {
+        return Stream.of(
+                // Contraseña anterior vacía
+                Arguments.of("", "newPassword", "newPassword", "passwordOld"),
+                // Nueva contraseña vacía
+                Arguments.of("goodPassword", "", "newPassword", "password"),
+                // Nueva contraseña corta
+                Arguments.of("goodPassword", "short", "short", "password"),
+                // Repetición de contraseña vacía
+                Arguments.of("goodPassword", "newPassword", "", "confirmPassword"),
+                // Repetición de contraseña incorrecta
+                Arguments.of("goodPassword", "newPassword", "wrongPassword", "confirmPassword"),
+                // Campos en null
+                Arguments.of(null, null, null, "passwordOld"),
+                Arguments.of(null, null, null, "password"),
+                Arguments.of(null, null, null, "confirmPassword"));
+    }
 
 }

@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 /**
  * DTO para cambiar los roles de un usuario.
  * <p>
- * Contiene un conjunto de roles que serán asignados al usuario.
- * Aplica validaciones para asegurar que al menos un rol sea seleccionado.
+ * Contiene un conjunto de roles que serán asignados al usuario. Aplica
+ * validaciones para asegurar que al menos un rol sea seleccionado.
  * </p>
- * 
+ *
  * <p>
  * Se utiliza típicamente en endpoints de actualización de roles.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -39,7 +39,7 @@ public class UserChangeRole {
 
     /**
      * Constructor completo.
-     * 
+     *
      * @param roles ({@link Set})Conjunto de {@link Role} asignados al usuario
      */
     public UserChangeRole(Set<Role> roles) {

@@ -40,11 +40,11 @@ import jakarta.validation.Valid;
  * Los tokens de acceso se generan mediante JWT y los tokens de refresco se
  * almacenan en cookies (para web) o en el cuerpo de respuesta (para mobile).
  * </p>
- * 
+ *
  * <p>
  * Maneja seguridad mediante Spring Security y JWT.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -74,19 +74,19 @@ public class AuthController {
     /**
      * Inicia sesión de un usuario.
      * <p>
-     * Autentica al usuario mediante email y contraseña, genera un token JWT y un
-     * refresh token.
-     * Para dispositivos web, el refresh token se envía en una cookie segura. Para
-     * dispositivos Android, se devuelve en el cuerpo de la respuesta.
+     * Autentica al usuario mediante email y contraseña, genera un token JWT y
+     * un refresh token. Para dispositivos web, el refresh token se envía en una
+     * cookie segura. Para dispositivos Android, se devuelve en el cuerpo de la
+     * respuesta.
      * </p>
-     * 
-     * @param login    ({@link LoginRequest}) Datos de inicio de sesión (email y
-     *                 contraseña)
-     * @param request  Petición HTTP para obtener información del usuario
-     *                 (User-Agent, IP)
+     *
+     * @param login ({@link LoginRequest}) Datos de inicio de sesión (email y
+     * contraseña)
+     * @param request Petición HTTP para obtener información del usuario
+     * (User-Agent, IP)
      * @param response Respuesta HTTP donde se puede agregar la cookie
      * @return {@link LoginResponse} con el token de acceso y opcionalmente el
-     *         refresh token.
+     * refresh token.
      * @throws UnauthorizedException Si las credenciales son inválidas.
      */
     @PostMapping("/login")
@@ -117,19 +117,18 @@ public class AuthController {
     /**
      * Refresca un token de acceso utilizando un refresh token válido.
      * <p>
-     * Valida el refresh token (de cookie o body), genera un nuevo JWT y un nuevo
-     * refresh token, y revoca el refresh token anterior.
-     * Para web, el nuevo refresh token se envía en cookie. Para Android, en el
-     * body.
+     * Valida el refresh token (de cookie o body), genera un nuevo JWT y un
+     * nuevo refresh token, y revoca el refresh token anterior. Para web, el
+     * nuevo refresh token se envía en cookie. Para Android, en el body.
      * </p>
-     * 
+     *
      * @param cookieToken Refresh token enviado en cookie (opcional, para web)
-     * @param body        ({@link RefreshRequest}) Refresh token enviado en body
-     *                    (opcional, para mobile)
-     * @param request     Petición HTTP
-     * @param response    Respuesta HTTP para agregar la cookie (web)
-     * @return {@link RefreshResponse} con el nuevo token de acceso y opcionalmente
-     *         el refresh token
+     * @param body ({@link RefreshRequest}) Refresh token enviado en body
+     * (opcional, para mobile)
+     * @param request Petición HTTP
+     * @param response Respuesta HTTP para agregar la cookie (web)
+     * @return {@link RefreshResponse} con el nuevo token de acceso y
+     * opcionalmente el refresh token
      * @throws UnauthorizedException Si el refresh token es inválido o expirado
      */
     @PostMapping("/refresh")
@@ -176,11 +175,11 @@ public class AuthController {
      * <p>
      * Revoca el refresh token válido y elimina la cookie en caso de web.
      * </p>
-     * 
+     *
      * @param cookieToken Refresh token enviado en cookie (opcional)
-     * @param body        ({@link RefreshRequest}) Refresh token enviado en body
-     *                    (opcional)
-     * @param response    Respuesta HTTP para limpiar la cookie
+     * @param body ({@link RefreshRequest}) Refresh token enviado en body
+     * (opcional)
+     * @param response Respuesta HTTP para limpiar la cookie
      * @return {@link ResponseEntity} con estado 200 si la operación fue exitosa
      * @throws UnauthorizedException Si el refresh token es inválido o expirado
      */
@@ -217,10 +216,11 @@ public class AuthController {
     /**
      * Método auxiliar para agregar un refresh token en una cookie HTTP segura.
      * <p>
-     * Se utiliza para usuarios web y establece el atributo HttpOnly y SameSite=Lax.
+     * Se utiliza para usuarios web y establece el atributo HttpOnly y
+     * SameSite=Lax.
      * </p>
-     * 
-     * @param response     Respuesta HTTP donde se agrega la cookie
+     *
+     * @param response Respuesta HTTP donde se agrega la cookie
      * @param refreshToken Refresh token a almacenar en la cookie
      */
     private void addRefreshCookie(HttpServletResponse response, String refreshToken) {

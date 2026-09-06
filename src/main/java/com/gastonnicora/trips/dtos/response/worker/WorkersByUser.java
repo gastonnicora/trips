@@ -13,13 +13,12 @@ import lombok.Setter;
 /**
  * Data Transfer Object (DTO) que representa la información de un usuario y sus
  * empresas donde trabaja.
- * 
+ *
  * <p>
  * Se utiliza para exponer los datos de usuario y sus empresas donde trabaja en
- * respuestas de la API, sin
- * incluir información sensible como la contraseña.
+ * respuestas de la API, sin incluir información sensible como la contraseña.
  * </p>
- * 
+ *
  * <p>
  * Campos principales:
  * </p>
@@ -28,11 +27,11 @@ import lombok.Setter;
  * <li>{@code workers}: Lista de {@link WorkerCompany} de las empresas donde
  * trabaja.</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
  *   "user": {
@@ -66,7 +65,7 @@ import lombok.Setter;
  *   ]
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-06-03

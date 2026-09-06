@@ -30,8 +30,7 @@ import lombok.ToString;
  * Representa un usuario en el sistema.
  * <p>
  * Contiene información personal, roles, estado y fechas de
- * creación/actualización.
- * Por defecto, se asigna el rol {@link Role#USER}.
+ * creación/actualización. Por defecto, se asigna el rol {@link Role#USER}.
  * </p>
  * <p>
  * Campos principales:
@@ -52,7 +51,7 @@ import lombok.ToString;
  * Se utiliza para gestionar la autenticación, autorización y administración de
  * usuarios.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -108,10 +107,10 @@ public class User {
      * <p>
      * Asigna automáticamente el rol {@link Role#USER}.
      * </p>
-     * 
-     * @param name     Nombre del usuario
+     *
+     * @param name Nombre del usuario
      * @param lastname Apellido del usuario
-     * @param email    Correo electrónico
+     * @param email Correo electrónico
      * @param password Contraseña cifrada
      */
     public User(String name, String lastname, String email, String password) {
@@ -123,12 +122,12 @@ public class User {
      * <p>
      * Si no se proporcionan roles, se asigna automáticamente {@link Role#USER}.
      * </p>
-     * 
-     * @param name     Nombre del usuario
+     *
+     * @param name Nombre del usuario
      * @param lastname Apellido del usuario
-     * @param email    Correo electrónico
+     * @param email Correo electrónico
      * @param password Contraseña cifrada
-     * @param role     ({@link Set}) Conjunto de {@link Role} a asignar
+     * @param role ({@link Set}) Conjunto de {@link Role} a asignar
      */
     public User(String name, String lastname, String email, String password, Set<Role> role) {
         this.name = name;
@@ -141,7 +140,7 @@ public class User {
 
     /**
      * Agrega un rol al usuario.
-     * 
+     *
      * @param role ({@link Role}) a asignar
      */
     public void addRole(Role role) {
@@ -150,7 +149,7 @@ public class User {
 
     /**
      * Agrega varios roles al usuario.
-     * 
+     *
      * @param roles ({@link Set}) Conjunto de {@link Role} a asignar
      */
     public void addRoles(Set<Role> roles) {
@@ -159,10 +158,10 @@ public class User {
 
     /**
      * Verifica si el usuario tiene un rol específico.
-     * 
+     *
      * @param role ({@link Role})) Rol a verificar
      * @return {@code true} si el usuario tiene el rol, {@code false} en caso
-     *         contrario
+     * contrario
      */
     public boolean hasRole(Role role) {
         return this.role.contains(role);
@@ -170,7 +169,7 @@ public class User {
 
     /**
      * Elimina un rol del usuario.
-     * 
+     *
      * @param role ({@link Role}) a eliminar
      */
     public void removeRole(Role role) {

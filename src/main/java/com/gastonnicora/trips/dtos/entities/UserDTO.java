@@ -20,7 +20,7 @@ import lombok.ToString;
  * Se utiliza para exponer los datos de usuario en respuestas de la API, sin
  * incluir información sensible como la contraseña.
  * </p>
- * 
+ *
  * <p>
  * Campos principales:
  * </p>
@@ -34,11 +34,11 @@ import lombok.ToString;
  * <li>{@code createdAt}: Fecha y hora de creación del usuario.</li>
  * <li>{@code updatedAt}: Fecha y hora de última actualización.</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
  *   "uuid": "550e8400-e29b-41d4-a716-446655440000",
@@ -51,7 +51,7 @@ import lombok.ToString;
  *   "updatedAt": "2026-01-01T00:00:00"
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -107,24 +107,24 @@ public class UserDTO {
     /**
      * Fecha y hora de creación del usuario.
      */
-    @Schema(description = "Fecha de creacion del usuario", example = "2026-01-01T00:00:00")
+    @Schema(description = "Fecha de creación del usuario", example = "2026-01-01T00:00:00")
     private LocalDateTime createdAt;
 
     /**
      * Fecha y hora de la última actualización del usuario.
      */
-    @Schema(description = "Fecha de actualizacion del usuario", example = "2026-01-01T00:00:00")
+    @Schema(description = "Fecha de actualización del usuario", example = "2026-01-01T00:00:00")
     private LocalDateTime updatedAt;
 
     /**
      * Constructor completo del DTO de usuario.
-     * 
-     * @param uuid      Identificador único del usuario
-     * @param name      Nombre del usuario
-     * @param lastname  Apellido del usuario
-     * @param email     Correo electrónico del usuario
-     * @param role      ({@link Set})conjunto de {@link Role} asignados al usuario
-     * @param enabled   Estado del usuario (habilitado o no)
+     *
+     * @param uuid Identificador único del usuario
+     * @param name Nombre del usuario
+     * @param lastname Apellido del usuario
+     * @param email Correo electrónico del usuario
+     * @param role ({@link Set})conjunto de {@link Role} asignados al usuario
+     * @param enabled Estado del usuario (habilitado o no)
      * @param createdAt Fecha de creación
      * @param updatedAt Fecha de actualización
      */

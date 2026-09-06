@@ -1,10 +1,9 @@
 package com.gastonnicora.trips.repository.refreshToken;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -21,38 +20,39 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DeleteByUserUuidTest {
-        @Autowired
-        private UserRepository userRepository;
 
-        @Autowired
-        private RefreshTokenRepository refreshTokenRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-        @Test
-        void shouldDeleteByUserUuid() {
-                User user = new User(
-                                "username",
-                                "latName",
-                                "test@test.com",
-                                "password",
-                                Set.of(Role.USER));
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
-                user.setEnabled(true);
-                userRepository.save(user);
+    @Test
+    void shouldDeleteByUserUuid() {
+        User user = new User(
+                "username",
+                "latName",
+                "test@test.com",
+                "password",
+                Set.of(Role.USER));
 
-                RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
-                RefreshToken rt2 = new RefreshToken("token", user, "127.0.0.1",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+        user.setEnabled(true);
+        userRepository.save(user);
 
-                refreshTokenRepository.save(rt);
-                refreshTokenRepository.save(rt2);
+        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+        RefreshToken rt2 = new RefreshToken("token", user, "127.0.0.1",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
 
-                refreshTokenRepository.deleteAllByUser_Uuid(user.getUuid());
+        refreshTokenRepository.save(rt);
+        refreshTokenRepository.save(rt2);
 
-                List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
+        refreshTokenRepository.deleteAllByUser_Uuid(user.getUuid());
 
-                assertTrue(found.isEmpty());
+        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
-        }
+        assertTrue(found.isEmpty());
+
+    }
 
 }

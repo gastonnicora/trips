@@ -15,18 +15,18 @@ import lombok.NoArgsConstructor;
  * <li>{@code token}: Token JWT de acceso.</li>
  * <li>{@code refreshToken}: Token UUID de refresco.</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de respuesta JSON:
  * </p>
- * 
+ *
  * <pre>
  * {
  *   "token": "eyJhbGciOiJIUzI1NiJ9...",
  *   "refreshToken": "550e8400-e29b-41d4-a716-446655440000"
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -43,8 +43,8 @@ public class LoginResponse {
 
     /**
      * Constructor completo de respuesta de login.
-     * 
-     * @param token        Token JWT de acceso
+     *
+     * @param token Token JWT de acceso
      * @param refreshToken Token de refresco UUID (opcional para web)
      */
     public LoginResponse(String token, String refreshToken) {
@@ -54,7 +54,7 @@ public class LoginResponse {
 
     /**
      * Obtiene el token JWT de acceso.
-     * 
+     *
      * @return Token JWT de acceso
      */
     public String getToken() {
@@ -63,7 +63,7 @@ public class LoginResponse {
 
     /**
      * Establece el token JWT de acceso.
-     * 
+     *
      * @param token Token JWT de acceso
      */
     public void setToken(String token) {
@@ -72,7 +72,7 @@ public class LoginResponse {
 
     /**
      * Obtiene el token de refresco UUID.
-     * 
+     *
      * @return Token de refresco UUID
      */
     public String getRefreshToken() {
@@ -81,7 +81,7 @@ public class LoginResponse {
 
     /**
      * Establece el token de refresco UUID.
-     * 
+     *
      * @param refreshToken Token de refresco UUID
      */
     public void setRefreshToken(String refreshToken) {

@@ -8,9 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Representa un error de autenticación (HTTP 401).
  * <p>
  * Se utiliza cuando un usuario no está autenticado o el token es
- * inválido/expirado.
- * Hereda de {@link ApiError} y establece automáticamente el código de estado a
- * 401.
+ * inválido/expirado. Hereda de {@link ApiError} y establece automáticamente el
+ * código de estado a 401.
  * </p>
  *
  * <p>
@@ -25,7 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *   "errors": null
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04

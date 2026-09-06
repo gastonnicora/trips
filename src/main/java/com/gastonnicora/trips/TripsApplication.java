@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Clase principal de la aplicación Trips.
- * Habilita tareas programadas y ejecuta código al iniciar la aplicación.
+ * Clase principal de la aplicación Trips. Habilita tareas programadas y ejecuta
+ * código al iniciar la aplicación.
  */
 @EnableScheduling
 @SpringBootApplication

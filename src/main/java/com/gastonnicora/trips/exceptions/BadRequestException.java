@@ -24,8 +24,8 @@ import org.springframework.http.HttpStatus;
  *
  * <p>
  * Se utiliza en conjunto con
- * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler}
- * para generar respuestas API estandarizadas.
+ * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler} para
+ * generar respuestas API estandarizadas.
  * </p>
  *
  * @author Gastón
@@ -34,7 +34,9 @@ import org.springframework.http.HttpStatus;
  */
 public class BadRequestException extends RuntimeException {
 
-    /** Código HTTP asociado al error (400 - Bad Request) */
+    /**
+     * Código HTTP asociado al error (400 - Bad Request)
+     */
     private final int status = HttpStatus.BAD_REQUEST.value();
 
     /**

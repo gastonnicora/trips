@@ -21,12 +21,12 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
  * Esto ayuda a mantener la base de datos limpia y evitar acumulación
  * innecesaria de tokens.
  * </p>
- * 
+ *
  * Cron de ejemplo utilizado: "0 0 * * * *" → se ejecuta al inicio de cada hora.
- * 
- * Autor: Gastón
- * Versión: 1.0
- * Desde: 2026-05-04
+ *
+ * @author Gastón 
+ * @version 1.0 
+ * @since 2026-05-04
  */
 @Service
 public class TokenCleanupService {

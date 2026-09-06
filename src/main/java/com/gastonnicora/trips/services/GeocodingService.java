@@ -20,9 +20,9 @@ public class GeocodingService {
 
     /**
      * Constructor de la clase GeocodingService.
-     * 
-     * @throws InternalErrorException Si ocurre un error al inicializar el servicio
-     *                                de geocodificación
+     *
+     * @throws InternalErrorException Si ocurre un error al inicializar el
+     * servicio de geocodificación
      */
     public GeocodingService() {
         try {
@@ -41,7 +41,7 @@ public class GeocodingService {
     /**
      * Obtiene la dirección a partir de coordenadas.
      *
-     * @param latitud  double con la latitud de la ubicación.
+     * @param latitud double con la latitud de la ubicación.
      * @param longitud double con la longitud de la ubicación.
      * @return {@link AddressResponse} con la dirección correspondiente
      * @throws InternalErrorException Si ocurre un error al obtener la dirección
@@ -50,11 +50,11 @@ public class GeocodingService {
         try {
             return this.restClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/reverse")
-                            .queryParam("format", "jsonv2")
-                            .queryParam("lat", latitud)
-                            .queryParam("lon", longitud)
-                            .build())
+                    .path("/reverse")
+                    .queryParam("format", "jsonv2")
+                    .queryParam("lat", latitud)
+                    .queryParam("lon", longitud)
+                    .build())
                     .retrieve()
                     .body(AddressResponse.class);
 

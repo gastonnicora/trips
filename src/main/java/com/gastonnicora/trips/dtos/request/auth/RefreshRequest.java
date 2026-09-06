@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
  * DTO para solicitudes de renovación de token (refresh).
  * <p>
  * Contiene el refresh token que será enviado para obtener un nuevo access
- * token.
- * Puede ser usado tanto desde la web (cookie) como desde aplicaciones móviles
- * (body).
+ * token. Puede ser usado tanto desde la web (cookie) como desde aplicaciones
+ * móviles (body).
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -28,7 +27,7 @@ public class RefreshRequest {
 
     /**
      * Constructor completo.
-     * 
+     *
      * @param refreshToken refresh token del usuario
      */
     public RefreshRequest(String refreshToken) {
@@ -37,7 +36,7 @@ public class RefreshRequest {
 
     /**
      * Obtiene el refresh token.
-     * 
+     *
      * @return refresh token
      */
     public String getRefreshToken() {
@@ -46,7 +45,7 @@ public class RefreshRequest {
 
     /**
      * Establece el refresh token.
-     * 
+     *
      * @param refreshToken refresh token a establecer
      */
     public void setRefreshToken(String refreshToken) {

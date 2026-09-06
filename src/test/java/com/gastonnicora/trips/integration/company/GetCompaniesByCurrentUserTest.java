@@ -31,6 +31,7 @@ import tools.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc
 @Transactional
 public class GetCompaniesByCurrentUserTest {
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -90,9 +91,10 @@ public class GetCompaniesByCurrentUserTest {
                 .andExpect(jsonPath("$.data[*].email", hasItems(company.getEmail(), company2.getEmail())))
                 .andExpect(jsonPath("$.total").value(2));
     }
-     @Test
+
+    @Test
     void shouldReturnOk_whenUserDontHaveCompany() throws Exception {
-         this.user = UserTestFactory.registerUser(mockMvc, "User", password);
+        this.user = UserTestFactory.registerUser(mockMvc, "User", password);
         this.email = user.getEmail();
         this.token = UserTestFactory.login(mockMvc, email, password).getToken();
         this.companyApi = this.companyApi.withToken(token);

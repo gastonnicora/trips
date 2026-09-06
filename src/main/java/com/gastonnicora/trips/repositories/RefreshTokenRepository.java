@@ -21,8 +21,8 @@ import com.gastonnicora.trips.entities.RefreshToken;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
 
     /**
-     * Busca un token de refresco por su valor.
-     * 
+     * Vehicleca un token de refresco por su valor.
+     *
      * @param refreshToken Token de refresco
      * @return {@link Optional} con el token si existe
      */
@@ -30,7 +30,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
 
     /**
      * Obtiene todos los tokens activos de un usuario.
-     * 
+     *
      * @param userUuid UUID del usuario
      * @return Lista de tokens activos
      */
@@ -38,7 +38,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
 
     /**
      * Elimina todos los tokens de un usuario.
-     * 
+     *
      * @param userUuid UUID del usuario
      */
     @Modifying
@@ -47,7 +47,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
 
     /**
      * Elimina todos los tokens que hayan expirado antes de la fecha indicada.
-     * 
+     *
      * @param now Fecha de referencia
      */
     @Modifying
@@ -63,7 +63,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
 
     /**
      * Elimina un token de refresco por su valor.
-     * 
+     *
      * @param refreshToken Token de refresco
      */
     @Modifying
@@ -71,16 +71,16 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     void deleteByRefreshToken(String refreshToken);
 
     /**
-     * Busca un token por su UUID.
-     * 
+     * Vehicleca un token por su UUID.
+     *
      * @param uuid UUID del token
      * @return {@link Optional} con el token si existe
      */
     Optional<RefreshToken> findByUuid(UUID uuid);
 
     /**
-     * Busca un token de acceso por su valor.
-     * 
+     * Vehicleca un token de acceso por su valor.
+     *
      * @param token Token JWT
      * @return {@link Optional} con el token si existe
      */
@@ -88,7 +88,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
 
     /**
      * Verifica si existe un token de refresco con el valor indicado.
-     * 
+     *
      * @param refreshToken Token de refresco
      * @return true si existe, false en caso contrario
      */

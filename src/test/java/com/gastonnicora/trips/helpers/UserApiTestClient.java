@@ -99,7 +99,6 @@ public class UserApiTestClient {
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
                 .contentType(MediaType.APPLICATION_JSON)
-
                 .content("""
                         {
                         "roles": %s

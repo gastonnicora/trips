@@ -1,8 +1,5 @@
 package com.gastonnicora.trips.integration.user;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.enums.Role;
@@ -26,72 +25,73 @@ import jakarta.transaction.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 public class GetUsersTest {
-        @Autowired
-        private MockMvc mockMvc;
 
-        private String token;
-        private UserApiTestClient userApi;
-        @Value("${superadmin.email}")
-        private String email;
-        @Value("${superadmin.password}")
-        private String password;
+    @Autowired
+    private MockMvc mockMvc;
 
-        @BeforeEach
-        void setup() throws Exception {
-                token = UserTestFactory.login(mockMvc, email, password).getToken();
-                this.userApi = new UserApiTestClient(mockMvc).withToken(token);
-        }
+    private String token;
+    private UserApiTestClient userApi;
+    @Value("${superadmin.email}")
+    private String email;
+    @Value("${superadmin.password}")
+    private String password;
 
-        @Test
-        void shouldReturnOk_whenUserIsSuperAdmin() throws Exception {
-                int length = 1;// Super admin definido en la app
-                userApi.getUsers()
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.data").isArray())
-                                .andExpect(jsonPath("$.data.length()").isNotEmpty())
-                                .andExpect(jsonPath("$.total").exists())
-                                .andExpect(jsonPath("$.total").value(length))
-                                .andExpect(jsonPath("$.data.length()").value(length))
-                                .andExpect(jsonPath("$.data[?(@.email == '%s')]".formatted(email)).exists());
-        }
+    @BeforeEach
+    void setup() throws Exception {
+        token = UserTestFactory.login(mockMvc, email, password).getToken();
+        this.userApi = new UserApiTestClient(mockMvc).withToken(token);
+    }
 
-        @Test
-        void shouldReturnOk_whenUserIsAdmin() throws Exception {
-                UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_Admin", password);
-                // cambio de rol a un usuario
-                userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
-                                .andExpect(status().isOk());
+    @Test
+    void shouldReturnOk_whenUserIsSuperAdmin() throws Exception {
+        int length = 1;// Super admin definido en la app
+        userApi.getUsers()
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").isNotEmpty())
+                .andExpect(jsonPath("$.total").exists())
+                .andExpect(jsonPath("$.total").value(length))
+                .andExpect(jsonPath("$.data.length()").value(length))
+                .andExpect(jsonPath("$.data[?(@.email == '%s')]".formatted(email)).exists());
+    }
 
-                token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
-                userApi = new UserApiTestClient(mockMvc).withToken(token);
-                int length = 2;// Super admin definido en la app mas el usuario recién creado
-                userApi.getUsers()
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.data").isArray())
-                                .andExpect(jsonPath("$.data.length()").isNotEmpty())
-                                .andExpect(jsonPath("$.total").exists())
-                                .andExpect(jsonPath("$.total").value(length))
-                                .andExpect(jsonPath("$.data.length()").value(length));
-        }
+    @Test
+    void shouldReturnOk_whenUserIsAdmin() throws Exception {
+        UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_Admin", password);
+        // cambio de rol a un usuario
+        userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
+                .andExpect(status().isOk());
 
-        @Test
-        void shouldReturnForbidden_whenUserIsRegularUser() throws Exception {
-                UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_User", password);
+        token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
+        userApi = new UserApiTestClient(mockMvc).withToken(token);
+        int length = 2;// Super admin definido en la app mas el usuario recién creado
+        userApi.getUsers()
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").isNotEmpty())
+                .andExpect(jsonPath("$.total").exists())
+                .andExpect(jsonPath("$.total").value(length))
+                .andExpect(jsonPath("$.data.length()").value(length));
+    }
 
-                token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
-                userApi = new UserApiTestClient(mockMvc).withToken(token);
+    @Test
+    void shouldReturnForbidden_whenUserIsRegularUser() throws Exception {
+        UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_User", password);
 
-                userApi.getUsers()
-                                .andExpect(status().isForbidden());
-        }
+        token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
+        userApi = new UserApiTestClient(mockMvc).withToken(token);
 
-        @Test
-        void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+        userApi.getUsers()
+                .andExpect(status().isForbidden());
+    }
 
-                token = null;
-                userApi = new UserApiTestClient(mockMvc).withToken(token);
+    @Test
+    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
 
-                userApi.getUsers()
-                                .andExpect(status().isUnauthorized());
-        }
+        token = null;
+        userApi = new UserApiTestClient(mockMvc).withToken(token);
+
+        userApi.getUsers()
+                .andExpect(status().isUnauthorized());
+    }
 }

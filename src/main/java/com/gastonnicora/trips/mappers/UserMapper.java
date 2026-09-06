@@ -11,8 +11,8 @@ import com.gastonnicora.trips.entities.User;
 /**
  * Mapper que convierte entidades {@link User} a {@link UserDTO}.
  * <p>
- * Se utiliza para exponer datos de usuario de manera segura en la API,
- * sin incluir información sensible como la contraseña.
+ * Se utiliza para exponer datos de usuario de manera segura en la API, sin
+ * incluir información sensible como la contraseña.
  * </p>
  */
 @Component
@@ -20,7 +20,7 @@ public class UserMapper {
 
     /**
      * Convierte un {@link User} en {@link UserDTO}.
-     * 
+     *
      * @param user Entidad de usuario
      * @return DTO de usuario correspondiente
      */
@@ -38,7 +38,7 @@ public class UserMapper {
 
     /**
      * Convierte una lista de {@link User} en una lista de {@link UserDTO}.
-     * 
+     *
      * @param users Lista de entidades de usuario
      * @return Lista de DTOs de usuario correspondientes
      */

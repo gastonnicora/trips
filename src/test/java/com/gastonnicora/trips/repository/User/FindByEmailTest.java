@@ -1,12 +1,11 @@
 package com.gastonnicora.trips.repository.user;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -21,6 +20,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class FindByEmailTest {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -64,6 +64,6 @@ public class FindByEmailTest {
         List<User> found = userRepository.findByEmail("test@test.com");
 
         assertTrue(found.isEmpty());
-        assertTrue(found.size() == 0);
+        assertTrue(found.isEmpty());
     }
 }

@@ -3,13 +3,12 @@ package com.gastonnicora.trips.exceptions;
 import org.springframework.http.HttpStatus;
 
 /**
- * Excepción personalizada de la aplicación utilizada para representar
- * acceso prohibido o denegado (HTTP 403 - Forbidden).
+ * Excepción personalizada de la aplicación utilizada para representar acceso
+ * prohibido o denegado (HTTP 403 - Forbidden).
  *
  * <p>
- * Se utiliza cuando un usuario autenticado intenta acceder a un recurso
- * o realizar una acción para la cual no tiene permisos suficientes, por
- * ejemplo:
+ * Se utiliza cuando un usuario autenticado intenta acceder a un recurso o
+ * realizar una acción para la cual no tiene permisos suficientes, por ejemplo:
  * </p>
  * <ul>
  * <li>Acceder a un endpoint restringido sin rol adecuado</li>
@@ -20,17 +19,19 @@ import org.springframework.http.HttpStatus;
  *
  * <p>
  * Esta excepción se utiliza en conjunto con
- * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler}
- * para generar respuestas API estandarizadas.
+ * {@link com.gastonnicora.trips.exceptions.handler.GlobalExceptionHandler} para
+ * generar respuestas API estandarizadas.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-06
  */
 public class ForbiddenException extends RuntimeException {
 
-    /** Código HTTP asociado al error (403 - Forbidden) */
+    /**
+     * Código HTTP asociado al error (403 - Forbidden)
+     */
     private final int status = HttpStatus.FORBIDDEN.value();
 
     /**

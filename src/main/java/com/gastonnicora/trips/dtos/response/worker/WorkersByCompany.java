@@ -14,10 +14,9 @@ import lombok.Setter;
  * trabajadores.
  * <p>
  * Se utiliza para exponer los datos de empresa y sus trabajadores en respuestas
- * de la API, sin
- * incluir información sensible como la contraseña.
+ * de la API, sin incluir información sensible como la contraseña.
  * </p>
- * 
+ *
  * <p>
  * Campos principales:
  * </p>
@@ -25,11 +24,11 @@ import lombok.Setter;
  * <li>{@code company}: {@link CompanyDTO} de la empresa.</li>
  * <li>{@code workers}: Lista de {@link WorkerUser} de los trabajadores.</li>
  * </ul>
- * 
+ *
  * <p>
  * Ejemplo de JSON:
  * </p>
- * 
+ *
  * <pre>
  *  {
  *   "company": {
@@ -63,7 +62,7 @@ import lombok.Setter;
  *   ]
  * }
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-06-03
@@ -73,6 +72,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Schema(description = "DTO de empresa y sus trabajadores")
 public class WorkersByCompany {
+
     /**
      * {@link CompanyDTO} de la empresa.
      */

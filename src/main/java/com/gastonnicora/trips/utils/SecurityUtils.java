@@ -14,18 +14,18 @@ import com.gastonnicora.trips.security.UserDetailsImpl;
  * Proporciona métodos estáticos para obtener datos del usuario actualmente
  * autenticado en el contexto de Spring Security.
  * </p>
- * 
- * Autor: Gastón
- * Versión: 1.0
- * Desde: 2026-05-04
+ *
+ * @author Gastón 
+ * @version 1.0 
+ * @since 2026-05-04
  */
 public class SecurityUtils {
 
     /**
      * Obtiene el UUID del usuario actualmente autenticado.
-     * 
-     * @return UUID del usuario si está autenticado, {@code null} si no hay usuario
-     *         en el contexto de seguridad.
+     *
+     * @return UUID del usuario si está autenticado, {@code null} si no hay
+     * usuario en el contexto de seguridad.
      */
     public static UUID getCurrentUserUuid() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -38,9 +38,9 @@ public class SecurityUtils {
 
     /**
      * Obtiene el email del usuario actualmente autenticado.
-     * 
+     *
      * @return Email del usuario si está autenticado, o el nombre del principal
-     *         según Spring Security.
+     * según Spring Security.
      */
     public static String getCurrentUserEmail() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

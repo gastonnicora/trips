@@ -1,7 +1,5 @@
 package com.gastonnicora.trips.services;
 
-import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -24,6 +22,7 @@ import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
+import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
 
 import jakarta.transaction.Transactional;
 
@@ -31,19 +30,18 @@ import jakarta.transaction.Transactional;
  * Servicio de gestión de usuarios.
  * <p>
  * Este servicio maneja todas las operaciones relacionadas con la gestión de
- * usuarios,
- * como la creación, actualización, eliminación, y obtención de usuarios.
- * Además,
- * permite cambiar la contraseña y asignar roles a los usuarios.
+ * usuarios, como la creación, actualización, eliminación, y obtención de
+ * usuarios. Además, permite cambiar la contraseña y asignar roles a los
+ * usuarios.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
  */
-
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
@@ -55,17 +53,17 @@ public class UserService {
     /**
      * Constructor que inicializa los servicios necesarios para la gestión de
      * usuarios.
-     * 
-     * @param userRepository      Repositorio de usuarios utilizado para acceder a
-     *                            la base de datos.
-     * @param passwordEncoder     Codificador de contraseñas para proteger las
-     *                            contraseñas de los usuarios.
-     * @param refreshTokenService Servicio para manejar los tokens de refresco de
-     *                            los usuarios.
-     * 
-     * @param userMapper          Mapper para convertir entidades {@link User} a
-     *                            DTOs {@link UserDTO}.
-     * @param workerService       Servicio para manejar los trabajadores.
+     *
+     * @param userRepository Repositorio de usuarios utilizado para acceder a la
+     * base de datos.
+     * @param passwordEncoder Codificador de contraseñas para proteger las
+     * contraseñas de los usuarios.
+     * @param refreshTokenService Servicio para manejar los tokens de refresco
+     * de los usuarios.
+     *
+     * @param userMapper Mapper para convertir entidades {@link User} a DTOs
+     * {@link UserDTO}.
+     * @param workerService Servicio para manejar los trabajadores.
      */
     public UserService(UserRepository userRepository,
             PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService, UserMapper userMapper, WorkerService workerService) {
@@ -79,17 +77,16 @@ public class UserService {
     /**
      * Crea un nuevo usuario en el sistema.
      * <p>
-     * Se valida que el correo electrónico no esté en uso antes de crear el nuevo
-     * usuario.
-     * El sistema cifra la contraseña antes de guardarla.
-     * Si el correo ya está en uso, se lanza una excepción
-     * {@link ConflictException}.
+     * Se valida que el correo electrónico no esté en uso antes de crear el
+     * nuevo usuario. El sistema cifra la contraseña antes de guardarla. Si el
+     * correo ya está en uso, se lanza una excepción {@link ConflictException}.
      * </p>
-     * 
-     * @param userCreate ({@link UserCreate}) que contiene la información
-     *                   para crear el nuevo usuario.
+     *
+     * @param userCreate ({@link UserCreate}) que contiene la información para
+     * crear el nuevo usuario.
      * @return {@link UserDTO} Datos del usuario recién creado.
-     * @throws ConflictException Si el correo electrónico ya está siendo utilizado.
+     * @throws ConflictException Si el correo electrónico ya está siendo
+     * utilizado.
      */
     public UserDTO createUser(UserCreate userCreate) {
         if (userRepository.existsByEmailAndEnabledTrue(userCreate.getEmail())) {
@@ -109,15 +106,14 @@ public class UserService {
     /**
      * Obtiene los datos del usuario actual.
      * <p>
-     * Se busca el usuario mediante su UUID y se devuelve un objeto {@link UserDTO}
-     * con los detalles del usuario actual.
-     * Si el usuario no es encontrado, se lanza una excepción
-     * {@link NotFoundException}.
+     * Se bu sca el usuario mediante su UUID y se devuelve un objeto
+     * {@link UserDTO} con los detalles del usuario actual. Si el usuario no es
+     * encontrado, se lanza una excepción {@link NotFoundException}.
      * </p>
-     * 
+     *
      * @return {@link UserDTO} Datos del usuario actual.
-     * @throws NotFoundException Si el usuario actual no es encontrado en la base de
-     *                           datos.
+     * @throws NotFoundException Si el usuario actual no es encontrado en la
+     * base de datos.
      */
     public UserDTO getCurrentUser() {
         return userMapper.toDTO(getUser(getCurrentUserUuid()));
@@ -126,9 +122,10 @@ public class UserService {
     /**
      * Obtiene los detalles de un usuario específico basado en su UUID.
      * <p>
-     * Si el usuario no existe, se lanza una excepción {@link NotFoundException}.
+     * Si el usuario no existe, se lanza una excepción
+     * {@link NotFoundException}.
      * </p>
-     * 
+     *
      * @param uuid UUID del usuario que se quiere obtener.
      * @return {@link UserDTO} Datos del usuario con el UUID especificado.
      * @throws NotFoundException Si el usuario no existe.
@@ -141,30 +138,27 @@ public class UserService {
      * Obtiene todos los usuarios del sistema.
      * <p>
      * Devuelve una lista ({@link ListResponse}) con los datos de todos los
-     * usuarios. Utiliza
-     * {@link UserMapper} para convertir
-     * las entidades de {@link User} a DTOs {@link UserDTO}.
+     * usuarios. Utiliza {@link UserMapper} para convertir las entidades de
+     * {@link User} a DTOs {@link UserDTO}.
      * </p>
-     * 
+     *
      * @return {@link ListResponse} Una lista de {@link UserDTO} con todos los
-     *         usuarios.
+     * usuarios.
      */
-
     public ListResponse<UserDTO> getUsers() {
         List<User> users = userRepository.findAll();
-        return new ListResponse<UserDTO>(userMapper.toDTOList(users));
+        return new ListResponse<>(userMapper.toDTOList(users));
     }
 
     /**
      * Actualiza los detalles de un usuario específico identificado por su UUID.
      * <p>
      * Si el email del usuario cambia, se verifica que no esté en uso por otro
-     * usuario.
-     * Si el cambio es exitoso, se desactivan todos los tokens de refresco asociados
-     * con el usuario.
+     * usuario. Si el cambio es exitoso, se desactivan todos los tokens de
+     * refresco asociados con el usuario.
      * </p>
-     * 
-     * @param uuid    UUID del usuario a actualizar.
+     *
+     * @param uuid UUID del usuario a actualizar.
      * @param userPut ({@link UserPut}) con los nuevos datos del usuario.
      * @return {@link UserDTO} Datos actualizados del usuario.
      * @throws NotFoundException Si el usuario no existe.
@@ -178,11 +172,10 @@ public class UserService {
      * Actualiza los detalles del usuario actual.
      * <p>
      * Si el email del usuario cambia, se verifica que no esté en uso por otro
-     * usuario.
-     * Si el cambio es exitoso, se desactivan todos los tokens de refresco asociados
-     * con el usuario.
+     * usuario. Si el cambio es exitoso, se desactivan todos los tokens de
+     * refresco asociados con el usuario.
      * </p>
-     * 
+     *
      * @param userPut ({@link UserPut}) con los nuevos datos del usuario.
      * @return {@link UserDTO} Datos actualizados del usuario.
      * @throws NotFoundException Si el usuario no existe.
@@ -196,19 +189,17 @@ public class UserService {
      * Cambia la contraseña del usuario actual.
      * <p>
      * Se verifica que la contraseña actual proporcionada coincida con la
-     * almacenada. Si no es correcta,
-     * se lanza una excepción {@link ValidationException}. Luego, se actualiza la
-     * contraseña y se desactivan
-     * todos los tokens de refresco.
+     * almacenada. Si no es correcta, se lanza una excepción
+     * {@link ValidationException}. Luego, se actualiza la contraseña y se
+     * desactivan todos los tokens de refresco.
      * </p>
-     * 
+     *
      * @param userChangePassword ({@link UserChangePassword}) con las nuevas
-     *                           credenciales.
+     * credenciales.
      * @return {@link UserDTO} Datos del usuario con la contraseña actualizada.
      * @throws ValidationException Si la contraseña actual es incorrecta.
-     * @throws NotFoundException   Si el usuario no existe.
+     * @throws NotFoundException Si el usuario no existe.
      */
-
     @Transactional
     public UserDTO updatePassword(UserChangePassword userChangePassword) {
         User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
@@ -230,18 +221,18 @@ public class UserService {
     /**
      * Asigna roles a un usuario.
      * <p>
-     * Este método asigna un conjunto de roles al usuario identificado por su UUID.
-     * No se puede cambiar el rol de un usuario con rol {@link Role#SUPER_ADMIN}, ni
-     * asignar el rol de {@link Role#SUPER_ADMIN}.
+     * Este método asigna un conjunto de roles al usuario identificado por su
+     * UUID. No se puede cambiar el rol de un usuario con rol
+     * {@link Role#SUPER_ADMIN}, ni asignar el rol de {@link Role#SUPER_ADMIN}.
      * </p>
-     * 
+     *
      * @param uuid UUID del usuario a actualizar.
-     * @param role ({@link UserChangeRole}) que contiene los nuevos roles para el
-     *             usuario.
+     * @param role ({@link UserChangeRole}) que contiene los nuevos roles para
+     * el usuario.
      * @return {@link UserDTO} Datos del usuario con los roles actualizados.
-     * @throws NotFoundException   Si el usuario no existe.
+     * @throws NotFoundException Si el usuario no existe.
      * @throws ValidationException si se intenta cambiar el rol de
-     *                             {@link Role#SUPER_ADMIN}.
+     * {@link Role#SUPER_ADMIN}.
      */
     public UserDTO setRole(UUID uuid, UserChangeRole role) {
         User user = this.getUser(uuid);
@@ -262,14 +253,13 @@ public class UserService {
     /**
      * Elimina el usuario actual.
      * <p>
-     * Este método desactiva al usuario actual y marca su estado como deshabilitado
-     * en la base de datos. Además, cierra todas las sesiones activas del usuario
-     * mediante la desactivación de sus tokens de refresco.
+     * Este método desactiva al usuario actual y marca su estado como
+     * deshabilitado en la base de datos. Además, cierra todas las sesiones
+     * activas del usuario mediante la desactivación de sus tokens de refresco.
      * </p>
-     * 
+     *
      * @throws NotFoundException Si el usuario no existe en la base de datos.
      */
-
     @Transactional
     public void deleteCurrentUser() {
         User user = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
@@ -288,10 +278,9 @@ public class UserService {
      * El email y la contraseña se proporcionan como parámetros.
      * </p>
      *
-     * @param email    String con el email del SUPER_ADMIN a crear.
+     * @param email String con el email del SUPER_ADMIN a crear.
      * @param password String con la contraseña del SUPER_ADMIN a crear.
      */
-
     public void createSuperAdminIfNotExists(String email, String password) {
         System.out.println("Verificando existencia de SUPER_ADMIN...");
         boolean exists = userRepository.existsByRoleContains(Role.SUPER_ADMIN);
@@ -314,7 +303,7 @@ public class UserService {
      * Este método realiza las siguientes operaciones:
      * </p>
      * <ul>
-     * <li>Busca al usuario por UUID; lanza {@link NotFoundException} si no
+     * <li>Vehicleca al usuario por UUID; lanza {@link NotFoundException} si no
      * existe.</li>
      * <li>Actualiza el nombre y apellido del usuario.</li>
      * <li>Si el email cambia:
@@ -330,14 +319,14 @@ public class UserService {
      * <li>Guarda los cambios en la base de datos y devuelve un {@link UserDTO}
      * actualizado.</li>
      * </ul>
-     * 
-     * 
-     * @param uuid    UUID del usuario a actualizar
+     *
+     *
+     * @param uuid UUID del usuario a actualizar
      * @param userPut {@link UserPut} con los nuevos datos del usuario
      * @return {@link UserDTO} con los datos actualizados
      * @throws NotFoundException si el usuario con el UUID dado no existe
-     * @throws ConflictException si se intenta cambiar el email a uno que ya está en
-     *                           uso
+     * @throws ConflictException si se intenta cambiar el email a uno que ya
+     * está en uso
      */
     @Transactional
     private UserDTO updateUser(UUID uuid, UserPut userPut) {
@@ -358,22 +347,22 @@ public class UserService {
     }
 
     /**
-     * Busca un usuario por su UUID y lo convierte a {@link UserDTO}.
+     * Vehicleca un usuario por su UUID y lo convierte a {@link UserDTO}.
      * <p>
      * Este método realiza lo siguiente:
      * </p>
      * <ul>
-     * <li>Busca al usuario en la base de datos mediante
+     * <li>Vehicleca al usuario en la base de datos mediante
      * {@link #userRepository}.</li>
      * <li>Si no se encuentra, lanza una {@link NotFoundException} con mensaje
      * descriptivo.</li>
      * </ul>
-     * 
-     * 
+     *
+     *
      * @param uuid UUID del usuario que se quiere obtener
      * @return {@link User} Datos del usuario correspondiente
      * @throws NotFoundException si no existe ningún usuario con el UUID
-     *                           proporcionado
+     * proporcionado
      */
     public User getUser(UUID uuid) {
         Optional<User> user = userRepository.findByUuid(uuid);
@@ -383,20 +372,20 @@ public class UserService {
         throw new NotFoundException("El usuario solicitado no existe");
     }
 
-   /**
+    /**
      * Obtiene todos los trabajadores asociados a un usuario específico.
      * <p>
-     * Este método utiliza {@link WorkerService} para obtener todos los trabajadores
-     * relacionados con el usuario identificado por su UUID.
+     * Este método utiliza {@link WorkerService} para obtener todos los
+     * trabajadores relacionados con el usuario identificado por su UUID.
      * </p>
-     * 
+     *
      * @param uuid UUID del usuario cuyos trabajadores se desean obtener.
      * @return {@link WorkersByUser} con los datos del usuario y todos sus
-     *         trabajadores.
+     * trabajadores.
      */
     public WorkersByUser getWorkersByUser(UUID uuid) {
         User user = getUser(uuid);
-        return workerService.getWorkersByUser(user.getUuid());   
+        return workerService.getWorkersByUser(user.getUuid());
     }
 
     /**
@@ -405,8 +394,9 @@ public class UserService {
      * Este método utiliza {@link WorkerService} para obtener todos los trabajos
      * relacionados con el usuario actualmente autenticado.
      * </p>
-     * 
-     * @return {@link WorkersByUser} con los datos del usuario y todos sus trabajos.
+     *
+     * @return {@link WorkersByUser} con los datos del usuario y todos sus
+     * trabajos.
      */
     public WorkersByUser getWorkersByCurrentUser() {
         return this.getWorkersByUser(getCurrentUserUuid());

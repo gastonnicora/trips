@@ -16,16 +16,16 @@ import lombok.NoArgsConstructor;
  * <p>
  * Se utiliza típicamente en los endpoints de actualización de usuarios (PUT).
  * </p>
- * 
+ *
  * <p>
  * Ejemplo de uso:
  * </p>
- * 
+ *
  * <pre>
  * UserPut userPut = new UserPut("Gastón", "Nicora", "gaston@example.com");
  * String nombre = userPut.getName();
  * </pre>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -36,10 +36,10 @@ public class UserPut extends UserBasic {
 
     /**
      * Constructor completo.
-     * 
-     * @param name     Nombre del usuario
+     *
+     * @param name Nombre del usuario
      * @param lastname Apellido del usuario
-     * @param email    Correo electrónico
+     * @param email Correo electrónico
      */
     public UserPut(String name, String lastname, String email) {
         super(name, lastname, email);

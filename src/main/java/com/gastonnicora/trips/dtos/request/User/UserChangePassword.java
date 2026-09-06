@@ -11,16 +11,15 @@ import lombok.NoArgsConstructor;
  * DTO para cambiar la contraseña de un usuario.
  * <p>
  * Contiene la contraseña actual, la nueva contraseña y la confirmación de la
- * nueva contraseña.
- * Aplica validaciones para asegurar que los campos no estén vacíos, tengan una
- * longitud mínima
- * y máxima, y que la nueva contraseña coincida con la confirmación.
+ * nueva contraseña. Aplica validaciones para asegurar que los campos no estén
+ * vacíos, tengan una longitud mínima y máxima, y que la nueva contraseña
+ * coincida con la confirmación.
  * </p>
  * <p>
  * La validación {@link FieldsMatch} asegura que {@code password} y
  * {@code confirmPassword} sean iguales.
  * </p>
- * 
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04
@@ -62,8 +61,8 @@ public class UserChangePassword {
     /**
      * Constructor completo.
      *
-     * @param passwordOld     Contraseña actual
-     * @param password        Nueva contraseña
+     * @param passwordOld Contraseña actual
+     * @param password Nueva contraseña
      * @param confirmPassword Confirmación de la nueva contraseña
      */
     public UserChangePassword(String passwordOld, String password, String confirmPassword) {
