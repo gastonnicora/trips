@@ -6,11 +6,11 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
-import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
+import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.dtos.response.worker.WorkersByCompany;
@@ -418,6 +418,6 @@ public class CompanyService {
      */
     public void deleteVehicle(UUID companyUuid, UUID vehicleUuid) {
         this.getCompanyEntity(companyUuid);
-        vehicleService.deleteVehicle(vehicleUuid);
+        vehicleService.deleteVehicle(vehicleUuid); // TODO 🚀: verificar propiedad de la empresa
     }
 }
