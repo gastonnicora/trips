@@ -24,10 +24,15 @@ jobs:
           cache: maven
 
       - name: Generate Javadoc
-        run: mvn package -DskipTests
+        run: mvn -B javadoc:javadoc
+
+      - name: Verify Javadoc
+        run: test -f docs/index.html
 
       - name: Deploy Javadoc
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
+          publish_branch: gh-pages
+          force_orphan: true
