@@ -1,6 +1,6 @@
-package com.gastonnicora.trips.unit.company;
+package com.gastonnicora.trips.unit.company.worker;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.never;
@@ -16,23 +15,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
-import com.gastonnicora.trips.dtos.response.worker.WorkerUser;
-import com.gastonnicora.trips.dtos.response.worker.WorkersByCompany;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.exceptions.BadRequestException;
-import com.gastonnicora.trips.exceptions.ConflictException;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.UserService;
 import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
-class CreateWorkerTest {
+class UpdateWorkerTest {
 
     @InjectMocks
     private CompanyService companyService;
@@ -47,7 +41,7 @@ class CreateWorkerTest {
     private WorkerService workerService;
 
     @Test
-    void shouldCreateWorkerSuccessfully() {
+    void shouldUpdateWorkerSuccessfully() {
         UUID userUuid = UUID.randomUUID();
         UUID companyUuid = UUID.randomUUID();
 
@@ -58,22 +52,18 @@ class CreateWorkerTest {
         company.setUuid(companyUuid);
 
         Set<RoleCompany> roles = Set.of(RoleCompany.DRIVER);
-
         WorkerDTO expected = new WorkerDTO();
 
         when(companyRepository.findByUuid(companyUuid))
-                .thenReturn(java.util.Optional.of(company));
+                .thenReturn(Optional.of(company));
 
         when(userService.getUser(userUuid))
                 .thenReturn(user);
 
-        when(workerService.getWorkersByCompany(companyUuid))
-                .thenReturn(new WorkersByCompany());
-
-        when(workerService.createWorker(user, company, roles))
+        when(workerService.updateWorker(userUuid, companyUuid, roles))
                 .thenReturn(expected);
 
-        WorkerDTO result = companyService.createWorker(
+        WorkerDTO result = companyService.updateWorker(
                 userUuid,
                 companyUuid,
                 roles
@@ -81,58 +71,14 @@ class CreateWorkerTest {
 
         assertEquals(expected, result);
 
-        verify(companyRepository).findByUuid(companyUuid);
-        verify(userService).getUser(userUuid);
-        verify(workerService).getWorkersByCompany(companyUuid);
-        verify(workerService).createWorker(user, company, roles);
-    }
+        verify(companyRepository)
+                .findByUuid(companyUuid);
 
-    @Test
-    void shouldThrowConflictExceptionWhenUserIsAlreadyWorker() {
-        UUID userUuid = UUID.randomUUID();
-        UUID companyUuid = UUID.randomUUID();
+        verify(userService)
+                .getUser(userUuid);
 
-        UserDTO user = new UserDTO();
-        user.setUuid(userUuid);
-
-        Company company = new Company();
-        company.setUuid(companyUuid);
-
-        WorkerUser worker = new WorkerUser(
-                UUID.randomUUID(),
-                user,
-                Set.of(RoleCompany.DRIVER),
-                true
-        );
-
-        when(companyRepository.findByUuid(companyUuid))
-                .thenReturn(java.util.Optional.of(company));
-
-        when(userService.getUser(userUuid))
-                .thenReturn(new User());
-
-        when(workerService.getWorkersByCompany(companyUuid))
-                .thenReturn(new WorkersByCompany(
-                        new CompanyDTO(),
-                        List.of(worker)
-                ));
-
-        ConflictException exception = assertThrows(
-                ConflictException.class,
-                () -> companyService.createWorker(
-                        userUuid,
-                        companyUuid,
-                        Set.of(RoleCompany.DRIVER)
-                )
-        );
-
-        assertEquals(
-                "El usuario ya es trabajador de la empresa",
-                exception.getMessage()
-        );
-
-        verify(workerService, never())
-                .createWorker(any(), any(), any());
+        verify(workerService)
+                .updateWorker(userUuid, companyUuid, roles);
     }
 
     @Test
@@ -140,24 +86,15 @@ class CreateWorkerTest {
         UUID userUuid = UUID.randomUUID();
         UUID companyUuid = UUID.randomUUID();
 
-        User user = new User();
-        user.setUuid(userUuid);
-
         Company company = new Company();
         company.setUuid(companyUuid);
 
         when(companyRepository.findByUuid(companyUuid))
-                .thenReturn(java.util.Optional.of(company));
-
-        when(userService.getUser(userUuid))
-                .thenReturn(user);
-
-        when(workerService.getWorkersByCompany(companyUuid))
-                .thenReturn(new WorkersByCompany());
+                .thenReturn(Optional.of(company));
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> companyService.createWorker(
+                () -> companyService.updateWorker(
                         userUuid,
                         companyUuid,
                         null
@@ -170,7 +107,7 @@ class CreateWorkerTest {
         );
 
         verify(workerService, never())
-                .createWorker(any(), any(), any());
+                .updateWorker(userUuid, companyUuid, null);
     }
 
     @Test
@@ -178,24 +115,15 @@ class CreateWorkerTest {
         UUID userUuid = UUID.randomUUID();
         UUID companyUuid = UUID.randomUUID();
 
-        User user = new User();
-        user.setUuid(userUuid);
-
         Company company = new Company();
         company.setUuid(companyUuid);
 
         when(companyRepository.findByUuid(companyUuid))
-                .thenReturn(java.util.Optional.of(company));
-
-        when(userService.getUser(userUuid))
-                .thenReturn(user);
-
-        when(workerService.getWorkersByCompany(companyUuid))
-                .thenReturn(new WorkersByCompany());
+                .thenReturn(Optional.of(company));
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> companyService.createWorker(
+                () -> companyService.updateWorker(
                         userUuid,
                         companyUuid,
                         Set.of()
@@ -208,7 +136,8 @@ class CreateWorkerTest {
         );
 
         verify(workerService, never())
-                .createWorker(any(), any(), any());
+                .updateWorker(userUuid, companyUuid, Set.of()
+                );
     }
 
     @Test
@@ -216,24 +145,15 @@ class CreateWorkerTest {
         UUID userUuid = UUID.randomUUID();
         UUID companyUuid = UUID.randomUUID();
 
-        User user = new User();
-        user.setUuid(userUuid);
-
         Company company = new Company();
         company.setUuid(companyUuid);
 
         when(companyRepository.findByUuid(companyUuid))
-                .thenReturn(java.util.Optional.of(company));
-
-        when(userService.getUser(userUuid))
-                .thenReturn(user);
-
-        when(workerService.getWorkersByCompany(companyUuid))
-                .thenReturn(new WorkersByCompany());
+                .thenReturn(Optional.of(company));
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> companyService.createWorker(
+                () -> companyService.updateWorker(
                         userUuid,
                         companyUuid,
                         Set.of(RoleCompany.OWNER)
@@ -246,6 +166,10 @@ class CreateWorkerTest {
         );
 
         verify(workerService, never())
-                .createWorker(any(), any(), any());
+                .updateWorker(
+                        userUuid,
+                        companyUuid,
+                        Set.of(RoleCompany.OWNER)
+                );
     }
 }

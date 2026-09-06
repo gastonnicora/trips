@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.unit.company;
+package com.gastonnicora.trips.unit.company.worker;
 
 import java.util.Optional;
 import java.util.Set;

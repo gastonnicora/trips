@@ -1,29 +1,27 @@
-package com.gastonnicora.trips.unit.company;
+package com.gastonnicora.trips.unit.company.bus;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gastonnicora.trips.dtos.entities.BusDTO;
-import com.gastonnicora.trips.dtos.request.bus.BusCreate;
 import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.exceptions.ConflictException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.services.BusService;
 import com.gastonnicora.trips.services.CompanyService;
 
 @ExtendWith(MockitoExtension.class)
-class CreateBusTest {
+public class DeleteBusTest {
 
     @InjectMocks
     private CompanyService companyService;
@@ -35,8 +33,7 @@ class CreateBusTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldCreateBusSuccessfully() {
-
+    void shouldDeleteBusSuccessfully() {
         UUID companyUuid = UUID.randomUUID();
         UUID busUuid = UUID.randomUUID();
 
@@ -50,95 +47,61 @@ class CreateBusTest {
         );
         company.setUuid(companyUuid);
 
-        BusCreate busCreate = new BusCreate(
-                "AA123BB",
-                "Mercedes Benz",
-                50
-        );
-
-        BusDTO expectedDTO = new BusDTO();
-        expectedDTO.setUuid(busUuid);
-
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.of(company));
 
-        when(busService.createBus(company, busCreate))
-                .thenReturn(expectedDTO);
+        companyService.deleteBus(companyUuid, busUuid);
 
-        BusDTO result = companyService.createBus(
-                companyUuid,
-                busCreate
-        );
-
-        assertNotNull(result);
-        assertEquals(expectedDTO, result);
-
-        verify(busService)
-                .createBus(company, busCreate);
-        verify(companyRepository)
-                .findByUuid(companyUuid);
+        verify(busService).deleteBus(busUuid);
     }
 
     @Test
     void shouldThrowExceptionWhenCompanyNotFound() {
         UUID companyUuid = UUID.randomUUID();
-        BusCreate busCreate = new BusCreate(
-                "AA123BB",
-                "Mercedes Benz",
-                50
-        );
+        UUID busUuid = UUID.randomUUID();
 
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.empty());
 
         try {
-            companyService.createBus(companyUuid, busCreate);
+            companyService.deleteBus(companyUuid, busUuid);
         } catch (RuntimeException e) {
             assertEquals("Empresa no encontrada", e.getMessage());
         }
 
-        verify(busService, never()).createBus(any(), any());
+        verify(busService, never()).deleteBus(any());
         verify(companyRepository).findByUuid(companyUuid);
     }
 
     @Test
-    void shouldPropagateExceptionWhenBusAlreadyExists() {
+    void shouldPropagateExceptionWhenBusNotExists() {
 
         UUID companyUuid = UUID.randomUUID();
+        UUID busUuid = UUID.randomUUID();
 
         Company company = new Company(
                 "Test Company",
                 "Buenos Aires, Argentina",
                 -34.6037,
-                -58.3816,
+                -34.3816,
                 "company@mail.com",
                 "123456789"
         );
         company.setUuid(companyUuid);
 
-        BusCreate busCreate = new BusCreate(
-                "AA123BB",
-                "Mercedes Benz",
-                50
-        );
-
         when(companyRepository.findByUuid(companyUuid))
                 .thenReturn(java.util.Optional.of(company));
+        doThrow(new NotFoundException("Bus no encontrado"))
+                .when(busService)
+                .deleteBus(busUuid);
 
-        ConflictException exception = new ConflictException(
-                "Ya existe un bus con la misma placa para esta empresa"
-        );
-
-        when(busService.createBus(company, busCreate))
-                .thenThrow(exception);
-
-        ConflictException result = org.junit.jupiter.api.Assertions.assertThrows(
-                ConflictException.class,
-                () -> companyService.createBus(companyUuid, busCreate)
+        NotFoundException result = org.junit.jupiter.api.Assertions.assertThrows(
+                NotFoundException.class,
+                () -> companyService.deleteBus(companyUuid, busUuid)
         );
 
         assertEquals(
-                "Ya existe un bus con la misma placa para esta empresa",
+                "Bus no encontrado",
                 result.getMessage()
         );
 
@@ -146,6 +109,7 @@ class CreateBusTest {
                 .findByUuid(companyUuid);
 
         verify(busService)
-                .createBus(company, busCreate);
+                .deleteBus(busUuid);
     }
+
 }
