@@ -19,8 +19,8 @@ import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.exceptions.ConflictException;
 import com.gastonnicora.trips.repositories.CompanyRepository;
-import com.gastonnicora.trips.services.VehicleService;
 import com.gastonnicora.trips.services.CompanyService;
+import com.gastonnicora.trips.services.VehicleService;
 
 @ExtendWith(MockitoExtension.class)
 class CreateVehicleTest {
@@ -126,7 +126,7 @@ class CreateVehicleTest {
                 .thenReturn(java.util.Optional.of(company));
 
         ConflictException exception = new ConflictException(
-                "Ya existe un vehicle con la misma patente para esta empresa"
+                "Ya existe un vehículo con la misma patente para esta empresa"
         );
 
         when(vehicleService.createVehicle(company, vehicleCreate))
@@ -138,7 +138,7 @@ class CreateVehicleTest {
         );
 
         assertEquals(
-                "Ya existe un vehicle con la misma patente para esta empresa",
+                "Ya existe un vehículo con la misma patente para esta empresa",
                 result.getMessage()
         );
 

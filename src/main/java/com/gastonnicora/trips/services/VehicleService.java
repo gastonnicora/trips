@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
-import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.exceptions.ConflictException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.VehicleMapper;
@@ -46,7 +46,7 @@ public class VehicleService {
     public VehicleDTO createVehicle(Company company, VehicleCreate vehicleCreate) {
         Optional<Vehicle> existingVehicle = vehicleRepository.findByCompanyUuidAndPlate(company.getUuid(), vehicleCreate.getPlate());
         if (existingVehicle.isPresent()) {
-            throw new ConflictException("Ya existe un vehicle con la misma patente para esta empresa");
+            throw new ConflictException("Ya existe un vehículo con la misma patente para esta empresa");
         }
         var vehicle = vehicleRepository.save(new Vehicle(company, vehicleCreate.getPlate(), vehicleCreate.getModel(), vehicleCreate.getCapacity()));
         return vehicleMapper.toDTO(vehicle);

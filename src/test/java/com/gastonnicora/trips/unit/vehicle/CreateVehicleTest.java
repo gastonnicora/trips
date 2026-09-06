@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
-import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.exceptions.ConflictException;
 import com.gastonnicora.trips.mappers.VehicleMapper;
 import com.gastonnicora.trips.repositories.VehicleRepository;
@@ -156,7 +156,7 @@ class CreateVehicleTest {
         );
 
         assertEquals(
-                "Ya existe un vehicle con la misma patente para esta empresa",
+                "Ya existe un vehículo con la misma patente para esta empresa",
                 exception.getMessage()
         );
 
