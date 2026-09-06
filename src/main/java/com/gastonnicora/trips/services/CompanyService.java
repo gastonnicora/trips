@@ -26,7 +26,7 @@ import com.gastonnicora.trips.utils.SecurityUtils;
 import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
 
 import jakarta.transaction.Transactional;
-
+// TODO 🚀: refactorizar para que solo contenga lo de company
 /**
  * Servicio de gestión de empresas.
  * <p>
