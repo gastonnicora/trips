@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import com.gastonnicora.trips.dtos.request.company.WorkerCreate;
+import com.gastonnicora.trips.dtos.request.worker.WorkerCreate;
 import com.gastonnicora.trips.enums.RoleCompany;
 
 import tools.jackson.databind.ObjectMapper;

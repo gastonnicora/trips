@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
-import com.gastonnicora.trips.dtos.request.company.WorkerCreate;
+import com.gastonnicora.trips.dtos.request.worker.WorkerCreate;
 import com.gastonnicora.trips.dtos.response.worker.WorkersByCompany;
 import com.gastonnicora.trips.dtos.response.worker.WorkersByUser;
 import com.gastonnicora.trips.entities.Company;

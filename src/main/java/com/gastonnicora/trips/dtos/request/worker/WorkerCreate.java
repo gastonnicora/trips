@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.dtos.request.company;
+package com.gastonnicora.trips.dtos.request.worker;
 
 import java.util.Set;
 import java.util.UUID;
