@@ -39,7 +39,7 @@ public class GetCompanyTest {
                 "test@mail.com", "123");
         company.setUuid(UUID.randomUUID());
 
-        when(companyRepository.findByUuid(company.getUuid())).thenReturn(java.util.Optional.of(company));
+        when(companyRepository.findByUuidAndActiveTrue(company.getUuid())).thenReturn(java.util.Optional.of(company));
 
         CompanyDTO expectedDTO = new CompanyDTO();
 
@@ -49,7 +49,7 @@ public class GetCompanyTest {
 
         assertEquals(expectedDTO, result);
 
-        verify(companyRepository).findByUuid(company.getUuid());
+        verify(companyRepository).findByUuidAndActiveTrue(company.getUuid());
         verify(companyMapper).toDTO(company);
 
         assertEquals(expectedDTO, result);
@@ -59,7 +59,7 @@ public class GetCompanyTest {
     @Test
     void shouldThrowBadRequestWhenCompanyNotFound() {
 
-        when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.empty());
+        when(companyRepository.findByUuidAndActiveTrue(any())).thenReturn(java.util.Optional.empty());
 
         NotFoundException ex = assertThrows(
                 NotFoundException.class,
@@ -67,7 +67,7 @@ public class GetCompanyTest {
 
         assertEquals("Empresa no encontrada", ex.getMessage());
 
-        verify(companyRepository).findByUuid(any());
+        verify(companyRepository).findByUuidAndActiveTrue(any());
 
     }
 }

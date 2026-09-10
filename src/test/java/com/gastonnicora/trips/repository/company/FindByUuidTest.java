@@ -48,7 +48,7 @@ public class FindByUuidTest {
 
         Company c = companyRepository.save(company);
 
-        Optional<Company> found = companyRepository.findByUuid(c.getUuid());
+        Optional<Company> found = companyRepository.findByUuidAndActiveTrue(c.getUuid());
 
         assertTrue(found.isPresent());
         assertTrue(found.get().getUuid().equals(company.getUuid()));
@@ -59,7 +59,7 @@ public class FindByUuidTest {
     @Test
     void shouldFindByUuidIfNotExist() {
 
-        Optional<Company> found = companyRepository.findByUuid(UUID.randomUUID());
+        Optional<Company> found = companyRepository.findByUuidAndActiveTrue(UUID.randomUUID());
 
         assertFalse(found.isPresent());
     }

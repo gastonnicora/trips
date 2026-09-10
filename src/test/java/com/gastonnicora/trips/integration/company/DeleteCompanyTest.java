@@ -10,7 +10,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
@@ -62,8 +61,7 @@ public class DeleteCompanyTest {
     @Test
     void shouldDeleteCompanySuccessfully() throws Exception {
         companyApi.deleteCompany(company.getUuid()).andExpect(status().isOk());
-        companyApi.getCompany(company.getUuid()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false));
+        companyApi.getCompany(company.getUuid()).andExpect(status().isNotFound());
 
     }
 

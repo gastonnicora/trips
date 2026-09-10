@@ -113,7 +113,7 @@ public class CompanyService {
      *         indicado.
      */
     public Company getCompanyEntity(UUID uuid) {
-        return companyRepository.findByUuid(uuid)
+        return companyRepository.findByUuidAndActiveTrue(uuid)
                 .orElseThrow(() -> new NotFoundException("Empresa no encontrada"));
     }
 

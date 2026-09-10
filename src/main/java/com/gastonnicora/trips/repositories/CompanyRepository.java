@@ -19,11 +19,11 @@ import com.gastonnicora.trips.entities.Company;
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     /**
-     * Busca una empresa por su identificador único.
+     * Busca una empresa por su identificador único que este activo.
      *
      * @param uuid Identificador único de la empresa.
      * @return {@link Optional} que contiene la empresa encontrada, o vacío si no existe.
      */
-    Optional<Company> findByUuid(UUID uuid);
+    Optional<Company> findByUuidAndActiveTrue(UUID uuid);
 
 }

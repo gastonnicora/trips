@@ -43,11 +43,11 @@ public class DeleteCompanyTest {
         company.setUuid(UUID.randomUUID());
         company.setActive(true);
 
-        when(companyRepository.findByUuid(company.getUuid())).thenReturn(java.util.Optional.of(company));
+        when(companyRepository.findByUuidAndActiveTrue(company.getUuid())).thenReturn(java.util.Optional.of(company));
 
         companyService.deleteCompany(company.getUuid());
 
-        verify(companyRepository).findByUuid(company.getUuid());
+        verify(companyRepository).findByUuidAndActiveTrue(company.getUuid());
         verify(companyRepository).save(company);
     }
 
@@ -62,10 +62,10 @@ public class DeleteCompanyTest {
         company.setUuid(UUID.randomUUID());
         company.setActive(true);
 
-        when(companyRepository.findByUuid(company.getUuid())).thenReturn(java.util.Optional.empty());
+        when(companyRepository.findByUuidAndActiveTrue(company.getUuid())).thenReturn(java.util.Optional.empty());
 
         assertThrows(NotFoundException.class, () -> companyService.deleteCompany(company.getUuid()));
-        verify(companyRepository).findByUuid(company.getUuid());
+        verify(companyRepository).findByUuidAndActiveTrue(company.getUuid());
 
     }
 

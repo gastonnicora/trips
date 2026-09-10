@@ -73,7 +73,7 @@ public class UpdateCompanyTest {
 
         CompanyDTO expectedDTO = new CompanyDTO();
 
-        when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.of(company2));
+        when(companyRepository.findByUuidAndActiveTrue(any())).thenReturn(java.util.Optional.of(company2));
         when(geocodingService.obtenerDireccion(-34.6037, -58.3816))
                 .thenReturn(addressResponse);
 
@@ -85,7 +85,7 @@ public class UpdateCompanyTest {
         assertEquals(expectedDTO, result);
 
         verify(geocodingService).obtenerDireccion(-34.6037, -58.3816);
-        verify(companyRepository).findByUuid(company2.getUuid());
+        verify(companyRepository).findByUuidAndActiveTrue(company2.getUuid());
         verify(companyRepository).save(any(Company.class));
     }
 
@@ -104,10 +104,10 @@ public class UpdateCompanyTest {
         request.setLatitude(-34.6037);
         request.setLongitude(-58.3816);
 
-        when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.empty());
+        when(companyRepository.findByUuidAndActiveTrue(any())).thenReturn(java.util.Optional.empty());
 
         assertThrows(NotFoundException.class, () -> companyService.updateCompany(UUID.randomUUID(), request));
-        verify(companyRepository).findByUuid(any());
+        verify(companyRepository).findByUuidAndActiveTrue(any());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class UpdateCompanyTest {
         Company company = new Company();
         company.setUuid(UUID.randomUUID());
 
-        when(companyRepository.findByUuid(any())).thenReturn(java.util.Optional.of(company));
+        when(companyRepository.findByUuidAndActiveTrue(any())).thenReturn(java.util.Optional.of(company));
 
         CompanyCreate request = new CompanyCreate();
         request.setLatitude(-34.6037);
@@ -131,7 +131,7 @@ public class UpdateCompanyTest {
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
                 .thenReturn(response);
         assertThrows(BadRequestException.class, () -> companyService.updateCompany(company.getUuid(), request));
-        verify(companyRepository).findByUuid(any());
+        verify(companyRepository).findByUuidAndActiveTrue(any());
         verify(geocodingService).obtenerDireccion(anyDouble(), anyDouble());
 
     }
