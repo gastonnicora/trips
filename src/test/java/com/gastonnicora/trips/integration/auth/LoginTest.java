@@ -44,7 +44,7 @@ class LoginTest {
         email = user.getEmail();
     }
 
-    // test login correcto
+    
     @Test
     void shouldLoginSuccessfully() throws Exception {
         authApi.login(email, pass)
@@ -52,7 +52,7 @@ class LoginTest {
                 .andExpect(jsonPath("$.token").exists());
     }
 
-    // test login correcto
+    
     @Test
     void shouldLoginSuccessfullyWhenEmailHaveSpace() throws Exception {
         authApi.login(email + " ", pass)
@@ -60,7 +60,7 @@ class LoginTest {
                 .andExpect(jsonPath("$.token").exists());
     }
 
-    // Test de comportamiento de campos inválidos
+    
     @ParameterizedTest
     @MethodSource("invalid")
     void shouldReturnBadRequestWhenValidationFails(
@@ -75,7 +75,7 @@ class LoginTest {
                                 .value(org.hamcrest.Matchers.notNullValue()));
     }
 
-    // Test de comportamiento cuando el email y contraseñas no son correctos
+    
     @ParameterizedTest
     @MethodSource("invalidCredentials")
     void shouldReturnUnauthorizedWhenCredentialsAreInvalid(
@@ -89,7 +89,7 @@ class LoginTest {
                                 .value(org.hamcrest.Matchers.notNullValue()));
     }
 
-    // Comprueba que se guarde correctamente la cookie de refreshToken
+    
     @Test
     void shouldSetRefreshTokenCookieOnWebLogin() throws Exception {
         authApi.login(email, pass)
@@ -101,7 +101,7 @@ class LoginTest {
 
     }
 
-    // Comprueba que se pase el refreshToken a android
+    
     @Test
     void shouldReturnRefreshTokenInBodyForAndroidClients() throws Exception {
         authApi.loginWithAndroid(email, pass)
@@ -114,24 +114,18 @@ class LoginTest {
 
     static Stream<Arguments> invalid() {
         return Stream.of(
-                // email inválido
                 Arguments.of("invalid-email", "goodPassword",
                         "email"),
-                // email vació
                 Arguments.of("", "goodPassword", "email"),
-                // Contraseña de gran tamaño
                 Arguments.of("test@test.com",
                         "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penativehicle et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
                         "password"),
-                // Contraseña vacia
                 Arguments.of("test@test.com", "", "password"));
     }
 
     static Stream<Arguments> invalidCredentials() {
         return Stream.of(
-                // Intento con email existente pero password errónea
                 Arguments.of("user@test.com", "wrongPassword"),
-                // Intento con email que no existe
                 Arguments.of("nonexistent@test.com", "goodPassword"));
     }
 
