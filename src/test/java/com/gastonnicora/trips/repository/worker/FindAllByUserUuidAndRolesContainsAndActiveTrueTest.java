@@ -23,7 +23,7 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindAllByUserUuidAndRolesContainsAndActiveTrueTest {
+class FindAllByUserUuidAndRolesContainsAndActiveTrueTest {
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -35,7 +35,7 @@ public class FindAllByUserUuidAndRolesContainsAndActiveTrueTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldFindAllByUserUuidAndRolesContainsAndActiveTrue() {
+    void shouldReturnActiveWorkersWhenUserAndRoleMatch() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);
@@ -57,7 +57,7 @@ public class FindAllByUserUuidAndRolesContainsAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindAllByUserUuidAndRolesContainsAndActiveTrueWhenRoleDoesNotMatch() {
+    void shouldReturnEmptyWhenRoleDoesNotMatch() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);
@@ -75,7 +75,7 @@ public class FindAllByUserUuidAndRolesContainsAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindAllByUserUuidAndRolesContainsAndActiveTrueWhenWorkerIsInactive() {
+    void shouldReturnEmptyWhenWorkerIsInactive() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);

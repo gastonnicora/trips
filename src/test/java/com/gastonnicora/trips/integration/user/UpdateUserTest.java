@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.integration.user;
 
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +27,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class PutUserTest {
+class UpdateUserTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -97,7 +99,7 @@ public class PutUserTest {
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(
                         jsonPath("$.errors.%s".formatted(expectedField))
-                                .value(org.hamcrest.Matchers.notNullValue()));
+                                .value(notNullValue()));
 
     }
 
@@ -124,11 +126,9 @@ public class PutUserTest {
                 Arguments.of(
                         "Juan", "", "test@test.com",
                         "lastname"),
-                // email inválido
                 Arguments.of(
                         "Juan", "Perez", "invalid-email",
                         "email"),
-                // email vació
                 Arguments.of(
                         "Juan", "Perez", "", "email"),
                 // campos en null

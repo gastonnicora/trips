@@ -31,7 +31,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class SetRoleTest {
+class SetRoleTest {
 
     @Mock
     private UserRepository userRepository;
@@ -56,11 +56,7 @@ public class SetRoleTest {
         when(userMapper.toDTO(user)).thenReturn(new UserDTO());
 
         userService.setRole(uuid, request);
-
-        // Validaciones
         assertEquals(Set.of(Role.ADMIN, Role.USER), user.getRole());
-
-        // Verificaciones de Mockito
         verify(userRepository).findByUuid(uuid);
         verify(userRepository).save(user);
         verify(userMapper).toDTO(user);
@@ -80,12 +76,8 @@ public class SetRoleTest {
         when(userMapper.toDTO(user)).thenReturn(new UserDTO());
 
         userService.setRole(uuid, request);
-
-        // Validaciones
         assertTrue(user.getRole().contains(Role.USER));
         assertEquals(Set.of(Role.ADMIN, Role.USER), user.getRole());
-
-        // Verificaciones de Mockito
         verify(userRepository).findByUuid(uuid);
         verify(userRepository).save(user);
         verify(userMapper).toDTO(user);
@@ -105,13 +97,9 @@ public class SetRoleTest {
         when(userMapper.toDTO(user)).thenReturn(new UserDTO());
 
         userService.setRole(uuid, request);
-
-        // Validaciones
         assertTrue(user.getRole().contains(Role.USER));
         assertEquals(Set.of(Role.USER), user.getRole());
         assertFalse(user.getRole().contains(Role.ADMIN));
-
-        // Verificaciones de Mockito
         verify(userRepository).findByUuid(uuid);
         verify(userRepository).save(user);
         verify(userMapper).toDTO(user);
@@ -143,7 +131,7 @@ public class SetRoleTest {
     }
 
     @Test
-    void shouldThrowException_whenUserIsSuperAdmin() {
+    void shouldThrowValidationExceptionWhenUserIsSuperAdmin() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("Super", "Admin", "mail", "pass", Set.of(Role.SUPER_ADMIN));
@@ -162,7 +150,7 @@ public class SetRoleTest {
     }
 
     @Test
-    void shouldThrowException_whenUserNotExists() {
+    void shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
         UUID uuid = UUID.randomUUID();
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());

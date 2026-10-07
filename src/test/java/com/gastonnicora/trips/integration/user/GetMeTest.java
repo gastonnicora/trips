@@ -20,7 +20,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class GetMeTest {
+class GetMeTest {
 
     @Autowired
     private MockMvc mockMvc;

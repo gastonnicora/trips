@@ -21,7 +21,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class LogoutTest {
+class LogoutTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -52,14 +52,14 @@ public class LogoutTest {
     }
 
     @Test
-    void shouldLogoutSuccessfullyAndCookieClean() throws Exception {
+    void shouldClearRefreshTokenCookieOnLogout() throws Exception {
         authApi.logout(refreshToken).andExpect(status().isOk())
                 .andExpect(cookie().exists("refreshToken"))
                 .andExpect(cookie().value("refreshToken", org.hamcrest.Matchers.nullValue()));
     }
 
     @Test
-    void shouldLogoutSuccessfullyInAndroid() throws Exception {
+    void shouldLogoutSuccessfullyForAndroidClient() throws Exception {
         LoginResponse log = UserTestFactory.loginWithAndroid(mockMvc, email, pass);
         this.authApi = authApi.withToken(log.getToken());
         authApi.logoutAndroid(log.getRefreshToken()).andExpect(status().isOk())
@@ -67,7 +67,7 @@ public class LogoutTest {
     }
 
     @Test
-    void shouldLogoutFailWhenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenAccessTokenIsMissing() throws Exception {
         this.authApi = authApi.withToken("");
         authApi.logout(refreshToken).andExpect(status().isUnauthorized());
     }
@@ -75,39 +75,31 @@ public class LogoutTest {
     @Test
     void shouldInvalidateRefreshTokenAfterLogoutInAndroid() throws Exception {
         LoginResponse login = UserTestFactory.loginWithAndroid(mockMvc, email, pass);
-
-        // logout
         authApi.withToken(login.getToken())
                 .logoutAndroid(login.getRefreshToken())
                 .andExpect(status().isOk());
-
-        // intento usar refresh token otra vez
         authApi.refreshAndroid(login.getRefreshToken())
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldInvalidateRefreshTokenAfterLogout() throws Exception {
-
-        // logout
         authApi
                 .logout(refreshToken)
                 .andExpect(status().isOk());
-
-        // intento usar refresh token otra vez
         authApi.refresh(refreshToken)
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldLogoutFailWhenRefreshTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenRefreshTokenIsMissing() throws Exception {
         LoginResponse log = UserTestFactory.loginWithAndroid(mockMvc, email, pass);
         this.authApi = authApi.withToken(log.getToken());
         authApi.logoutAndroid("").andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldNotAllowLogoutTwiceWithSameToken() throws Exception {
+    void shouldReturnUnauthorizedWhenLoggingOutWithRevokedRefreshToken() throws Exception {
         // Primer logout exitoso
         authApi.logout(refreshToken).andExpect(status().isOk());
         // El segundo intento con el mismo token debe fallar porque la sesión ya fue

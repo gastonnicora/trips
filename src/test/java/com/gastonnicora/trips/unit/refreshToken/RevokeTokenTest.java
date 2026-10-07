@@ -22,7 +22,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
-public class RevokeTokenTest {
+class RevokeTokenTest {
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
@@ -33,7 +33,7 @@ public class RevokeTokenTest {
     private RefreshTokenService refreshTokenService;
 
     @Test
-    void shouldRevokeTokenIsPresent() {
+    void shouldRevokeTokenWhenItExists() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 
@@ -57,7 +57,7 @@ public class RevokeTokenTest {
     }
 
     @Test
-    void shouldRevokeTokenIsNotPresent() {
+    void shouldDoNothingWhenTokenDoesNotExist() {
 
         when(refreshTokenRepository.findByRefreshToken(any(String.class)))
                 .thenReturn(Optional.empty());

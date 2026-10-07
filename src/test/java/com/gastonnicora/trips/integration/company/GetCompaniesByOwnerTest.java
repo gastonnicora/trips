@@ -29,7 +29,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class GetCompaniesByOwnerTest {
+class GetCompaniesByOwnerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -67,7 +67,7 @@ public class GetCompaniesByOwnerTest {
     }
 
     @Test
-    void shouldReturnOk_whenUserHaveAnyCompany() throws Exception {
+    void shouldReturnOkWhenUserHasCompanies() throws Exception {
         companyApi.getCompaniesByOwner(user.getUuid())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name").value(company.getName()))
@@ -79,7 +79,7 @@ public class GetCompaniesByOwnerTest {
     }
 
     @Test
-    void shouldReturnOk_whenUserHaveTwoCompany() throws Exception {
+    void shouldReturnOkWhenUserHasTwoCompanies() throws Exception {
         CompanyDTO company2 = new CompanyTestFactory(
                 mockMvc,
                 objectMapper,
@@ -95,14 +95,14 @@ public class GetCompaniesByOwnerTest {
     }
 
     @Test
-    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         companyApi.withToken(null);
         companyApi.getCompaniesByOwner(user.getUuid())
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturnForbidden_whenUserIsNotIsAdmin() throws Exception {
+    void shouldReturnForbiddenWhenUserIsNotAdmin() throws Exception {
         companyApi.withToken(token);
         companyApi.getCompaniesByOwner(user.getUuid())
                 .andExpect(status().isForbidden());

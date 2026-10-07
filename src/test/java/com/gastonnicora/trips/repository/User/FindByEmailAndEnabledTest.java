@@ -19,7 +19,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByEmailAndEnabledTest {
+class FindByEmailAndEnabledTest {
 
     @Autowired
     private UserRepository userRepository;

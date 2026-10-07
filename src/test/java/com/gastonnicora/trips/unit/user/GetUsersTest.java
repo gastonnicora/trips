@@ -22,7 +22,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class GetUsersTest {
+class GetUsersTest {
 
     @Mock
     private UserRepository userRepository;

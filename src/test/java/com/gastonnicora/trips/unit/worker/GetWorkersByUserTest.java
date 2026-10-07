@@ -35,7 +35,7 @@ class GetWorkersByUserTest {
     private WorkerMapper workerMapper;
 
     @Test
-    void shouldGetWorkersByUserSuccessfully() {
+    void shouldReturnWorkersWhenUserExists() {
         User user = new User();
         UUID userUuid = UUID.randomUUID();
         user.setUuid(userUuid);

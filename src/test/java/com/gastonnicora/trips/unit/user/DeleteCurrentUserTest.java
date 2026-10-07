@@ -33,7 +33,7 @@ import com.gastonnicora.trips.services.RefreshTokenService;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteCurrentUserTest {
+class DeleteCurrentUserTest {
 
     @Mock
     private UserRepository userRepository;
@@ -74,7 +74,7 @@ public class DeleteCurrentUserTest {
     }
 
     @Test
-    void shouldThrowNotFoundException_whenUserDoesNotExist() {
+    void shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
         UUID uuid = UUID.randomUUID();
 
         context(uuid);

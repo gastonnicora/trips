@@ -37,7 +37,7 @@ class GetUserByUuidTest {
     private UserService userService;
 
     @Test
-    void shouldReturnUserDTO_whenUserExists() {
+    void shouldReturnUserDtoWhenUserExists() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("John", "Doe", "john@mail.com", "pass", Set.of(Role.USER));
@@ -56,7 +56,7 @@ class GetUserByUuidTest {
     }
 
     @Test
-    void shouldThrowNotFound_whenUserDoesNotExist() {
+    void shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
         UUID uuid = UUID.randomUUID();
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());

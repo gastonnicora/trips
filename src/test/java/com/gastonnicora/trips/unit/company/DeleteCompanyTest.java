@@ -20,7 +20,7 @@ import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.services.CompanyService;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteCompanyTest {
+class DeleteCompanyTest {
 
     @InjectMocks
     private CompanyService companyService;
@@ -52,7 +52,7 @@ public class DeleteCompanyTest {
     }
 
     @Test
-    void shouldThrowNotFoundExceptionWhenCompanyNotFound() {
+    void shouldThrowNotFoundExceptionWhenCompanyDoesNotExist() {
         UUID userId = UUID.randomUUID();
 
         User user = new User();

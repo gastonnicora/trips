@@ -26,7 +26,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateUserTest {
+class CreateUserTest {
 
     @Mock
     private UserRepository userRepository;
@@ -41,7 +41,7 @@ public class CreateUserTest {
     private UserService userService;
 
     @Test
-    void shouldCreateUser() {
+    void shouldCreateUserSuccessfully() {
         UserCreate request = new UserCreate();
         request.setName("John");
         request.setLastname("Doe");
@@ -78,7 +78,7 @@ public class CreateUserTest {
     }
 
     @Test
-    void shouldThrowConflictException_whenEmailIsUsed() {
+    void shouldThrowConflictExceptionWhenEmailIsAlreadyUsed() {
         UserCreate request = new UserCreate();
         request.setName("John");
         request.setLastname("Doe");

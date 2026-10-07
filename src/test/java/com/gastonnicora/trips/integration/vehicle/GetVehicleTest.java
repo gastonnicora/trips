@@ -28,7 +28,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class GetVehicleTest {
+class GetVehicleTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -63,7 +63,7 @@ public class GetVehicleTest {
     }
 
     @Test
-    void shouldGetVehicleSuccessfully() throws Exception {
+    void shouldReturnVehicleSuccessfully() throws Exception {
 
         vehicleApi
                 .getVehicle(

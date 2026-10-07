@@ -20,7 +20,7 @@ import com.gastonnicora.trips.repositories.CompanyRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByCompanyUuidTest {
+class FindByCompanyUuidTest {
 
     @Autowired
     private VehicleRepository vehicleRepository;
@@ -29,7 +29,7 @@ public class FindByCompanyUuidTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldFindByCompanyUuid() {
+    void shouldReturnVehiclesWhenCompanyExists() {
 
         Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
@@ -49,7 +49,7 @@ public class FindByCompanyUuidTest {
     }
 
     @Test
-    void shouldFindByCompanyUuidIfNotExist() {
+    void shouldReturnEmptyWhenCompanyDoesNotExist() {
 
         List<Vehicle> found = vehicleRepository.findAllByCompanyUuid(UUID.randomUUID());
 
@@ -57,7 +57,7 @@ public class FindByCompanyUuidTest {
     }
 
     @Test
-    void shouldFindByCompanyUuidIfExistMultiple() {
+    void shouldReturnAllVehiclesWhenCompanyHasMultipleVehicles() {
 
         Company company = new Company(
                 "Test",

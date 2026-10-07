@@ -23,7 +23,7 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindAllByUserUuidAndActiveTrueTest {
+class FindAllByUserUuidAndActiveTrueTest {
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -35,7 +35,7 @@ public class FindAllByUserUuidAndActiveTrueTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldFindAllByUserUuidAndActiveTrue() {
+    void shouldReturnActiveWorkersWhenUserExists() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);
@@ -55,7 +55,7 @@ public class FindAllByUserUuidAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindAllByUserUuidAndActiveTrueWhenNoWorkers() {
+    void shouldReturnEmptyWhenUserHasNoActiveWorkers() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);
@@ -66,7 +66,7 @@ public class FindAllByUserUuidAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindAllByUserUuidAndActiveTrueWhenWorkersAreInactive() {
+    void shouldReturnEmptyWhenAllWorkersAreInactive() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);

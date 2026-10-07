@@ -23,7 +23,7 @@ import com.gastonnicora.trips.repositories.VehicleRepository;
 import com.gastonnicora.trips.services.VehicleService;
 
 @ExtendWith(MockitoExtension.class)
-public class GetVehicleTest {
+class GetVehicleTest {
 
     @InjectMocks
     private VehicleService vehicleService;
@@ -35,7 +35,7 @@ public class GetVehicleTest {
     private VehicleMapper vehicleMapper;
 
     @Test
-    void shouldGetVehicleSuccessfully() {
+    void shouldReturnVehicleSuccessfully() {
         Company company = new Company();
         company.setUuid(java.util.UUID.randomUUID());
         Vehicle vehicle = new Vehicle();
@@ -51,7 +51,7 @@ public class GetVehicleTest {
     }
 
     @Test
-    void shouldNotGetVehicleIfNotFound() {
+    void shouldThrowNotFoundExceptionWhenVehicleDoesNotExist() {
         Company company = new Company();
         company.setUuid(java.util.UUID.randomUUID());
         Vehicle vehicle = new Vehicle();

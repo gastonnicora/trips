@@ -119,7 +119,7 @@ class DeleteWorkerTest {
     }
 
     @Test
-    void shouldReturnOkWhenHR_ManagerDeletesWorker() throws Exception {
+    void shouldReturnOkWhenHRManagerDeletesWorker() throws Exception {
 
         workerApi.updateWorkerRoles(companyUuid, worker.getUuid(), Set.of(RoleCompany.HR_MANAGER)).andExpect(status().isOk());
         LoginResponse HRLogin = UserTestFactory.login(

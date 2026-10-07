@@ -41,7 +41,7 @@ class GetUserTest {
     private UserMapper userMapper;
 
     @Test
-    void shouldGetUserSuccessfully() {
+    void shouldReturnUserSuccessfully() {
         UUID uuid = UUID.randomUUID();
         User user = new User();
         user.setUuid(uuid);

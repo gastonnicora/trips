@@ -26,7 +26,7 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 import com.gastonnicora.trips.services.WorkerService;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateWorkerTest {
+class UpdateWorkerTest {
 
     @InjectMocks
     private WorkerService workerService;
@@ -71,7 +71,7 @@ public class UpdateWorkerTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenWorkerNotFound() {
+    void shouldThrowNotFoundExceptionWhenWorkerDoesNotExist() {
         UUID userUuid = UUID.randomUUID();
         UUID companyUuid = UUID.randomUUID();
 

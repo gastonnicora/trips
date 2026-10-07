@@ -2,7 +2,9 @@ package com.gastonnicora.trips.unit.refreshToken;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +17,7 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
-public class ExistsByRefreshTokenTeest {
+class ExistsByRefreshTokenTest {
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
@@ -24,7 +26,7 @@ public class ExistsByRefreshTokenTeest {
     private RefreshTokenService refreshTokenService;
 
     @Test
-    void shouldExistsByRefreshToken() {
+    void shouldReturnTrueWhenRefreshTokenExists() {
         UUID uuid = UUID.randomUUID();
 
         when(refreshTokenRepository.existsByRefreshToken(uuid.toString())).thenReturn(true);
@@ -33,11 +35,11 @@ public class ExistsByRefreshTokenTeest {
 
         verify(refreshTokenRepository).existsByRefreshToken(uuid.toString());
 
-        assertEquals(true, exists);
+        assertTrue(exists);
     }
 
     @Test
-    void shouldExistsByRefreshToken_whenRefreshTokenIsNull() {
+    void shouldReturnFalseWhenRefreshTokenIsNull() {
         UUID uuid = UUID.randomUUID();
 
         when(refreshTokenRepository.existsByRefreshToken(uuid.toString())).thenReturn(false);
@@ -46,6 +48,6 @@ public class ExistsByRefreshTokenTeest {
 
         verify(refreshTokenRepository).existsByRefreshToken(uuid.toString());
 
-        assertEquals(false, exists);
+        assertFalse(exists);
     }
 }

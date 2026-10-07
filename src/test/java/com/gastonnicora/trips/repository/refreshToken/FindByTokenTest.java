@@ -19,7 +19,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByTokenTest {
+class FindByTokenTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -28,7 +28,7 @@ public class FindByTokenTest {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Test
-    void shouldFindByToken() {
+    void shouldReturnTokenWhenTokenExists() {
         User user = new User(
                 "username",
                 "latName",

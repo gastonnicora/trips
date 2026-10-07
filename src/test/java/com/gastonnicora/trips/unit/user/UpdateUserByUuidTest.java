@@ -30,7 +30,7 @@ import com.gastonnicora.trips.services.RefreshTokenService;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateUserByUuidTest {
+class UpdateUserByUuidTest {
 
     @Mock
     private UserRepository userRepository;
@@ -45,7 +45,7 @@ public class UpdateUserByUuidTest {
     private UserService userService;
 
     @Test
-    void shouldReturnUserDTOIfNotChangeEmail() {
+    void shouldReturnUserDtoWhenEmailDoesNotChange() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("John", "Doe", "john@mail.com", "pass", Set.of(Role.USER));
@@ -85,7 +85,7 @@ public class UpdateUserByUuidTest {
     }
 
     @Test
-    void shouldReturnUserDTOIfChangeEmailAndNotUsed() {
+    void shouldReturnUserDtoWhenEmailChangesAndIsAvailable() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("John", "Doe", "john@mail.com", "pass", Set.of(Role.USER));
@@ -128,7 +128,7 @@ public class UpdateUserByUuidTest {
     }
 
     @Test
-    void shouldThrowNotFoundException_whenUserDoesNotExist() {
+    void shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
         UUID uuid = UUID.randomUUID();
 
         UserPut request = new UserPut();
@@ -153,7 +153,7 @@ public class UpdateUserByUuidTest {
     }
 
     @Test
-    void shouldThrowConflictException_whenUserChangeEmailAndUsed() {
+    void shouldThrowConflictExceptionWhenNewEmailIsAlreadyUsed() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("John", "Doe", "john@mail.com", "pass", Set.of(Role.USER));

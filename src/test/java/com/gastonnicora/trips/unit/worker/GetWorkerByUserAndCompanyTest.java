@@ -39,7 +39,7 @@ class GetWorkerByUserAndCompanyTest {
     private WorkerMapper workerMapper;
 
     @Test
-    void shouldGetWorkerByUserAndCompanySuccessfully() {
+    void shouldReturnWorkerWhenUserAndCompanyMatch() {
         User user = new User();
         UUID userUuid = UUID.randomUUID();
         user.setUuid(userUuid);

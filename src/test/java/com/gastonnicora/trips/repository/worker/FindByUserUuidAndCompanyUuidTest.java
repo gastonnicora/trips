@@ -22,7 +22,7 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByUserUuidAndCompanyUuidTest {
+class FindByUserUuidAndCompanyUuidTest {
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -34,7 +34,7 @@ public class FindByUserUuidAndCompanyUuidTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldFindByUserUuidAndCompanyUuid() {
+    void shouldReturnWorkerWhenUserAndCompanyMatch() {
 
         User user = new User(
                 "username",
@@ -66,7 +66,7 @@ public class FindByUserUuidAndCompanyUuidTest {
     }
 
     @Test
-    void shouldNotFindByUserUuidAndCompanyUuidIfNotExist() {
+    void shouldReturnEmptyWhenWorkerDoesNotExist() {
         Optional<com.gastonnicora.trips.entities.Worker> found = workerRepository
                 .findByUserUuidAndCompanyUuid(UUID.randomUUID(), UUID.randomUUID());
         assertFalse(found.isPresent());

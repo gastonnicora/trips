@@ -19,7 +19,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ExistsByRefreshTokenTest {
+class ExistsByRefreshTokenTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -28,7 +28,7 @@ public class ExistsByRefreshTokenTest {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Test
-    void shouldExistsByRefreshToken() {
+    void shouldReturnTrueWhenRefreshTokenExists() {
         User user = new User(
                 "username",
                 "latName",
@@ -51,7 +51,7 @@ public class ExistsByRefreshTokenTest {
     }
 
     @Test
-    void shouldNotExistsByRefreshTokenIfNotExist() {
+    void shouldReturnFalseWhenRefreshTokenDoesNotExist() {
         boolean found = refreshTokenRepository.existsByRefreshToken("non-existent-token");
 
         assertFalse(found);

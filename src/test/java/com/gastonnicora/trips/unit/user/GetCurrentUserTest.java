@@ -30,7 +30,7 @@ import com.gastonnicora.trips.security.UserDetailsImpl;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class GetCurrentUserTest {
+class GetCurrentUserTest {
 
     @Mock
     private UserRepository userRepository;
@@ -47,7 +47,7 @@ public class GetCurrentUserTest {
     }
 
     @Test
-    void shouldReturnUserDTO_whenUserExists() {
+    void shouldReturnUserDtoWhenUserExists() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("John", "Doe", "john@mail.com", "pass", Set.of(Role.USER));
@@ -79,7 +79,7 @@ public class GetCurrentUserTest {
     }
 
     @Test
-    void shouldThrowNotFound_whenUserDoesNotExist() {
+    void shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
         UUID uuid = UUID.randomUUID();
 
         UserDetailsImpl userDetails = mock(UserDetailsImpl.class);

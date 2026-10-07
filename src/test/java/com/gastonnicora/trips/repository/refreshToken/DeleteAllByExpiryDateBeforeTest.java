@@ -22,7 +22,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class DeleteAllByExpiryDateBeforeTest {
+class DeleteAllByExpiryDateBeforeTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -31,7 +31,7 @@ public class DeleteAllByExpiryDateBeforeTest {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Test
-    void shouldDeleteAllByExpiryDateBefore() {
+    void shouldDeleteExpiredTokens() {
         User user = new User(
                 "username",
                 "latName",
@@ -54,7 +54,7 @@ public class DeleteAllByExpiryDateBeforeTest {
     }
 
     @Test
-    void shouldNotDeleteAllByExpiryDateBeforeIfAllAfter() {
+    void shouldKeepTokensWithFutureExpiryDate() {
         User user = new User(
                 "username",
                 "latName",

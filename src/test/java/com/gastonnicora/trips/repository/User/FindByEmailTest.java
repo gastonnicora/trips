@@ -19,13 +19,13 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByEmailTest {
+class FindByEmailTest {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    void shouldExistsByEmail() {
+    void shouldReturnTrueWhenEmailExists() {
         User user = new User(
                 "username",
                 "latName",
@@ -59,7 +59,7 @@ public class FindByEmailTest {
     }
 
     @Test
-    void shouldNotExistsByEmail() {
+    void shouldReturnFalseWhenEmailDoesNotExist() {
 
         List<User> found = userRepository.findByEmail("test@test.com");
 

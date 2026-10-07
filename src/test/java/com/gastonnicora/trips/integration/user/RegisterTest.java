@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.integration.user;
 
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +26,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class RegisterTest {
+class RegisterTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -67,7 +69,7 @@ public class RegisterTest {
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
                 .andExpect(
                         jsonPath("$.errors.%s".formatted(expectedField))
-                                .value(org.hamcrest.Matchers.notNullValue()));
+                                .value(notNullValue()));
 
     }
 
@@ -86,7 +88,7 @@ public class RegisterTest {
     }
 
     @Test
-    void shouldBeAbleToLoginImmediatelyAfterRegistration() throws Exception {
+    void shouldLoginSuccessfullyImmediatelyAfterRegistration() throws Exception {
         String password = "goodpassword";
         String email = "auth_test_" + System.currentTimeMillis() + "@test.com";
 
@@ -108,11 +110,9 @@ public class RegisterTest {
                 Arguments.of(
                         "Juan", "", "test@test.com", "goodPassword", "goodPassword",
                         "lastname"),
-                // email inválido
                 Arguments.of(
                         "Juan", "Perez", "invalid-email", "goodPassword", "goodPassword",
                         "email"),
-                // email vació
                 Arguments.of(
                         "Juan", "Perez", "", "goodPassword", "goodPassword", "email"),
                 // password corta

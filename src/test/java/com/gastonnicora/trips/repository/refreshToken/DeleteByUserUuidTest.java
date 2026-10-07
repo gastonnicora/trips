@@ -19,7 +19,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class DeleteByUserUuidTest {
+class DeleteByUserUuidTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -28,7 +28,7 @@ public class DeleteByUserUuidTest {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Test
-    void shouldDeleteByUserUuid() {
+    void shouldDeleteTokensByUserUuid() {
         User user = new User(
                 "username",
                 "latName",

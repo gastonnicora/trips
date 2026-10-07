@@ -27,7 +27,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class GetUserByUuidTest {
+class GetUserByUuidTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,7 +49,7 @@ public class GetUserByUuidTest {
     }
 
     @Test
-    void shouldReturnOk_whenSuperAdminSearchAndUserExists() throws Exception {
+    void shouldReturnOkWhenSuperAdminSearchesExistingUser() throws Exception {
         userApi.getUser(user.getUuid().toString())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(user.getName()))
@@ -61,7 +61,7 @@ public class GetUserByUuidTest {
     }
 
     @Test
-    void shouldReturnOk_whenAdminSearchAndUserExists() throws Exception {
+    void shouldReturnOkWhenAdminSearchesExistingUser() throws Exception {
         userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
                 .andExpect(status().isOk());
         String tokenUser = UserTestFactory.login(mockMvc, user.getEmail(), userPassword).getToken();
@@ -78,7 +78,7 @@ public class GetUserByUuidTest {
     }
 
     @Test
-    void shouldReturnForbidden_whenRegularUserSearchesOtherUser() throws Exception {
+    void shouldReturnForbiddenWhenRegularUserSearchesAnotherUser() throws Exception {
         String userToken = UserTestFactory.login(mockMvc, user.getEmail(), userPassword).getToken();
         userApi.withToken(userToken);
         userApi.getUser(user.getUuid().toString())
@@ -86,14 +86,14 @@ public class GetUserByUuidTest {
     }
 
     @Test
-    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         userApi.withToken(null);
         userApi.getUser(user.getUuid().toString())
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturnNotFound_whenUserDoesNotExist() throws Exception {
+    void shouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
         String nonExistentUuid = UUID.randomUUID().toString();
         userApi.getUser(nonExistentUuid)
                 .andExpect(status().isNotFound());

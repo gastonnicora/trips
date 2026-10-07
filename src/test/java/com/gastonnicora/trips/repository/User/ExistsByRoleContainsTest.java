@@ -17,13 +17,13 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ExistsByRoleContainsTest {
+class ExistsByRoleContainsTest {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    void shouldExistsByRole() {
+    void shouldReturnTrueWhenUserHasRole() {
         User user = new User(
                 "username",
                 "latName",
@@ -42,7 +42,7 @@ public class ExistsByRoleContainsTest {
     }
 
     @Test
-    void shouldExistsByRoleSuperAdmin() {
+    void shouldReturnTrueWhenSuperAdminExists() {
         User user = new User(
                 "username",
                 "latName",
@@ -61,7 +61,7 @@ public class ExistsByRoleContainsTest {
     }
 
     @Test
-    void shouldNotExistsByRole() {
+    void shouldReturnFalseWhenNoUserHasRole() {
         boolean found = userRepository.existsByRoleContains(Role.ADMIN);
 
         assertFalse(found);

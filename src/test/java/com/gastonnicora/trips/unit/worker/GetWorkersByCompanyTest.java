@@ -35,7 +35,7 @@ class GetWorkersByCompanyTest {
     private WorkerMapper workerMapper;
 
     @Test
-    void shouldGetWorkersByCompanySuccessfully() {
+    void shouldReturnWorkersWhenCompanyExists() {
         User driver = new User();
         driver.setUuid(UUID.randomUUID());
 

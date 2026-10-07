@@ -26,7 +26,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class GetCompaniesByCurrentUserTest {
+class GetCompaniesByCurrentUserTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -55,7 +55,7 @@ public class GetCompaniesByCurrentUserTest {
     }
 
     @Test
-    void shouldReturnOk_whenUserHaveAnyCompany() throws Exception {
+    void shouldReturnOkWhenUserHasCompanies() throws Exception {
         companyApi.getCompaniesByCurrentUser()
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name").value(company.getName()))
@@ -67,7 +67,7 @@ public class GetCompaniesByCurrentUserTest {
     }
 
     @Test
-    void shouldReturnOk_whenUserHaveTwoCompany() throws Exception {
+    void shouldReturnOkWhenUserHasTwoCompanies() throws Exception {
         MvcResult result = companyApi
                 .createCompany("Good Name2", "goodemail@mail.com", "+549112233445", -34.6037, -54.3816)
                 .andExpect(status().isOk()).andReturn();
@@ -81,7 +81,7 @@ public class GetCompaniesByCurrentUserTest {
     }
 
     @Test
-    void shouldReturnOk_whenUserDontHaveCompany() throws Exception {
+    void shouldReturnOkWhenUserHasNoCompanies() throws Exception {
         this.token = UserTestFactory.registerAndLogin(mockMvc);
         this.companyApi = this.companyApi.withToken(token);
         companyApi.getCompaniesByCurrentUser()
@@ -90,7 +90,7 @@ public class GetCompaniesByCurrentUserTest {
     }
 
     @Test
-    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         companyApi.withToken(null);
         companyApi.getCompaniesByCurrentUser()
                 .andExpect(status().isUnauthorized());

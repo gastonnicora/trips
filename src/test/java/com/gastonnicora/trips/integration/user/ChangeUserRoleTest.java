@@ -29,7 +29,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class ChangeUserRoleTest {
+class ChangeUserRoleTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,7 +51,7 @@ public class ChangeUserRoleTest {
     }
 
     @Test
-    void shouldReturnOk_whenAddRoleAdmin() throws Exception {
+    void shouldReturnOkWhenAdminRoleIsAdded() throws Exception {
         userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.role").isArray())
@@ -63,7 +63,7 @@ public class ChangeUserRoleTest {
     }
 
     @Test
-    void shouldReturnOk_whenAddMultipleRoles() throws Exception {
+    void shouldReturnOkWhenMultipleRolesAreAdded() throws Exception {
         Set<Role> roles = Set.of(Role.USER, Role.HR_MANAGER, Role.ADMIN);
         userApi.changeRole(user.getUuid().toString(), roles)
                 .andExpect(status().isOk())
@@ -73,7 +73,7 @@ public class ChangeUserRoleTest {
     }
 
     @Test
-    void shouldReturnOk_whenRemoveRoleAdmin() throws Exception {
+    void shouldReturnOkWhenAdminRoleIsRemoved() throws Exception {
         Set<Role> roles = Set.of(Role.USER, Role.HR_MANAGER, Role.ADMIN);
         userApi.changeRole(user.getUuid().toString(), roles)
                 .andExpect(status().isOk());
@@ -84,7 +84,7 @@ public class ChangeUserRoleTest {
     }
 
     @Test
-    void shouldReturnBadRequest_whenChangeRoleForSuperAdmin() throws Exception {
+    void shouldReturnBadRequestWhenChangingSuperAdminRoles() throws Exception {
         MvcResult result = userApi.getMe()
                 .andExpect(status().isOk())
                 .andReturn();
@@ -99,7 +99,7 @@ public class ChangeUserRoleTest {
     }
 
     @Test
-    void shouldReturnForbidden_whenUserNotHavePerMission() throws Exception {
+    void shouldReturnForbiddenWhenUserDoesNotHavePermission() throws Exception {
         String tokenUser = UserTestFactory.login(mockMvc, user.getEmail(), userPassword).getToken();
         userApi.withToken(tokenUser);
         userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
@@ -107,7 +107,7 @@ public class ChangeUserRoleTest {
     }
 
     @Test
-    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         userApi.withToken(null);
         userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
                 .andExpect(status().isUnauthorized());

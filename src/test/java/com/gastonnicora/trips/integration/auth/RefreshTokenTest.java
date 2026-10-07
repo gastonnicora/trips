@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.integration.auth;
 
+import static org.hamcrest.Matchers.notNullValue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class RefreshTokenTest {
+class RefreshTokenTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +56,7 @@ public class RefreshTokenTest {
         authApi.refresh(refreshToken)
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("refreshToken"))
-                .andExpect(cookie().value("refreshToken", org.hamcrest.Matchers.notNullValue()))
+                .andExpect(cookie().value("refreshToken", notNullValue()))
                 .andExpect(jsonPath("$.token").exists());
     }
 
@@ -69,19 +71,19 @@ public class RefreshTokenTest {
     }
 
     @Test
-    void shouldRefreshFailWhenRefreshTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenRefreshTokenIsMissing() throws Exception {
         authApi.refresh("")
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldRefreshFailWhenRefreshTokenIsWrong() throws Exception {
+    void shouldReturnUnauthorizedWhenRefreshTokenIsInvalid() throws Exception {
         authApi.refresh("Wrong-Refresh-Token")
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldRefreshFailWhenRefreshTokenIsRevoked() throws Exception {
+    void shouldReturnUnauthorizedWhenRefreshTokenIsRevoked() throws Exception {
         authApi.refresh(refreshToken)
                 .andExpect(status().isOk());
         // Intentar usar el mismo token por segunda vez (detección de reutilización)
@@ -90,7 +92,7 @@ public class RefreshTokenTest {
     }
 
     @Test
-    void shouldUseBodyEvenIfCookieExists_whenValid() throws Exception {
+    void shouldUseBodyRefreshTokenWhenCookieAlsoExists() throws Exception {
 
         mockMvc.perform(post("/api/auth/refresh")
                 .cookie(new Cookie("refreshToken", "old-cookie-token"))
@@ -104,7 +106,7 @@ public class RefreshTokenTest {
     }
 
     @Test
-    void shouldFailWhenUserAgentDiffersFromOriginalLogin() throws Exception {
+    void shouldReturnUnauthorizedWhenUserAgentDiffersFromOriginalLogin() throws Exception {
 
         mockMvc.perform(post("/api/auth/refresh")
                 .header("User-Agent", "totally-different-browser")
@@ -116,7 +118,7 @@ public class RefreshTokenTest {
     }
 
     @Test
-    void shouldFailWhenIpDiffers() throws Exception {
+    void shouldReturnUnauthorizedWhenCurrentIpDiffersFromOriginalLogin() throws Exception {
 
         mockMvc.perform(post("/api/auth/refresh")
                 .with(request -> {

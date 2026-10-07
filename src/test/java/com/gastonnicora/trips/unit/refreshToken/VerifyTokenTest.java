@@ -26,7 +26,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
-public class VerifyTokenTest {
+class VerifyTokenTest {
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
@@ -74,7 +74,7 @@ public class VerifyTokenTest {
     }
 
     @Test
-    void shouldThrowsUnauthorizedException_whenTokenIsNull() {
+    void shouldThrowUnauthorizedExceptionWhenTokenIsNull() {
 
         UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
             refreshTokenService.verifyToken(null, "127.0.0.1", "user-agent");
@@ -88,7 +88,7 @@ public class VerifyTokenTest {
     }
 
     @Test
-    void shouldThrowsUnauthorizedException_whenTokenDoesNotExist() {
+    void shouldThrowUnauthorizedExceptionWhenTokenDoesNotExist() {
 
         when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.empty());
 
@@ -105,7 +105,7 @@ public class VerifyTokenTest {
     }
 
     @Test
-    void shouldThrowsUnauthorizedException_whenTokenIsInactive() {
+    void shouldThrowUnauthorizedExceptionWhenTokenIsInactive() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 
@@ -128,7 +128,7 @@ public class VerifyTokenTest {
     }
 
     @Test
-    void shouldThrowsUnauthorizedException_whenTokenIsExpired() {
+    void shouldThrowUnauthorizedExceptionWhenTokenIsExpired() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 
@@ -150,7 +150,7 @@ public class VerifyTokenTest {
     }
 
     @Test
-    void shouldThrowsUnauthorizedException_whenCurrentIpIsDifferent() {
+    void shouldThrowUnauthorizedExceptionWhenCurrentIpDiffers() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 
@@ -170,7 +170,7 @@ public class VerifyTokenTest {
     }
 
     @Test
-    void shouldThrowsUnauthorizedException_whenCurrentUserAgentIsDifferent() {
+    void shouldThrowUnauthorizedExceptionWhenCurrentUserAgentDiffers() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 

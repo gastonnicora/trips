@@ -21,7 +21,7 @@ import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.services.CompanyService;
 
 @ExtendWith(MockitoExtension.class)
-public class GetCompanyTest {
+class GetCompanyTest {
 
     @InjectMocks
     private CompanyService companyService;
@@ -33,7 +33,7 @@ public class GetCompanyTest {
     private CompanyMapper companyMapper;
 
     @Test
-    void shouldGetCompanySuccessfully() {
+    void shouldReturnCompanySuccessfully() {
 
         Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
@@ -57,7 +57,7 @@ public class GetCompanyTest {
     }
 
     @Test
-    void shouldThrowBadRequestWhenCompanyNotFound() {
+    void shouldThrowNotFoundExceptionWhenCompanyDoesNotExist() {
 
         when(companyRepository.findByUuidAndActiveTrue(any())).thenReturn(java.util.Optional.empty());
 

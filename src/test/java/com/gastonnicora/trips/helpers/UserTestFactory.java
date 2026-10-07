@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.helpers;
 
+import static org.hamcrest.Matchers.notNullValue;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
@@ -33,7 +35,7 @@ public class UserTestFactory {
         MvcResult response = authApi.login(email, pass)
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("refreshToken"))
-                .andExpect(cookie().value("refreshToken", org.hamcrest.Matchers.notNullValue()))
+                .andExpect(cookie().value("refreshToken", notNullValue()))
                 .andReturn();
         String responseJson = response.getResponse().getContentAsString();
 

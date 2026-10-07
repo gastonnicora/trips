@@ -20,7 +20,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class DeleteUserTest {
+class DeleteUserTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -53,7 +53,7 @@ public class DeleteUserTest {
     }
 
     @Test
-    void shouldDeleteUserSuccessfully_andUserShouldNotBeAbleToLogin() throws Exception {
+    void shouldDeleteUserAndPreventSubsequentLogin() throws Exception {
 
         userApi.deleteCurrentUser()
                 .andExpect(status().isOk());

@@ -24,7 +24,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
-public class FindByRefreshTokenTest {
+class FindByRefreshTokenTest {
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
@@ -36,7 +36,7 @@ public class FindByRefreshTokenTest {
     private RefreshTokenService refreshTokenService;
 
     @Test
-    void shouldFindByRefreshToken() {
+    void shouldReturnTokenWhenRefreshTokenExists() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 
@@ -74,7 +74,7 @@ public class FindByRefreshTokenTest {
     }
 
     @Test
-    void shouldFindByRefreshTokenIsNotPresent() {
+    void shouldReturnEmptyWhenRefreshTokenDoesNotExist() {
 
         String refresh = UUID.randomUUID().toString();
 

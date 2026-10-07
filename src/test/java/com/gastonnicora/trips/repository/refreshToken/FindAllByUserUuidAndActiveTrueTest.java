@@ -21,7 +21,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindAllByUser_UuidAndActiveTrueTest {
+class FindAllByUserUuidAndActiveTrueTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -30,7 +30,7 @@ public class FindAllByUser_UuidAndActiveTrueTest {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Test
-    void shouldFindByRefreshToken() {
+    void shouldReturnTokenWhenRefreshTokenExists() {
         User user = new User(
                 "username",
                 "latName",
@@ -53,7 +53,7 @@ public class FindAllByUser_UuidAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindByRefreshTokenIfNotExist() {
+    void shouldReturnEmptyWhenRefreshTokenDoesNotExist() {
         Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken("non-existent-token");
 
         assertFalse(found.isPresent());

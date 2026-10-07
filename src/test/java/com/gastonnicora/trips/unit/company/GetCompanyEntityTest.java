@@ -36,7 +36,7 @@ class GetCompanyEntityTest {
     private GeocodingService geocodingService;
 
     @Test
-    void shouldGetCompanyEntitySuccessfully() {
+    void shouldReturnCompanyEntitySuccessfully() {
         Company company = new Company();
         UUID uuid = UUID.randomUUID();
         company.setUuid(uuid);
@@ -51,7 +51,7 @@ class GetCompanyEntityTest {
     }
 
     @Test
-    void shouldThrowNotFoundExceptionWhenCompanyEntityNotFound() {
+    void shouldThrowNotFoundExceptionWhenCompanyDoesNotExist() {
         UUID uuid = UUID.randomUUID();
 
         when(companyRepository.findByUuidAndActiveTrue(uuid))

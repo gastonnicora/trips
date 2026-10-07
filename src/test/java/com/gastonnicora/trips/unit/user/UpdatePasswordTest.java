@@ -38,7 +38,7 @@ import com.gastonnicora.trips.services.RefreshTokenService;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdatePasswordTest {
+class UpdatePasswordTest {
 
     @Mock
     private UserRepository userRepository;
@@ -61,7 +61,7 @@ public class UpdatePasswordTest {
     }
 
     @Test
-    void shouldReturnUserDTO() {
+    void shouldUpdatePasswordSuccessfully() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("John", "Doe", "mail", "pass", new HashSet<>(Set.of(Role.USER)));
@@ -100,7 +100,7 @@ public class UpdatePasswordTest {
     }
 
     @Test
-    void shouldThrowNotFoundException_whenUserDoesNotExist() {
+    void shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
         UUID uuid = UUID.randomUUID();
 
         context(uuid);
@@ -129,7 +129,7 @@ public class UpdatePasswordTest {
     }
 
     @Test
-    void shouldThrowValidationException_whenPasswordOldIsBad() {
+    void shouldThrowValidationExceptionWhenCurrentPasswordIsInvalid() {
         UUID uuid = UUID.randomUUID();
 
         User user = new User("John", "Doe", "mail", "pass", new HashSet<>(Set.of(Role.USER)));

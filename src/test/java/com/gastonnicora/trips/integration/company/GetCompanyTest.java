@@ -26,7 +26,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class GetCompanyTest {
+class GetCompanyTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -52,7 +52,7 @@ public class GetCompanyTest {
     }
 
     @Test
-    void shouldReturnOk_whenCompanyExists() throws Exception {
+    void shouldReturnOkWhenCompanyExists() throws Exception {
         companyApi.getCompany(company.getUuid())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(company.getName()))
@@ -64,14 +64,14 @@ public class GetCompanyTest {
     }
 
     @Test
-    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         companyApi.withToken(null);
         companyApi.getCompany(company.getUuid())
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturnNotFound_whenUserDoesNotExist() throws Exception {
+    void shouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
         UUID nonExistentUuid = UUID.randomUUID();
         companyApi.getCompany(nonExistentUuid)
                 .andExpect(status().isNotFound());

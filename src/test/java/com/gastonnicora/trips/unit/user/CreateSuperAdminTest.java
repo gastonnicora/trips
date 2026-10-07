@@ -21,7 +21,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateSuperAdminTest {
+class CreateSuperAdminTest {
 
     @Mock
     private UserRepository userRepository;
@@ -59,7 +59,7 @@ public class CreateSuperAdminTest {
     }
 
     @Test
-    void shouldFailCreateSuperAdminIfSuperAdminExists() {
+    void shouldThrowConflictExceptionWhenSuperAdminAlreadyExists() {
         String email = "superAdmin@test.com";
         String password = "password";
 
@@ -75,7 +75,7 @@ public class CreateSuperAdminTest {
     }
 
     @Test
-    void shouldFailCreateSuperAdminIfEmailIsNull() {
+    void shouldThrowValidationExceptionWhenEmailIsNull() {
         String email = null;
         String password = "password";
 
@@ -91,7 +91,7 @@ public class CreateSuperAdminTest {
     }
 
     @Test
-    void shouldFailCreateSuperAdminIfPasswordIsNull() {
+    void shouldThrowValidationExceptionWhenPasswordIsNull() {
         String email = "superAdmin@test.com";
         String password = null;
 
@@ -107,7 +107,7 @@ public class CreateSuperAdminTest {
     }
 
     @Test
-    void shouldFailCreateSuperAdminIfEmailUsed() {
+    void shouldThrowConflictExceptionWhenEmailIsAlreadyUsed() {
         String email = "superAdmin@test.com";
         String password = "password";
 

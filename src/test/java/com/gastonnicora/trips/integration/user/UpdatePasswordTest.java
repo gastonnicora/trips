@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.integration.user;
 
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +28,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class PutPasswordTest {
+class UpdatePasswordTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -62,7 +64,7 @@ public class PutPasswordTest {
     }
 
     @Test
-    void shouldBeAbleToLoginWithNewPasswordAfterChange() throws Exception {
+    void shouldLoginSuccessfullyWithNewPasswordAfterChange() throws Exception {
         String newPassword = "newPassword123";
         userApi.updatePassword(password, newPassword, newPassword)
                 .andExpect(status().isOk());
@@ -85,10 +87,8 @@ public class PutPasswordTest {
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
-                        .value(org.hamcrest.Matchers.notNullValue()));
+                        .value(notNullValue()));
     }
-
-    // Test fallido por que contraseña anterior es errónea
     @Test
     void shouldReturnBadRequestWhenPasswordIsWrong() throws Exception {
         String newPassword = "newPassword";
@@ -97,7 +97,7 @@ public class PutPasswordTest {
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.passwordOld").exists())
                 .andExpect(jsonPath("$.errors.passwordOld")
-                        .value(org.hamcrest.Matchers.notNullValue()));
+                        .value(notNullValue()));
     }
 
     @Test
@@ -109,7 +109,6 @@ public class PutPasswordTest {
 
     static Stream<Arguments> invalidFields() {
         return Stream.of(
-                // Contraseña anterior vacía
                 Arguments.of("", "newPassword", "newPassword", "passwordOld"),
                 // Nueva contraseña vacía
                 Arguments.of("goodPassword", "", "newPassword", "password"),

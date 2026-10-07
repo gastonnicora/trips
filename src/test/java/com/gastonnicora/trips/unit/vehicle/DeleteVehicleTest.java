@@ -21,7 +21,7 @@ import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.VehicleService;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteVehicleTest {
+class DeleteVehicleTest {
 
     @InjectMocks
     private VehicleService vehicleService;
@@ -50,7 +50,7 @@ public class DeleteVehicleTest {
     }
 
     @Test
-    void shouldNotDeleteVehicleIfNotFound() {
+    void shouldThrowNotFoundExceptionWhenVehicleDoesNotExist() {
         Company company = new Company();
         company.setUuid(java.util.UUID.randomUUID());
 

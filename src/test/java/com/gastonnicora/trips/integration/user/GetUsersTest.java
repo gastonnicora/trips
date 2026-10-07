@@ -24,7 +24,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class GetUsersTest {
+class GetUsersTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,7 +43,7 @@ public class GetUsersTest {
     }
 
     @Test
-    void shouldReturnOk_whenUserIsSuperAdmin() throws Exception {
+    void shouldReturnOkWhenUserIsSuperAdmin() throws Exception {
         int length = 1;// Super admin definido en la app
         userApi.getUsers()
                 .andExpect(status().isOk())
@@ -56,7 +56,7 @@ public class GetUsersTest {
     }
 
     @Test
-    void shouldReturnOk_whenUserIsAdmin() throws Exception {
+    void shouldReturnOkWhenUserIsAdmin() throws Exception {
         UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_Admin", password);
         // cambio de rol a un usuario
         userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
@@ -75,7 +75,7 @@ public class GetUsersTest {
     }
 
     @Test
-    void shouldReturnForbidden_whenUserIsRegularUser() throws Exception {
+    void shouldReturnForbiddenWhenUserIsRegularUser() throws Exception {
         UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_User", password);
 
         token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
@@ -86,7 +86,7 @@ public class GetUsersTest {
     }
 
     @Test
-    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
 
         token = null;
         userApi = new UserApiTestClient(mockMvc).withToken(token);

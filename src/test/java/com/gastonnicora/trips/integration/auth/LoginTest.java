@@ -1,5 +1,7 @@
 package com.gastonnicora.trips.integration.auth;
 
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,24 +45,18 @@ class LoginTest {
         this.authApi = new AuthApiTestClient(mockMvc);
         email = user.getEmail();
     }
-
-    
     @Test
     void shouldLoginSuccessfully() throws Exception {
         authApi.login(email, pass)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
     }
-
-    
     @Test
     void shouldLoginSuccessfullyWhenEmailHaveSpace() throws Exception {
         authApi.login(email + " ", pass)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
     }
-
-    
     @ParameterizedTest
     @MethodSource("invalid")
     void shouldReturnBadRequestWhenValidationFails(
@@ -72,10 +68,8 @@ class LoginTest {
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(
                         jsonPath("$.errors.%s".formatted(expectedField))
-                                .value(org.hamcrest.Matchers.notNullValue()));
+                                .value(notNullValue()));
     }
-
-    
     @ParameterizedTest
     @MethodSource("invalidCredentials")
     void shouldReturnUnauthorizedWhenCredentialsAreInvalid(
@@ -86,10 +80,8 @@ class LoginTest {
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(
                         jsonPath("$.message")
-                                .value(org.hamcrest.Matchers.notNullValue()));
+                                .value(notNullValue()));
     }
-
-    
     @Test
     void shouldSetRefreshTokenCookieOnWebLogin() throws Exception {
         authApi.login(email, pass)
@@ -97,11 +89,9 @@ class LoginTest {
                 .andExpect(jsonPath("$.token").exists())
                 .andExpect(jsonPath("$.refreshToken").doesNotExist())
                 .andExpect(cookie().exists("refreshToken"))
-                .andExpect(cookie().value("refreshToken", org.hamcrest.Matchers.notNullValue()));
+                .andExpect(cookie().value("refreshToken", notNullValue()));
 
     }
-
-    
     @Test
     void shouldReturnRefreshTokenInBodyForAndroidClients() throws Exception {
         authApi.loginWithAndroid(email, pass)

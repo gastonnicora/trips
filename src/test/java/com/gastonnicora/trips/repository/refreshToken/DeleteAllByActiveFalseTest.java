@@ -23,7 +23,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class DeleteAllByActiveFalseTest {
+class DeleteAllByActiveFalseTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -32,7 +32,7 @@ public class DeleteAllByActiveFalseTest {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Test
-    void shouldDeleteAllByActiveFalse() {
+    void shouldDeleteInactiveTokens() {
         User user = new User(
                 "username",
                 "latName",
@@ -73,7 +73,7 @@ public class DeleteAllByActiveFalseTest {
     }
 
     @Test
-    void shouldNotDeleteAllByActiveFalseIfAllActive() {
+    void shouldKeepAllActiveTokens() {
         User user = new User(
                 "username",
                 "latName",

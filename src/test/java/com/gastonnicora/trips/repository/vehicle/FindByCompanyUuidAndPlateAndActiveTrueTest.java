@@ -19,7 +19,7 @@ import com.gastonnicora.trips.repositories.VehicleRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByCompanyUuidAndPlateAndActiveTrueTest {
+class FindByCompanyUuidAndPlateAndActiveTrueTest {
 
     @Autowired
     private VehicleRepository vehicleRepository;
@@ -28,7 +28,7 @@ public class FindByCompanyUuidAndPlateAndActiveTrueTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldFindByCompanyUuidAndPlateAndActiveTrue() {
+    void shouldReturnActiveVehicleWhenCompanyAndPlateMatch() {
         Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
         company = companyRepository.save(company);
@@ -47,7 +47,7 @@ public class FindByCompanyUuidAndPlateAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindByCompanyUuidAndPlateAndActiveTrueIfNotExist() {
+    void shouldReturnEmptyWhenCompanyAndPlateDoNotMatch() {
         Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
                 UUID.randomUUID(), "ABC123");
 
@@ -55,7 +55,7 @@ public class FindByCompanyUuidAndPlateAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindByCompanyUuidAndPlateAndActiveTrueIfInactive() {
+    void shouldReturnEmptyWhenVehicleIsInactive() {
         Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
                 "test@mail.com", "123");
         company = companyRepository.save(company);

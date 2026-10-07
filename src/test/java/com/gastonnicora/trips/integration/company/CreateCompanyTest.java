@@ -32,7 +32,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class PostCompanyTest {
+class CreateCompanyTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -93,7 +93,6 @@ public class PostCompanyTest {
         return Stream.of(
                 // name vacío
                 Arguments.of("", "test@test.com", "123456789", 54.4, -34.5, "name"),
-                // email vacío
                 Arguments.of("Goodname", "", "123456789", 54.4, -34.5, "email"),
                 // phone vacío
                 Arguments.of("Goodname", "test@test.com", "", 54.4, -34.5, "phone"),
@@ -103,7 +102,6 @@ public class PostCompanyTest {
                 Arguments.of("Goodname", "test@test.com", "123456789", 54.4, null, "longitude"),
                 // campos en null
                 Arguments.of(null, null, null, null, null, "name"),
-                // email invalido
                 Arguments.of("Goodname", "test", "123456789", 54.4, -34.5, "email"));
     }
 
@@ -115,7 +113,7 @@ public class PostCompanyTest {
     }
 
     @Test
-    void shouldReturnBadRequest_whenAddressNotFound() throws Exception {
+    void shouldReturnBadRequestWhenAddressIsNotFound() throws Exception {
         companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", 100.0, -100.0)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists());

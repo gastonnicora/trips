@@ -36,7 +36,7 @@ class GetCompaniesByOwnerTest {
     private WorkerMapper workerMapper;
 
     @Test
-    void shouldGetCompaniesByOwnerSuccessfully() {
+    void shouldReturnCompaniesOwnedByUser() {
         UUID ownerUuid = UUID.randomUUID();
 
         User owner = new User();

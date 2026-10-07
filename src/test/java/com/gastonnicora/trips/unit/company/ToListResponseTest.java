@@ -35,7 +35,7 @@ class ToListResponseTest {
     private GeocodingService geocodingService;
 
     @Test
-    void shouldConvertCompaniesToListResponseSuccessfully() {
+    void shouldConvertCompaniesToListResponse() {
         List<Company> companies = List.of(new Company(), new Company());
         List<CompanyDTO> expectedDTOs = List.of(new CompanyDTO(), new CompanyDTO());
 

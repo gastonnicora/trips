@@ -32,7 +32,7 @@ class FindByUuidTest {
     private VehicleMapper vehicleMapper;
 
     @Test
-    void shouldFindByUuidSuccessfully() {
+    void shouldReturnVehicleWhenUuidExists() {
         UUID uuid = UUID.randomUUID();
         Vehicle vehicle = new Vehicle();
         vehicle.setUuid(uuid);
@@ -48,7 +48,7 @@ class FindByUuidTest {
     }
 
     @Test
-    void shouldThrowNotFoundExceptionWhenVehicleNotFound() {
+    void shouldThrowNotFoundExceptionWhenVehicleDoesNotExist() {
         UUID uuid = UUID.randomUUID();
 
         when(vehicleRepository.findByUuidAndActiveTrue(uuid))

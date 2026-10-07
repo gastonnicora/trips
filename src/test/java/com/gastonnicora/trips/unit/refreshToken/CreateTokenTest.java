@@ -23,7 +23,7 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateTokenTest {
+class CreateTokenTest {
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
@@ -35,7 +35,7 @@ public class CreateTokenTest {
     private RefreshTokenService refreshTokenService;
 
     @Test
-    void shouldCreateToken() {
+    void shouldCreateTokenSuccessfully() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 
@@ -81,7 +81,7 @@ public class CreateTokenTest {
     }
 
     @Test
-    void shouldCreateToken_whenUserAgentIsNull() {
+    void shouldCreateTokenWhenUserAgentIsNull() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 
@@ -127,7 +127,7 @@ public class CreateTokenTest {
     }
 
     @Test
-    void shouldCreateToken_whenUserAgentIsBlanK() {
+    void shouldCreateTokenWhenUserAgentIsBlank() {
 
         User user = new User("username", "latName", "test@test.com", "password", null);
 

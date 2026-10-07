@@ -29,7 +29,7 @@ import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.GeocodingService;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateCompanyTest {
+class CreateCompanyTest {
 
     @InjectMocks
     private CompanyService companyService;

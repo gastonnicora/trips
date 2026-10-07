@@ -23,7 +23,7 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
+class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -35,7 +35,7 @@ public class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldFindByUserUuidAndCompanyUuidAndActiveTrue() {
+    void shouldReturnActiveWorkerWhenUserAndCompanyMatch() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);
@@ -58,7 +58,7 @@ public class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindByUserUuidAndCompanyUuidAndActiveTrueIfNotExist() {
+    void shouldReturnEmptyWhenWorkerDoesNotExist() {
         Optional<Worker> found = workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(
                 UUID.randomUUID(), UUID.randomUUID());
 
@@ -66,7 +66,7 @@ public class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
     }
 
     @Test
-    void shouldNotFindByUserUuidAndCompanyUuidAndActiveTrueIfInactive() {
+    void shouldReturnEmptyWhenWorkerIsInactive() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);

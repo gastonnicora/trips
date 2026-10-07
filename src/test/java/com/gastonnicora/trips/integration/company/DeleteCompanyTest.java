@@ -25,7 +25,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class DeleteCompanyTest {
+class DeleteCompanyTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -66,20 +66,20 @@ public class DeleteCompanyTest {
     }
 
     @Test
-    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         companyApi.withToken(null);
         companyApi.deleteCompany(company.getUuid())
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturnForbidden_whenCompanyDoesNotExist() throws Exception {
+    void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
         companyApi.deleteCompany(UUID.randomUUID())
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    void shouldReturnForbidden_whenUserIsNotOwner() throws Exception {
+    void shouldReturnForbiddenWhenUserIsNotOwner() throws Exception {
         String token2 = UserTestFactory
                 .registerAndLogin(mockMvc);
         companyApi.withToken(token2);

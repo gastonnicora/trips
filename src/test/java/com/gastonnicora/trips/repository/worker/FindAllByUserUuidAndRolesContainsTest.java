@@ -22,7 +22,7 @@ import com.gastonnicora.trips.repositories.WorkerRepository;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindAllByUserUuidAndRolesContainsTest {
+class FindAllByUserUuidAndRolesContainsTest {
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -34,7 +34,7 @@ public class FindAllByUserUuidAndRolesContainsTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldFindAllByUserUuidAndRolesContains() {
+    void shouldReturnWorkersWhenUserAndRoleMatch() {
         User user = new User(
                 "username",
                 "latName",
@@ -61,7 +61,7 @@ public class FindAllByUserUuidAndRolesContainsTest {
     }
 
     @Test
-    void shouldNotFindAllByUserUuidAndRolesContainsWhenRoleDoesNotMatch() {
+    void shouldReturnEmptyWhenRoleDoesNotMatch() {
         User user = new User(
                 "username",
                 "latName",
@@ -87,7 +87,7 @@ public class FindAllByUserUuidAndRolesContainsTest {
     }
 
     @Test
-    void shouldNotFindAllByUserUuidAndRolesContainsWhenNoWorkers() {
+    void shouldReturnEmptyWhenUserHasNoWorkers() {
         User user = new User(
                 "username",
                 "latName",

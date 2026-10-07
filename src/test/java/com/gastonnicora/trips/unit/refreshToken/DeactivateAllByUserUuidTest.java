@@ -21,7 +21,7 @@ import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
 
 @ExtendWith(MockitoExtension.class)
-public class DeactivateAllByUserUuidTest {
+class DeactivateAllByUserUuidTest {
 
     @Mock
     private RefreshTokenRepository repo;
@@ -30,7 +30,7 @@ public class DeactivateAllByUserUuidTest {
     private RefreshTokenService service;
 
     @Test
-    void shouldDeactivateAllTokens() {
+    void shouldDeactivateAllTokensForUser() {
 
         UUID uuid = UUID.randomUUID();
 
@@ -55,7 +55,7 @@ public class DeactivateAllByUserUuidTest {
     }
 
     @Test
-    void shouldDeactivateAllTokensIfEmptyList() {
+    void shouldDoNothingWhenUserHasNoTokens() {
 
         UUID uuid = UUID.randomUUID();
 

@@ -30,7 +30,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class GetWorkersByCurrentUserTest {
+class GetWorkersByCurrentUserTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -68,7 +68,7 @@ public class GetWorkersByCurrentUserTest {
     }
 
     @Test
-    void shouldReturnOk_whenUserHaveAnyworker() throws Exception {
+    void shouldReturnOkWhenUserHasWorkers() throws Exception {
         workerApi.getWorkersByCurrentUser()
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.user.name").value(user.getName()))
@@ -80,14 +80,14 @@ public class GetWorkersByCurrentUserTest {
     }
 
     @Test
-    void shouldReturnNotFound_whenUserDontHaveAnyWorker() throws Exception {
+    void shouldReturnNotFoundWhenUserHasNoWorkers() throws Exception {
         registerAndLoginUser("newUser");
         workerApi.withToken(token).getWorkersByCurrentUser()
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void shouldReturnUnauthorized_whenTokenIsMissing() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         workerApi.withToken(null);
         workerApi.getWorkersByCurrentUser()
                 .andExpect(status().isUnauthorized());

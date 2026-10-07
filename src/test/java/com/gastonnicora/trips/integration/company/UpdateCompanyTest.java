@@ -31,7 +31,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class PutCompanyTest {
+class UpdateCompanyTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -97,7 +97,6 @@ public class PutCompanyTest {
         return Stream.of(
                 // name vacío
                 Arguments.of("", "test@test.com", "123456789", 54.4, -34.5, "name"),
-                // email vacío
                 Arguments.of("Goodname", "", "123456789", 54.4, -34.5, "email"),
                 // phone vacío
                 Arguments.of("Goodname", "test@test.com", "", 54.4, -34.5, "phone"),
@@ -107,7 +106,6 @@ public class PutCompanyTest {
                 Arguments.of("Goodname", "test@test.com", "123456789", 54.4, null, "longitude"),
                 // campos en null
                 Arguments.of(null, null, null, null, null, "name"),
-                // email invalido
                 Arguments.of("Goodname", "test", "123456789", 54.4, -34.5, "email"));
     }
 
@@ -122,7 +120,7 @@ public class PutCompanyTest {
     }
 
     @Test
-    void shouldReturnBadRequest_whenAddressNotFound() throws Exception {
+    void shouldReturnBadRequestWhenAddressIsNotFound() throws Exception {
         companyApi.updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", 100.0,
                 -100.0)
                 .andExpect(status().isBadRequest())
@@ -130,7 +128,7 @@ public class PutCompanyTest {
     }
 
     @Test
-    void shouldReturForbidden_whenUserIsNotOwner() throws Exception {
+    void shouldReturnForbiddenWhenUserIsNotOwner() throws Exception {
         String token2 = UserTestFactory.registerAndLogin(mockMvc);
         companyApi.withToken(token2);
         companyApi
