@@ -4,8 +4,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -17,6 +15,8 @@ import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -51,9 +51,9 @@ class FindByUuidTest {
         Optional<Company> found = companyRepository.findByUuidAndActiveTrue(c.getUuid());
 
         assertTrue(found.isPresent());
-        assertTrue(found.get().getUuid().equals(company.getUuid()));
-        assertTrue(found.get().getEmail().equals("test@mail.com"));
-        assertTrue(found.get().getName().equals("Test"));
+        assertEquals(found.get().getUuid(), company.getUuid());
+        assertEquals("test@mail.com", found.get().getEmail());
+        assertEquals("Test", found.get().getName());
     }
 
     @Test
@@ -86,8 +86,8 @@ class FindByUuidTest {
         Optional<Company> found = companyRepository.findById(c.getUuid());
 
         assertTrue(found.isPresent());
-        assertTrue(found.get().getUuid().equals(company.getUuid()));
-        assertTrue(found.get().getEmail().equals("test@mail.com"));
-        assertTrue(found.get().getName().equals("Test"));
+        assertEquals(found.get().getUuid(), company.getUuid());
+        assertEquals("test@mail.com", found.get().getEmail());
+        assertEquals("Test", found.get().getName());
     }
 }

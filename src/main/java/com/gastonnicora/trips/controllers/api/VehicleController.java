@@ -2,6 +2,7 @@ package com.gastonnicora.trips.controllers.api;
 
 import java.util.UUID;
 
+import com.gastonnicora.trips.exceptions.BadRequestException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,7 +86,11 @@ public class VehicleController {
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("vehicleUuid") UUID vehicleUuid) {
 
-        return vehicleService.getVehicle(vehicleUuid); // TODO 🚀:  validar que el vehiculo pertenezca a la empresa
+        VehicleDTO vehicleDTO= vehicleService.getVehicle(vehicleUuid);
+        if (vehicleDTO.getCompany().getUuid() != companyUuid){
+            throw new BadRequestException("El vehiculo no existe");
+        }
+        return  vehicleDTO;
     }
 
     /**
