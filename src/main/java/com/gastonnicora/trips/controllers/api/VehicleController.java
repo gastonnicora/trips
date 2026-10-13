@@ -87,7 +87,8 @@ public class VehicleController {
             @PathVariable("vehicleUuid") UUID vehicleUuid) {
 
         VehicleDTO vehicleDTO= vehicleService.getVehicle(vehicleUuid);
-        if (vehicleDTO.getCompany().getUuid() != companyUuid){
+
+        if (!vehicleDTO.getCompany().getUuid().equals(companyUuid)){
             throw new BadRequestException("El vehiculo no existe");
         }
         return  vehicleDTO;
