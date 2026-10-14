@@ -40,15 +40,15 @@ public class CompanyService {
     /**
      * Crea una instancia del servicio encargado de gestionar empresas.
      *
-     * @param companyRepository Repositorio utilizado para persistir y consultar
-     *        empresas.
-     * @param companyMapper Mapper utilizado para convertir entidades de empresa
-     *        en DTOs.
-     * @param geocodingService Servicio utilizado para obtener direcciones a
-     *        partir de coordenadas geográficas.
+     * @param companyRepository Repositorio ({@link CompanyRepository}) utilizado para persistir y consultar
+     *                          empresas.
+     * @param companyMapper     Mapper ({@link CompanyMapper}) utilizado para convertir entidades de empresa
+     *                          en DTOs.
+     * @param geocodingService  Servicio ({@link GeocodingService}) utilizado para obtener direcciones a
+     *                          partir de coordenadas geográficas.
      */
     public CompanyService(CompanyRepository companyRepository, CompanyMapper companyMapper,
-            GeocodingService geocodingService) {
+                          GeocodingService geocodingService) {
         this.companyRepository = companyRepository;
         this.companyMapper = companyMapper;
         this.geocodingService = geocodingService;
@@ -62,7 +62,7 @@ public class CompanyService {
      * proporcionadas y, si la dirección es válida, persiste la nueva empresa.
      * </p>
      *
-     * @param companyCreate Datos necesarios para crear la empresa.
+     * @param companyCreate Datos necesarios para crear la empresa ({@link CompanyCreate}).
      * @return {@link CompanyDTO} correspondiente a la empresa creada.
      * @throws BadRequestException Si no se puede obtener una dirección válida.
      * @see GeocodingService#obtenerDireccion(double, double)
@@ -89,7 +89,7 @@ public class CompanyService {
      * @param uuid Identificador único de la empresa.
      * @return {@link CompanyDTO} correspondiente a la empresa encontrada.
      * @throws NotFoundException Si no existe una empresa con el identificador
-     *         indicado.
+     *                           indicado.
      * @see CompanyService#getCompanyEntity(UUID)
      * @see CompanyMapper#toDTO(Company)
      */
@@ -107,9 +107,9 @@ public class CompanyService {
      * </p>
      *
      * @param uuid Identificador único de la empresa.
-     * @return Entidad de la empresa encontrada.
+     * @return {@link Company} entidad de la empresa encontrada.
      * @throws NotFoundException Si no existe una empresa con el identificador
-     *         indicado.
+     *                           indicado.
      */
     public Company getCompanyEntity(UUID uuid) {
         return companyRepository.findByUuidAndActiveTrue(uuid)
@@ -122,6 +122,7 @@ public class CompanyService {
      *
      * @param companies Lista de empresas que se desea convertir.
      * @return {@link ListResponse} que contiene los DTOs de las empresas.
+     * @see CompanyMapper#toDTOList(List)
      */
     public ListResponse<CompanyDTO> toListResponse(List<Company> companies) {
         return new ListResponse<>(companyMapper.toDTOList(companies));
@@ -135,12 +136,13 @@ public class CompanyService {
      * geográficas y persiste los cambios realizados sobre la empresa.
      * </p>
      *
-     * @param uuid Identificador único de la empresa que se desea actualizar.
-     * @param companyCreate Nuevos datos de la empresa.
+     * @param uuid          Identificador único de la empresa que se desea actualizar.
+     * @param companyCreate Nuevos datos de la empresa ({@link CompanyCreate}).
      * @return {@link CompanyDTO} correspondiente a la empresa actualizada.
-     * @throws NotFoundException Si no existe una empresa con el identificador
-     *         indicado.
      * @throws BadRequestException Si no se puede obtener una dirección válida.
+     * @see CompanyService#getCompanyEntity(UUID)
+     * @see GeocodingService#obtenerDireccion(double, double)
+     * @see CompanyMapper#toDTO(Company)
      */
     @Transactional
     public CompanyDTO updateCompany(UUID uuid, CompanyCreate companyCreate) {
@@ -169,8 +171,7 @@ public class CompanyService {
      * </p>
      *
      * @param uuid Identificador único de la empresa que se desea desactivar.
-     * @throws NotFoundException Si no existe una empresa con el identificador
-     *         indicado.
+     * @see CompanyService#getCompanyEntity(UUID)
      */
     @Transactional
     public void deleteCompany(UUID uuid) {

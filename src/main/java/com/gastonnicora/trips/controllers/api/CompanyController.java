@@ -19,8 +19,6 @@ import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.exceptions.BadRequestException;
-import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.UserService;
 import com.gastonnicora.trips.services.WorkerService;
@@ -62,10 +60,10 @@ public class CompanyController {
     /**
      * Crea una instancia del controlador de empresas.
      *
-     * @param companyService servicio encargado de la gestión de empresas
+     * @param companyService servicio encargado de la gestión de empresas ({@link CompanyService}).
      * @param workerService  servicio encargado de gestionar trabajadores y
-     *                       propietarios de empresas
-     * @param userService    servicio encargado de consultar y gestionar usuarios
+     *                       propietarios de empresas ({@link WorkerService}).
+     * @param userService    servicio encargado de consultar y gestionar usuarios ({@link  UserService}).
      */
     public CompanyController(CompanyService companyService, WorkerService workerService, UserService userService) {
         this.companyService = companyService;
@@ -82,13 +80,12 @@ public class CompanyController {
      * asociado a la empresa.
      * </p>
      *
-     * @param companyCreate datos necesarios para crear la empresa
+     * @param companyCreate datos necesarios para crear la empresa({@link CompanyCreate}).
      * @return datos de la empresa creada
-     * @throws ValidationException si los datos proporcionados no cumplen las
-     *                             validaciones requeridas
-     * @throws BadRequestException si las coordenadas proporcionadas no permiten
-     *                             obtener una dirección válida
+     * @see UserService#getUser(UUID)
      * @see CompanyService#createCompany(CompanyCreate)
+     * @see CompanyService#getCompanyEntity(UUID)
+     * @see WorkerService#createWorkerOwner(User, Company)
      */
     @PostMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -169,7 +166,7 @@ public class CompanyController {
      * </p>
      *
      * @param uuid    UUID de la empresa que se desea actualizar
-     * @param company nuevos datos de la empresa
+     * @param company nuevos datos de la empresa ({@link CompanyCreate}).
      * @return datos de la empresa actualizada
      * @see CompanyService#updateCompany(UUID, CompanyCreate)
      */

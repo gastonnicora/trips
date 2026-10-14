@@ -5,7 +5,10 @@ import com.gastonnicora.trips.validations.FieldsMatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO utilizado para solicitar el cambio de contraseña de un usuario.
@@ -32,6 +35,9 @@ import lombok.NoArgsConstructor;
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 @Schema(description = "DTO utilizado para solicitar el cambio de contraseña de un usuario")
 @NoArgsConstructor
+@Setter
+@Getter
+@AllArgsConstructor
 public class UserChangePassword {
 
     private final int minLengthPass = 8;
@@ -84,70 +90,4 @@ public class UserChangePassword {
             + " y máximo 255 caracteres")
     private String confirmPassword;
 
-    /**
-     * Constructor completo.
-     *
-     * @param passwordOld Contraseña actual
-     * @param password Nueva contraseña
-     * @param confirmPassword Confirmación de la nueva contraseña
-     */
-    public UserChangePassword(String passwordOld, String password, String confirmPassword) {
-        this.passwordOld = passwordOld;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
-    }
-
-    /**
-     * Obtiene la contraseña actual del usuario.
-     *
-     * @return Contraseña actual
-     */
-    public String getPasswordOld() {
-        return passwordOld;
-    }
-
-    /**
-     * Establece la contraseña actual del usuario.
-     *
-     * @param passwordOld Contraseña actual
-     */
-    public void setPasswordOld(String passwordOld) {
-        this.passwordOld = passwordOld;
-    }
-
-    /**
-     * Obtiene la nueva contraseña del usuario.
-     *
-     * @return Nueva contraseña
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Establece la nueva contraseña del usuario.
-     *
-     * @param password Nueva contraseña
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Obtiene la confirmación de la nueva contraseña.
-     *
-     * @return Confirmación de la nueva contraseña
-     */
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    /**
-     * Establece la confirmación de la nueva contraseña.
-     *
-     * @param confirmPassword Confirmación de la nueva contraseña
-     */
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
 }

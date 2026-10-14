@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO básico de usuario.
@@ -29,6 +31,8 @@ import lombok.NoArgsConstructor;
  */
 @Schema(description = "DTO básico de usuario utilizado como clase base para Requests")
 @NoArgsConstructor
+@Getter
+@Setter
 public abstract class UserBasic {
 
     /**
@@ -93,50 +97,6 @@ public abstract class UserBasic {
         this.email = email != null ? email.trim().toLowerCase() : null;
     }
 
-    /**
-     * Obtiene el nombre del usuario.
-     *
-     * @return Nombre del usuario
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Establece el nombre del usuario.
-     *
-     * @param name Nombre del usuario
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Obtiene el apellido del usuario.
-     *
-     * @return Apellido del usuario
-     */
-    public String getLastname() {
-        return lastname;
-    }
-
-    /**
-     * Establece el apellido del usuario.
-     *
-     * @param lastname Apellido del usuario
-     */
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    /**
-     * Obtiene el email del usuario.
-     *
-     * @return Email del usuario
-     */
-    public String getEmail() {
-        return email;
-    }
 
     /**
      * Establece el email del usuario.

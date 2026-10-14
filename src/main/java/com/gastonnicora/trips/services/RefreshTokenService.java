@@ -48,7 +48,7 @@ public class RefreshTokenService {
      * necesarias para la gestión de tokens de refresco y
      * conversión de entidades a DTOs.
      *
-     * @param repo Repositorio de tokens de refresco utilizado para
+     * @param repo Repositorio de tokens de refresco ({@link RefreshTokenRepository}) utilizado para
      *                          acceder a
      *                          la
      *                          base de datos.
@@ -80,6 +80,7 @@ public class RefreshTokenService {
      *
      * @param refreshToken Token de refresco que se desea verificar.
      * @return {@code true} si el token existe, {@code false} en caso contrario.
+     * @see RefreshTokenRepository#existsByRefreshToken(String) 
      */
     public boolean existsByRefreshToken(String refreshToken) {
         return repo.existsByRefreshToken(refreshToken);
@@ -106,6 +107,8 @@ public class RefreshTokenService {
      *                               inactivo, ha expirado o no coincide con la
      *                               dirección IP o el user
      *                               agent registrados.
+     * @see RefreshTokenRepository#findByRefreshToken(String) 
+     * @see RefreshTokenService#revokeToken(String) 
      */
     public RefreshToken verifyToken(String refreshToken, String currentIp, String currentUA) {
 
@@ -142,6 +145,7 @@ public class RefreshTokenService {
      * </p>
      *
      * @param refreshToken Token de refresco que se desea revocar.
+     * @see RefreshTokenRepository#findByRefreshToken(String) 
      */
     public void revokeToken(String refreshToken) {
         repo.findByRefreshToken(refreshToken).ifPresent(rt -> {
@@ -160,6 +164,7 @@ public class RefreshTokenService {
      * </p>
      *
      * @param uuid UUID del usuario cuyos tokens se desean desactivar.
+     * @see RefreshTokenRepository#findAllByUser_UuidAndActiveTrue(UUID) 
      */
     public void deactivateAllByUserUuid(UUID uuid) {
         repo.findAllByUser_UuidAndActiveTrue(uuid).forEach(rt -> {
@@ -175,6 +180,7 @@ public class RefreshTokenService {
      * @param refreshToken Token de refresco que se desea buscar.
      * @return {@link Optional} que contiene el refresh token encontrado, o vacío
      *         si no existe.
+     * @see RefreshTokenRepository#findByRefreshToken(String) 
      */
     public Optional<RefreshToken> findByRefreshToken(String refreshToken) {
         return repo.findByRefreshToken(refreshToken);

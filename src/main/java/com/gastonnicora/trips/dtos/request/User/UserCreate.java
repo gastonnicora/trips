@@ -5,7 +5,9 @@ import com.gastonnicora.trips.validations.FieldsMatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO utilizado para solicitar la creación de un nuevo usuario.
@@ -37,6 +39,8 @@ import lombok.NoArgsConstructor;
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 @Schema(description = "Datos necesarios para crear un nuevo usuario")
 @NoArgsConstructor
+@Getter
+@Setter
 public class UserCreate extends UserBasic {
 
     /**
@@ -111,39 +115,4 @@ public class UserCreate extends UserBasic {
         this.confirmPassword = confirmPass;
     }
 
-    /**
-     * Obtiene la contraseña del usuario.
-     *
-     * @return contraseña del usuario
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Establece la contraseña del usuario.
-     *
-     * @param password contraseña del usuario
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Obtiene la confirmación de la contraseña.
-     *
-     * @return confirmación de la contraseña
-     */
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    /**
-     * Establece la confirmación de la contraseña.
-     *
-     * @param confirmPass confirmación de la contraseña
-     */
-    public void setConfirmPassword(String confirmPass) {
-        this.confirmPassword = confirmPass;
-    }
 }

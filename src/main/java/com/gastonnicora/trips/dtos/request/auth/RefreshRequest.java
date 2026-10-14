@@ -1,7 +1,10 @@
 package com.gastonnicora.trips.dtos.request.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO utilizado para solicitar la renovación de un token de acceso.
@@ -20,6 +23,9 @@ import lombok.NoArgsConstructor;
         description = "Solicitud para renovar el token de acceso mediante un refresh token"
 )
 @NoArgsConstructor
+@Setter
+@Getter
+@AllArgsConstructor
 public class RefreshRequest {
 
     /**
@@ -36,31 +42,4 @@ public class RefreshRequest {
     )
     private String refreshToken;
 
-    /**
-     * Crea una solicitud de renovación de token.
-     *
-     * @param refreshToken refresh token proporcionado por el cliente
-     */
-    public RefreshRequest(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
-    /**
-     * Obtiene el refresh token de la solicitud.
-     *
-     * @return refresh token proporcionado por el cliente, o {@code null} si no
-     * fue enviado en el cuerpo de la solicitud
-     */
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    /**
-     * Establece el refresh token de la solicitud.
-     *
-     * @param refreshToken refresh token proporcionado por el cliente
-     */
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

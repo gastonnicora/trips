@@ -43,8 +43,8 @@ public class VehicleController {
     /**
      * Crea una instancia del controlador de vehículos.
      *
-     * @param vehicleService servicio encargado de la gestión de vehículos
-     * @param companyService servicio encargado de consultar las empresas
+     * @param vehicleService servicio encargado de la gestión de vehículos ({@link VehicleService})
+     * @param companyService servicio encargado de consultar las empresas ({@link CompanyService})
      */
     public VehicleController(VehicleService vehicleService, CompanyService companyService) {
         this.vehicleService = vehicleService;
@@ -89,8 +89,9 @@ public class VehicleController {
      * </p>
      *
      * @param companyUuid   UUID de la empresa a la que se asociará el vehículo
-     * @param vehicleCreate datos necesarios para crear el vehículo
+     * @param vehicleCreate ({@link VehicleCreate}) datos necesarios para crear el vehículo
      * @return datos del vehículo creado
+     * @see CompanyService#getCompanyEntity(UUID) 
      * @see VehicleService#createVehicle(Company, VehicleCreate)
      */
     @PostMapping("/companies/{companyUuid}/vehicle")

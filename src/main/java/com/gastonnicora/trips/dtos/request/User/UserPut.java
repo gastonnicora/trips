@@ -24,14 +24,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPut extends UserBasic {
 
-    /**
-     * Crea una solicitud para actualizar los datos básicos de un usuario.
-     *
-     * @param name nombre del usuario
-     * @param lastname apellido del usuario
-     * @param email dirección de correo electrónico del usuario
-     */
-    public UserPut(String name, String lastname, String email) {
-        super(name, lastname, email);
-    }
 }

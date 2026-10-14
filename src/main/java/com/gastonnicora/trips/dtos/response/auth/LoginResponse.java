@@ -1,7 +1,10 @@
 package com.gastonnicora.trips.dtos.response.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO utilizado para representar la respuesta del inicio de sesión.
@@ -24,6 +27,9 @@ import lombok.NoArgsConstructor;
  */
 @Schema(description = "Respuesta generada tras una autenticación exitosa")
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class LoginResponse {
 
     /**
@@ -50,51 +56,4 @@ public class LoginResponse {
     )
     private String refreshToken;
 
-    /**
-     * Crea una respuesta de inicio de sesión con los tokens proporcionados.
-     *
-     * @param token token JWT de acceso
-     * @param refreshToken token UUID utilizado para renovar el token de acceso;
-     * puede ser {@code null} para clientes web
-     */
-    public LoginResponse(String token, String refreshToken) {
-        this.token = token;
-        this.refreshToken = refreshToken;
-    }
-
-    /**
-     * Obtiene el token JWT de acceso.
-     *
-     * @return token JWT de acceso
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * Establece el token JWT de acceso.
-     *
-     * @param token token JWT de acceso
-     */
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    /**
-     * Obtiene el token de refresco UUID.
-     *
-     * @return token de refresco UUID, o {@code null} para clientes web
-     */
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    /**
-     * Establece el token de refresco UUID.
-     *
-     * @param refreshToken token de refresco UUID
-     */
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

@@ -4,7 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.jspecify.annotations.NonNull;
 
 /**
  * DTO utilizado para solicitar la autenticación de un usuario.
@@ -30,6 +33,8 @@ import lombok.NoArgsConstructor;
  */
 @Schema(description = "Credenciales necesarias para iniciar sesión")
 @NoArgsConstructor
+@Setter
+@Getter
 public class LoginRequest {
 
     /**
@@ -76,15 +81,6 @@ public class LoginRequest {
     )
     private String password;
 
-    /**
-     * Obtiene el correo electrónico normalizado del usuario.
-     *
-     * @return dirección de correo electrónico en minúsculas y sin espacios
-     *         al inicio o final
-     */
-    public String getEmail() {
-        return email;
-    }
 
     /**
      * Establece el correo electrónico del usuario.
@@ -96,27 +92,10 @@ public class LoginRequest {
      *
      * @param email dirección de correo electrónico del usuario
      */
-    public void setEmail(String email) {
+    public void setEmail(@NonNull String email) {
         this.email = email.trim().toLowerCase();
     }
 
-    /**
-     * Obtiene la contraseña del usuario.
-     *
-     * @return contraseña proporcionada para la autenticación
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Establece la contraseña del usuario.
-     *
-     * @param password contraseña utilizada para la autenticación
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     /**
      * Crea una solicitud de inicio de sesión con las credenciales indicadas.

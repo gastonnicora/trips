@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.gastonnicora.trips.utils.SecurityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
+
 import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
 
 import jakarta.transaction.Transactional;
@@ -54,17 +56,16 @@ public class UserService {
      *
      * @param userRepository      Repositorio de usuarios utilizado para acceder a
      *                            la
-     *                            base de datos.
+     *                            base de datos ({@link UserRepository}).
      * @param passwordEncoder     Codificador de contraseñas utilizado para proteger
      *                            las contraseñas de los usuarios.
      * @param refreshTokenService Servicio encargado de gestionar los tokens de
-     *                            refresco de los usuarios.
+     *                            refresco de los usuarios ({@link RefreshTokenService}).
      * @param userMapper          Mapper utilizado para convertir entidades
      *                            {@link User} en
-     *                            {@link UserDTO}.
+     *                            {@link UserDTO} ({@link UserMapper}).
      */
-    public UserService(UserRepository userRepository,
-            PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.refreshTokenService = refreshTokenService;
@@ -80,10 +81,12 @@ public class UserService {
      * asigna el rol {@link Role#USER}.
      * </p>
      *
-     * @param userCreate Datos necesarios para crear el nuevo usuario.
+     * @param userCreate Datos necesarios para crear el nuevo usuario ({@link UserCreate}).
      * @return {@link UserDTO} correspondiente al usuario creado.
      * @throws ConflictException Si el correo electrónico ya está siendo
      *                           utilizado por un usuario activo.
+     * @see UserRepository#existsByEmailAndEnabledTrue(String)
+     * @see UserMapper#toDTO(User)
      */
     public UserDTO createUser(UserCreate userCreate) {
         if (userRepository.existsByEmailAndEnabledTrue(userCreate.getEmail())) {
@@ -92,12 +95,7 @@ public class UserService {
 
         userCreate.setPassword(passwordEncoder.encode(userCreate.getPassword()));
 
-        User newUser = new User(
-                userCreate.getName(),
-                userCreate.getLastname(),
-                userCreate.getEmail(),
-                userCreate.getPassword(),
-                Set.of(Role.USER));
+        User newUser = new User(userCreate.getName(), userCreate.getLastname(), userCreate.getEmail(), userCreate.getPassword(), Set.of(Role.USER));
 
         return userMapper.toDTO(userRepository.save(newUser));
     }
@@ -111,8 +109,9 @@ public class UserService {
      * </p>
      *
      * @return {@link UserDTO} correspondiente al usuario actual.
-     * @throws NotFoundException Si el usuario actual no existe en la base de
-     *                           datos.
+     * @see UserMapper#toDTO(User)
+     * @see UserService#getUser(UUID)
+     * @see SecurityUtils#getCurrentUserUuid()
      */
     public UserDTO getCurrentUser() {
         return userMapper.toDTO(getUser(getCurrentUserUuid()));
@@ -123,8 +122,8 @@ public class UserService {
      *
      * @param uuid UUID del usuario que se desea obtener.
      * @return {@link UserDTO} correspondiente al usuario solicitado.
-     * @throws NotFoundException Si no existe un usuario con el UUID
-     *                           proporcionado.
+     * @see UserMapper#toDTO(User)
+     * @see UserService#getUser(UUID)
      */
     public UserDTO getUserByUuid(UUID uuid) {
         return userMapper.toDTO(getUser(uuid));
@@ -140,6 +139,8 @@ public class UserService {
      * </p>
      *
      * @return {@link ListResponse} que contiene los datos de todos los usuarios.
+     * @see ListResponse
+     * @see UserMapper#toDTOList(List)
      */
     public ListResponse<UserDTO> getUsers() {
         List<User> users = userRepository.findAll();
@@ -156,10 +157,9 @@ public class UserService {
      * </p>
      *
      * @param uuid    UUID del usuario que se desea actualizar.
-     * @param userPut Datos con los nuevos valores del usuario.
+     * @param userPut Datos con los nuevos valores del usuario ({@link UserPut}).
      * @return {@link UserDTO} correspondiente al usuario actualizado.
-     * @throws NotFoundException Si el usuario no existe.
-     * @throws ConflictException Si el nuevo correo electrónico ya está en uso.
+     * @see UserService#updateUser(UUID, UserPut)
      */
     public UserDTO updateUserByUuid(UUID uuid, UserPut userPut) {
         return updateUser(uuid, userPut);
@@ -174,10 +174,10 @@ public class UserService {
      * versión del usuario y se desactivan todos sus tokens de refresco.
      * </p>
      *
-     * @param userPut Datos con los nuevos valores del usuario.
+     * @param userPut Datos con los nuevos valores del usuario ({@link UserPut}).
      * @return {@link UserDTO} correspondiente al usuario actualizado.
-     * @throws NotFoundException Si el usuario no existe.
-     * @throws ConflictException Si el nuevo correo electrónico ya está en uso.
+     * @see UserService#updateUser(UUID, UserPut)
+     * @see SecurityUtils#getCurrentUserUuid()
      */
     public UserDTO updateCurrentUser(UserPut userPut) {
         return updateUser(getCurrentUserUuid(), userPut);
@@ -193,17 +193,19 @@ public class UserService {
      * </p>
      *
      * @param userChangePassword Datos que contienen las credenciales necesarias
-     *                           para realizar el cambio de contraseña.
+     *                           para realizar el cambio de contraseña ({@link UserChangePassword}).
      * @return {@link UserDTO} correspondiente al usuario con la contraseña
-     *         actualizada.
+     * actualizada.
      * @throws ValidationException Si la contraseña actual proporcionada es
      *                             incorrecta.
      * @throws NotFoundException   Si el usuario no existe.
+     * @see UserRepository#findByUuid(UUID)
+     * @see RefreshTokenService#deactivateAllByUserUuid(UUID)
+     * @see UserMapper#toDTO(User)
      */
     @Transactional
     public UserDTO updatePassword(UserChangePassword userChangePassword) {
-        User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new NotFoundException("El usuario solicitado no existe"));
+        User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(() -> new NotFoundException("El usuario solicitado no existe"));
 
         if (!passwordEncoder.matches(userChangePassword.getPasswordOld(), userEntity.getPassword())) {
             ValidationException ex = new ValidationException("Error en la validación");
@@ -230,12 +232,13 @@ public class UserService {
      * </p>
      *
      * @param uuid UUID del usuario cuyos roles se desean actualizar.
-     * @param role Datos que contienen los nuevos roles del usuario.
+     * @param role Datos que contienen los nuevos roles del usuario ({@link UserChangeRole}).
      * @return {@link UserDTO} correspondiente al usuario con los roles
-     *         actualizados.
-     * @throws NotFoundException   Si el usuario no existe.
+     * actualizados.
      * @throws ValidationException Si se intenta modificar los roles de un usuario
      *                             con rol {@link Role#SUPER_ADMIN}.
+     * @see UserService#getUser(UUID)
+     * @see UserMapper#toDTO(User)
      */
     public UserDTO setRole(UUID uuid, UserChangeRole role) {
         User user = this.getUser(uuid);
@@ -246,9 +249,7 @@ public class UserService {
             throw ex;
         }
 
-        if (!role.getRoles().contains(Role.USER)) {
-            role.getRoles().add(Role.USER);
-        }
+        role.getRoles().add(Role.USER);
 
         role.getRoles().remove(Role.SUPER_ADMIN);
         user.setRole(role.getRoles());
@@ -264,14 +265,12 @@ public class UserService {
      * Marca al usuario como deshabilitado, incrementa su versión y desactiva
      * todos los tokens de refresco asociados.
      * </p>
-     *
-     * @throws NotFoundException Si el usuario no existe en la base de datos.
+     * @see UserService#getUser(UUID)
+     * @see RefreshTokenService#deactivateAllByUserUuid(UUID)
      */
     @Transactional
     public void deleteCurrentUser() {
-        User user = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(
-                () -> new NotFoundException("El usuario solicitado no existe"));
-
+        User user = this.getUser(getCurrentUserUuid());
         user.setEnabled(false);
         user.addVersion();
         userRepository.save(user);
@@ -292,6 +291,9 @@ public class UserService {
      * @param email    Correo electrónico del usuario SUPER_ADMIN que se desea
      *                 crear.
      * @param password Contraseña del usuario SUPER_ADMIN que se desea crear.
+     *
+     * @see UserRepository#existsByRoleContains(Role)
+     * @see UserRepository#existsByEmailAndEnabledTrue(String)
      */
     public void createSuperAdminIfNotExists(String email, String password) {
         System.out.println("Verificando existencia de SUPER_ADMIN...");
@@ -299,12 +301,7 @@ public class UserService {
         System.out.println("SUPER_ADMIN existe: " + exists);
 
         if (!exists && email != null && password != null && !userRepository.existsByEmailAndEnabledTrue(email)) {
-            User superAdmin = new User(
-                    "Super",
-                    "Admin",
-                    email,
-                    passwordEncoder.encode(password),
-                    Set.of(Role.SUPER_ADMIN));
+            User superAdmin = new User("Super", "Admin", email, passwordEncoder.encode(password), Set.of(Role.SUPER_ADMIN));
 
             userRepository.save(superAdmin);
         }
@@ -326,11 +323,13 @@ public class UserService {
      * </p>
      *
      * @param uuid    UUID del usuario que se desea actualizar.
-     * @param userPut Datos con los nuevos valores del usuario.
+     * @param userPut Datos con los nuevos valores del usuario ({@link UserPut}).
      * @return {@link UserDTO} correspondiente al usuario actualizado.
-     * @throws NotFoundException Si el usuario con el UUID proporcionado no
-     *                           existe.
      * @throws ConflictException Si el nuevo correo electrónico ya está en uso.
+     * @see UserService#getUser(UUID)
+     * @see UserRepository#existsByEmailAndEnabledTrue(String)
+     * @see RefreshTokenService#deactivateAllByUserUuid(UUID)
+     * @see UserMapper#toDTO(User)
      */
     @Transactional
     private UserDTO updateUser(UUID uuid, UserPut userPut) {
@@ -365,6 +364,7 @@ public class UserService {
      * @return {@link User} correspondiente al UUID proporcionado.
      * @throws NotFoundException Si no existe ningún usuario con el UUID
      *                           proporcionado.
+     * @see UserRepository#findByUuid(UUID)
      */
     public User getUser(UUID uuid) {
         Optional<User> user = userRepository.findByUuid(uuid);

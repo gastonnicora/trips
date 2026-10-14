@@ -8,6 +8,7 @@ import com.gastonnicora.trips.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -33,6 +34,7 @@ import lombok.NoArgsConstructor;
  */
 @Schema(description = "Datos necesarios para modificar los roles de un usuario")
 @NoArgsConstructor
+@Getter
 public class UserChangeRole {
 
     /**
@@ -64,20 +66,11 @@ public class UserChangeRole {
     }
 
     /**
-     * Obtiene el conjunto de roles asignados al usuario.
-     *
-     * @return conjunto de roles del usuario
-     */
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    /**
      * Establece el conjunto de roles del usuario.
      *
      * @param roles conjunto de roles que serán asignados al usuario
      */
     public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+        this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
     }
 }

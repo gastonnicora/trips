@@ -71,10 +71,10 @@ public class AuthController {
      *
      * @param authenticationManager administrador utilizado para autenticar
      *                              usuarios
-     * @param jwtService            servicio encargado de generar y gestionar tokens
+     * @param jwtService            ({@link JwtService}) servicio encargado de generar y gestionar tokens
      *                              JWT
-     * @param refreshTokenService   servicio encargado de gestionar refresh tokens
-     * @param userRepository        repositorio utilizado para consultar usuarios
+     * @param refreshTokenService   ({@link RefreshTokenService}) servicio encargado de gestionar refresh tokens
+     * @param userRepository        ({@link UserRepository}) repositorio utilizado para consultar usuarios
      */
     public AuthController(AuthenticationManager authenticationManager,
             JwtService jwtService, RefreshTokenService refreshTokenService,
@@ -99,7 +99,7 @@ public class AuthController {
      * clientes Android, se incluye en el cuerpo de la respuesta.
      * </p>
      *
-     * @param login    datos de inicio de sesión del usuario
+     * @param login    datos de inicio de sesión del usuario ({@link LoginRequest}).
      * @param request  solicitud HTTP utilizada para obtener información del
      *                 cliente, como User-Agent e IP
      * @param response respuesta HTTP utilizada para establecer la cookie del

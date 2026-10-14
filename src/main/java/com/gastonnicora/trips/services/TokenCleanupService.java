@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.services;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class TokenCleanupService {
      * dependencias
      * necesarias.
      *
-     * @param repo Repositorio de tokens de refresco utilizado para
+     * @param repo Repositorio de tokens de refresco ({@link RefreshTokenRepository) utilizado para
      *                          acceder a
      *                          la
      *                          base de datos.
@@ -57,6 +58,7 @@ public class TokenCleanupService {
      * La tarea se ejecuta automáticamente al inicio de cada hora según el cron
      * definido.
      * </p>
+     * @see RefreshTokenRepository#deleteAllByExpiryDateBefore(Instant)
      */
     @Scheduled(cron = "0 0 * * * *")
     public void clean() {
@@ -70,6 +72,7 @@ public class TokenCleanupService {
      * La tarea se ejecuta automáticamente al inicio de cada hora según el cron
      * definido.
      * </p>
+     * @see RefreshTokenRepository#deleteAllByActiveFalse()
      */
     @Scheduled(cron = "0 0 * * * *")
     public void cleanInactive() {

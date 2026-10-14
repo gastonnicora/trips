@@ -1,5 +1,8 @@
 package com.gastonnicora.trips.security;
 
+import com.gastonnicora.trips.mappers.CompanyMapper;
+import com.gastonnicora.trips.repositories.CompanyRepository;
+import com.gastonnicora.trips.services.GeocodingService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,6 +34,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Construye una instancia de {@code UserDetailsServiceImpl}.
+     *
+     * <p>
+     * Inicializa el servicio con el repositorio utilizado para buscar usuarios
+     * habilitados durante el proceso de autenticación.
+     * </p>
+     *
+     * @param userRepository repositorio ({@link UserRepository}) utilizado para consultar los usuarios
+     *                        por correo electrónico y estado de habilitación.
+     */
     public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -48,6 +62,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @return {@link UserDetails} con la información del usuario encontrado.
      * @throws UsernameNotFoundException Si no existe un usuario habilitado con el
      *                                   correo electrónico indicado.
+     * @see UserRepository#findByEmailAndEnabledTrue(String)
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -1,7 +1,10 @@
 package com.gastonnicora.trips.dtos.response.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO utilizado para representar la respuesta de la renovación de tokens.
@@ -23,6 +26,9 @@ import lombok.NoArgsConstructor;
  */
 @Schema(description = "Respuesta generada tras renovar correctamente los tokens de autenticación")
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class RefreshResponse {
 
     /**
@@ -49,52 +55,4 @@ public class RefreshResponse {
     )
     private String refreshToken;
 
-    /**
-     * Crea una respuesta de renovación de tokens con los valores
-     * proporcionados.
-     *
-     * @param token nuevo token JWT de acceso
-     * @param refreshToken nuevo token UUID utilizado para renovar el token de
-     * acceso; puede ser {@code null} para clientes web
-     */
-    public RefreshResponse(String token, String refreshToken) {
-        this.token = token;
-        this.refreshToken = refreshToken;
-    }
-
-    /**
-     * Obtiene el nuevo token JWT de acceso.
-     *
-     * @return token JWT de acceso
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * Establece el nuevo token JWT de acceso.
-     *
-     * @param token nuevo token JWT de acceso
-     */
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    /**
-     * Obtiene el nuevo token de refresco UUID.
-     *
-     * @return token de refresco UUID, o {@code null} para clientes web
-     */
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    /**
-     * Establece el nuevo token de refresco UUID.
-     *
-     * @param refreshToken nuevo token de refresco UUID
-     */
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

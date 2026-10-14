@@ -60,9 +60,9 @@ public class WorkerController {
         /**
          * Crea una instancia del controlador de trabajadores.
          *
-         * @param workerService  servicio encargado de la gestión de trabajadores
-         * @param companyService servicio encargado de la gestión de empresas
-         * @param userService    servicio encargado de la gestión de usuarios
+         * @param workerService  ({@link WorkerService}) servicio encargado de la gestión de trabajadores
+         * @param companyService ({@link CompanyService}) servicio encargado de la gestión de empresas
+         * @param userService    ({@link UserService}) servicio encargado de la gestión de usuarios
          */
         public WorkerController(
                         WorkerService workerService,
@@ -111,8 +111,10 @@ public class WorkerController {
          *
          * @param uuid         UUID de la empresa
          * @param workerCreate datos del usuario y roles con los que se registrará
-         *                     como trabajador
+         *                     como trabajador ({@link WorkerCreate}).
          * @return datos del trabajador creado
+         * @see CompanyService#getCompanyEntity(UUID)
+         * @see UserService#getUser(UUID)
          * @see WorkerService#createWorker(User, Company, Set)
          */
         @PostMapping("/companies/{uuid}/worker")
@@ -145,6 +147,8 @@ public class WorkerController {
          *
          * @param companyUuid UUID de la empresa
          * @param userUuid    UUID del usuario que se eliminará de la empresa
+         * @see CompanyService#getCompanyEntity(UUID)
+         * @see UserService#getUser(UUID)
          * @see WorkerService#deleteWorker(UUID, UUID)
          */
         @DeleteMapping("/companies/{companyUuid}/worker/{userUuid}")
@@ -180,8 +184,10 @@ public class WorkerController {
          *
          * @param companyUuid  UUID de la empresa
          * @param userUuid     UUID del trabajador cuyos roles se modificarán
-         * @param workerCreate datos que contienen los nuevos roles del trabajador
+         * @param workerCreate ({@link WorkerCreate}) datos que contienen los nuevos roles del trabajador
          * @return datos actualizados del trabajador
+         * @see CompanyService#getCompanyEntity(UUID)
+         * @see UserService#getUser(UUID)
          * @see WorkerService#updateWorker(UUID, UUID, java.util.Set)
          */
         @PutMapping("/companies/{companyUuid}/worker/{userUuid}")

@@ -32,7 +32,7 @@ public class UserDetailsImpl implements UserDetails {
      * Crea una instancia de los detalles de usuario a partir de una entidad
      * {@link User}.
      *
-     * @param user Usuario de la aplicación.
+     * @param user Usuario de la aplicación ({@link User}).
      */
     public UserDetailsImpl(User user) {
         this.user = user;

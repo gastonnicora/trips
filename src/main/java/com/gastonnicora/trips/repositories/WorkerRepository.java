@@ -94,6 +94,5 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
          * @return Lista de trabajadores activos asociados al usuario que contienen el
          *         rol indicado.
          */
-        List<Worker> findAllByUserUuidAndRolesContainsAndActiveTrue(UUID userUuid, RoleCompany role); // TODO 🚀:
-                                                                                                      // testear
+        List<Worker> findAllByUserUuidAndRolesContainsAndActiveTrue(UUID userUuid, RoleCompany role);
 }

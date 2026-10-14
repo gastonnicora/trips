@@ -52,7 +52,7 @@ public class UserController {
     /**
      * Crea una instancia del controlador de usuarios.
      *
-     * @param userService servicio encargado de la gestión de usuarios
+     * @param userService ({@link UserService}) servicio encargado de la gestión de usuarios
      */
     public UserController(UserService userService) {
         this.userService = userService;
@@ -116,7 +116,7 @@ public class UserController {
      * de usuarios.
      * </p>
      *
-     * @param userCreateRequest datos necesarios para crear el usuario
+     * @param userCreateRequest ({@link UserCreate}) datos necesarios para crear el usuario
      * @return datos del usuario creado
      * @see UserService#createUser(UserCreate)
      */
@@ -133,7 +133,7 @@ public class UserController {
      * Los datos recibidos se validan antes de realizar la actualización.
      * </p>
      *
-     * @param userPutRequest nuevos datos del perfil del usuario
+     * @param userPutRequest ({@link UserPut}) nuevos datos del perfil del usuario
      * @return datos actualizados del usuario
      * @see UserService#updateCurrentUser(UserPut)
      */
@@ -152,7 +152,7 @@ public class UserController {
      * del usuario.
      * </p>
      *
-     * @param userChangePasswordRequest datos necesarios para cambiar la contraseña
+     * @param userChangePasswordRequest ({@link UserChangePassword}) datos necesarios para cambiar la contraseña
      * @return datos del usuario actualizado
      * @see UserService#updatePassword(UserChangePassword)
      */
@@ -172,7 +172,7 @@ public class UserController {
      * </p>
      *
      * @param uuid                  UUID del usuario cuyos roles se modificarán
-     * @param userChangeRoleRequest nuevos roles globales del usuario
+     * @param userChangeRoleRequest ({@link UserChangeRole}) nuevos roles globales del usuario
      * @return datos actualizados del usuario
      * @see UserService#setRole(UUID, UserChangeRole)
      */
