@@ -115,12 +115,17 @@ public class VehicleService {
      * Obtiene un vehículo activo mediante su UUID.
      *
      * @param vehicleUuid UUID del vehículo que se desea obtener.
+     * @param companyUuid UUID de la compañía propietaria del vehiculo.
      * @return {@link VehicleDTO} correspondiente al vehículo encontrado.
      * @throws NotFoundException Si no existe un vehículo activo con el UUID
      *                           proporcionado.
+     * @throws ForbiddenException Si el vehículo no pertenece a la compañía.
      */
-    public VehicleDTO getVehicle(UUID vehicleUuid) {
+    public VehicleDTO getVehicle(UUID vehicleUuid,UUID companyUuid) {
         Vehicle vehicle = findByUuid(vehicleUuid);
+        if (!vehicle.getCompany().getUuid().equals(companyUuid)) {
+            throw new ForbiddenException("El vehiculo no existe");
+        }
         return vehicleMapper.toDTO(vehicle);
     }
 

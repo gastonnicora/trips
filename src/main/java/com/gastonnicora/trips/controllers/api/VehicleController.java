@@ -78,12 +78,7 @@ public class VehicleController {
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("vehicleUuid") UUID vehicleUuid) {
 
-        VehicleDTO vehicleDTO = vehicleService.getVehicle(vehicleUuid);
-
-        if (!vehicleDTO.getCompany().getUuid().equals(companyUuid)) {
-            throw new ForbiddenException("El vehiculo no existe"); // TODO cambiar a service
-        }
-        return vehicleDTO;
+        return vehicleService.getVehicle(vehicleUuid,companyUuid);
     }
 
     /**
