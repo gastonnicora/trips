@@ -255,7 +255,7 @@ public class AuthController {
                 : (body != null ? body.getRefreshToken() : null);
 
         Optional<RefreshToken> rt = refreshTokenService.findByRefreshToken(refreshToken);
-        if (refreshToken != null && !rt.isEmpty() && rt.get() != null) {
+        if (refreshToken != null && rt.isPresent()) {
             refreshTokenService.revokeToken(refreshToken);
         } else {
             throw new UnauthorizedException("Token inválido o expirado");

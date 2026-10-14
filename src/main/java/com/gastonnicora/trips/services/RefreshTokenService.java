@@ -48,7 +48,7 @@ public class RefreshTokenService {
      * necesarias para la gestión de tokens de refresco y
      * conversión de entidades a DTOs.
      *
-     * @param RefreshRepository Repositorio de tokens de refresco utilizado para
+     * @param repo Repositorio de tokens de refresco utilizado para
      *                          acceder a
      *                          la
      *                          base de datos.

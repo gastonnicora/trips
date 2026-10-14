@@ -66,7 +66,6 @@ public class CompanyService {
      * @return {@link CompanyDTO} correspondiente a la empresa creada.
      * @throws BadRequestException Si no se puede obtener una dirección válida.
      * @see GeocodingService#obtenerDireccion(double, double)
-     * @see CompanyRepository#save(Company)
      * @see CompanyMapper#toDTO(Company)
      */
     public CompanyDTO createCompany(CompanyCreate companyCreate) {
@@ -91,7 +90,7 @@ public class CompanyService {
      * @return {@link CompanyDTO} correspondiente a la empresa encontrada.
      * @throws NotFoundException Si no existe una empresa con el identificador
      *         indicado.
-     * @see CompanyRepository#findByUuid(UUID)
+     * @see CompanyService#getCompanyEntity(UUID)
      * @see CompanyMapper#toDTO(Company)
      */
     public CompanyDTO getCompany(UUID uuid) {

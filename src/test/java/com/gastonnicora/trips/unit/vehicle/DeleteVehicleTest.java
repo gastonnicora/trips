@@ -17,7 +17,6 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.repositories.VehicleRepository;
-import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.VehicleService;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,8 +28,6 @@ class DeleteVehicleTest {
     @Mock
     private VehicleRepository vehicleRepository;
 
-    @Mock
-    private CompanyService companyService;
 
     @Test
     void shouldDeleteVehicleSuccessfully() {

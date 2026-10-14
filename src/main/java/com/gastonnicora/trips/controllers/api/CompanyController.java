@@ -3,6 +3,7 @@ package com.gastonnicora.trips.controllers.api;
 import java.util.List;
 import java.util.UUID;
 
+import com.gastonnicora.trips.utils.SecurityUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.UserService;
 import com.gastonnicora.trips.services.WorkerService;
+
 import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -124,7 +126,9 @@ public class CompanyController {
      *
      * @param uuid UUID del usuario propietario de las empresas
      * @return respuesta con la lista de empresas asociadas al usuario
-     * @see CompanyService#getCompaniesByUser(UUID)
+     * @see UserService#getUser(UUID)
+     * @see WorkerService#getCompaniesByOwner(UUID)
+     * @see CompanyService#toListResponse(List)
      */
     @GetMapping("/owner/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
@@ -141,8 +145,11 @@ public class CompanyController {
      * Obtiene las empresas cuyo propietario es el usuario autenticado.
      *
      * @return respuesta con la lista de empresas asociadas al usuario actual
-     * @see CompanyService#getCompaniesByCurrentUser()
-     */
+     * @see SecurityUtils#getCurrentUserUuid()
+     * @see UserService#getUser(UUID)
+     * @see WorkerService#getCompaniesByOwner(UUID)
+     * @see  CompanyService#toListResponse(List)
+     * */
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener mis empresas", description = "Obtiene las empresas asociadas al usuario autenticado.")

@@ -1,27 +1,19 @@
 package com.gastonnicora.trips.controllers.api;
 
-import java.util.UUID;
-
-import com.gastonnicora.trips.exceptions.BadRequestException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.VehicleService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 /**
  * Controlador REST encargado de la gestión de vehículos asociados a empresas.
@@ -86,12 +78,12 @@ public class VehicleController {
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("vehicleUuid") UUID vehicleUuid) {
 
-        VehicleDTO vehicleDTO= vehicleService.getVehicle(vehicleUuid);
+        VehicleDTO vehicleDTO = vehicleService.getVehicle(vehicleUuid);
 
-        if (!vehicleDTO.getCompany().getUuid().equals(companyUuid)){
-            throw new BadRequestException("El vehiculo no existe");
+        if (!vehicleDTO.getCompany().getUuid().equals(companyUuid)) {
+            throw new ForbiddenException("El vehiculo no existe"); // TODO cambiar a service
         }
-        return  vehicleDTO;
+        return vehicleDTO;
     }
 
     /**
@@ -102,7 +94,7 @@ public class VehicleController {
      * dentro de la empresa indicada.
      * </p>
      *
-     * @param companyUuid  UUID de la empresa a la que se asociará el vehículo
+     * @param companyUuid   UUID de la empresa a la que se asociará el vehículo
      * @param vehicleCreate datos necesarios para crear el vehículo
      * @return datos del vehículo creado
      * @see VehicleService#createVehicle(Company, VehicleCreate)

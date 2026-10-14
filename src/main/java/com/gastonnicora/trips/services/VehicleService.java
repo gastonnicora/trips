@@ -56,9 +56,8 @@ public class VehicleService {
      *                           inactivo.
      */
     public Vehicle findByUuid(UUID vehicleUuid) {
-        Vehicle vehicle = vehicleRepository.findByUuidAndActiveTrue(vehicleUuid)
+        return vehicleRepository.findByUuidAndActiveTrue(vehicleUuid)
                 .orElseThrow(() -> new NotFoundException("Vehículo no encontrado"));
-        return vehicle;
     }
 
     /**
@@ -80,7 +79,7 @@ public class VehicleService {
                 .findByCompanyUuidAndPlateAndActiveTrue(company.getUuid(), vehicleCreate.getPlate())
                 .isPresent()) {
             throw new ConflictException("Ya existe un vehículo activo con esa patente");
-        } // TODO 🚀: modificar patentes para sacar espacios y letras en mayusculas
+        } // TODO 🚀: modificar patentes para sacar espacios y letras en mayúsculas
 
         Vehicle vehicle = vehicleRepository.save(
                 new Vehicle(company, vehicleCreate.getPlate(), vehicleCreate.getModel(), vehicleCreate.getCapacity()));

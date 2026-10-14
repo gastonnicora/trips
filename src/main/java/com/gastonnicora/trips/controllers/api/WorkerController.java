@@ -1,5 +1,6 @@
 package com.gastonnicora.trips.controllers.api;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -112,7 +113,7 @@ public class WorkerController {
          * @param workerCreate datos del usuario y roles con los que se registrará
          *                     como trabajador
          * @return datos del trabajador creado
-         * @see WorkerService#createWorker(User, Company, java.util.Set)
+         * @see WorkerService#createWorker(User, Company, Set)
          */
         @PostMapping("/companies/{uuid}/worker")
         @SecurityRequirement(name = "bearerAuth")

@@ -71,7 +71,7 @@ public class WorkerService {
      *                             usuario y la empresa indicados.
      */
     public WorkerDTO createWorker(User user, Company company, Set<RoleCompany> roles) {
-        this.verfyRole(roles);
+        this.verifyRole(roles);
         if (workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(user.getUuid(), company.getUuid())
                 .isPresent()) {
             throw new ConflictException("Ya existe el trabajador");
@@ -111,7 +111,7 @@ public class WorkerService {
      * @throws BadRequestException Si los roles son nulos, están vacíos o
      *                             contienen el rol {@link RoleCompany#OWNER}.
      */
-    private void verfyRole(Set<RoleCompany> roles) {
+    private void verifyRole(Set<RoleCompany> roles) {
         if (roles == null || roles.isEmpty()) {
             throw new BadRequestException("Se debe asignar al menos un rol al trabajador");
         }
@@ -201,7 +201,7 @@ public class WorkerService {
      */
     @Transactional
     public WorkerDTO updateWorker(UUID user, UUID company, Set<RoleCompany> roles) {
-        this.verfyRole(roles);
+        this.verifyRole(roles);
         Worker worker = this.getWorker(user, company);
         worker.setRoles(roles);
         worker = workerRepository.save(worker);
@@ -242,7 +242,7 @@ public class WorkerService {
             throw new NotFoundException("Empresas no encontradas");
         }
         return workers.stream()
-                .map(worker -> worker.getCompany())
+                .map(Worker::getCompany)
                 .toList();
     }
 
