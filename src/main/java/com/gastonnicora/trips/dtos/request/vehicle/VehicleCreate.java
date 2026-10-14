@@ -5,10 +5,10 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 /**
  * DTO utilizado para solicitar la creación de un nuevo vehículo.
@@ -31,14 +31,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class VehicleCreate {
 
     /**
      * Patente del vehículo.
-     *
      * <p>
-     * Es obligatoria y no puede superar los 255 caracteres.
+     * Es obligatoria, no puede superar los 255 caracteres y se convierte a
+     * mayúsculas al asignarse mediante el constructor o el método {@link #setPlate(String)}.
      * </p>
      */
     @NotBlank(message = "Debe introducir una patente")
@@ -81,4 +80,27 @@ public class VehicleCreate {
             minimum = "1"
     )
     private Integer capacity;
+
+
+    /**
+     * Crea una instancia de {@code VehicleCreate}.
+     *
+     * @param plate    Patente del vehículo, se eliminan espacios y convierte las letras a mayúsculas.
+     * @param model    Modelo del vehículo.
+     * @param capacity Capacidad del vehículo.
+     */
+    public VehicleCreate(String plate, String model, Integer capacity) {
+        this.plate = plate.replaceAll("\\s+", "").toUpperCase();
+        this.model = model;
+        this.capacity = capacity;
+    }
+
+    /**
+     * Establece la patente del vehículo y la convierte a mayúsculas.
+     *
+     * @param plate Patente que se asignará al vehículo.
+     */
+    public void setPlate(String plate) { // TODO testear
+        this.plate = plate.replaceAll("\\s+", "").toUpperCase();
+    }
 }

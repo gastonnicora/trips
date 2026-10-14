@@ -79,7 +79,7 @@ public class VehicleService {
                 .findByCompanyUuidAndPlateAndActiveTrue(company.getUuid(), vehicleCreate.getPlate())
                 .isPresent()) {
             throw new ConflictException("Ya existe un vehículo activo con esa patente");
-        } // TODO 🚀: modificar patentes para sacar espacios y letras en mayúsculas
+        }
 
         Vehicle vehicle = vehicleRepository.save(
                 new Vehicle(company, vehicleCreate.getPlate(), vehicleCreate.getModel(), vehicleCreate.getCapacity()));

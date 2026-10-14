@@ -3,7 +3,6 @@ package com.gastonnicora.trips.controllers.api;
 import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.VehicleService;
 import io.swagger.v3.oas.annotations.Operation;
