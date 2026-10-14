@@ -63,7 +63,7 @@ public class VehicleController {
      * @param companyUuid UUID de la empresa a la que pertenece el vehículo
      * @param vehicleUuid UUID del vehículo que se desea consultar
      * @return datos del vehículo solicitado
-     * @see VehicleService#getVehicle(UUID)
+     * @see VehicleService#getVehicle(UUID,UUID)
      */
     @GetMapping("/companies/{companyUuid}/vehicle/{vehicleUuid}")
     @SecurityRequirement(name = "bearerAuth")
