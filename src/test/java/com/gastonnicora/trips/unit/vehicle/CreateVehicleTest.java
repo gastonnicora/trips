@@ -119,6 +119,82 @@ class CreateVehicleTest {
     }
 
     @Test
+    void shouldCreateVehicleSuccessfullyWhenPlateHaveSpaceAndIsLowerCase() {
+
+        UUID companyUuid = UUID.randomUUID();
+        UUID vehicleUuid = UUID.randomUUID();
+
+        Company company = new Company(
+                "Test Company",
+                "Buenos Aires, Argentina",
+                -34.6037,
+                -58.3816,
+                "company@mail.com",
+                "123456789"
+        );
+        company.setUuid(companyUuid);
+
+        VehicleCreate vehicleCreate = new VehicleCreate(
+                "aa 123 bb",
+                "Mercedes Benz",
+                50
+        );
+
+        Vehicle vehicle = new Vehicle(
+                company,
+                vehicleCreate.getPlate(),
+                vehicleCreate.getModel(),
+                vehicleCreate.getCapacity()
+        );
+        vehicle.setUuid(vehicleUuid);
+
+        VehicleDTO expectedDTO = new VehicleDTO();
+        expectedDTO.setUuid(vehicleUuid);
+
+        when(vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+                companyUuid,
+                vehicleCreate.getPlate()
+        )).thenReturn(Optional.empty());
+
+        when(vehicleRepository.save(any(Vehicle.class)))
+                .thenReturn(vehicle);
+
+        when(vehicleMapper.toDTO(vehicle))
+                .thenReturn(expectedDTO);
+
+        VehicleDTO result = vehicleService.createVehicle(
+                company,
+                vehicleCreate
+        );
+
+        assertNotNull(result);
+        assertEquals(expectedDTO, result);
+
+        verify(vehicleRepository)
+                .findByCompanyUuidAndPlateAndActiveTrue(
+                        companyUuid,
+                        vehicleCreate.getPlate()
+                );
+
+        ArgumentCaptor<Vehicle> captor
+                = ArgumentCaptor.forClass(Vehicle.class);
+
+        verify(vehicleRepository).save(captor.capture());
+
+        Vehicle saved = captor.getValue();
+
+        assertEquals(company, saved.getCompany());
+        assertEquals(vehicleCreate.getPlate(), saved.getPlate());
+        assertEquals("AA123BB", saved.getPlate());
+        assertEquals(vehicleCreate.getModel(), saved.getModel());
+        assertEquals(vehicleCreate.getCapacity(), saved.getCapacity());
+        assertTrue(saved.isActive());
+
+        verify(vehicleMapper)
+                .toDTO(vehicle);
+    }
+
+    @Test
     void shouldThrowConflictWhenPlateAlreadyExists() {
 
         UUID companyUuid = UUID.randomUUID();

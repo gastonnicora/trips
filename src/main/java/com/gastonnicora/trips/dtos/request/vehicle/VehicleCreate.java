@@ -100,7 +100,7 @@ public class VehicleCreate {
      *
      * @param plate Patente que se asignará al vehículo.
      */
-    public void setPlate(String plate) { // TODO testear
+    public void setPlate(String plate) {
         this.plate = plate.replaceAll("\\s+", "").toUpperCase();
     }
 }
