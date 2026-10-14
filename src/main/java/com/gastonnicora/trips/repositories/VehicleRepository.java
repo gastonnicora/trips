@@ -36,7 +36,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
      * @return {@link Optional} que contiene el vehículo activo encontrado, o vacío
      *         si no existe.
      */
-    Optional<Vehicle> findByUuidAndActiveTrue(UUID uuid); // TODO 🚀: falta test
+    Optional<Vehicle> findByUuidAndActiveTrue(UUID uuid);
 
     /**
      * Busca todos los vehículos asociados a una empresa.
@@ -65,5 +65,5 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
      * @return {@link Optional} que contiene el vehículo activo encontrado, o vacío
      *         si no existe.
      */
-    Optional<Vehicle> findByCompanyUuidAndPlateAndActiveTrue(UUID companyUuid, String plate); // TODO 🚀: testear
+    Optional<Vehicle> findByCompanyUuidAndPlateAndActiveTrue(UUID companyUuid, String plate);
 }
