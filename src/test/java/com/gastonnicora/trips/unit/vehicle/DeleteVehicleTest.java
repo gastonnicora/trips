@@ -1,9 +1,12 @@
 package com.gastonnicora.trips.unit.vehicle;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.gastonnicora.trips.exceptions.ForbiddenException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,6 +60,22 @@ class DeleteVehicleTest {
         when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> vehicleService.deleteVehicle(company.getUuid(), vehicle.getUuid()));
+
+        verify(vehicleRepository).findByUuidAndActiveTrue(vehicle.getUuid());
+        verify(vehicleRepository, never()).save(new Vehicle());
+    }
+
+    @Test
+    void shouldThrowForbiddenExceptionWhenVehicleCompanyUuidNotEqualsCompany() {
+        Company company = new Company();
+        company.setUuid(java.util.UUID.randomUUID());
+
+        Vehicle vehicle = new Vehicle();
+        vehicle.setCompany(company);
+
+        when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.of(vehicle));
+
+        assertThrows(ForbiddenException.class, () -> vehicleService.deleteVehicle(UUID.randomUUID(), vehicle.getUuid()));
 
         verify(vehicleRepository).findByUuidAndActiveTrue(vehicle.getUuid());
         verify(vehicleRepository, never()).save(new Vehicle());
