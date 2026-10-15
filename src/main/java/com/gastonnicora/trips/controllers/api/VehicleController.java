@@ -52,35 +52,6 @@ public class VehicleController {
     }
 
     /**
-     * Obtiene un vehículo perteneciente a una empresa.
-     *
-     * <p>
-     * El acceso requiere que el usuario autenticado tenga rol {@code OWNER} o
-     * {@code ADMIN} dentro de la empresa indicada.
-     * </p>
-     *
-     * @param companyUuid UUID de la empresa a la que pertenece el vehículo
-     * @param vehicleUuid UUID del vehículo que se desea consultar
-     * @return datos del vehículo solicitado
-     * @see VehicleService#getVehicle(UUID,UUID)
-     */
-    @GetMapping("/companies/{companyUuid}/vehicle/{vehicleUuid}")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
-            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
-            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
-    @Operation(
-            summary = "Obtener vehículo",
-            description = "Obtiene los datos de un vehículo perteneciente a una empresa."
-    )
-    public VehicleDTO getVehicle(
-            @PathVariable("companyUuid") UUID companyUuid,
-            @PathVariable("vehicleUuid") UUID vehicleUuid) {
-
-        return vehicleService.getVehicle(vehicleUuid,companyUuid);
-    }
-
-    /**
      * Registra un nuevo vehículo asociado a una empresa.
      *
      * <p>
@@ -90,8 +61,10 @@ public class VehicleController {
      *
      * @param companyUuid   UUID de la empresa a la que se asociará el vehículo
      * @param vehicleCreate ({@link VehicleCreate}) datos necesarios para crear el vehículo
+     *
      * @return datos del vehículo creado
-     * @see CompanyService#getCompanyEntity(UUID) 
+     *
+     * @see CompanyService#getCompanyEntity(UUID)
      * @see VehicleService#createVehicle(Company, VehicleCreate)
      */
     @PostMapping("/companies/{companyUuid}/vehicle")
@@ -121,6 +94,7 @@ public class VehicleController {
      *
      * @param companyUuid UUID de la empresa a la que pertenece el vehículo
      * @param vehicleUuid UUID del vehículo que se desea eliminar
+     *
      * @see VehicleService#deleteVehicle(UUID, UUID)
      */
     @DeleteMapping("/companies/{companyUuid}/vehicle/{vehicleUuid}")
@@ -137,5 +111,36 @@ public class VehicleController {
             @PathVariable("vehicleUuid") UUID vehicleUuid) {
 
         vehicleService.deleteVehicle(companyUuid, vehicleUuid);
+    }
+
+    /**
+     * Obtiene un vehículo perteneciente a una empresa.
+     *
+     * <p>
+     * El acceso requiere que el usuario autenticado tenga rol {@code OWNER} o
+     * {@code ADMIN} dentro de la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece el vehículo
+     * @param vehicleUuid UUID del vehículo que se desea consultar
+     *
+     * @return datos del vehículo solicitado
+     *
+     * @see VehicleService#getVehicle(UUID, UUID)
+     */
+    @GetMapping("/companies/{companyUuid}/vehicle/{vehicleUuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(
+            summary = "Obtener vehículo",
+            description = "Obtiene los datos de un vehículo perteneciente a una empresa."
+    )
+    public VehicleDTO getVehicle(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("vehicleUuid") UUID vehicleUuid) {
+
+        return vehicleService.getVehicle(vehicleUuid, companyUuid);
     }
 }

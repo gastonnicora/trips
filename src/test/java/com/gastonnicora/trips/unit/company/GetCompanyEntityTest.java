@@ -1,24 +1,24 @@
 package com.gastonnicora.trips.unit.company;
 
+import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.exceptions.NotFoundException;
+import com.gastonnicora.trips.mappers.CompanyMapper;
+import com.gastonnicora.trips.repositories.CompanyRepository;
+import com.gastonnicora.trips.services.CompanyService;
+import com.gastonnicora.trips.services.GeocodingService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.exceptions.NotFoundException;
-import com.gastonnicora.trips.repositories.CompanyRepository;
-import com.gastonnicora.trips.services.CompanyService;
-import com.gastonnicora.trips.mappers.CompanyMapper;
-import com.gastonnicora.trips.services.GeocodingService;
 
 @ExtendWith(MockitoExtension.class)
 class GetCompanyEntityTest {

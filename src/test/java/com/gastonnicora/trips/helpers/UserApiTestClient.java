@@ -1,18 +1,15 @@
 package com.gastonnicora.trips.helpers;
 
+import com.gastonnicora.trips.enums.Role;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.http.MediaType;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
-import com.gastonnicora.trips.enums.Role;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 public class UserApiTestClient {
 
@@ -23,34 +20,16 @@ public class UserApiTestClient {
         this.mockMvc = mockMvc;
     }
 
-    public UserApiTestClient withToken(String token) {
-        this.token = token;
-        return this;
-    }
-
-    public ResultActions register(String name, String lastname, String email, String password, String confirmPassword)
-            throws Exception {
-        return mockMvc.perform(post("/api/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(UserTestFactory.userJson(name, lastname, email, password, confirmPassword)));
-    }
-
-    public ResultActions update(String name, String lastname, String email) throws Exception {
-        return mockMvc.perform(put("/api/users")
+    public ResultActions changeRole(String uuid, Set<Role> role) throws Exception {
+        return mockMvc.perform(put("/api/users/" + uuid + "/role")
                 .with(csrf())
                 .header("Authorization", "Bearer " + token)
                 .header("User-Agent", "JUnit-Test")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(UserTestFactory.userJson(name, lastname, email, null, null)));
-    }
-
-    public ResultActions updatePassword(String passwordOld, String password, String confirmPassword) throws Exception {
-        return mockMvc.perform(put("/api/users/me/password")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(UserTestFactory.userJsonPutPass(passwordOld, password, confirmPassword)));
+                .content("""
+                        {
+                        "roles": %s
+                        }""".formatted(setToJson(role))));
     }
 
     public ResultActions deleteCurrentUser() throws Exception {
@@ -93,21 +72,39 @@ public class UserApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    public ResultActions changeRole(String uuid, Set<Role> role) throws Exception {
-        return mockMvc.perform(put("/api/users/" + uuid + "/role")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
+    public ResultActions register(String name, String lastname, String email, String password, String confirmPassword)
+            throws Exception {
+        return mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {
-                        "roles": %s
-                        }""".formatted(setToJson(role))));
+                .content(UserTestFactory.userJson(name, lastname, email, password, confirmPassword)));
     }
 
     private String setToJson(Set<Role> roles) {
         return roles.stream()
                 .map(role -> "\"" + role.name() + "\"")
                 .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    public ResultActions update(String name, String lastname, String email) throws Exception {
+        return mockMvc.perform(put("/api/users")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(UserTestFactory.userJson(name, lastname, email, null, null)));
+    }
+
+    public ResultActions updatePassword(String passwordOld, String password, String confirmPassword) throws Exception {
+        return mockMvc.perform(put("/api/users/me/password")
+                .with(csrf())
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(UserTestFactory.userJsonPutPass(passwordOld, password, confirmPassword)));
+    }
+
+    public UserApiTestClient withToken(String token) {
+        this.token = token;
+        return this;
     }
 }

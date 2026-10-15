@@ -1,5 +1,10 @@
 package com.gastonnicora.trips.integration.auth;
 
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
+import com.gastonnicora.trips.helpers.AuthApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,15 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
-import com.gastonnicora.trips.helpers.AuthApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-
-import jakarta.transaction.Transactional;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -23,12 +22,11 @@ import jakarta.transaction.Transactional;
 @Transactional
 class LogoutTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    private UserDTO user;
     private final String name = "user";
     private final String pass = "goodPassword";
+    @Autowired
+    private MockMvc mockMvc;
+    private UserDTO user;
     private AuthApiTestClient authApi;
     private String email;
     private String token;
@@ -46,16 +44,35 @@ class LogoutTest {
     }
 
     @Test
-    void shouldLogoutSuccessfully() throws Exception {
-        authApi.logout(refreshToken)
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void shouldClearRefreshTokenCookieOnLogout() throws Exception {
         authApi.logout(refreshToken).andExpect(status().isOk())
                 .andExpect(cookie().exists("refreshToken"))
                 .andExpect(cookie().value("refreshToken", org.hamcrest.Matchers.nullValue()));
+    }
+
+    @Test
+    void shouldInvalidateRefreshTokenAfterLogout() throws Exception {
+        authApi
+                .logout(refreshToken)
+                .andExpect(status().isOk());
+        authApi.refresh(refreshToken)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldInvalidateRefreshTokenAfterLogoutInAndroid() throws Exception {
+        LoginResponse login = UserTestFactory.loginWithAndroid(mockMvc, email, pass);
+        authApi.withToken(login.getToken())
+                .logoutAndroid(login.getRefreshToken())
+                .andExpect(status().isOk());
+        authApi.refreshAndroid(login.getRefreshToken())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldLogoutSuccessfully() throws Exception {
+        authApi.logout(refreshToken)
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -73,22 +90,12 @@ class LogoutTest {
     }
 
     @Test
-    void shouldInvalidateRefreshTokenAfterLogoutInAndroid() throws Exception {
-        LoginResponse login = UserTestFactory.loginWithAndroid(mockMvc, email, pass);
-        authApi.withToken(login.getToken())
-                .logoutAndroid(login.getRefreshToken())
-                .andExpect(status().isOk());
-        authApi.refreshAndroid(login.getRefreshToken())
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void shouldInvalidateRefreshTokenAfterLogout() throws Exception {
-        authApi
-                .logout(refreshToken)
-                .andExpect(status().isOk());
-        authApi.refresh(refreshToken)
-                .andExpect(status().isUnauthorized());
+    void shouldReturnUnauthorizedWhenLoggingOutWithRevokedRefreshToken() throws Exception {
+        // Primer logout exitoso
+        authApi.logout(refreshToken).andExpect(status().isOk());
+        // El segundo intento con el mismo token debe fallar porque la sesión ya fue
+        // invalidada en el filtro
+        authApi.logout(refreshToken).andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -96,15 +103,6 @@ class LogoutTest {
         LoginResponse log = UserTestFactory.loginWithAndroid(mockMvc, email, pass);
         this.authApi = authApi.withToken(log.getToken());
         authApi.logoutAndroid("").andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void shouldReturnUnauthorizedWhenLoggingOutWithRevokedRefreshToken() throws Exception {
-        // Primer logout exitoso
-        authApi.logout(refreshToken).andExpect(status().isOk());
-        // El segundo intento con el mismo token debe fallar porque la sesión ya fue
-        // invalidada en el filtro
-        authApi.logout(refreshToken).andExpect(status().isUnauthorized());
     }
 
 }

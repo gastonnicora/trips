@@ -1,17 +1,5 @@
 package com.gastonnicora.trips.controllers.api;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.gastonnicora.trips.dtos.request.auth.LoginRequest;
 import com.gastonnicora.trips.dtos.request.auth.RefreshRequest;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
@@ -24,7 +12,6 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.JwtService;
 import com.gastonnicora.trips.services.RefreshTokenService;
 import com.gastonnicora.trips.utils.UserAgent;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -33,6 +20,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 /**
  * Controlador REST encargado de la autenticación y gestión de sesiones de los
@@ -77,12 +71,35 @@ public class AuthController {
      * @param userRepository        ({@link UserRepository}) repositorio utilizado para consultar usuarios
      */
     public AuthController(AuthenticationManager authenticationManager,
-            JwtService jwtService, RefreshTokenService refreshTokenService,
-            UserRepository userRepository) {
+                          JwtService jwtService, RefreshTokenService refreshTokenService,
+                          UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
         this.userRepository = userRepository;
+    }
+
+    /**
+     * Agrega el refresh token a una cookie HTTP para clientes web.
+     *
+     * <p>
+     * La cookie se configura como {@code HttpOnly}, utiliza el atributo
+     * {@code Secure} según la configuración de la aplicación y establece
+     * {@code SameSite=Lax}.
+     * </p>
+     *
+     * @param response     respuesta HTTP a la que se agrega la cookie
+     * @param refreshToken refresh token que se almacenará en la cookie
+     */
+    private void addRefreshCookie(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(cookieSecure);
+        cookie.setPath("/");
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        cookie.setAttribute("SameSite", "Lax");
+
+        response.addCookie(cookie);
     }
 
     /**
@@ -104,8 +121,10 @@ public class AuthController {
      *                 cliente, como User-Agent e IP
      * @param response respuesta HTTP utilizada para establecer la cookie del
      *                 refresh token en clientes web
+     *
      * @return {@link LoginResponse} con el token de acceso y, para clientes
-     *         Android, el refresh token
+     * Android, el refresh token
+     *
      * @throws UnauthorizedException si las credenciales proporcionadas no son
      *                               válidas
      * @throws NotFoundException     si no se encuentra un usuario habilitado con el
@@ -121,7 +140,7 @@ public class AuthController {
             + "Para clientes web, el refresh token se envía mediante una cookie; "
             + "para clientes Android, se devuelve en el cuerpo de la respuesta.")
     public LoginResponse login(@Valid @RequestBody LoginRequest login, HttpServletRequest request,
-            HttpServletResponse response) {
+                               HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
         User user = userRepository.findByEmailAndEnabledTrue(login.getEmail())
@@ -144,83 +163,6 @@ public class AuthController {
     }
 
     /**
-     * Renueva un token de acceso utilizando un refresh token válido.
-     *
-     * <p>
-     * El refresh token puede recibirse mediante una cookie para clientes web o
-     * mediante el cuerpo de la solicitud para clientes móviles.
-     * </p>
-     *
-     * <p>
-     * Tras validar el refresh token, se genera un nuevo token de acceso y un
-     * nuevo refresh token. El token anterior se revoca y el nuevo refresh token
-     * se devuelve mediante cookie para clientes web o en el cuerpo de la
-     * respuesta para clientes Android.
-     * </p>
-     *
-     * @param cookieToken refresh token recibido mediante cookie; puede ser
-     *                    {@code null}
-     * @param body        solicitud que contiene el refresh token para clientes
-     *                    móviles; puede ser {@code null}
-     * @param request     solicitud HTTP utilizada para obtener información del
-     *                    cliente, como User-Agent e IP
-     * @param response    respuesta HTTP utilizada para establecer la nueva cookie
-     *                    del refresh token
-     * @return {@link RefreshResponse} con el nuevo token de acceso y, para
-     *         clientes Android, el nuevo refresh token
-     * @throws UnauthorizedException si no se proporciona un refresh token
-     *                               válido o si el token no es válido o ha expirado
-     * @throws NotFoundException     si el usuario asociado al refresh token no
-     *                               existe
-     */
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Token renovado correctamente"),
-            @ApiResponse(responseCode = "401", description = "Refresh token inválido o expirado"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @PostMapping("/refresh")
-    @Operation(summary = "Renovar token de acceso", description = "Genera un nuevo token de acceso y un nuevo refresh token utilizando un refresh token válido. "
-            + "El refresh token puede recibirse mediante cookie para clientes web "
-            + "o mediante el cuerpo de la solicitud para clientes móviles.")
-    public RefreshResponse refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
-            @RequestBody(required = false) RefreshRequest body,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-
-        String refreshToken = null;
-
-        if (cookieToken != null) {
-            refreshToken = cookieToken;
-        }
-        if (body != null && body.getRefreshToken() != null) {
-            refreshToken = body.getRefreshToken();
-        }
-        if (refreshToken == null) {
-            throw new UnauthorizedException("Token inválido o expirado");
-        }
-
-        String userAgent = request.getHeader("User-Agent");
-        String ip = request.getRemoteAddr();
-
-        RefreshToken rt = refreshTokenService.verifyToken(refreshToken, ip, userAgent);
-
-        User user = userRepository.findById(rt.getUser().getUuid())
-                .orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
-        String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(), user.getUuid());
-
-        RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user, userAgent, ip,
-                rt.getDevice(), user.getVersion());
-        refreshTokenService.revokeToken(refreshToken);
-
-        if ("web".equals(rt.getDevice())) {
-            addRefreshCookie(response, newRefresh.getRefreshToken());
-        }
-        return new RefreshResponse(
-                newAccess,
-                "android".equals(rt.getDevice()) ? newRefresh.getToken() : null);
-    }
-
-    /**
      * Cierra la sesión asociada a un refresh token.
      *
      * <p>
@@ -234,8 +176,10 @@ public class AuthController {
      *                    móviles; puede ser {@code null}
      * @param response    respuesta HTTP utilizada para eliminar la cookie del
      *                    refresh token
+     *
      * @return {@link ResponseEntity} con estado HTTP 200 si la sesión se cerró
-     *         correctamente
+     * correctamente
+     *
      * @throws UnauthorizedException si no se proporciona un refresh token
      *                               válido
      */
@@ -273,25 +217,81 @@ public class AuthController {
     }
 
     /**
-     * Agrega el refresh token a una cookie HTTP para clientes web.
+     * Renueva un token de acceso utilizando un refresh token válido.
      *
      * <p>
-     * La cookie se configura como {@code HttpOnly}, utiliza el atributo
-     * {@code Secure} según la configuración de la aplicación y establece
-     * {@code SameSite=Lax}.
+     * El refresh token puede recibirse mediante una cookie para clientes web o
+     * mediante el cuerpo de la solicitud para clientes móviles.
      * </p>
      *
-     * @param response     respuesta HTTP a la que se agrega la cookie
-     * @param refreshToken refresh token que se almacenará en la cookie
+     * <p>
+     * Tras validar el refresh token, se genera un nuevo token de acceso y un
+     * nuevo refresh token. El token anterior se revoca y el nuevo refresh token
+     * se devuelve mediante cookie para clientes web o en el cuerpo de la
+     * respuesta para clientes Android.
+     * </p>
+     *
+     * @param cookieToken refresh token recibido mediante cookie; puede ser
+     *                    {@code null}
+     * @param body        solicitud que contiene el refresh token para clientes
+     *                    móviles; puede ser {@code null}
+     * @param request     solicitud HTTP utilizada para obtener información del
+     *                    cliente, como User-Agent e IP
+     * @param response    respuesta HTTP utilizada para establecer la nueva cookie
+     *                    del refresh token
+     *
+     * @return {@link RefreshResponse} con el nuevo token de acceso y, para
+     * clientes Android, el nuevo refresh token
+     *
+     * @throws UnauthorizedException si no se proporciona un refresh token
+     *                               válido o si el token no es válido o ha expirado
+     * @throws NotFoundException     si el usuario asociado al refresh token no
+     *                               existe
      */
-    private void addRefreshCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(cookieSecure);
-        cookie.setPath("/");
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-        cookie.setAttribute("SameSite", "Lax");
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Token renovado correctamente"),
+            @ApiResponse(responseCode = "401", description = "Refresh token inválido o expirado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @PostMapping("/refresh")
+    @Operation(summary = "Renovar token de acceso", description = "Genera un nuevo token de acceso y un nuevo refresh token utilizando un refresh token válido. "
+            + "El refresh token puede recibirse mediante cookie para clientes web "
+            + "o mediante el cuerpo de la solicitud para clientes móviles.")
+    public RefreshResponse refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
+                                   @RequestBody(required = false) RefreshRequest body,
+                                   HttpServletRequest request,
+                                   HttpServletResponse response) {
 
-        response.addCookie(cookie);
+        String refreshToken = null;
+
+        if (cookieToken != null) {
+            refreshToken = cookieToken;
+        }
+        if (body != null && body.getRefreshToken() != null) {
+            refreshToken = body.getRefreshToken();
+        }
+        if (refreshToken == null) {
+            throw new UnauthorizedException("Token inválido o expirado");
+        }
+
+        String userAgent = request.getHeader("User-Agent");
+        String ip = request.getRemoteAddr();
+
+        RefreshToken rt = refreshTokenService.verifyToken(refreshToken, ip, userAgent);
+
+        User user = userRepository.findById(rt.getUser().getUuid())
+                .orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
+        String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(), user.getUuid());
+
+        RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user, userAgent, ip,
+                rt.getDevice(), user.getVersion());
+        refreshTokenService.revokeToken(refreshToken);
+
+        if ("web".equals(rt.getDevice())) {
+            addRefreshCookie(response, newRefresh.getRefreshToken());
+        }
+        return new RefreshResponse(
+                newAccess,
+                "android".equals(rt.getDevice()) ? newRefresh.getToken() : null);
     }
 }

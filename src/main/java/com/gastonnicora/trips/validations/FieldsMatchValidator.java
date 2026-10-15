@@ -1,9 +1,9 @@
 package com.gastonnicora.trips.validations;
 
-import java.lang.reflect.Field;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
+import java.lang.reflect.Field;
 
 /**
  * Validador personalizado que verifica que dos campos de un objeto sean
@@ -29,7 +29,8 @@ public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Ob
     /**
      * Inicializa el validador con los valores definidos en la anotación
      * FieldsMatch.
-     * @param  constraintAnnotation ({@link FieldsMatch}) validación igualdad de campos
+     *
+     * @param constraintAnnotation ({@link FieldsMatch}) validación igualdad de campos
      */
     @Override
     public void initialize(FieldsMatch constraintAnnotation) {
@@ -44,8 +45,9 @@ public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Ob
      * @param value   el objeto que se va a validar
      * @param context contexto de validación para agregar mensajes de error
      *                personalizados
+     *
      * @return {@code true} si los campos son iguales, {@code false} si no lo
-     *         son o si ocurre algún error
+     * son o si ocurre algún error
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {

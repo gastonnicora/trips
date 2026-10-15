@@ -1,26 +1,25 @@
 package com.gastonnicora.trips.unit.user;
 
+import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.exceptions.NotFoundException;
+import com.gastonnicora.trips.mappers.UserMapper;
+import com.gastonnicora.trips.repositories.UserRepository;
+import com.gastonnicora.trips.services.RefreshTokenService;
+import com.gastonnicora.trips.services.UserService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.exceptions.NotFoundException;
-import com.gastonnicora.trips.mappers.UserMapper;
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
-import com.gastonnicora.trips.repositories.UserRepository;
-import com.gastonnicora.trips.services.RefreshTokenService;
-import com.gastonnicora.trips.services.UserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class GetUserTest {

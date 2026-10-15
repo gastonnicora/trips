@@ -1,8 +1,12 @@
 package com.gastonnicora.trips.integration.company;
 
-import java.util.UUID;
-
-import static org.hamcrest.Matchers.hasItems;
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.helpers.CompanyApiTestClient;
+import com.gastonnicora.trips.helpers.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,18 +16,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
+import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.helpers.CompanyApiTestClient;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
-import tools.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -67,6 +64,13 @@ class GetCompaniesByOwnerTest {
     }
 
     @Test
+    void shouldReturnForbiddenWhenUserIsNotAdmin() throws Exception {
+        companyApi.withToken(token);
+        companyApi.getCompaniesByOwner(user.getUuid())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void shouldReturnOkWhenUserHasCompanies() throws Exception {
         companyApi.getCompaniesByOwner(user.getUuid())
                 .andExpect(status().isOk())
@@ -99,12 +103,5 @@ class GetCompaniesByOwnerTest {
         companyApi.withToken(null);
         companyApi.getCompaniesByOwner(user.getUuid())
                 .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void shouldReturnForbiddenWhenUserIsNotAdmin() throws Exception {
-        companyApi.withToken(token);
-        companyApi.getCompaniesByOwner(user.getUuid())
-                .andExpect(status().isForbidden());
     }
 }

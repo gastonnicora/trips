@@ -45,21 +45,21 @@ public class InternalErrorException extends RuntimeException {
     }
 
     /**
-     * Obtiene el código de estado HTTP asociado a la excepción.
-     *
-     * @return Código de estado HTTP 500.
-     */
-    public int getStatus() {
-        return status;
-    }
-
-    /**
      * Obtiene la explicación adicional asociada al error.
      *
      * @return Explicación adicional del error.
      */
     public String getExplain() {
         return explain;
+    }
+
+    /**
+     * Obtiene el código de estado HTTP asociado a la excepción.
+     *
+     * @return Código de estado HTTP 500.
+     */
+    public int getStatus() {
+        return status;
     }
 
 }

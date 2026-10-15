@@ -1,10 +1,9 @@
 package com.gastonnicora.trips.services;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
-
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.exceptions.InternalErrorException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 /**
  * Servicio encargado de obtener direcciones a partir de coordenadas
@@ -29,7 +28,7 @@ public class GeocodingService {
      * HTTP utilizado para realizar las consultas.
      *
      * @throws InternalErrorException Si ocurre un error al inicializar el
-     *         servicio de geocodificación.
+     *                                servicio de geocodificación.
      */
     public GeocodingService() {
         try {
@@ -53,21 +52,23 @@ public class GeocodingService {
      * longitud proporcionadas y devuelve la información obtenida.
      * </p>
      *
-     * @param latitud Latitud de la ubicación.
+     * @param latitud  Latitud de la ubicación.
      * @param longitud Longitud de la ubicación.
+     *
      * @return {@link AddressResponse} con la información de la dirección
-     *         correspondiente.
+     * correspondiente.
+     *
      * @throws InternalErrorException Si ocurre un error al obtener la dirección.
      */
     public AddressResponse obtenerDireccion(double latitud, double longitud) {
         try {
             return this.restClient.get()
                     .uri(uriBuilder -> uriBuilder
-                    .path("/reverse")
-                    .queryParam("format", "jsonv2")
-                    .queryParam("lat", latitud)
-                    .queryParam("lon", longitud)
-                    .build())
+                            .path("/reverse")
+                            .queryParam("format", "jsonv2")
+                            .queryParam("lat", latitud)
+                            .queryParam("lon", longitud)
+                            .build())
                     .retrieve()
                     .body(AddressResponse.class);
 

@@ -1,7 +1,10 @@
 package com.gastonnicora.trips.integration.user;
 
-import java.util.Set;
-
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.helpers.UserApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Set;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.helpers.UserApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-
-import jakarta.transaction.Transactional;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -43,16 +42,14 @@ class GetUsersTest {
     }
 
     @Test
-    void shouldReturnOkWhenUserIsSuperAdmin() throws Exception {
-        int length = 1;// Super admin definido en la app
+    void shouldReturnForbiddenWhenUserIsRegularUser() throws Exception {
+        UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_User", password);
+
+        token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
+        userApi = new UserApiTestClient(mockMvc).withToken(token);
+
         userApi.getUsers()
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data.length()").isNotEmpty())
-                .andExpect(jsonPath("$.total").exists())
-                .andExpect(jsonPath("$.total").value(length))
-                .andExpect(jsonPath("$.data.length()").value(length))
-                .andExpect(jsonPath("$.data[?(@.email == '%s')]".formatted(email)).exists());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -75,14 +72,16 @@ class GetUsersTest {
     }
 
     @Test
-    void shouldReturnForbiddenWhenUserIsRegularUser() throws Exception {
-        UserDTO user = UserTestFactory.registerUser(mockMvc, "Role_User", password);
-
-        token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
-        userApi = new UserApiTestClient(mockMvc).withToken(token);
-
+    void shouldReturnOkWhenUserIsSuperAdmin() throws Exception {
+        int length = 1;// Super admin definido en la app
         userApi.getUsers()
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").isNotEmpty())
+                .andExpect(jsonPath("$.total").exists())
+                .andExpect(jsonPath("$.total").value(length))
+                .andExpect(jsonPath("$.data.length()").value(length))
+                .andExpect(jsonPath("$.data[?(@.email == '%s')]".formatted(email)).exists());
     }
 
     @Test

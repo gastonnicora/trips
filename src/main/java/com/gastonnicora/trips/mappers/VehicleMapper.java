@@ -1,11 +1,10 @@
 package com.gastonnicora.trips.mappers;
 
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
 import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.entities.Vehicle;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Componente encargado de convertir entidades {@link Vehicle} en objetos
@@ -35,6 +34,7 @@ public class VehicleMapper {
      * </p>
      *
      * @param vehicle Entidad de vehículo que se desea convertir.
+     *
      * @return DTO de vehículo correspondiente a la entidad proporcionada.
      */
     public VehicleDTO toDTO(Vehicle vehicle) {
@@ -55,8 +55,9 @@ public class VehicleMapper {
      * {@link VehicleDTO}.
      *
      * @param vehicles Lista de entidades de vehículos que se desea convertir.
+     *
      * @return Lista de DTOs de vehículos correspondientes a las entidades
-     *         proporcionadas.
+     * proporcionadas.
      */
     public List<VehicleDTO> toDTOList(List<Vehicle> vehicles) {
         return vehicles.stream()

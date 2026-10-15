@@ -1,11 +1,10 @@
 package com.gastonnicora.trips.config;
 
+import com.gastonnicora.trips.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.gastonnicora.trips.services.UserService;
 
 /**
  * Configuración encargada de inicializar datos al arrancar la aplicación.
@@ -42,8 +41,10 @@ public class DataInitializer {
      * </p>
      *
      * @param userService ({@link UserService}) servicio utilizado para gestionar usuarios
+     *
      * @return ejecutor encargado de inicializar el usuario {@code SUPER_ADMIN}
-     * @see  UserService#createSuperAdminIfNotExists(String, String)
+     *
+     * @see UserService#createSuperAdminIfNotExists(String, String)
      */
     @Bean
     CommandLineRunner init(UserService userService) {

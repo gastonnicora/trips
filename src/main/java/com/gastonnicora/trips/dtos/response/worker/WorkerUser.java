@@ -1,16 +1,15 @@
 package com.gastonnicora.trips.dtos.response.worker;
 
-import java.util.Set;
-import java.util.UUID;
-
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.enums.RoleCompany;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * DTO utilizado para representar la relación entre un trabajador y una empresa,

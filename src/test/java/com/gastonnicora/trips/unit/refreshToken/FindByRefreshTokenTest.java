@@ -1,27 +1,23 @@
 package com.gastonnicora.trips.unit.refreshToken;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-import java.util.UUID;
-
+import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import com.gastonnicora.trips.repositories.UserRepository;
+import com.gastonnicora.trips.services.RefreshTokenService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gastonnicora.trips.entities.RefreshToken;
-import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
-import com.gastonnicora.trips.repositories.UserRepository;
-import com.gastonnicora.trips.services.RefreshTokenService;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FindByRefreshTokenTest {
@@ -34,6 +30,20 @@ class FindByRefreshTokenTest {
 
     @InjectMocks
     private RefreshTokenService refreshTokenService;
+
+    @Test
+    void shouldReturnEmptyWhenRefreshTokenDoesNotExist() {
+
+        String refresh = UUID.randomUUID().toString();
+
+        when(refreshTokenRepository.findByRefreshToken(any(String.class)))
+                .thenReturn(Optional.empty());
+        Optional<RefreshToken> rt = refreshTokenService.findByRefreshToken(refresh);
+
+        verify(refreshTokenRepository).findByRefreshToken(refresh);
+
+        assertFalse(rt.isPresent());
+    }
 
     @Test
     void shouldReturnTokenWhenRefreshTokenExists() {
@@ -71,20 +81,6 @@ class FindByRefreshTokenTest {
         assertNotNull(rt.get().getRefreshToken());
 
         assertNotNull(rt.get().getExpiryDate());
-    }
-
-    @Test
-    void shouldReturnEmptyWhenRefreshTokenDoesNotExist() {
-
-        String refresh = UUID.randomUUID().toString();
-
-        when(refreshTokenRepository.findByRefreshToken(any(String.class)))
-                .thenReturn(Optional.empty());
-        Optional<RefreshToken> rt = refreshTokenService.findByRefreshToken(refresh);
-
-        verify(refreshTokenRepository).findByRefreshToken(refresh);
-
-        assertFalse(rt.isPresent());
     }
 
 }

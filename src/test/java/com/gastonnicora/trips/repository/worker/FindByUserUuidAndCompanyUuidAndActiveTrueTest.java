@@ -1,17 +1,5 @@
 package com.gastonnicora.trips.repository.worker;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
-import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
-import org.springframework.test.context.ActiveProfiles;
-
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.entities.Worker;
@@ -19,6 +7,17 @@ import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.repositories.WorkerRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -51,9 +50,9 @@ class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
                 user.getUuid(), company.getUuid());
 
         assertTrue(found.isPresent());
-        assertTrue(found.get().getUuid().equals(worker.getUuid()));
-        assertTrue(found.get().getUser().getUuid().equals(user.getUuid()));
-        assertTrue(found.get().getCompany().getUuid().equals(company.getUuid()));
+        assertEquals(found.get().getUuid(), worker.getUuid());
+        assertEquals(found.get().getUser().getUuid(), user.getUuid());
+        assertEquals(found.get().getCompany().getUuid(), company.getUuid());
         assertTrue(found.get().isActive());
     }
 

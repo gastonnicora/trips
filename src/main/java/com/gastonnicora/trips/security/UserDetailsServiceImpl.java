@@ -1,15 +1,11 @@
 package com.gastonnicora.trips.security;
 
-import com.gastonnicora.trips.mappers.CompanyMapper;
-import com.gastonnicora.trips.repositories.CompanyRepository;
-import com.gastonnicora.trips.services.GeocodingService;
+import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.repositories.UserRepository;
 
 /**
  * Implementación de {@link UserDetailsService} de Spring Security.
@@ -43,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * </p>
      *
      * @param userRepository repositorio ({@link UserRepository}) utilizado para consultar los usuarios
-     *                        por correo electrónico y estado de habilitación.
+     *                       por correo electrónico y estado de habilitación.
      */
     public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -59,7 +55,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * </p>
      *
      * @param username Correo electrónico del usuario que se desea autenticar.
+     *
      * @return {@link UserDetails} con la información del usuario encontrado.
+     *
      * @throws UsernameNotFoundException Si no existe un usuario habilitado con el
      *                                   correo electrónico indicado.
      * @see UserRepository#findByEmailAndEnabledTrue(String)

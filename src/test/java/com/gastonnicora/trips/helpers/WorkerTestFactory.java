@@ -1,16 +1,15 @@
 package com.gastonnicora.trips.helpers;
 
+import com.gastonnicora.trips.dtos.entities.WorkerDTO;
+import com.gastonnicora.trips.enums.RoleCompany;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import tools.jackson.databind.ObjectMapper;
+
 import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.WorkerDTO;
-import com.gastonnicora.trips.enums.RoleCompany;
-
-import tools.jackson.databind.ObjectMapper;
 
 public class WorkerTestFactory {
 

@@ -1,22 +1,20 @@
 package com.gastonnicora.trips.security;
 
-import java.io.IOException;
-import java.util.Optional;
-
+import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.gastonnicora.trips.entities.RefreshToken;
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
-
-import io.jsonwebtoken.JwtException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Filtro de autenticación JWT para Spring Security.
@@ -45,8 +43,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final RefreshTokenRepository refreshTokenRepository;
 
     public JwtAuthenticationFilter(JwtService jwtService,
-            UserDetailsServiceImpl userDetailsService,
-            RefreshTokenRepository refreshTokenRepository) {
+                                   UserDetailsServiceImpl userDetailsService,
+                                   RefreshTokenRepository refreshTokenRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.refreshTokenRepository = refreshTokenRepository;
@@ -63,17 +61,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * siguiente filtro sin establecer autenticación.
      * </p>
      *
-     * @param request Solicitud HTTP que se está procesando.
-     * @param response Respuesta HTTP asociada a la solicitud.
+     * @param request     Solicitud HTTP que se está procesando.
+     * @param response    Respuesta HTTP asociada a la solicitud.
      * @param filterChain Cadena de filtros que continúa el procesamiento de la solicitud.
+     *
      * @throws ServletException Si ocurre un error durante el procesamiento del filtro.
-     * @throws IOException Si ocurre un error de entrada o salida durante el procesamiento
-     *         de la solicitud.
+     * @throws IOException      Si ocurre un error de entrada o salida durante el procesamiento
+     *                          de la solicitud.
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");

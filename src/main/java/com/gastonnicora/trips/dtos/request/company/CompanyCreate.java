@@ -1,13 +1,7 @@
 package com.gastonnicora.trips.dtos.request.company;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -107,10 +101,10 @@ public class CompanyCreate {
     /**
      * Constructor completo.
      *
-     * @param name Nombre de la empresa
-     * @param email Email de la empresa
-     * @param phone Teléfono de la empresa
-     * @param latitude Latitud de la dirección de la empresa
+     * @param name      Nombre de la empresa
+     * @param email     Email de la empresa
+     * @param phone     Teléfono de la empresa
+     * @param latitude  Latitud de la dirección de la empresa
      * @param longitude Longitud de la dirección de la empresa
      */
     public CompanyCreate(String name, String email, String phone, Double latitude, Double longitude) {

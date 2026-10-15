@@ -1,18 +1,18 @@
 package com.gastonnicora.trips.unit.refreshToken;
 
-import java.time.Instant;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import com.gastonnicora.trips.services.TokenCleanupService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
-import com.gastonnicora.trips.services.TokenCleanupService;
+import java.time.Instant;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TokenCleanupServiceTest {

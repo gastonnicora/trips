@@ -1,24 +1,17 @@
 package com.gastonnicora.trips.entities;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UuidGenerator;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 /**
  * Entidad que representa un token de refresco asociado a una sesión de usuario.
@@ -136,12 +129,12 @@ public class RefreshToken {
      * {@code "web"} como valor predeterminado.
      * </p>
      *
-     * @param token Token JWT de acceso asociado.
-     * @param user Usuario asociado al token de refresco.
-     * @param ip Dirección IP desde la que se crea el token.
+     * @param token     Token JWT de acceso asociado.
+     * @param user      Usuario asociado al token de refresco.
+     * @param ip        Dirección IP desde la que se crea el token.
      * @param userAgent Información del cliente utilizado para crear el token.
-     * @param device Tipo de dispositivo desde el que se crea el token.
-     * @param version Versión inicial del token.
+     * @param device    Tipo de dispositivo desde el que se crea el token.
+     * @param version   Versión inicial del token.
      */
     public RefreshToken(String token, User user, String ip, String userAgent, String device, int version) {
         this.token = token;

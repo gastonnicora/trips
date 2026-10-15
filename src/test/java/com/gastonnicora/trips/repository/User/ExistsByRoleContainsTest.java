@@ -1,18 +1,18 @@
 package com.gastonnicora.trips.repository.user;
 
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.repositories.UserRepository;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -23,21 +23,10 @@ class ExistsByRoleContainsTest {
     private UserRepository userRepository;
 
     @Test
-    void shouldReturnTrueWhenUserHasRole() {
-        User user = new User(
-                "username",
-                "latName",
-                "test@test.com",
-                "password",
-                Set.of(Role.USER));
+    void shouldReturnFalseWhenNoUserHasRole() {
+        boolean found = userRepository.existsByRoleContains(Role.ADMIN);
 
-        user.setEnabled(true);
-
-        userRepository.save(user);
-
-        boolean found = userRepository.existsByRoleContains(Role.USER);
-
-        assertTrue(found);
+        assertFalse(found);
 
     }
 
@@ -61,10 +50,21 @@ class ExistsByRoleContainsTest {
     }
 
     @Test
-    void shouldReturnFalseWhenNoUserHasRole() {
-        boolean found = userRepository.existsByRoleContains(Role.ADMIN);
+    void shouldReturnTrueWhenUserHasRole() {
+        User user = new User(
+                "username",
+                "latName",
+                "test@test.com",
+                "password",
+                Set.of(Role.USER));
 
-        assertFalse(found);
+        user.setEnabled(true);
+
+        userRepository.save(user);
+
+        boolean found = userRepository.existsByRoleContains(Role.USER);
+
+        assertTrue(found);
 
     }
 }

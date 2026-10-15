@@ -1,5 +1,9 @@
 package com.gastonnicora.trips.integration.user;
 
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.helpers.UserApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,14 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.helpers.UserApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-
-import jakarta.transaction.Transactional;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -22,14 +21,13 @@ import jakarta.transaction.Transactional;
 @Transactional
 class GetMeTest {
 
+    private final String name = "Juan";
+    private final String password = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
-
     private UserDTO user;
     private String token;
     private UserApiTestClient userApi;
-    private final String name = "Juan";
-    private final String password = "goodPassword";
 
     @BeforeEach
     void setup() throws Exception {
@@ -40,6 +38,13 @@ class GetMeTest {
     }
 
     @Test
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+        userApi.withToken("");
+        userApi.getMe()
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void shouldReturnUserSuccessfully() throws Exception {
         userApi.getMe()
                 .andExpect(status().isOk())
@@ -47,13 +52,6 @@ class GetMeTest {
                 .andExpect(jsonPath("$.name").value(name))
                 .andExpect(jsonPath("$.uuid").exists())
                 .andExpect(jsonPath("$.enabled").value(true));
-    }
-
-    @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-        userApi.withToken("");
-        userApi.getMe()
-                .andExpect(status().isUnauthorized());
     }
 
 }

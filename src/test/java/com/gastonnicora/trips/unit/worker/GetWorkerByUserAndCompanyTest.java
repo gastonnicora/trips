@@ -1,21 +1,5 @@
 package com.gastonnicora.trips.unit.worker;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
@@ -25,6 +9,20 @@ import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.WorkerMapper;
 import com.gastonnicora.trips.repositories.WorkerRepository;
 import com.gastonnicora.trips.services.WorkerService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GetWorkerByUserAndCompanyTest {
@@ -66,9 +64,9 @@ class GetWorkerByUserAndCompanyTest {
 
         WorkerDTO result
                 = workerService.getWorkerByUserAndCompany(
-                        userUuid,
-                        companyUuid
-                );
+                userUuid,
+                companyUuid
+        );
 
         assertEquals(expectedWorkerDTO, result);
 

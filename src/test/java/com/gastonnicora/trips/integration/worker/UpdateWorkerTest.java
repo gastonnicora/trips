@@ -1,8 +1,13 @@
 package com.gastonnicora.trips.integration.worker;
 
-import java.util.Set;
-import java.util.UUID;
-
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
+import com.gastonnicora.trips.enums.RoleCompany;
+import com.gastonnicora.trips.helpers.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.helpers.WorkerApiTestClient;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +16,13 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.Set;
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
-import com.gastonnicora.trips.enums.RoleCompany;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.helpers.WorkerApiTestClient;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
-import tools.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -46,34 +45,6 @@ class UpdateWorkerTest {
     private UserDTO worker;
 
     private UUID companyUuid;
-
-    @BeforeEach
-    void setup() throws Exception {
-        owner = UserTestFactory.registerUser(
-                mockMvc,
-                "owner",
-                "goodPassword"
-        );
-
-        LoginResponse login = UserTestFactory.login(
-                mockMvc,
-                owner.getEmail(),
-                "goodPassword"
-        );
-
-        workerApi = new WorkerApiTestClient(
-                mockMvc,
-                new ObjectMapper()
-        ).withToken(login.getToken());
-
-        companyUuid = new CompanyTestFactory(mockMvc, objectMapper, login.getToken(), geocodingService).createCompany().getUuid();
-
-        worker = UserTestFactory.registerUser(
-                mockMvc,
-                "worker",
-                "goodPassword"
-        );
-    }
 
     private UserDTO createWorkerWithRole(RoleCompany role) throws Exception {
         UserDTO newWorker = UserTestFactory.registerUser(
@@ -106,31 +77,36 @@ class UpdateWorkerTest {
         ).withToken(login.getToken());
     }
 
-    @Test
-    void shouldUpdateWorkerRolesSuccessfullyAsOwner() throws Exception {
-        workerApi
-                .createWorker(
-                        companyUuid,
-                        worker.getUuid(),
-                        Set.of(RoleCompany.DRIVER)
-                )
-                .andExpect(status().isOk());
+    @BeforeEach
+    void setup() throws Exception {
+        owner = UserTestFactory.registerUser(
+                mockMvc,
+                "owner",
+                "goodPassword"
+        );
 
-        workerApi
-                .updateWorkerRoles(
-                        companyUuid,
-                        worker.getUuid(),
-                        Set.of(RoleCompany.ADMIN)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roles").isArray())
-                .andExpect(jsonPath("$.roles[0]").value("ADMIN"));
+        LoginResponse login = UserTestFactory.login(
+                mockMvc,
+                owner.getEmail(),
+                "goodPassword"
+        );
+
+        workerApi = new WorkerApiTestClient(
+                mockMvc,
+                new ObjectMapper()
+        ).withToken(login.getToken());
+
+        companyUuid = new CompanyTestFactory(mockMvc, objectMapper, login.getToken(), geocodingService).createCompany().getUuid();
+
+        worker = UserTestFactory.registerUser(
+                mockMvc,
+                "worker",
+                "goodPassword"
+        );
     }
 
     @Test
-    void shouldUpdateWorkerRolesSuccessfullyAsAdmin() throws Exception {
-        UserDTO admin = createWorkerWithRole(RoleCompany.ADMIN);
-
+    void shouldReturnBadRequestWhenAssigningOwnerRole() throws Exception {
         workerApi
                 .createWorker(
                         companyUuid,
@@ -139,23 +115,17 @@ class UpdateWorkerTest {
                 )
                 .andExpect(status().isOk());
 
-        WorkerApiTestClient adminApi = loginAs(admin);
-
-        adminApi
+        workerApi
                 .updateWorkerRoles(
                         companyUuid,
                         worker.getUuid(),
-                        Set.of(RoleCompany.SELLER)
+                        Set.of(RoleCompany.OWNER)
                 )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roles").isArray())
-                .andExpect(jsonPath("$.roles[0]").value("SELLER"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void shouldUpdateWorkerRolesSuccessfullyAsHrManager() throws Exception {
-        UserDTO hrManager = createWorkerWithRole(RoleCompany.HR_MANAGER);
-
+    void shouldReturnBadRequestWhenRolesAreEmpty() throws Exception {
         workerApi
                 .createWorker(
                         companyUuid,
@@ -164,17 +134,24 @@ class UpdateWorkerTest {
                 )
                 .andExpect(status().isOk());
 
-        WorkerApiTestClient hrManagerApi = loginAs(hrManager);
-
-        hrManagerApi
+        workerApi
                 .updateWorkerRoles(
                         companyUuid,
                         worker.getUuid(),
-                        Set.of(RoleCompany.SELLER)
+                        Set.of()
                 )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roles").isArray())
-                .andExpect(jsonPath("$.roles[0]").value("SELLER"));
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
+        workerApi
+                .updateWorkerRoles(
+                        UUID.randomUUID(),
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER)
+                )
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -251,6 +228,17 @@ class UpdateWorkerTest {
     }
 
     @Test
+    void shouldReturnNotFoundWhenWorkerDoesNotExist() throws Exception {
+        workerApi
+                .updateWorkerRoles(
+                        companyUuid,
+                        UUID.randomUUID(),
+                        Set.of(RoleCompany.DRIVER)
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         WorkerApiTestClient unauthorizedApi = new WorkerApiTestClient(
                 mockMvc,
@@ -267,7 +255,57 @@ class UpdateWorkerTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenRolesAreEmpty() throws Exception {
+    void shouldUpdateWorkerRolesSuccessfullyAsAdmin() throws Exception {
+        UserDTO admin = createWorkerWithRole(RoleCompany.ADMIN);
+
+        workerApi
+                .createWorker(
+                        companyUuid,
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER)
+                )
+                .andExpect(status().isOk());
+
+        WorkerApiTestClient adminApi = loginAs(admin);
+
+        adminApi
+                .updateWorkerRoles(
+                        companyUuid,
+                        worker.getUuid(),
+                        Set.of(RoleCompany.SELLER)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles[0]").value("SELLER"));
+    }
+
+    @Test
+    void shouldUpdateWorkerRolesSuccessfullyAsHrManager() throws Exception {
+        UserDTO hrManager = createWorkerWithRole(RoleCompany.HR_MANAGER);
+
+        workerApi
+                .createWorker(
+                        companyUuid,
+                        worker.getUuid(),
+                        Set.of(RoleCompany.DRIVER)
+                )
+                .andExpect(status().isOk());
+
+        WorkerApiTestClient hrManagerApi = loginAs(hrManager);
+
+        hrManagerApi
+                .updateWorkerRoles(
+                        companyUuid,
+                        worker.getUuid(),
+                        Set.of(RoleCompany.SELLER)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles[0]").value("SELLER"));
+    }
+
+    @Test
+    void shouldUpdateWorkerRolesSuccessfullyAsOwner() throws Exception {
         workerApi
                 .createWorker(
                         companyUuid,
@@ -280,49 +318,10 @@ class UpdateWorkerTest {
                 .updateWorkerRoles(
                         companyUuid,
                         worker.getUuid(),
-                        Set.of()
+                        Set.of(RoleCompany.ADMIN)
                 )
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenAssigningOwnerRole() throws Exception {
-        workerApi
-                .createWorker(
-                        companyUuid,
-                        worker.getUuid(),
-                        Set.of(RoleCompany.DRIVER)
-                )
-                .andExpect(status().isOk());
-
-        workerApi
-                .updateWorkerRoles(
-                        companyUuid,
-                        worker.getUuid(),
-                        Set.of(RoleCompany.OWNER)
-                )
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldReturnNotFoundWhenWorkerDoesNotExist() throws Exception {
-        workerApi
-                .updateWorkerRoles(
-                        companyUuid,
-                        UUID.randomUUID(),
-                        Set.of(RoleCompany.DRIVER)
-                )
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
-        workerApi
-                .updateWorkerRoles(
-                        UUID.randomUUID(),
-                        worker.getUuid(),
-                        Set.of(RoleCompany.DRIVER)
-                )
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roles").isArray())
+                .andExpect(jsonPath("$.roles[0]").value("ADMIN"));
     }
 }

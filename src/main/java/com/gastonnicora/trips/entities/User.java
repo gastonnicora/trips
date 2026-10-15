@@ -1,30 +1,16 @@
 package com.gastonnicora.trips.entities;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
+import com.gastonnicora.trips.enums.Role;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
-import com.gastonnicora.trips.enums.Role;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Entidad que representa un usuario en el sistema.
@@ -155,9 +141,9 @@ public class User {
      * Asigna automáticamente el rol {@link Role#USER}.
      * </p>
      *
-     * @param name Nombre del usuario.
+     * @param name     Nombre del usuario.
      * @param lastname Apellido del usuario.
-     * @param email Dirección de correo electrónico del usuario.
+     * @param email    Dirección de correo electrónico del usuario.
      * @param password Contraseña cifrada del usuario.
      */
     public User(String name, String lastname, String email, String password) {
@@ -173,11 +159,11 @@ public class User {
      * {@link Role#USER}.
      * </p>
      *
-     * @param name Nombre del usuario.
+     * @param name     Nombre del usuario.
      * @param lastname Apellido del usuario.
-     * @param email Dirección de correo electrónico del usuario.
+     * @param email    Dirección de correo electrónico del usuario.
      * @param password Contraseña cifrada del usuario.
-     * @param role Conjunto de roles a asignar al usuario.
+     * @param role     Conjunto de roles a asignar al usuario.
      */
     public User(String name, String lastname, String email, String password, Set<Role> role) {
         this.name = name;
@@ -207,11 +193,19 @@ public class User {
     }
 
     /**
+     * Incrementa en uno la versión actual del usuario.
+     */
+    public void addVersion() {
+        this.version++;
+    }
+
+    /**
      * Verifica si el usuario tiene asignado un rol específico.
      *
      * @param role Rol a verificar.
+     *
      * @return {@code true} si el usuario tiene asignado el rol; {@code false}
-     *         en caso contrario.
+     * en caso contrario.
      */
     public boolean hasRole(Role role) {
         return this.role.contains(role);
@@ -224,13 +218,6 @@ public class User {
      */
     public void removeRole(Role role) {
         this.role.remove(role);
-    }
-
-    /**
-     * Incrementa en uno la versión actual del usuario.
-     */
-    public void addVersion() {
-        this.version++;
     }
 
 }

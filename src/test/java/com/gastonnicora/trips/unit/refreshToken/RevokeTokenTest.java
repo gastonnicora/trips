@@ -1,25 +1,23 @@
 package com.gastonnicora.trips.unit.refreshToken;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.gastonnicora.trips.entities.RefreshToken;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.RefreshTokenService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RevokeTokenTest {
@@ -31,6 +29,20 @@ class RevokeTokenTest {
 
     @InjectMocks
     private RefreshTokenService refreshTokenService;
+
+    @Test
+    void shouldDoNothingWhenTokenDoesNotExist() {
+
+        when(refreshTokenRepository.findByRefreshToken(any(String.class)))
+                .thenReturn(Optional.empty());
+
+        refreshTokenService.revokeToken("token");
+
+        verify(refreshTokenRepository).findByRefreshToken("token");
+
+        verify(refreshTokenRepository, never()).save(any());
+
+    }
 
     @Test
     void shouldRevokeTokenWhenItExists() {
@@ -54,19 +66,5 @@ class RevokeTokenTest {
         RefreshToken saved = captor.getValue();
         assertEquals(1, saved.getVersion());
         assertFalse(saved.isActive());
-    }
-
-    @Test
-    void shouldDoNothingWhenTokenDoesNotExist() {
-
-        when(refreshTokenRepository.findByRefreshToken(any(String.class)))
-                .thenReturn(Optional.empty());
-
-        refreshTokenService.revokeToken("token");
-
-        verify(refreshTokenRepository).findByRefreshToken("token");
-
-        verify(refreshTokenRepository, never()).save(any());
-
     }
 }

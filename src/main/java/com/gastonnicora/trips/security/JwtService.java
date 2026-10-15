@@ -1,19 +1,17 @@
 package com.gastonnicora.trips.security;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.UUID;
-
-import javax.crypto.SecretKey;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Servicio encargado de la generación, validación y extracción de información
@@ -42,12 +40,37 @@ public class JwtService {
     private SecretKey key;
 
     /**
-     * Inicializa la clave utilizada para firmar y validar los tokens JWT a partir
-     * de la propiedad {@code jwt.secret}.
+     * Extrae el identificador único del usuario almacenado en el token.
+     *
+     * @param token Token JWT.
+     *
+     * @return Identificador único del usuario.
      */
-    @PostConstruct
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    public UUID extractUUID(String token) {
+        return UUID.fromString(parseClaims(token).get("userId", String.class));
+    }
+
+    /**
+     * Extrae el correo electrónico del usuario almacenado como subject del
+     * token.
+     *
+     * @param token Token JWT.
+     *
+     * @return Correo electrónico del usuario.
+     */
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
+    }
+
+    /**
+     * Extrae la versión del token.
+     *
+     * @param token Token JWT.
+     *
+     * @return Versión del token.
+     */
+    public Integer extractVersion(String token) {
+        return parseClaims(token).get("ver", Integer.class);
     }
 
     /**
@@ -62,6 +85,7 @@ public class JwtService {
      * @param email   Correo electrónico del usuario.
      * @param version Versión del token.
      * @param uuid    Identificador único del usuario.
+     *
      * @return Token JWT generado.
      */
     public String generateToken(String email, int version, UUID uuid) {
@@ -77,49 +101,12 @@ public class JwtService {
     }
 
     /**
-     * Parsea un token JWT y obtiene sus claims.
-     *
-     * @param token Token JWT que se desea procesar.
-     * @return Claims contenidos en el token.
-     * @throws JwtException Si el token no es válido.
+     * Inicializa la clave utilizada para firmar y validar los tokens JWT a partir
+     * de la propiedad {@code jwt.secret}.
      */
-    private Claims parseClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
-    /**
-     * Extrae el correo electrónico del usuario almacenado como subject del
-     * token.
-     *
-     * @param token Token JWT.
-     * @return Correo electrónico del usuario.
-     */
-    public String extractUsername(String token) {
-        return parseClaims(token).getSubject();
-    }
-
-    /**
-     * Extrae la versión del token.
-     *
-     * @param token Token JWT.
-     * @return Versión del token.
-     */
-    public Integer extractVersion(String token) {
-        return parseClaims(token).get("ver", Integer.class);
-    }
-
-    /**
-     * Extrae el identificador único del usuario almacenado en el token.
-     *
-     * @param token Token JWT.
-     * @return Identificador único del usuario.
-     */
-    public UUID extractUUID(String token) {
-        return UUID.fromString(parseClaims(token).get("userId", String.class));
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -130,6 +117,7 @@ public class JwtService {
      * </p>
      *
      * @param token Token JWT que se desea validar.
+     *
      * @return {@code true} si el token es válido; {@code false} en caso contrario.
      */
     public boolean isValid(String token) {
@@ -139,5 +127,22 @@ public class JwtService {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    /**
+     * Parsea un token JWT y obtiene sus claims.
+     *
+     * @param token Token JWT que se desea procesar.
+     *
+     * @return Claims contenidos en el token.
+     *
+     * @throws JwtException Si el token no es válido.
+     */
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

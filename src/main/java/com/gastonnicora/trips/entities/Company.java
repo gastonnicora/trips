@@ -1,20 +1,15 @@
 package com.gastonnicora.trips.entities;
 
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 /**
  * Entidad que representa una empresa de transporte.
@@ -123,15 +118,15 @@ public class Company {
      * de auditoría son gestionados por la persistencia.
      * </p>
      *
-     * @param name Nombre de la empresa.
-     * @param address Dirección de la empresa.
-     * @param latitude Latitud de la empresa.
+     * @param name      Nombre de la empresa.
+     * @param address   Dirección de la empresa.
+     * @param latitude  Latitud de la empresa.
      * @param longitude Longitud de la empresa.
-     * @param email Dirección de correo electrónico de la empresa.
-     * @param phone Número de teléfono de la empresa.
+     * @param email     Dirección de correo electrónico de la empresa.
+     * @param phone     Número de teléfono de la empresa.
      */
     public Company(String name, String address, double latitude, double longitude, String email,
-            String phone) {
+                   String phone) {
         this.name = name;
         this.address = address;
         this.email = email;

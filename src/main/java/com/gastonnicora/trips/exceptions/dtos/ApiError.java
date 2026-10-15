@@ -1,14 +1,14 @@
 package com.gastonnicora.trips.exceptions.dtos;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Clase base que representa un error de la API.
@@ -80,7 +80,7 @@ public abstract class ApiError {
      * Inicializa automáticamente {@code timestamp} con la fecha y hora actual.
      * </p>
      *
-     * @param status Código de estado HTTP asociado al error.
+     * @param status  Código de estado HTTP asociado al error.
      * @param message Mensaje descriptivo asociado al error.
      */
     public ApiError(int status, String message) {

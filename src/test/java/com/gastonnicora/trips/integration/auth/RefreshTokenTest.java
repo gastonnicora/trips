@@ -1,7 +1,11 @@
 package com.gastonnicora.trips.integration.auth;
 
-import static org.hamcrest.Matchers.notNullValue;
-
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
+import com.gastonnicora.trips.helpers.AuthApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import jakarta.servlet.http.Cookie;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,18 +14,10 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
-import com.gastonnicora.trips.helpers.AuthApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.transaction.Transactional;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -29,12 +25,11 @@ import jakarta.transaction.Transactional;
 @Transactional
 class RefreshTokenTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    private UserDTO user;
     private final String name = "user";
     private final String pass = "goodPassword";
+    @Autowired
+    private MockMvc mockMvc;
+    private UserDTO user;
     private AuthApiTestClient authApi;
     private String email;
     private String token;
@@ -71,14 +66,30 @@ class RefreshTokenTest {
     }
 
     @Test
-    void shouldReturnUnauthorizedWhenRefreshTokenIsMissing() throws Exception {
-        authApi.refresh("")
+    void shouldReturnUnauthorizedWhenCurrentIpDiffersFromOriginalLogin() throws Exception {
+
+        mockMvc.perform(post("/api/auth/refresh")
+                        .with(request -> {
+                            request.setRemoteAddr("1.1.1.1");
+                            return request;
+                        })
+                        .header("User-Agent", "JUnit-Test")
+                        .content("""
+                                    { "refreshToken": "%s" }
+                                """.formatted(refreshToken))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldReturnUnauthorizedWhenRefreshTokenIsInvalid() throws Exception {
         authApi.refresh("Wrong-Refresh-Token")
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenRefreshTokenIsMissing() throws Exception {
+        authApi.refresh("")
                 .andExpect(status().isUnauthorized());
     }
 
@@ -92,45 +103,29 @@ class RefreshTokenTest {
     }
 
     @Test
-    void shouldUseBodyRefreshTokenWhenCookieAlsoExists() throws Exception {
-
-        mockMvc.perform(post("/api/auth/refresh")
-                .cookie(new Cookie("refreshToken", "old-cookie-token"))
-                .header("User-Agent", "JUnit-Test")
-                .content("""
-                            { "refreshToken": "%s" }
-                        """.formatted(refreshToken))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists());
-    }
-
-    @Test
     void shouldReturnUnauthorizedWhenUserAgentDiffersFromOriginalLogin() throws Exception {
 
         mockMvc.perform(post("/api/auth/refresh")
-                .header("User-Agent", "totally-different-browser")
-                .content("""
-                            { "refreshToken": "%s" }
-                        """.formatted(refreshToken))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header("User-Agent", "totally-different-browser")
+                        .content("""
+                                    { "refreshToken": "%s" }
+                                """.formatted(refreshToken))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturnUnauthorizedWhenCurrentIpDiffersFromOriginalLogin() throws Exception {
+    void shouldUseBodyRefreshTokenWhenCookieAlsoExists() throws Exception {
 
         mockMvc.perform(post("/api/auth/refresh")
-                .with(request -> {
-                    request.setRemoteAddr("1.1.1.1");
-                    return request;
-                })
-                .header("User-Agent", "JUnit-Test")
-                .content("""
-                            { "refreshToken": "%s" }
-                        """.formatted(refreshToken))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                        .cookie(new Cookie("refreshToken", "old-cookie-token"))
+                        .header("User-Agent", "JUnit-Test")
+                        .content("""
+                                    { "refreshToken": "%s" }
+                                """.formatted(refreshToken))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists());
     }
 
 }

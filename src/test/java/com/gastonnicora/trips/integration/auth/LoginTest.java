@@ -1,9 +1,9 @@
 package com.gastonnicora.trips.integration.auth;
 
-import static org.hamcrest.Matchers.notNullValue;
-
-import java.util.stream.Stream;
-
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.helpers.AuthApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,15 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.helpers.AuthApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
+import java.util.stream.Stream;
 
-import jakarta.transaction.Transactional;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -30,77 +26,13 @@ import jakarta.transaction.Transactional;
 @Transactional
 class LoginTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    private UserDTO user;
     private final String name = "user";
     private final String pass = "goodPassword";
+    @Autowired
+    private MockMvc mockMvc;
+    private UserDTO user;
     private AuthApiTestClient authApi;
     private String email;
-
-    @BeforeEach
-    void setup() throws Exception {
-        user = UserTestFactory.registerUser(mockMvc, name, pass);
-        this.authApi = new AuthApiTestClient(mockMvc);
-        email = user.getEmail();
-    }
-    @Test
-    void shouldLoginSuccessfully() throws Exception {
-        authApi.login(email, pass)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists());
-    }
-    @Test
-    void shouldLoginSuccessfullyWhenEmailHaveSpace() throws Exception {
-        authApi.login(email + " ", pass)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists());
-    }
-    @ParameterizedTest
-    @MethodSource("invalid")
-    void shouldReturnBadRequestWhenValidationFails(
-            String email,
-            String password,
-            String expectedField) throws Exception {
-        authApi.login(email, password)
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors").exists())
-                .andExpect(
-                        jsonPath("$.errors.%s".formatted(expectedField))
-                                .value(notNullValue()));
-    }
-    @ParameterizedTest
-    @MethodSource("invalidCredentials")
-    void shouldReturnUnauthorizedWhenCredentialsAreInvalid(
-            String email,
-            String password) throws Exception {
-        authApi.login(email, password)
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").exists())
-                .andExpect(
-                        jsonPath("$.message")
-                                .value(notNullValue()));
-    }
-    @Test
-    void shouldSetRefreshTokenCookieOnWebLogin() throws Exception {
-        authApi.login(email, pass)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.refreshToken").doesNotExist())
-                .andExpect(cookie().exists("refreshToken"))
-                .andExpect(cookie().value("refreshToken", notNullValue()));
-
-    }
-    @Test
-    void shouldReturnRefreshTokenInBodyForAndroidClients() throws Exception {
-        authApi.loginWithAndroid(email, pass)
-                .andExpect(status().isOk())
-                .andExpect(cookie().doesNotExist("refreshToken"))
-                .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.refreshToken").exists())
-                .andExpect(jsonPath("$.refreshToken").isNotEmpty());
-    }
 
     static Stream<Arguments> invalid() {
         return Stream.of(
@@ -117,6 +49,75 @@ class LoginTest {
         return Stream.of(
                 Arguments.of("user@test.com", "wrongPassword"),
                 Arguments.of("nonexistent@test.com", "goodPassword"));
+    }
+
+    @BeforeEach
+    void setup() throws Exception {
+        user = UserTestFactory.registerUser(mockMvc, name, pass);
+        this.authApi = new AuthApiTestClient(mockMvc);
+        email = user.getEmail();
+    }
+
+    @Test
+    void shouldLoginSuccessfully() throws Exception {
+        authApi.login(email, pass)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists());
+    }
+
+    @Test
+    void shouldLoginSuccessfullyWhenEmailHaveSpace() throws Exception {
+        authApi.login(email + " ", pass)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists());
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalid")
+    void shouldReturnBadRequestWhenValidationFails(
+            String email,
+            String password,
+            String expectedField) throws Exception {
+        authApi.login(email, password)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").exists())
+                .andExpect(
+                        jsonPath("$.errors.%s".formatted(expectedField))
+                                .value(notNullValue()));
+    }
+
+    @Test
+    void shouldReturnRefreshTokenInBodyForAndroidClients() throws Exception {
+        authApi.loginWithAndroid(email, pass)
+                .andExpect(status().isOk())
+                .andExpect(cookie().doesNotExist("refreshToken"))
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$.refreshToken").exists())
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty());
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidCredentials")
+    void shouldReturnUnauthorizedWhenCredentialsAreInvalid(
+            String email,
+            String password) throws Exception {
+        authApi.login(email, password)
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(
+                        jsonPath("$.message")
+                                .value(notNullValue()));
+    }
+
+    @Test
+    void shouldSetRefreshTokenCookieOnWebLogin() throws Exception {
+        authApi.login(email, pass)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$.refreshToken").doesNotExist())
+                .andExpect(cookie().exists("refreshToken"))
+                .andExpect(cookie().value("refreshToken", notNullValue()));
+
     }
 
 }

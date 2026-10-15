@@ -1,13 +1,9 @@
 package com.gastonnicora.trips.validations;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+
+import java.lang.annotation.*;
 
 /**
  * Anotación de validación personalizada que verifica que dos campos de un
@@ -28,18 +24,11 @@ import jakarta.validation.Payload;
  * y es procesada por {@link FieldsMatchValidator}.
  * </p>
  */
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FieldsMatchValidator.class)
 @Documented
 public @interface FieldsMatch {
-
-    /**
-     * Define el mensaje de error por defecto cuando los campos no coinciden.
-     *
-     * @return mensaje de error por defecto.
-     */
-    String message() default "Fields do not match";
 
     /**
      * Define el nombre del primer campo que será comparado.
@@ -65,6 +54,13 @@ public @interface FieldsMatch {
      * @return arreglo de clases correspondientes a los grupos de validación.
      */
     Class<?>[] groups() default {};
+
+    /**
+     * Define el mensaje de error por defecto cuando los campos no coinciden.
+     *
+     * @return mensaje de error por defecto.
+     */
+    String message() default "Fields do not match";
 
     /**
      * Define información adicional que puede ser asociada a la violación de

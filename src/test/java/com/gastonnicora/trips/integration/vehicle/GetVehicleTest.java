@@ -1,10 +1,12 @@
 package com.gastonnicora.trips.integration.vehicle;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.UUID;
-
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.helpers.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.helpers.VehicleApiTestClient;
+import com.gastonnicora.trips.helpers.VehicleTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +15,12 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.helpers.VehicleApiTestClient;
-import com.gastonnicora.trips.helpers.VehicleTestFactory;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -63,16 +61,21 @@ class GetVehicleTest {
     }
 
     @Test
-    void shouldReturnVehicleSuccessfully() throws Exception {
+    void shouldReturnForbiddenWhenVehicleBelongsToAnotherCompany() throws Exception {
+
+        CompanyDTO anotherCompany = new CompanyTestFactory(
+                mockMvc,
+                objectMapper,
+                token,
+                geocodingService
+        ).createCompany();
 
         vehicleApi
                 .getVehicle(
-                        company.getUuid(),
+                        anotherCompany.getUuid(),
                         vehicleUuid
                 )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.plate").exists())
-                .andExpect(jsonPath("$.plate").value("AA123BB"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -91,9 +94,9 @@ class GetVehicleTest {
 
         VehicleApiTestClient apiWithoutToken
                 = new VehicleApiTestClient(
-                        mockMvc,
-                        objectMapper
-                );
+                mockMvc,
+                objectMapper
+        );
 
         apiWithoutToken
                 .getVehicle(
@@ -104,21 +107,16 @@ class GetVehicleTest {
     }
 
     @Test
-    void shouldReturnForbiddenWhenVehicleBelongsToAnotherCompany() throws Exception {
-
-        CompanyDTO anotherCompany = new CompanyTestFactory(
-                mockMvc,
-                objectMapper,
-                token,
-                geocodingService
-        ).createCompany();
+    void shouldReturnVehicleSuccessfully() throws Exception {
 
         vehicleApi
                 .getVehicle(
-                        anotherCompany.getUuid(),
+                        company.getUuid(),
                         vehicleUuid
                 )
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.plate").exists())
+                .andExpect(jsonPath("$.plate").value("AA123BB"));
     }
 
 }

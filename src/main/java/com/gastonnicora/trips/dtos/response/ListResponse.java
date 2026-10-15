@@ -1,10 +1,10 @@
 package com.gastonnicora.trips.dtos.response;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DTO genérico utilizado para representar respuestas de la API que contienen
@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
  * </p>
  *
  * @param <T> Tipo de los elementos contenidos en la lista.
+ *
  * @author Gastón
  * @version 1.0
  * @since 2026-05-04

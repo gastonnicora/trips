@@ -1,32 +1,31 @@
 package com.gastonnicora.trips.integration.company;
 
-import java.util.stream.Stream;
-
-import static org.hamcrest.Matchers.notNullValue;
+import com.gastonnicora.trips.dtos.response.company.AddressResponse;
+import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
+import com.gastonnicora.trips.helpers.CompanyApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.stream.Stream;
+
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.response.company.AddressResponse;
-import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
-import com.gastonnicora.trips.helpers.CompanyApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
-import tools.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -46,6 +45,22 @@ class CreateCompanyTest {
     private String token;
     private CompanyApiTestClient companyApi;
 
+    static Stream<Arguments> invalidCompanyFields() {
+        return Stream.of(
+                // name vacío
+                Arguments.of("", "test@test.com", "123456789", 54.4, -34.5, "name"),
+                Arguments.of("Goodname", "", "123456789", 54.4, -34.5, "email"),
+                // phone vacío
+                Arguments.of("Goodname", "test@test.com", "", 54.4, -34.5, "phone"),
+                // latitude vacío
+                Arguments.of("Goodname", "test@test.com", "123456789", null, -34.5, "latitude"),
+                // longitude vacío
+                Arguments.of("Goodname", "test@test.com", "123456789", 54.4, null, "longitude"),
+                // campos en null
+                Arguments.of(null, null, null, null, null, "name"),
+                Arguments.of("Goodname", "test", "123456789", 54.4, -34.5, "email"));
+    }
+
     @BeforeEach
     void setup() throws Exception {
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
@@ -58,16 +73,10 @@ class CreateCompanyTest {
     }
 
     @Test
-    void shouldReturnOk() throws Exception {
-        companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", -34.6037, -58.3816)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Good Name"))
-                .andExpect(jsonPath("$.email").value("goodemail@mail.com"))
-                .andExpect(jsonPath("$.phone").value("+5491122334455"))
-                .andExpect(jsonPath("$.latitude").value(-34.6037))
-                .andExpect(jsonPath("$.longitude").value(-58.3816))
-                .andExpect(jsonPath("$.address").value(notNullValue()));
-
+    void shouldReturnBadRequestWhenAddressIsNotFound() throws Exception {
+        companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", 100.0, -100.0)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").exists());
     }
 
     @ParameterizedTest
@@ -89,20 +98,17 @@ class CreateCompanyTest {
                 .andDo(result -> System.out.println("Errors " + result.getResponse().getContentAsString()));
     }
 
-    static Stream<Arguments> invalidCompanyFields() {
-        return Stream.of(
-                // name vacío
-                Arguments.of("", "test@test.com", "123456789", 54.4, -34.5, "name"),
-                Arguments.of("Goodname", "", "123456789", 54.4, -34.5, "email"),
-                // phone vacío
-                Arguments.of("Goodname", "test@test.com", "", 54.4, -34.5, "phone"),
-                // latitude vacío
-                Arguments.of("Goodname", "test@test.com", "123456789", null, -34.5, "latitude"),
-                // longitude vacío
-                Arguments.of("Goodname", "test@test.com", "123456789", 54.4, null, "longitude"),
-                // campos en null
-                Arguments.of(null, null, null, null, null, "name"),
-                Arguments.of("Goodname", "test", "123456789", 54.4, -34.5, "email"));
+    @Test
+    void shouldReturnOk() throws Exception {
+        companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", -34.6037, -58.3816)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Good Name"))
+                .andExpect(jsonPath("$.email").value("goodemail@mail.com"))
+                .andExpect(jsonPath("$.phone").value("+5491122334455"))
+                .andExpect(jsonPath("$.latitude").value(-34.6037))
+                .andExpect(jsonPath("$.longitude").value(-58.3816))
+                .andExpect(jsonPath("$.address").value(notNullValue()));
+
     }
 
     @Test
@@ -110,13 +116,6 @@ class CreateCompanyTest {
         companyApi.withToken("");
         companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", -34.6037, -58.3816)
                 .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenAddressIsNotFound() throws Exception {
-        companyApi.createCompany("Good Name", "goodemail@mail.com", "+5491122334455", 100.0, -100.0)
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors").exists());
     }
 
 }

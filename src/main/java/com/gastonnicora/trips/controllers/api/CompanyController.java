@@ -1,19 +1,5 @@
 package com.gastonnicora.trips.controllers.api;
 
-import java.util.List;
-import java.util.UUID;
-
-import com.gastonnicora.trips.utils.SecurityUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
@@ -22,13 +8,18 @@ import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.UserService;
 import com.gastonnicora.trips.services.WorkerService;
-
-import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
-
+import com.gastonnicora.trips.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
 
 /**
  * Controlador REST encargado de la gestión de empresas.
@@ -81,7 +72,9 @@ public class CompanyController {
      * </p>
      *
      * @param companyCreate datos necesarios para crear la empresa({@link CompanyCreate}).
+     *
      * @return datos de la empresa creada
+     *
      * @see UserService#getUser(UUID)
      * @see CompanyService#createCompany(CompanyCreate)
      * @see CompanyService#getCompanyEntity(UUID)
@@ -101,17 +94,44 @@ public class CompanyController {
     }
 
     /**
-     * Obtiene una empresa a partir de su UUID.
+     * Elimina una empresa existente.
      *
-     * @param uuid UUID de la empresa que se desea consultar
-     * @return datos de la empresa solicitada
-     * @see CompanyService#getCompany(UUID)
+     * <p>
+     * Esta operación requiere que el usuario tenga el rol {@code OWNER} sobre
+     * la empresa indicada.
+     * </p>
+     *
+     * @param uuid UUID de la empresa que se desea eliminar
+     *
+     * @see CompanyService#deleteCompany(UUID)
      */
-    @GetMapping("/{uuid}")
+    @DeleteMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Obtener empresa", description = "Obtiene los datos de una empresa a partir de su UUID.")
-    public CompanyDTO getCompany(@PathVariable UUID uuid) {
-        return companyService.getCompany(uuid);
+    @PreAuthorize("@companySecurity.hasRole(#uuid, T(com.gastonnicora.trips.enums.RoleCompany).OWNER)")
+    @Operation(summary = "Eliminar empresa", description = "Elimina una empresa. El usuario debe tener rol OWNER sobre la empresa.")
+    public void deleteCompany(@PathVariable("uuid") UUID uuid) {
+        companyService.deleteCompany(uuid);
+    }
+
+    /**
+     * Obtiene las empresas cuyo propietario es el usuario autenticado.
+     *
+     * @return respuesta con la lista de empresas asociadas al usuario actual
+     *
+     * @see SecurityUtils#getCurrentUserUuid()
+     * @see UserService#getUser(UUID)
+     * @see WorkerService#getCompaniesByOwner(UUID)
+     * @see CompanyService#toListResponse(List)
+     *
+     */
+    @GetMapping("/me")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Obtener mis empresas", description = "Obtiene las empresas asociadas al usuario autenticado.")
+    public ListResponse<CompanyDTO> getCompaniesByCurrentUser() {
+        UUID uuid = getCurrentUserUuid();
+        userService.getUser(uuid);
+        List<Company> companies = workerService.getCompaniesByOwner(uuid);
+        return companyService.toListResponse(companies);
     }
 
     /**
@@ -122,7 +142,9 @@ public class CompanyController {
      * </p>
      *
      * @param uuid UUID del usuario propietario de las empresas
+     *
      * @return respuesta con la lista de empresas asociadas al usuario
+     *
      * @see UserService#getUser(UUID)
      * @see WorkerService#getCompaniesByOwner(UUID)
      * @see CompanyService#toListResponse(List)
@@ -139,22 +161,19 @@ public class CompanyController {
     }
 
     /**
-     * Obtiene las empresas cuyo propietario es el usuario autenticado.
+     * Obtiene una empresa a partir de su UUID.
      *
-     * @return respuesta con la lista de empresas asociadas al usuario actual
-     * @see SecurityUtils#getCurrentUserUuid()
-     * @see UserService#getUser(UUID)
-     * @see WorkerService#getCompaniesByOwner(UUID)
-     * @see  CompanyService#toListResponse(List)
-     * */
-    @GetMapping("/me")
+     * @param uuid UUID de la empresa que se desea consultar
+     *
+     * @return datos de la empresa solicitada
+     *
+     * @see CompanyService#getCompany(UUID)
+     */
+    @GetMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Obtener mis empresas", description = "Obtiene las empresas asociadas al usuario autenticado.")
-    public ListResponse<CompanyDTO> getCompaniesByCurrentUser() {
-        UUID uuid = getCurrentUserUuid();
-        userService.getUser(uuid);
-        List<Company> companies = workerService.getCompaniesByOwner(uuid);
-        return companyService.toListResponse(companies);
+    @Operation(summary = "Obtener empresa", description = "Obtiene los datos de una empresa a partir de su UUID.")
+    public CompanyDTO getCompany(@PathVariable UUID uuid) {
+        return companyService.getCompany(uuid);
     }
 
     /**
@@ -167,7 +186,9 @@ public class CompanyController {
      *
      * @param uuid    UUID de la empresa que se desea actualizar
      * @param company nuevos datos de la empresa ({@link CompanyCreate}).
+     *
      * @return datos de la empresa actualizada
+     *
      * @see CompanyService#updateCompany(UUID, CompanyCreate)
      */
     @PutMapping("/{uuid}")
@@ -183,25 +204,6 @@ public class CompanyController {
             + "El usuario debe tener rol OWNER o ADMIN sobre la empresa.")
     public CompanyDTO updateCompany(@PathVariable("uuid") UUID uuid, @Valid @RequestBody CompanyCreate company) {
         return companyService.updateCompany(uuid, company);
-    }
-
-    /**
-     * Elimina una empresa existente.
-     *
-     * <p>
-     * Esta operación requiere que el usuario tenga el rol {@code OWNER} sobre
-     * la empresa indicada.
-     * </p>
-     *
-     * @param uuid UUID de la empresa que se desea eliminar
-     * @see CompanyService#deleteCompany(UUID)
-     */
-    @DeleteMapping("/{uuid}")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("@companySecurity.hasRole(#uuid, T(com.gastonnicora.trips.enums.RoleCompany).OWNER)")
-    @Operation(summary = "Eliminar empresa", description = "Elimina una empresa. El usuario debe tener rol OWNER sobre la empresa.")
-    public void deleteCompany(@PathVariable("uuid") UUID uuid) {
-        companyService.deleteCompany(uuid);
     }
 
     // TODO: Agregar endpoint para obtener todas las empresas

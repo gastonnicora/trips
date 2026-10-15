@@ -87,9 +87,9 @@ public abstract class UserBasic {
     /**
      * Constructor completo.
      *
-     * @param name Nombre del usuario
+     * @param name     Nombre del usuario
      * @param lastname Apellido del usuario
-     * @param email Email del usuario
+     * @param email    Email del usuario
      */
     public UserBasic(String name, String lastname, String email) {
         this.name = name;

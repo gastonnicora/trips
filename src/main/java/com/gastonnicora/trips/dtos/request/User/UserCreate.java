@@ -67,7 +67,7 @@ public class UserCreate extends UserBasic {
             min = minLengthPass,
             max = 255,
             message = "La contraseña debe contener al menos " + minLengthPass
-            + " y máximo 255 caracteres"
+                    + " y máximo 255 caracteres"
     )
     private String password;
 
@@ -90,17 +90,17 @@ public class UserCreate extends UserBasic {
             min = minLengthPass,
             max = 255,
             message = "La contraseña debe contener al menos " + minLengthPass
-            + " y máximo 255 caracteres"
+                    + " y máximo 255 caracteres"
     )
     private String confirmPassword;
 
     /**
      * Crea una solicitud para registrar un nuevo usuario.
      *
-     * @param name nombre del usuario
-     * @param lastname apellido del usuario
-     * @param email dirección de correo electrónico del usuario
-     * @param password contraseña del usuario
+     * @param name        nombre del usuario
+     * @param lastname    apellido del usuario
+     * @param email       dirección de correo electrónico del usuario
+     * @param password    contraseña del usuario
      * @param confirmPass confirmación de la contraseña
      */
     public UserCreate(

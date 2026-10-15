@@ -1,14 +1,10 @@
 package com.gastonnicora.trips.security;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
+import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.entities.Worker;
+import com.gastonnicora.trips.enums.RoleCompany;
+import com.gastonnicora.trips.repositories.WorkerRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,11 +14,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.entities.Worker;
-import com.gastonnicora.trips.enums.RoleCompany;
-import com.gastonnicora.trips.repositories.WorkerRepository;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CompanySecurityTest {
@@ -33,6 +32,18 @@ class CompanySecurityTest {
     private CompanySecurity companySecurity;
     private UUID userUuid;
     private UUID companyUuid;
+
+    @Test
+    void roleConvenienceMethodsShouldDelegateToRoleChecks() {
+        Worker worker = workerWithRoles(RoleCompany.SELLER, RoleCompany.DRIVER);
+        when(workerRepository.findByUserUuidAndCompanyUuid(userUuid, companyUuid))
+                .thenReturn(Optional.of(worker));
+
+        assertTrue(companySecurity.isSeller(companyUuid));
+        assertTrue(companySecurity.isDriver(companyUuid));
+        assertFalse(companySecurity.isAdmin(companyUuid));
+        assertFalse(companySecurity.isHrManager(companyUuid));
+    }
 
     @BeforeEach
     void setUp() {
@@ -46,21 +57,6 @@ class CompanySecurityTest {
 
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(new UserDetailsImpl(user), null, Set.of()));
-    }
-
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
-    }
-
-    @Test
-    void shouldReturnTrueWhenUserHasRequestedRole() {
-        Worker worker = workerWithRoles(RoleCompany.ADMIN);
-        when(workerRepository.findByUserUuidAndCompanyUuid(userUuid, companyUuid))
-                .thenReturn(Optional.of(worker));
-
-        assertTrue(companySecurity.hasRole(companyUuid, RoleCompany.ADMIN));
-        verify(workerRepository).findByUserUuidAndCompanyUuid(userUuid, companyUuid);
     }
 
     @Test
@@ -94,15 +90,18 @@ class CompanySecurityTest {
     }
 
     @Test
-    void roleConvenienceMethodsShouldDelegateToRoleChecks() {
-        Worker worker = workerWithRoles(RoleCompany.SELLER, RoleCompany.DRIVER);
+    void shouldReturnTrueWhenUserHasRequestedRole() {
+        Worker worker = workerWithRoles(RoleCompany.ADMIN);
         when(workerRepository.findByUserUuidAndCompanyUuid(userUuid, companyUuid))
                 .thenReturn(Optional.of(worker));
 
-        assertTrue(companySecurity.isSeller(companyUuid));
-        assertTrue(companySecurity.isDriver(companyUuid));
-        assertFalse(companySecurity.isAdmin(companyUuid));
-        assertFalse(companySecurity.isHrManager(companyUuid));
+        assertTrue(companySecurity.hasRole(companyUuid, RoleCompany.ADMIN));
+        verify(workerRepository).findByUserUuidAndCompanyUuid(userUuid, companyUuid);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     private Worker workerWithRoles(RoleCompany... roles) {

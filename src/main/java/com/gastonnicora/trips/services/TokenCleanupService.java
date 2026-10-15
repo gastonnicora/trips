@@ -1,12 +1,10 @@
 package com.gastonnicora.trips.services;
 
-import java.time.Instant;
-import java.util.UUID;
-
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import java.time.Instant;
 
 /**
  * Servicio encargado de limpiar periódicamente los refresh tokens expirados o
@@ -42,9 +40,9 @@ public class TokenCleanupService {
      * necesarias.
      *
      * @param repo Repositorio de tokens de refresco ({@link RefreshTokenRepository) utilizado para
-     *                          acceder a
-     *                          la
-     *                          base de datos.
+     *             acceder a
+     *             la
+     *             base de datos.
      */
     public TokenCleanupService(RefreshTokenRepository repo) {
         this.repo = repo;
@@ -58,6 +56,7 @@ public class TokenCleanupService {
      * La tarea se ejecuta automáticamente al inicio de cada hora según el cron
      * definido.
      * </p>
+     *
      * @see RefreshTokenRepository#deleteAllByExpiryDateBefore(Instant)
      */
     @Scheduled(cron = "0 0 * * * *")
@@ -72,6 +71,7 @@ public class TokenCleanupService {
      * La tarea se ejecuta automáticamente al inicio de cada hora según el cron
      * definido.
      * </p>
+     *
      * @see RefreshTokenRepository#deleteAllByActiveFalse()
      */
     @Scheduled(cron = "0 0 * * * *")

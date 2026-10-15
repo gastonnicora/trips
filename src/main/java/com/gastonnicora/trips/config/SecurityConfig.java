@@ -1,5 +1,9 @@
 package com.gastonnicora.trips.config;
 
+import com.gastonnicora.trips.security.JwtAuthenticationFilter;
+import com.gastonnicora.trips.security.UserDetailsServiceImpl;
+import com.gastonnicora.trips.security.handlers.CustomAccessDeniedHandler;
+import com.gastonnicora.trips.security.handlers.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -13,11 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.gastonnicora.trips.security.JwtAuthenticationFilter;
-import com.gastonnicora.trips.security.UserDetailsServiceImpl;
-import com.gastonnicora.trips.security.handlers.CustomAccessDeniedHandler;
-import com.gastonnicora.trips.security.handlers.CustomAuthenticationEntryPoint;
 
 /**
  * Configuración principal de seguridad de la aplicación.
@@ -74,6 +73,23 @@ public class SecurityConfig {
     }
 
     /**
+     * Proporciona el administrador de autenticación de Spring Security.
+     *
+     * @param config configuración utilizada por Spring Security para construir
+     *               el administrador de autenticación
+     *
+     * @return instancia de {@link AuthenticationManager}
+     *
+     * @throws Exception si no es posible obtener el administrador de
+     *                   autenticación
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    /**
      * Proporciona el codificador de contraseñas utilizado por la aplicación.
      *
      * <p>
@@ -86,21 +102,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder codificaPass() {
         return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * Proporciona el administrador de autenticación de Spring Security.
-     *
-     * @param config configuración utilizada por Spring Security para construir
-     *               el administrador de autenticación
-     * @return instancia de {@link AuthenticationManager}
-     * @throws Exception si no es posible obtener el administrador de
-     *                   autenticación
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
     }
 
     /**
@@ -125,7 +126,9 @@ public class SecurityConfig {
      * </p>
      *
      * @param http objeto utilizado para configurar la seguridad HTTP
+     *
      * @return cadena de filtros de seguridad configurada para la API
+     *
      * @throws Exception si ocurre un error durante la configuración de
      *                   seguridad
      * @see JwtAuthenticationFilter
@@ -169,7 +172,9 @@ public class SecurityConfig {
      *                              HTTP
      * @param authenticationManager administrador utilizado para autenticar
      *                              usuarios
+     *
      * @return cadena de filtros de seguridad configurada para la interfaz web
+     *
      * @throws Exception si ocurre un error durante la configuración de
      *                   seguridad
      */

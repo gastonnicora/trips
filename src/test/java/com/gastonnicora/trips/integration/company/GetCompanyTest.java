@@ -1,7 +1,11 @@
 package com.gastonnicora.trips.integration.company;
 
-import java.util.UUID;
-
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.helpers.CompanyApiTestClient;
+import com.gastonnicora.trips.helpers.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +14,12 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.helpers.CompanyApiTestClient;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
-import tools.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -52,6 +51,13 @@ class GetCompanyTest {
     }
 
     @Test
+    void shouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
+        UUID nonExistentUuid = UUID.randomUUID();
+        companyApi.getCompany(nonExistentUuid)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void shouldReturnOkWhenCompanyExists() throws Exception {
         companyApi.getCompany(company.getUuid())
                 .andExpect(status().isOk())
@@ -68,12 +74,5 @@ class GetCompanyTest {
         companyApi.withToken(null);
         companyApi.getCompany(company.getUuid())
                 .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void shouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
-        UUID nonExistentUuid = UUID.randomUUID();
-        companyApi.getCompany(nonExistentUuid)
-                .andExpect(status().isNotFound());
     }
 }

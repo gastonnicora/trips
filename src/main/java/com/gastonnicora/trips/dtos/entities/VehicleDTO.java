@@ -1,14 +1,10 @@
 package com.gastonnicora.trips.dtos.entities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * DTO utilizado para representar la información de un vehículo en las

@@ -1,16 +1,15 @@
 package com.gastonnicora.trips.helpers;
 
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.when;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
 import com.gastonnicora.trips.services.GeocodingService;
-
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.ObjectMapper;
+
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.when;
 
 public class CompanyTestFactory {
 
@@ -21,21 +20,21 @@ public class CompanyTestFactory {
     private CompanyDTO company;
 
     public CompanyTestFactory(
-        MockMvc mockMvc,
-        ObjectMapper objectMapper,
-        String token,
-        GeocodingService geocodingService) {
+            MockMvc mockMvc,
+            ObjectMapper objectMapper,
+            String token,
+            GeocodingService geocodingService) {
 
-    this.objectMapper = objectMapper;
-    this.geocodingService = geocodingService;
+        this.objectMapper = objectMapper;
+        this.geocodingService = geocodingService;
 
-    this.companyApi = new CompanyApiTestClient(
-            mockMvc,
-            objectMapper
-    ).withToken(token);
+        this.companyApi = new CompanyApiTestClient(
+                mockMvc,
+                objectMapper
+        ).withToken(token);
 
-    configureGeocoding();
-}
+        configureGeocoding();
+    }
 
     private void configureGeocoding() {
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))

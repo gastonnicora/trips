@@ -1,15 +1,14 @@
 package com.gastonnicora.trips.mappers;
 
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.entities.User;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Component;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.entities.User;
-
 /**
- * 
+ *
  * Componente encargado de convertir entidades {@link User} en objetos
  * {@link UserDTO}.
  *
@@ -17,7 +16,7 @@ import com.gastonnicora.trips.entities.User;
  * Proporciona métodos para transformar una entidad individual o una lista de
  * entidades en los DTOs correspondientes.
  * </p>
- * 
+ *
  */
 @Component
 public class UserMapper {
@@ -31,6 +30,7 @@ public class UserMapper {
      * </p>
      *
      * @param user Entidad de usuario que se desea convertir.
+     *
      * @return DTO de usuario correspondiente a la entidad proporcionada.
      */
     public UserDTO toDTO(User user) {
@@ -50,8 +50,9 @@ public class UserMapper {
      * {@link UserDTO}.
      *
      * @param users Lista de entidades de usuarios que se desea convertir.
+     *
      * @return Lista de DTOs de usuarios correspondientes a las entidades
-     *         proporcionadas.
+     * proporcionadas.
      */
     public List<UserDTO> toDTOList(List<User> users) {
         return users.stream()

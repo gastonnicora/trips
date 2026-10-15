@@ -1,21 +1,16 @@
 package com.gastonnicora.trips.helpers;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import jakarta.servlet.http.Cookie;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class AuthApiTestClient {
 
     private final MockMvc mockMvc;
     private String token;
-
-    public AuthApiTestClient withToken(String token) {
-        this.token = token;
-        return this;
-    }
 
     public AuthApiTestClient(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
@@ -57,6 +52,14 @@ public class AuthApiTestClient {
                         """.formatted(refreshToken)));
     }
 
+    public ResultActions refresh(String refreshToken) throws Exception {
+        return mockMvc.perform(post("/api/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie(new Cookie("refreshToken", refreshToken))
+                .header("User-Agent", "JUnit-Test")
+                .header("Authorization", "Bearer " + token));
+    }
+
     public ResultActions refreshAndroid(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,12 +70,9 @@ public class AuthApiTestClient {
                         """.formatted(refreshToken)));
     }
 
-    public ResultActions refresh(String refreshToken) throws Exception {
-        return mockMvc.perform(post("/api/auth/refresh")
-                .contentType(MediaType.APPLICATION_JSON)
-                .cookie(new Cookie("refreshToken", refreshToken))
-                .header("User-Agent", "JUnit-Test")
-                .header("Authorization", "Bearer " + token));
+    public AuthApiTestClient withToken(String token) {
+        this.token = token;
+        return this;
     }
 
 }

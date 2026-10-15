@@ -1,16 +1,14 @@
 package com.gastonnicora.trips.security.handlers;
 
-import java.io.IOException;
-
+import com.gastonnicora.trips.exceptions.dtos.ForbiddenApiError;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
-
-import com.gastonnicora.trips.exceptions.dtos.ForbiddenApiError;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 
 /**
  * Manejador personalizado para accesos denegados en Spring Security.
@@ -42,15 +40,16 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
      * {@link ForbiddenApiError}.
      * </p>
      *
-     * @param request Solicitud HTTP asociada al acceso denegado.
-     * @param response Respuesta HTTP en la que se informa el error.
+     * @param request               Solicitud HTTP asociada al acceso denegado.
+     * @param response              Respuesta HTTP en la que se informa el error.
      * @param accessDeniedException Excepción de acceso denegado generada por Spring Security.
+     *
      * @throws IOException Si ocurre un error al escribir la respuesta JSON.
      */
     @Override
     public void handle(HttpServletRequest request,
-            HttpServletResponse response,
-            AccessDeniedException accessDeniedException) throws IOException {
+                       HttpServletResponse response,
+                       AccessDeniedException accessDeniedException) throws IOException {
 
         // Configura el estado HTTP y el tipo de contenido
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);

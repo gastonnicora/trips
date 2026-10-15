@@ -16,8 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -65,8 +64,8 @@ class FindByUserUuidAndCompanyUuidTest {
         Optional<com.gastonnicora.trips.entities.Worker> found = workerRepository
                 .findByUserUuidAndCompanyUuid(user.getUuid(), company.getUuid());
         assertTrue(found.isPresent());
-        assertTrue(found.get().getUser().getUuid().equals(user.getUuid()));
-        assertTrue(found.get().getCompany().getUuid().equals(company.getUuid()));
+        assertEquals(found.get().getUser().getUuid(), user.getUuid());
+        assertEquals(found.get().getCompany().getUuid(), company.getUuid());
         assertTrue(found.get().getRoles().contains(RoleCompany.ADMIN));
     }
 }

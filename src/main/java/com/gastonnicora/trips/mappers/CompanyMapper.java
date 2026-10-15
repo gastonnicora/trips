@@ -1,13 +1,11 @@
-
 package com.gastonnicora.trips.mappers;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.entities.Company;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Componente encargado de convertir entidades {@link Company} en objetos
@@ -30,6 +28,7 @@ public class CompanyMapper {
      * </p>
      *
      * @param company Entidad de empresa que se desea convertir.
+     *
      * @return DTO de empresa correspondiente a la entidad proporcionada.
      */
     public CompanyDTO toDTO(Company company) {
@@ -51,8 +50,9 @@ public class CompanyMapper {
      * {@link CompanyDTO}.
      *
      * @param companies Lista de entidades de empresas que se desea convertir.
+     *
      * @return Lista de DTOs de empresas correspondientes a las entidades
-     *         proporcionadas.
+     * proporcionadas.
      */
     public List<CompanyDTO> toDTOList(List<Company> companies) {
         return companies.stream()

@@ -1,31 +1,23 @@
 package com.gastonnicora.trips.security;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import jakarta.servlet.FilterChain;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import com.gastonnicora.trips.entities.RefreshToken;
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import java.util.Optional;
 
-import jakarta.servlet.FilterChain;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JwtAuthenticationFilterTest {
@@ -54,9 +46,26 @@ class JwtAuthenticationFilterTest {
         SecurityContextHolder.clearContext();
     }
 
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
+    @Test
+    void shouldAuthenticateUserWhenJwtAndRefreshTokenAreValid() throws Exception {
+        request.addHeader("Authorization", "Bearer token");
+        when(jwtService.isValid("token")).thenReturn(true);
+        when(jwtService.extractUsername("token")).thenReturn("user@test.com");
+        when(jwtService.extractVersion("token")).thenReturn(2);
+
+        RefreshToken refreshToken = mock(RefreshToken.class);
+        when(refreshTokenRepository.findByToken("token")).thenReturn(Optional.of(refreshToken));
+        when(refreshToken.isActive()).thenReturn(true);
+        when(refreshToken.getVersion()).thenReturn(2);
+
+        UserDetails userDetails = mock(UserDetails.class);
+        when(userDetailsService.loadUserByUsername("user@test.com")).thenReturn(userDetails);
+
+        filter.doFilter(request, response, filterChain);
+
+        assertTrue(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+        assertSame(userDetails, SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        verify(filterChain).doFilter(request, response);
     }
 
     @Test
@@ -83,6 +92,17 @@ class JwtAuthenticationFilterTest {
     void shouldContinueWithoutAuthenticationWhenJwtIsInvalid() throws Exception {
         request.addHeader("Authorization", "Bearer invalid-token");
         when(jwtService.isValid("invalid-token")).thenReturn(false);
+
+        filter.doFilter(request, response, filterChain);
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
+    void shouldContinueWithoutAuthenticationWhenJwtParsingThrows() throws Exception {
+        request.addHeader("Authorization", "Bearer token");
+        when(jwtService.isValid("token")).thenThrow(new io.jsonwebtoken.MalformedJwtException("bad jwt"));
 
         filter.doFilter(request, response, filterChain);
 
@@ -139,36 +159,8 @@ class JwtAuthenticationFilterTest {
         verify(filterChain).doFilter(request, response);
     }
 
-    @Test
-    void shouldAuthenticateUserWhenJwtAndRefreshTokenAreValid() throws Exception {
-        request.addHeader("Authorization", "Bearer token");
-        when(jwtService.isValid("token")).thenReturn(true);
-        when(jwtService.extractUsername("token")).thenReturn("user@test.com");
-        when(jwtService.extractVersion("token")).thenReturn(2);
-
-        RefreshToken refreshToken = mock(RefreshToken.class);
-        when(refreshTokenRepository.findByToken("token")).thenReturn(Optional.of(refreshToken));
-        when(refreshToken.isActive()).thenReturn(true);
-        when(refreshToken.getVersion()).thenReturn(2);
-
-        UserDetails userDetails = mock(UserDetails.class);
-        when(userDetailsService.loadUserByUsername("user@test.com")).thenReturn(userDetails);
-
-        filter.doFilter(request, response, filterChain);
-
-        assertTrue(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-        assertSame(userDetails, SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        verify(filterChain).doFilter(request, response);
-    }
-
-    @Test
-    void shouldContinueWithoutAuthenticationWhenJwtParsingThrows() throws Exception {
-        request.addHeader("Authorization", "Bearer token");
-        when(jwtService.isValid("token")).thenThrow(new io.jsonwebtoken.MalformedJwtException("bad jwt"));
-
-        filter.doFilter(request, response, filterChain);
-
-        assertFalse(SecurityContextHolder.getContext().getAuthentication() != null);
-        verify(filterChain).doFilter(request, response);
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 }

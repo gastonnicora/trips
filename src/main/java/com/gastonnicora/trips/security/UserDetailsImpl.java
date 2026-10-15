@@ -1,14 +1,13 @@
 package com.gastonnicora.trips.security;
 
-import java.util.Collection;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import com.gastonnicora.trips.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.gastonnicora.trips.entities.User;
+import java.util.Collection;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Implementación de {@link UserDetails} de Spring Security basada en la
@@ -36,15 +35,6 @@ public class UserDetailsImpl implements UserDetails {
      */
     public UserDetailsImpl(User user) {
         this.user = user;
-    }
-
-    /**
-     * Obtiene el identificador único del usuario.
-     *
-     * @return UUID del usuario.
-     */
-    public UUID getUuid() {
-        return user.getUuid();
     }
 
     /**
@@ -88,6 +78,15 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return user.getEmail();
+    }
+
+    /**
+     * Obtiene el identificador único del usuario.
+     *
+     * @return UUID del usuario.
+     */
+    public UUID getUuid() {
+        return user.getUuid();
     }
 
     /**
@@ -139,7 +138,7 @@ public class UserDetailsImpl implements UserDetails {
      * Indica si el usuario se encuentra habilitado.
      *
      * @return {@code true} si el usuario está habilitado; {@code false} en caso
-     *         contrario.
+     * contrario.
      */
     @Override
     public boolean isEnabled() {

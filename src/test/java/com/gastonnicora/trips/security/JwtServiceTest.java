@@ -1,18 +1,14 @@
 package com.gastonnicora.trips.security;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import static org.junit.jupiter.api.Assertions.*;
 
 class JwtServiceTest {
 
@@ -20,6 +16,12 @@ class JwtServiceTest {
 
     private JwtService jwtService;
     private UUID userUuid;
+
+    private static void setField(Object target, String fieldName, Object value) throws Exception {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(target, value);
+    }
 
     @BeforeEach
     void setUp() throws Exception {
@@ -41,6 +43,20 @@ class JwtServiceTest {
     }
 
     @Test
+    void shouldRejectExpiredToken() {
+        String token = Jwts.builder()
+                .subject("user@test.com")
+                .claim("ver", 0)
+                .claim("userId", userUuid.toString())
+                .issuedAt(new java.util.Date(System.currentTimeMillis() - 10_000))
+                .expiration(new java.util.Date(System.currentTimeMillis() - 1_000))
+                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .compact();
+
+        assertFalse(jwtService.isValid(token));
+    }
+
+    @Test
     void shouldRejectMalformedToken() {
         assertFalse(jwtService.isValid("not-a-jwt"));
     }
@@ -56,25 +72,5 @@ class JwtServiceTest {
                 .compact();
 
         assertFalse(jwtService.isValid(token));
-    }
-
-    @Test
-    void shouldRejectExpiredToken() {
-        String token = Jwts.builder()
-                .subject("user@test.com")
-                .claim("ver", 0)
-                .claim("userId", userUuid.toString())
-                .issuedAt(new java.util.Date(System.currentTimeMillis() - 10_000))
-                .expiration(new java.util.Date(System.currentTimeMillis() - 1_000))
-                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
-                .compact();
-
-        assertFalse(jwtService.isValid(token));
-    }
-
-    private static void setField(Object target, String fieldName, Object value) throws Exception {
-        Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(target, value);
     }
 }

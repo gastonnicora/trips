@@ -1,20 +1,19 @@
 package com.gastonnicora.trips.repository.vehicle;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.entities.Vehicle;
+import com.gastonnicora.trips.repositories.CompanyRepository;
+import com.gastonnicora.trips.repositories.VehicleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.entities.Vehicle;
-import com.gastonnicora.trips.repositories.CompanyRepository;
-import com.gastonnicora.trips.repositories.VehicleRepository;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -40,9 +39,9 @@ class FindByCompanyUuidAndPlateAndActiveTrueTest {
                 company.getUuid(), "ABC123");
 
         assertTrue(found.isPresent());
-        assertTrue(found.get().getUuid().equals(vehicle.getUuid()));
-        assertTrue(found.get().getCompany().getUuid().equals(company.getUuid()));
-        assertTrue(found.get().getPlate().equals("ABC123"));
+        assertEquals(found.get().getUuid(), vehicle.getUuid());
+        assertEquals(found.get().getCompany().getUuid(), company.getUuid());
+        assertEquals("ABC123", found.get().getPlate());
         assertTrue(found.get().isActive());
     }
 

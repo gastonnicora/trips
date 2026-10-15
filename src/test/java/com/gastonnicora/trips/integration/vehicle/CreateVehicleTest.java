@@ -1,10 +1,11 @@
 package com.gastonnicora.trips.integration.vehicle;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.UUID;
-
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.helpers.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.helpers.VehicleApiTestClient;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +14,12 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.helpers.VehicleApiTestClient;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -77,6 +75,19 @@ class CreateVehicleTest {
     }
 
     @Test
+    void shouldReturnBadRequestWhenVehicleDataIsInvalid() throws Exception {
+
+        vehicleApi
+                .createVehicle(
+                        company.getUuid(),
+                        "",
+                        "Mercedes Benz",
+                        50
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldReturnConflictWhenPlateAlreadyExists() throws Exception {
 
         vehicleApi
@@ -116,9 +127,9 @@ class CreateVehicleTest {
 
         VehicleApiTestClient apiWithoutToken
                 = new VehicleApiTestClient(
-                        mockMvc,
-                        objectMapper
-                );
+                mockMvc,
+                objectMapper
+        );
 
         apiWithoutToken
                 .createVehicle(
@@ -128,18 +139,5 @@ class CreateVehicleTest {
                         50
                 )
                 .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenVehicleDataIsInvalid() throws Exception {
-
-        vehicleApi
-                .createVehicle(
-                        company.getUuid(),
-                        "",
-                        "Mercedes Benz",
-                        50
-                )
-                .andExpect(status().isBadRequest());
     }
 }

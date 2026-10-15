@@ -1,23 +1,16 @@
 package com.gastonnicora.trips.entities;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Entidad que representa un vehículo asociado a una empresa.
@@ -116,9 +109,9 @@ public class Vehicle {
      * activo.
      * </p>
      *
-     * @param company Empresa a la que pertenece el vehículo.
-     * @param plate Matrícula o patente del vehículo.
-     * @param model Modelo del vehículo.
+     * @param company  Empresa a la que pertenece el vehículo.
+     * @param plate    Matrícula o patente del vehículo.
+     * @param model    Modelo del vehículo.
      * @param capacity Capacidad del vehículo.
      */
     public Vehicle(Company company, String plate, String model, Integer capacity) {

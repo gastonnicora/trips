@@ -83,6 +83,22 @@ public class LoginRequest {
 
 
     /**
+     * Crea una solicitud de inicio de sesión con las credenciales indicadas.
+     *
+     * <p>
+     * El correo electrónico se normaliza a minúsculas y se eliminan los
+     * espacios al inicio y al final.
+     * </p>
+     *
+     * @param email    dirección de correo electrónico del usuario
+     * @param password contraseña del usuario
+     */
+    public LoginRequest(String email, String password) {
+        this.email = email.trim().toLowerCase();
+        this.password = password;
+    }
+
+    /**
      * Establece el correo electrónico del usuario.
      *
      * <p>
@@ -94,22 +110,5 @@ public class LoginRequest {
      */
     public void setEmail(@NonNull String email) {
         this.email = email.trim().toLowerCase();
-    }
-
-
-    /**
-     * Crea una solicitud de inicio de sesión con las credenciales indicadas.
-     *
-     * <p>
-     * El correo electrónico se normaliza a minúsculas y se eliminan los
-     * espacios al inicio y al final.
-     * </p>
-     *
-     * @param email dirección de correo electrónico del usuario
-     * @param password contraseña del usuario
-     */
-    public LoginRequest(String email, String password) {
-        this.email = email.trim().toLowerCase();
-        this.password = password;
     }
 }

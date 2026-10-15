@@ -1,7 +1,12 @@
 package com.gastonnicora.trips.integration.vehicle;
 
-import java.util.UUID;
-
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.helpers.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.helpers.VehicleApiTestClient;
+import com.gastonnicora.trips.helpers.VehicleTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +15,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.helpers.VehicleApiTestClient;
-import com.gastonnicora.trips.helpers.VehicleTestFactory;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -57,7 +56,6 @@ class DeleteVehicleTest {
         ).withToken(token);
 
 
-
         company = new CompanyTestFactory(mockMvc, objectMapper, token, geocodingService).createCompany();
 
         vehicleUuid = new VehicleTestFactory(mockMvc, objectMapper, token).createVehicle(company.getUuid()).getUuid();
@@ -83,17 +81,6 @@ class DeleteVehicleTest {
     }
 
     @Test
-    void shouldReturnNotFoundWhenVehicleDoesNotExist() throws Exception {
-
-        vehicleApi
-                .deleteVehicle(
-                        company.getUuid(),
-                        UUID.randomUUID()
-                )
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
 
         vehicleApi
@@ -105,32 +92,15 @@ class DeleteVehicleTest {
     }
 
     @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-
-        VehicleApiTestClient apiWithoutToken
-                = new VehicleApiTestClient(
-                        mockMvc,
-                        objectMapper
-                );
-
-        apiWithoutToken
-                .deleteVehicle(
-                        company.getUuid(),
-                        vehicleUuid
-                )
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void shouldReturnForbiddenWhenUserDoesNotHavePermission() throws Exception {
 
         String token = UserTestFactory.registerAndLogin(mockMvc);
 
         VehicleApiTestClient anotherUserApi
                 = new VehicleApiTestClient(
-                        mockMvc,
-                        objectMapper
-                ).withToken(token);
+                mockMvc,
+                objectMapper
+        ).withToken(token);
 
         anotherUserApi
                 .deleteVehicle(
@@ -138,5 +108,33 @@ class DeleteVehicleTest {
                         vehicleUuid
                 )
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenVehicleDoesNotExist() throws Exception {
+
+        vehicleApi
+                .deleteVehicle(
+                        company.getUuid(),
+                        UUID.randomUUID()
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+
+        VehicleApiTestClient apiWithoutToken
+                = new VehicleApiTestClient(
+                mockMvc,
+                objectMapper
+        );
+
+        apiWithoutToken
+                .deleteVehicle(
+                        company.getUuid(),
+                        vehicleUuid
+                )
+                .andExpect(status().isUnauthorized());
     }
 }

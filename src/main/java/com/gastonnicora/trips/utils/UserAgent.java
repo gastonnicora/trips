@@ -28,9 +28,10 @@ public class UserAgent {
      * </p>
      *
      * @param userAgent String con el User-Agent de la solicitud HTTP.
+     *
      * @return {@code "android"} si corresponde a Android, {@code "ios"} si
-     *         corresponde a iOS, o {@code "web"} en cualquier otro caso,
-     *         incluyendo cuando el User-Agent es {@code null}.
+     * corresponde a iOS, o {@code "web"} en cualquier otro caso,
+     * incluyendo cuando el User-Agent es {@code null}.
      */
     public static String getDevice(String userAgent) {
         String deviceType = "web";

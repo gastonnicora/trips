@@ -1,41 +1,23 @@
 package com.gastonnicora.trips.helpers;
 
-import java.util.UUID;
-
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 public class CompanyApiTestClient {
 
     private final MockMvc mockMvc;
-    private String token;
-
     private final ObjectMapper objectMapper;
+    private String token;
 
     public CompanyApiTestClient(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-    }
-
-    public CompanyApiTestClient withToken(String token) {
-        this.token = token;
-        return this;
-    }
-
-    public record CompanyCreateTest(
-            String name,
-            String email,
-            String phone,
-            Double latitude,
-            Double longitude) {
-
     }
 
     public ResultActions createCompany(String name, String email, String phone, Double latitude, Double longitude)
@@ -56,19 +38,10 @@ public class CompanyApiTestClient {
                 .content(json));
     }
 
-    public ResultActions getCompany(UUID uuid)
+    public ResultActions deleteCompany(UUID uuid)
             throws Exception {
 
-        return mockMvc.perform(get("/api/companies/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
-    }
-
-    public ResultActions getCompaniesByOwner(UUID uuid)
-            throws Exception {
-
-        return mockMvc.perform(get("/api/companies/owner/" + uuid)
+        return mockMvc.perform(delete("/api/companies/" + uuid)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test"));
@@ -83,8 +56,26 @@ public class CompanyApiTestClient {
                 .header("User-Agent", "JUnit-Test"));
     }
 
+    public ResultActions getCompaniesByOwner(UUID uuid)
+            throws Exception {
+
+        return mockMvc.perform(get("/api/companies/owner/" + uuid)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test"));
+    }
+
+    public ResultActions getCompany(UUID uuid)
+            throws Exception {
+
+        return mockMvc.perform(get("/api/companies/" + uuid)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test"));
+    }
+
     public ResultActions updateCompany(UUID uuid, String name, String email, String phone, Double latitude,
-            Double longitude)
+                                       Double longitude)
             throws Exception {
         CompanyCreateTest body = new CompanyCreateTest(
                 name,
@@ -102,13 +93,18 @@ public class CompanyApiTestClient {
                 .content(json));
     }
 
-    public ResultActions deleteCompany(UUID uuid)
-            throws Exception {
+    public CompanyApiTestClient withToken(String token) {
+        this.token = token;
+        return this;
+    }
 
-        return mockMvc.perform(delete("/api/companies/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+    public record CompanyCreateTest(
+            String name,
+            String email,
+            String phone,
+            Double latitude,
+            Double longitude) {
+
     }
 
 }

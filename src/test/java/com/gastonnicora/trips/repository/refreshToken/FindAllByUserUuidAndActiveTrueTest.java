@@ -1,22 +1,21 @@
 package com.gastonnicora.trips.repository.refreshToken;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import com.gastonnicora.trips.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.entities.RefreshToken;
-import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
-import com.gastonnicora.trips.repositories.UserRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -28,6 +27,14 @@ class FindAllByUserUuidAndActiveTrueTest {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
+
+    @Test
+    void shouldReturnEmptyWhenRefreshTokenDoesNotExist() {
+        Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken("non-existent-token");
+
+        assertFalse(found.isPresent());
+
+    }
 
     @Test
     void shouldReturnTokenWhenRefreshTokenExists() {
@@ -49,14 +56,6 @@ class FindAllByUserUuidAndActiveTrueTest {
         List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
         assertFalse(found.isEmpty());
-        assertTrue(found.get(0).equals(rt));
-    }
-
-    @Test
-    void shouldReturnEmptyWhenRefreshTokenDoesNotExist() {
-        Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken("non-existent-token");
-
-        assertFalse(found.isPresent());
-
+        assertEquals(found.get(0), rt);
     }
 }

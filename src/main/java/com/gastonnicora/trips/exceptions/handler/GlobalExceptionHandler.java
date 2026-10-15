@@ -1,10 +1,10 @@
 package com.gastonnicora.trips.exceptions.handler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.gastonnicora.trips.exceptions.*;
+import com.gastonnicora.trips.exceptions.dtos.*;
+import io.jsonwebtoken.JwtException;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,24 +16,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.gastonnicora.trips.exceptions.BadRequestException;
-import com.gastonnicora.trips.exceptions.ConflictException;
-import com.gastonnicora.trips.exceptions.ForbiddenException;
-import com.gastonnicora.trips.exceptions.InternalErrorException;
-import com.gastonnicora.trips.exceptions.NotFoundException;
-import com.gastonnicora.trips.exceptions.UnauthorizedException;
-import com.gastonnicora.trips.exceptions.ValidationException;
-import com.gastonnicora.trips.exceptions.dtos.BadRequestApiError;
-import com.gastonnicora.trips.exceptions.dtos.ConflictApiError;
-import com.gastonnicora.trips.exceptions.dtos.ForbiddenApiError;
-import com.gastonnicora.trips.exceptions.dtos.InternalServerErrorApiError;
-import com.gastonnicora.trips.exceptions.dtos.NotFoundApiError;
-import com.gastonnicora.trips.exceptions.dtos.UnauthorizedApiError;
-import com.gastonnicora.trips.exceptions.dtos.ValidationApiError;
-
-import io.jsonwebtoken.JwtException;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manejador global de excepciones de la API.
@@ -66,6 +52,118 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
+     * Maneja errores de autenticación producidos por credenciales inválidas.
+     * <p>
+     * Devuelve una respuesta estandarizada con código HTTP 401.
+     * </p>
+     *
+     * @param ex Excepción producida por credenciales inválidas.
+     *
+     * @return {@link UnauthorizedApiError} con el mensaje correspondiente al
+     * error de autenticación.
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public UnauthorizedApiError handleBadCredentialsException(BadCredentialsException ex) {
+        return new UnauthorizedApiError("No autenticado o token inválido");
+    }
+
+    /**
+     * Maneja solicitudes incorrectas producidas por peticiones mal formadas o
+     * argumentos no válidos.
+     * <p>
+     * Contempla, entre otros casos, errores al interpretar el contenido de la
+     * solicitud y argumentos que no pueden procesarse correctamente.
+     * </p>
+     *
+     * @param ex Excepción producida durante el procesamiento de la solicitud.
+     *
+     * @return {@link BadRequestApiError} con los detalles del error y código
+     * HTTP 400.
+     */
+    @ExceptionHandler({
+            HttpMessageNotReadableException.class,
+            IllegalArgumentException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BadRequestApiError handleBadRequest(Exception ex) {
+        return new BadRequestApiError("Solicitud inválida: " + ex.getMessage());
+    }
+
+    /**
+     * Maneja la excepción personalizada de solicitud incorrecta.
+     * <p>
+     * Devuelve una respuesta estandarizada con código HTTP 400 utilizando el
+     * mensaje proporcionado por la excepción.
+     * </p>
+     *
+     * @param ex {@link BadRequestException} producida durante el procesamiento
+     *           de la solicitud.
+     *
+     * @return {@link BadRequestApiError} con los detalles de la excepción.
+     */
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BadRequestApiError handleBadRequest(BadRequestException ex) {
+        return new BadRequestApiError(ex.getMessage());
+    }
+
+    /**
+     * Maneja errores relacionados con tokens JWT inválidos o expirados.
+     * <p>
+     * Devuelve una respuesta estandarizada con código HTTP 401.
+     * </p>
+     *
+     * @param ex Excepción producida durante la validación del token JWT.
+     *
+     * @return {@link UnauthorizedApiError} indicando que el token no es válido
+     * o ha expirado.
+     */
+    @ExceptionHandler(JwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public UnauthorizedApiError handleBadTokenException(JwtException ex) {
+        return new UnauthorizedApiError("Token inválido o expirado");
+    }
+
+    /**
+     * Maneja la excepción personalizada de conflicto.
+     * <p>
+     * Devuelve una respuesta estandarizada con código HTTP 409 utilizando el
+     * mensaje proporcionado por la excepción.
+     * </p>
+     *
+     * @param ex {@link ConflictException} producida cuando existe un conflicto
+     *           con el estado actual del recurso.
+     *
+     * @return {@link ConflictApiError} con los detalles de la excepción.
+     */
+    @ExceptionHandler(ConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ConflictApiError handleConflict(ConflictException ex) {
+        return new ConflictApiError(ex.getMessage());
+    }
+
+    /**
+     * Maneja las excepciones relacionadas con el acceso prohibido.
+     * <p>
+     * Contempla tanto la excepción personalizada {@link ForbiddenException}
+     * como los errores de autorización generados por Spring Security mediante
+     * {@link AuthorizationDeniedException}.
+     * </p>
+     *
+     * @param ex Excepción producida cuando el acceso al recurso no está
+     *           permitido.
+     *
+     * @return {@link ForbiddenApiError} con los detalles de la excepción y
+     * código HTTP 403.
+     */
+    @ExceptionHandler({ForbiddenException.class, AuthorizationDeniedException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ForbiddenApiError handleForbidden(Exception ex) {
+        return new ForbiddenApiError(ex.getMessage());
+    }
+
+    /**
      * Maneja errores internos producidos durante el procesamiento de una
      * solicitud y devuelve una respuesta estandarizada con código HTTP 500.
      * <p>
@@ -85,12 +183,13 @@ public class GlobalExceptionHandler {
      * </p>
      *
      * @param ex Excepción capturada durante el procesamiento de la solicitud.
+     *
      * @return {@link InternalServerErrorApiError} con la información del error
      * interno.
      */
     @ExceptionHandler({
-        RuntimeException.class,
-        InternalErrorException.class
+            RuntimeException.class,
+            InternalErrorException.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public InternalServerErrorApiError handleInternalErrors(Exception ex) {
@@ -104,107 +203,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja los errores de validación producidos cuando los datos recibidos no
-     * cumplen las restricciones de validación configuradas.
-     * <p>
-     * Recopila los errores específicos de cada campo y los errores globales en
-     * un mapa, agrupando los mensajes asociados a cada elemento.
-     * </p>
-     *
-     * @param ex Excepción de validación generada por Spring.
-     * @return {@link ValidationApiError} con los errores de validación
-     * agrupados por campo u objeto.
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ValidationApiError handleValidationErrors(MethodArgumentNotValidException ex) {
-
-        Map<String, List<String>> errors = new HashMap<>();
-
-        // Errores específicos de campo
-        ex.getBindingResult().getFieldErrors()
-                .forEach(error -> errors.computeIfAbsent(error.getField(), k -> new ArrayList<>())
-                .add(error.getDefaultMessage()));
-
-        // Errores globales (por ejemplo @Valid en objetos anidados)
-        ex.getBindingResult().getGlobalErrors()
-                .forEach(error -> errors.computeIfAbsent(error.getObjectName(), k -> new ArrayList<>())
-                .add(error.getDefaultMessage()));
-
-        return new ValidationApiError(errors);
-    }
-
-    /**
-     * Maneja errores de autenticación producidos por credenciales inválidas.
-     * <p>
-     * Devuelve una respuesta estandarizada con código HTTP 401.
-     * </p>
-     *
-     * @param ex Excepción producida por credenciales inválidas.
-     * @return {@link UnauthorizedApiError} con el mensaje correspondiente al
-     * error de autenticación.
-     */
-    @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public UnauthorizedApiError handleBadCredentialsException(BadCredentialsException ex) {
-        return new UnauthorizedApiError("No autenticado o token inválido");
-    }
-
-    /**
-     * Maneja errores relacionados con tokens JWT inválidos o expirados.
-     * <p>
-     * Devuelve una respuesta estandarizada con código HTTP 401.
-     * </p>
-     *
-     * @param ex Excepción producida durante la validación del token JWT.
-     * @return {@link UnauthorizedApiError} indicando que el token no es válido
-     * o ha expirado.
-     */
-    @ExceptionHandler(JwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public UnauthorizedApiError handleBadTokenException(JwtException ex) {
-        return new UnauthorizedApiError("Token inválido o expirado");
-    }
-
-    /**
-     * Maneja solicitudes incorrectas producidas por peticiones mal formadas o
-     * argumentos no válidos.
-     * <p>
-     * Contempla, entre otros casos, errores al interpretar el contenido de la
-     * solicitud y argumentos que no pueden procesarse correctamente.
-     * </p>
-     *
-     * @param ex Excepción producida durante el procesamiento de la solicitud.
-     * @return {@link BadRequestApiError} con los detalles del error y código
-     * HTTP 400.
-     */
-    @ExceptionHandler({
-        HttpMessageNotReadableException.class,
-        IllegalArgumentException.class
-    })
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BadRequestApiError handleBadRequest(Exception ex) {
-        return new BadRequestApiError("Solicitud inválida: " + ex.getMessage());
-    }
-
-    /**
-     * Maneja la excepción personalizada de solicitud incorrecta.
-     * <p>
-     * Devuelve una respuesta estandarizada con código HTTP 400 utilizando el
-     * mensaje proporcionado por la excepción.
-     * </p>
-     *
-     * @param ex {@link BadRequestException} producida durante el procesamiento
-     * de la solicitud.
-     * @return {@link BadRequestApiError} con los detalles de la excepción.
-     */
-    @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BadRequestApiError handleBadRequest(BadRequestException ex) {
-        return new BadRequestApiError(ex.getMessage());
-    }
-
-    /**
      * Maneja la excepción personalizada de recurso no encontrado.
      * <p>
      * Devuelve una respuesta estandarizada con código HTTP 404 utilizando el
@@ -212,32 +210,14 @@ public class GlobalExceptionHandler {
      * </p>
      *
      * @param ex {@link NotFoundException} producida cuando no se encuentra el
-     * recurso solicitado.
+     *           recurso solicitado.
+     *
      * @return {@link NotFoundApiError} con los detalles de la excepción.
      */
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public NotFoundApiError handleNotFound(NotFoundException ex) {
         return new NotFoundApiError(ex.getMessage());
-    }
-
-    /**
-     * Maneja las excepciones relacionadas con el acceso prohibido.
-     * <p>
-     * Contempla tanto la excepción personalizada {@link ForbiddenException}
-     * como los errores de autorización generados por Spring Security mediante
-     * {@link AuthorizationDeniedException}.
-     * </p>
-     *
-     * @param ex Excepción producida cuando el acceso al recurso no está
-     * permitido.
-     * @return {@link ForbiddenApiError} con los detalles de la excepción y
-     * código HTTP 403.
-     */
-    @ExceptionHandler({ForbiddenException.class, AuthorizationDeniedException.class})
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ForbiddenApiError handleForbidden(Exception ex) {
-        return new ForbiddenApiError(ex.getMessage());
     }
 
     /**
@@ -248,7 +228,8 @@ public class GlobalExceptionHandler {
      * </p>
      *
      * @param ex {@link UnauthorizedException} producida durante el proceso de
-     * autenticación.
+     *           autenticación.
+     *
      * @return {@link UnauthorizedApiError} con los detalles de la excepción.
      */
     @ExceptionHandler(UnauthorizedException.class)
@@ -265,7 +246,8 @@ public class GlobalExceptionHandler {
      * </p>
      *
      * @param ex {@link ValidationException} que contiene los errores de
-     * validación.
+     *           validación.
+     *
      * @return {@link ValidationApiError} con los errores de validación
      * proporcionados por la excepción.
      */
@@ -276,20 +258,35 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja la excepción personalizada de conflicto.
+     * Maneja los errores de validación producidos cuando los datos recibidos no
+     * cumplen las restricciones de validación configuradas.
      * <p>
-     * Devuelve una respuesta estandarizada con código HTTP 409 utilizando el
-     * mensaje proporcionado por la excepción.
+     * Recopila los errores específicos de cada campo y los errores globales en
+     * un mapa, agrupando los mensajes asociados a cada elemento.
      * </p>
      *
-     * @param ex {@link ConflictException} producida cuando existe un conflicto
-     * con el estado actual del recurso.
-     * @return {@link ConflictApiError} con los detalles de la excepción.
+     * @param ex Excepción de validación generada por Spring.
+     *
+     * @return {@link ValidationApiError} con los errores de validación
+     * agrupados por campo u objeto.
      */
-    @ExceptionHandler(ConflictException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ConflictApiError handleConflict(ConflictException ex) {
-        return new ConflictApiError(ex.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationApiError handleValidationErrors(MethodArgumentNotValidException ex) {
+
+        Map<String, List<String>> errors = new HashMap<>();
+
+        // Errores específicos de campo
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.computeIfAbsent(error.getField(), k -> new ArrayList<>())
+                        .add(error.getDefaultMessage()));
+
+        // Errores globales (por ejemplo @Valid en objetos anidados)
+        ex.getBindingResult().getGlobalErrors()
+                .forEach(error -> errors.computeIfAbsent(error.getObjectName(), k -> new ArrayList<>())
+                        .add(error.getDefaultMessage()));
+
+        return new ValidationApiError(errors);
     }
 
 }

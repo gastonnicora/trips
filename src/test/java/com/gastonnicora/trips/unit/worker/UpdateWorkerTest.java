@@ -1,20 +1,5 @@
 package com.gastonnicora.trips.unit.worker;
 
-import java.util.Set;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
@@ -24,6 +9,21 @@ import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.WorkerMapper;
 import com.gastonnicora.trips.repositories.WorkerRepository;
 import com.gastonnicora.trips.services.WorkerService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Set;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UpdateWorkerTest {
@@ -36,6 +36,19 @@ class UpdateWorkerTest {
 
     @Mock
     private WorkerMapper workerMapper;
+
+    @Test
+    void shouldThrowNotFoundExceptionWhenWorkerDoesNotExist() {
+        UUID userUuid = UUID.randomUUID();
+        UUID companyUuid = UUID.randomUUID();
+
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid))
+                .thenReturn(java.util.Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            workerService.updateWorker(userUuid, companyUuid, Set.of(RoleCompany.ADMIN));
+        });
+    }
 
     @Test
     void shouldUpdateWorkerSuccessfully() {
@@ -68,19 +81,6 @@ class UpdateWorkerTest {
         assertEquals(Set.of(RoleCompany.ADMIN), updated.getRoles());
 
         verify(workerRepository).findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid);
-    }
-
-    @Test
-    void shouldThrowNotFoundExceptionWhenWorkerDoesNotExist() {
-        UUID userUuid = UUID.randomUUID();
-        UUID companyUuid = UUID.randomUUID();
-
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid))
-                .thenReturn(java.util.Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> {
-            workerService.updateWorker(userUuid, companyUuid, Set.of(RoleCompany.ADMIN));
-        });
     }
 
 }

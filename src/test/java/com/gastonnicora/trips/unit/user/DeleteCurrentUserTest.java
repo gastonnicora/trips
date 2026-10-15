@@ -1,29 +1,5 @@
 package com.gastonnicora.trips.unit.user;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.exceptions.NotFoundException;
@@ -31,6 +7,25 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.UserDetailsImpl;
 import com.gastonnicora.trips.services.RefreshTokenService;
 import com.gastonnicora.trips.services.UserService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DeleteCurrentUserTest {
@@ -47,6 +42,20 @@ class DeleteCurrentUserTest {
     @AfterEach
     void cleanup() {
         SecurityContextHolder.clearContext();
+    }
+
+    private void context(UUID uuid) {
+        // 🔧 Mock SecurityContext
+        UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
+        when(userDetails.getUuid()).thenReturn(uuid);
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(userDetails);
+
+        SecurityContext context = mock(SecurityContext.class);
+        when(context.getAuthentication()).thenReturn(auth);
+
+        SecurityContextHolder.setContext(context);
     }
 
     @Test
@@ -90,19 +99,5 @@ class DeleteCurrentUserTest {
         verify(userRepository).findByUuid(uuid);
         verify(refreshTokenService, never()).deactivateAllByUserUuid(any());
         verify(userRepository, never()).save(any());
-    }
-
-    private void context(UUID uuid) {
-        // 🔧 Mock SecurityContext
-        UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-        when(userDetails.getUuid()).thenReturn(uuid);
-
-        Authentication auth = mock(Authentication.class);
-        when(auth.getPrincipal()).thenReturn(userDetails);
-
-        SecurityContext context = mock(SecurityContext.class);
-        when(context.getAuthentication()).thenReturn(auth);
-
-        SecurityContextHolder.setContext(context);
     }
 }

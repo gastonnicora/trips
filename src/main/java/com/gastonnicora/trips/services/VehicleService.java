@@ -1,9 +1,5 @@
 package com.gastonnicora.trips.services;
 
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
 import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import com.gastonnicora.trips.dtos.request.vehicle.VehicleCreate;
 import com.gastonnicora.trips.entities.Company;
@@ -13,8 +9,10 @@ import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.VehicleMapper;
 import com.gastonnicora.trips.repositories.VehicleRepository;
-
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * Servicio encargado de gestionar los vehículos asociados a empresas.
@@ -48,20 +46,6 @@ public class VehicleService {
     }
 
     /**
-     * Busca un vehículo activo mediante su UUID.
-     *
-     * @param vehicleUuid UUID del vehículo que se desea obtener.
-     * @return {@link Vehicle} correspondiente al vehículo encontrado.
-     * @throws NotFoundException Si el vehículo no existe o se encuentra
-     *                           inactivo.
-     * @see VehicleRepository#findByUuidAndActiveTrue(UUID)
-     */
-    public Vehicle findByUuid(UUID vehicleUuid) {
-        return vehicleRepository.findByUuidAndActiveTrue(vehicleUuid)
-                .orElseThrow(() -> new NotFoundException("Vehículo no encontrado"));
-    }
-
-    /**
      * Crea un nuevo vehículo asociado a una empresa.
      *
      * <p>
@@ -71,7 +55,9 @@ public class VehicleService {
      *
      * @param company       Empresa({@link Company}) a la que se asociará el vehículo.
      * @param vehicleCreate Datos del vehículo que se desea crear ({@link VehicleCreate}).
+     *
      * @return {@link VehicleDTO} correspondiente al vehículo creado.
+     *
      * @throws ConflictException Si ya existe un vehículo activo con la misma
      *                           patente para la empresa.
      * @see VehicleRepository#findByCompanyUuidAndPlateAndActiveTrue(UUID, String)
@@ -99,6 +85,7 @@ public class VehicleService {
      *
      * @param companyUuid UUID de la empresa a la que debe pertenecer el vehículo.
      * @param vehicleUuid UUID del vehículo que se desea desactivar.
+     *
      * @throws ForbiddenException Si el vehículo no pertenece a la empresa
      *                            indicada.
      * @see VehicleService#findByUuid(UUID)
@@ -114,11 +101,29 @@ public class VehicleService {
     }
 
     /**
+     * Busca un vehículo activo mediante su UUID.
+     *
+     * @param vehicleUuid UUID del vehículo que se desea obtener.
+     *
+     * @return {@link Vehicle} correspondiente al vehículo encontrado.
+     *
+     * @throws NotFoundException Si el vehículo no existe o se encuentra
+     *                           inactivo.
+     * @see VehicleRepository#findByUuidAndActiveTrue(UUID)
+     */
+    public Vehicle findByUuid(UUID vehicleUuid) {
+        return vehicleRepository.findByUuidAndActiveTrue(vehicleUuid)
+                .orElseThrow(() -> new NotFoundException("Vehículo no encontrado"));
+    }
+
+    /**
      * Obtiene un vehículo activo mediante su UUID.
      *
      * @param vehicleUuid UUID del vehículo que se desea obtener.
      * @param companyUuid UUID de la compañía propietaria del vehiculo.
+     *
      * @return {@link VehicleDTO} correspondiente al vehículo encontrado.
+     *
      * @throws ForbiddenException Si el vehículo no pertenece a la compañía.
      * @see VehicleService#findByUuid(UUID)
      * @see VehicleMapper#toDTO(Vehicle)

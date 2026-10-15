@@ -1,33 +1,16 @@
 package com.gastonnicora.trips.helpers;
 
-import static org.hamcrest.Matchers.notNullValue;
-
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import tools.jackson.databind.ObjectMapper;
+
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
-
-import tools.jackson.databind.ObjectMapper;
-
 public class UserTestFactory {
-
-    // registra un usuario y devuelve un nuevo usuario
-    public static UserDTO registerUser(MockMvc mockMvc, String name, String pass) throws Exception {
-        String email = name + "_" + System.currentTimeMillis() + "@test.com";
-        UserApiTestClient userApi = new UserApiTestClient(mockMvc);
-        MvcResult result = userApi.register(name, "Perez", email, pass, pass)
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String responseJson = result.getResponse().getContentAsString();
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        return mapper.readValue(responseJson, UserDTO.class);
-    }
 
     // hace login de un usuario y devuelve el token
     public static LoginResponse login(MockMvc mockMvc, String email, String pass) throws Exception {
@@ -60,8 +43,8 @@ public class UserTestFactory {
         return mapper.readValue(responseJson, LoginResponse.class);
     }
 
-    public static String registerAndLogin(MockMvc mockMvc)throws Exception{
-        String pass= "goodPassword";
+    public static String registerAndLogin(MockMvc mockMvc) throws Exception {
+        String pass = "goodPassword";
         UserDTO user = UserTestFactory.registerUser(
                 mockMvc,
                 "UserGeneric",
@@ -71,6 +54,21 @@ public class UserTestFactory {
         return UserTestFactory
                 .login(mockMvc, user.getEmail(), pass)
                 .getToken();
+    }
+
+    // registra un usuario y devuelve un nuevo usuario
+    public static UserDTO registerUser(MockMvc mockMvc, String name, String pass) throws Exception {
+        String email = name + "_" + System.currentTimeMillis() + "@test.com";
+        UserApiTestClient userApi = new UserApiTestClient(mockMvc);
+        MvcResult result = userApi.register(name, "Perez", email, pass, pass)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        return mapper.readValue(responseJson, UserDTO.class);
     }
 
     public static String userJson(String name, String lastname, String email, String password, String confirmPassword) {

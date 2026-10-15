@@ -1,28 +1,5 @@
 package com.gastonnicora.trips.unit.user;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.request.user.UserPut;
 import com.gastonnicora.trips.entities.User;
@@ -34,6 +11,25 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.security.UserDetailsImpl;
 import com.gastonnicora.trips.services.RefreshTokenService;
 import com.gastonnicora.trips.services.UserService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UpdateCurrentUserTest {
@@ -53,58 +49,6 @@ class UpdateCurrentUserTest {
     @AfterEach
     void cleanup() {
         SecurityContextHolder.clearContext();
-    }
-
-    @Test
-    void shouldReturnUserDtoWhenEmailDoesNotChange() {
-        UUID uuid = UUID.randomUUID();
-
-        User user = new User("John", "Doe", "john@mail.com", "pass", Set.of(Role.USER));
-        user.setUuid(uuid);
-        // 🔧 Mock SecurityContext
-        UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-        when(userDetails.getUuid()).thenReturn(uuid);
-
-        Authentication auth = mock(Authentication.class);
-        when(auth.getPrincipal()).thenReturn(userDetails);
-
-        SecurityContext context = mock(SecurityContext.class);
-        when(context.getAuthentication()).thenReturn(auth);
-
-        SecurityContextHolder.setContext(context);
-
-        UserPut request = new UserPut();
-        request.setName("Juan");
-        request.setLastname("Perez");
-        request.setEmail("john@mail.com");
-
-        when(userRepository.findByUuid(uuid))
-                .thenReturn(Optional.of(user));
-
-        when(userRepository.save(any(User.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
-        when(userMapper.toDTO(any(User.class)))
-                .thenReturn(new UserDTO());
-
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-
-        userService.updateCurrentUser(request);
-
-        verify(userRepository).findByUuid(uuid);
-        verify(userRepository, never()).existsByEmailAndEnabledTrue(any());
-
-        verify(userRepository).save(captor.capture());
-        verify(userMapper).toDTO(any(User.class));
-
-        verify(refreshTokenService, never()).deactivateAllByUserUuid(any());
-
-        User saved = captor.getValue();
-
-        assertEquals("Juan", saved.getName());
-        assertEquals("Perez", saved.getLastname());
-        assertEquals("john@mail.com", saved.getEmail());
-        assertEquals(0, saved.getVersion());
     }
 
     @Test
@@ -163,8 +107,11 @@ class UpdateCurrentUserTest {
     }
 
     @Test
-    void shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
+    void shouldReturnUserDtoWhenEmailDoesNotChange() {
         UUID uuid = UUID.randomUUID();
+
+        User user = new User("John", "Doe", "john@mail.com", "pass", Set.of(Role.USER));
+        user.setUuid(uuid);
         // 🔧 Mock SecurityContext
         UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
         when(userDetails.getUuid()).thenReturn(uuid);
@@ -176,25 +123,39 @@ class UpdateCurrentUserTest {
         when(context.getAuthentication()).thenReturn(auth);
 
         SecurityContextHolder.setContext(context);
+
         UserPut request = new UserPut();
         request.setName("Juan");
         request.setLastname("Perez");
-        request.setEmail("Juan@mail.com");
+        request.setEmail("john@mail.com");
 
         when(userRepository.findByUuid(uuid))
-                .thenReturn(Optional.empty());
+                .thenReturn(Optional.of(user));
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
-            userService.updateCurrentUser(request);
-        });
+        when(userRepository.save(any(User.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        assertEquals(404, ex.getStatus());
+        when(userMapper.toDTO(any(User.class)))
+                .thenReturn(new UserDTO());
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+
+        userService.updateCurrentUser(request);
 
         verify(userRepository).findByUuid(uuid);
-        verify(userRepository, never()).save(any());
-        verify(userMapper, never()).toDTO(any());
+        verify(userRepository, never()).existsByEmailAndEnabledTrue(any());
+
+        verify(userRepository).save(captor.capture());
+        verify(userMapper).toDTO(any(User.class));
+
         verify(refreshTokenService, never()).deactivateAllByUserUuid(any());
 
+        User saved = captor.getValue();
+
+        assertEquals("Juan", saved.getName());
+        assertEquals("Perez", saved.getLastname());
+        assertEquals("john@mail.com", saved.getEmail());
+        assertEquals(0, saved.getVersion());
     }
 
     @Test
@@ -236,5 +197,40 @@ class UpdateCurrentUserTest {
         verify(userRepository, never()).save(any());
         verify(userMapper, never()).toDTO(any());
         verify(refreshTokenService, never()).deactivateAllByUserUuid(any());
+    }
+
+    @Test
+    void shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
+        UUID uuid = UUID.randomUUID();
+        // 🔧 Mock SecurityContext
+        UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
+        when(userDetails.getUuid()).thenReturn(uuid);
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(userDetails);
+
+        SecurityContext context = mock(SecurityContext.class);
+        when(context.getAuthentication()).thenReturn(auth);
+
+        SecurityContextHolder.setContext(context);
+        UserPut request = new UserPut();
+        request.setName("Juan");
+        request.setLastname("Perez");
+        request.setEmail("Juan@mail.com");
+
+        when(userRepository.findByUuid(uuid))
+                .thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
+            userService.updateCurrentUser(request);
+        });
+
+        assertEquals(404, ex.getStatus());
+
+        verify(userRepository).findByUuid(uuid);
+        verify(userRepository, never()).save(any());
+        verify(userMapper, never()).toDTO(any());
+        verify(refreshTokenService, never()).deactivateAllByUserUuid(any());
+
     }
 }

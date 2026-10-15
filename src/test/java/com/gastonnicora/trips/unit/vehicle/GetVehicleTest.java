@@ -1,26 +1,24 @@
 package com.gastonnicora.trips.unit.vehicle;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.gastonnicora.trips.dtos.entities.VehicleDTO;
-import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.VehicleMapper;
 import com.gastonnicora.trips.repositories.VehicleRepository;
 import com.gastonnicora.trips.services.VehicleService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GetVehicleTest {
@@ -44,7 +42,7 @@ class GetVehicleTest {
         when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.of(vehicle));
         VehicleDTO expectedVehicleDTO = new VehicleDTO();
         when(vehicleMapper.toDTO(vehicle)).thenReturn(expectedVehicleDTO);
-        VehicleDTO result = vehicleService.getVehicle(vehicle.getUuid(),company.getUuid());
+        VehicleDTO result = vehicleService.getVehicle(vehicle.getUuid(), company.getUuid());
         verify(vehicleRepository).findByUuidAndActiveTrue(vehicle.getUuid());
         assertEquals(expectedVehicleDTO, result);
         verify(vehicleMapper).toDTO(vehicle);
@@ -57,7 +55,7 @@ class GetVehicleTest {
         Vehicle vehicle = new Vehicle();
         vehicle.setCompany(company);
         when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> vehicleService.getVehicle(vehicle.getUuid(),company.getUuid()));
+        assertThrows(NotFoundException.class, () -> vehicleService.getVehicle(vehicle.getUuid(), company.getUuid()));
         verify(vehicleRepository).findByUuidAndActiveTrue(vehicle.getUuid());
         verify(vehicleMapper, never()).toDTO(any(Vehicle.class));
     }

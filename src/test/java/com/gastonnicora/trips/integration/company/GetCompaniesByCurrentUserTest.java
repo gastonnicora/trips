@@ -1,6 +1,11 @@
 package com.gastonnicora.trips.integration.company;
 
-import static org.hamcrest.Matchers.hasItems;
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.helpers.CompanyApiTestClient;
+import com.gastonnicora.trips.helpers.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +15,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import tools.jackson.databind.ObjectMapper;
+
+import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.helpers.CompanyApiTestClient;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
-import tools.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -67,6 +66,15 @@ class GetCompaniesByCurrentUserTest {
     }
 
     @Test
+    void shouldReturnOkWhenUserHasNoCompanies() throws Exception {
+        this.token = UserTestFactory.registerAndLogin(mockMvc);
+        this.companyApi = this.companyApi.withToken(token);
+        companyApi.getCompaniesByCurrentUser()
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Empresas no encontradas"));
+    }
+
+    @Test
     void shouldReturnOkWhenUserHasTwoCompanies() throws Exception {
         MvcResult result = companyApi
                 .createCompany("Good Name2", "goodemail@mail.com", "+549112233445", -34.6037, -54.3816)
@@ -78,15 +86,6 @@ class GetCompaniesByCurrentUserTest {
                 .andExpect(jsonPath("$.data[*].name", hasItems(company.getName(), company2.getName())))
                 .andExpect(jsonPath("$.data[*].email", hasItems(company.getEmail(), company2.getEmail())))
                 .andExpect(jsonPath("$.total").value(2));
-    }
-
-    @Test
-    void shouldReturnOkWhenUserHasNoCompanies() throws Exception {
-        this.token = UserTestFactory.registerAndLogin(mockMvc);
-        this.companyApi = this.companyApi.withToken(token);
-        companyApi.getCompaniesByCurrentUser()
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Empresas no encontradas"));
     }
 
     @Test

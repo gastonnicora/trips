@@ -1,15 +1,14 @@
 package com.gastonnicora.trips.dtos.request.user;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.gastonnicora.trips.enums.Role;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * DTO utilizado para solicitar la modificación de los roles globales de un

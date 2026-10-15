@@ -1,10 +1,10 @@
 package com.gastonnicora.trips.integration.user;
 
-import java.util.Set;
-import java.util.UUID;
-
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.helpers.UserApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Set;
+import java.util.UUID;
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.helpers.UserApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-
-import jakarta.transaction.Transactional;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -29,16 +28,15 @@ import jakarta.transaction.Transactional;
 @Transactional
 class GetUserByUuidTest {
 
+    private final String userPassword = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
-
     private String token;
     private UserApiTestClient userApi;
     @Value("${superadmin.email}")
     private String adminEmail;
     @Value("${superadmin.password}")
     private String adminPassword;
-    private final String userPassword = "goodPassword";
     private UserDTO user;
 
     @BeforeEach
@@ -49,15 +47,18 @@ class GetUserByUuidTest {
     }
 
     @Test
-    void shouldReturnOkWhenSuperAdminSearchesExistingUser() throws Exception {
+    void shouldReturnForbiddenWhenRegularUserSearchesAnotherUser() throws Exception {
+        String userToken = UserTestFactory.login(mockMvc, user.getEmail(), userPassword).getToken();
+        userApi.withToken(userToken);
         userApi.getUser(user.getUuid().toString())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(user.getName()))
-                .andExpect(jsonPath("$.lastname").value(user.getLastname()))
-                .andExpect(jsonPath("$.email").value(user.getEmail()))
-                .andExpect(jsonPath("$.role").isArray())
-                .andExpect(jsonPath("$.role", hasSize(1)))
-                .andExpect(jsonPath("$.role", hasItem(Role.USER.name())));
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
+        String nonExistentUuid = UUID.randomUUID().toString();
+        userApi.getUser(nonExistentUuid)
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -78,11 +79,15 @@ class GetUserByUuidTest {
     }
 
     @Test
-    void shouldReturnForbiddenWhenRegularUserSearchesAnotherUser() throws Exception {
-        String userToken = UserTestFactory.login(mockMvc, user.getEmail(), userPassword).getToken();
-        userApi.withToken(userToken);
+    void shouldReturnOkWhenSuperAdminSearchesExistingUser() throws Exception {
         userApi.getUser(user.getUuid().toString())
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(user.getName()))
+                .andExpect(jsonPath("$.lastname").value(user.getLastname()))
+                .andExpect(jsonPath("$.email").value(user.getEmail()))
+                .andExpect(jsonPath("$.role").isArray())
+                .andExpect(jsonPath("$.role", hasSize(1)))
+                .andExpect(jsonPath("$.role", hasItem(Role.USER.name())));
     }
 
     @Test
@@ -90,12 +95,5 @@ class GetUserByUuidTest {
         userApi.withToken(null);
         userApi.getUser(user.getUuid().toString())
                 .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void shouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
-        String nonExistentUuid = UUID.randomUUID().toString();
-        userApi.getUser(nonExistentUuid)
-                .andExpect(status().isNotFound());
     }
 }

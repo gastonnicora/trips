@@ -1,24 +1,22 @@
 package com.gastonnicora.trips.unit.user;
 
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.enums.Role;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.services.UserService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateSuperAdminTest {
@@ -55,6 +53,23 @@ class CreateSuperAdminTest {
         assertEquals("superAdmin@test.com", saved.getEmail());
         assertEquals("encoded-password", saved.getPassword());
         assertEquals(Set.of(Role.SUPER_ADMIN, Role.USER), saved.getRole());
+
+    }
+
+    @Test
+    void shouldThrowConflictExceptionWhenEmailIsAlreadyUsed() {
+        String email = "superAdmin@test.com";
+        String password = "password";
+
+        when(userRepository.existsByRoleContains(Role.SUPER_ADMIN)).thenReturn(false);
+        when(userRepository.existsByEmailAndEnabledTrue(email)).thenReturn(true);
+
+        userService.createSuperAdminIfNotExists(email, password);
+        verify(userRepository).existsByRoleContains(Role.SUPER_ADMIN);
+        verify(userRepository).existsByEmailAndEnabledTrue(email);
+        verify(passwordEncoder, never()).encode(password);
+
+        verify(userRepository, never()).save(any(User.class));
 
     }
 
@@ -100,23 +115,6 @@ class CreateSuperAdminTest {
         userService.createSuperAdminIfNotExists(email, password);
         verify(userRepository).existsByRoleContains(Role.SUPER_ADMIN);
         verify(userRepository, never()).existsByEmailAndEnabledTrue(email);
-        verify(passwordEncoder, never()).encode(password);
-
-        verify(userRepository, never()).save(any(User.class));
-
-    }
-
-    @Test
-    void shouldThrowConflictExceptionWhenEmailIsAlreadyUsed() {
-        String email = "superAdmin@test.com";
-        String password = "password";
-
-        when(userRepository.existsByRoleContains(Role.SUPER_ADMIN)).thenReturn(false);
-        when(userRepository.existsByEmailAndEnabledTrue(email)).thenReturn(true);
-
-        userService.createSuperAdminIfNotExists(email, password);
-        verify(userRepository).existsByRoleContains(Role.SUPER_ADMIN);
-        verify(userRepository).existsByEmailAndEnabledTrue(email);
         verify(passwordEncoder, never()).encode(password);
 
         verify(userRepository, never()).save(any(User.class));

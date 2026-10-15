@@ -1,10 +1,10 @@
 package com.gastonnicora.trips.exceptions;
 
+import org.springframework.http.HttpStatus;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.http.HttpStatus;
 
 /**
  * Excepción personalizada de la aplicación para representar errores de
@@ -64,12 +64,22 @@ public class ValidationException extends RuntimeException {
     }
 
     /**
-     * Obtiene el código HTTP asociado a la excepción.
+     * Agrega un mensaje de error asociado a un campo específico.
      *
-     * @return Código HTTP 400.
+     * <p>
+     * Si el mapa de errores no ha sido inicializado, se crea una estructura
+     * inicial para almacenar el campo y su mensaje asociado.
+     * </p>
+     *
+     * @param field   Nombre del campo que presenta el error de validación.
+     * @param message Mensaje descriptivo del error asociado al campo.
      */
-    public int getStatus() {
-        return status;
+    public void addError(String field, String message) {
+        if (errors == null) {
+            errors = Map.of(field, List.of(message));
+        } else {
+            errors.computeIfAbsent(field, k -> new ArrayList<>()).add(message);
+        }
     }
 
     /**
@@ -92,21 +102,11 @@ public class ValidationException extends RuntimeException {
     }
 
     /**
-     * Agrega un mensaje de error asociado a un campo específico.
+     * Obtiene el código HTTP asociado a la excepción.
      *
-     * <p>
-     * Si el mapa de errores no ha sido inicializado, se crea una estructura
-     * inicial para almacenar el campo y su mensaje asociado.
-     * </p>
-     *
-     * @param field   Nombre del campo que presenta el error de validación.
-     * @param message Mensaje descriptivo del error asociado al campo.
+     * @return Código HTTP 400.
      */
-    public void addError(String field, String message) {
-        if (errors == null) {
-            errors = Map.of(field, List.of(message));
-        } else {
-            errors.computeIfAbsent(field, k -> new ArrayList<>()).add(message);
-        }
+    public int getStatus() {
+        return status;
     }
 }

@@ -37,7 +37,7 @@ public class RefreshRequest {
      */
     @Schema(
             description = "Refresh token utilizado para obtener un nuevo access token. "
-            + "Opcional cuando el token se envía mediante cookie.",
+                    + "Opcional cuando el token se envía mediante cookie.",
             example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     )
     private String refreshToken;

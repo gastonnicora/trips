@@ -1,32 +1,19 @@
 package com.gastonnicora.trips.entities;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
-
 import com.gastonnicora.trips.enums.RoleCompany;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Entidad que representa la relación entre un usuario y una empresa en la que
@@ -132,9 +119,9 @@ public class Worker {
      * conjunto vacío.
      * </p>
      *
-     * @param user Usuario asociado a la relación laboral.
+     * @param user    Usuario asociado a la relación laboral.
      * @param company Empresa asociada a la relación laboral.
-     * @param roles Conjunto de roles asignados al trabajador.
+     * @param roles   Conjunto de roles asignados al trabajador.
      */
     public Worker(User user, Company company, Set<RoleCompany> roles) {
         this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
@@ -164,6 +151,7 @@ public class Worker {
      * Verifica si el trabajador tiene asignado un rol específico.
      *
      * @param role Rol a verificar.
+     *
      * @return {@code true} si el trabajador tiene asignado el rol;
      * {@code false} en caso contrario.
      */

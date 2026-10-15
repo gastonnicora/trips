@@ -1,20 +1,20 @@
 package com.gastonnicora.trips.repository.refreshToken;
 
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import com.gastonnicora.trips.entities.RefreshToken;
+import com.gastonnicora.trips.entities.User;
+import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.repositories.RefreshTokenRepository;
+import com.gastonnicora.trips.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gastonnicora.trips.entities.RefreshToken;
-import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.repositories.RefreshTokenRepository;
-import com.gastonnicora.trips.repositories.UserRepository;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -26,6 +26,13 @@ class FindByTokenTest {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
+
+    @Test
+    void shouldNotFindByTokenIfNotExist() {
+        Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken("non-existent-token");
+
+        assertFalse(found.isPresent());
+    }
 
     @Test
     void shouldReturnTokenWhenTokenExists() {
@@ -48,12 +55,5 @@ class FindByTokenTest {
 
         assertFalse(found.isEmpty());
 
-    }
-
-    @Test
-    void shouldNotFindByTokenIfNotExist() {
-        Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken("non-existent-token");
-
-        assertFalse(found.isPresent());
     }
 }

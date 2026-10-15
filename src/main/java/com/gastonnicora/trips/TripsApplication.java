@@ -35,6 +35,7 @@ public class TripsApplication implements CommandLineRunner {
      * </p>
      *
      * @param args argumentos recibidos durante el inicio de la aplicación.
+     *
      * @throws Exception Si ocurre un error durante la ejecución del proceso de
      *                   inicio.
      */

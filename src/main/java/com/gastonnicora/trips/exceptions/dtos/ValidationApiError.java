@@ -1,11 +1,10 @@
 package com.gastonnicora.trips.exceptions.dtos;
 
-import java.util.List;
-import java.util.Map;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Representa un error de validación correspondiente al código de estado HTTP
@@ -52,7 +51,7 @@ public class ValidationApiError extends ApiError {
      * </p>
      *
      * @param errors Mapa que contiene los mensajes de error asociados a cada
-     * campo.
+     *               campo.
      */
     public ValidationApiError(Map<String, List<String>> errors) {
         super(

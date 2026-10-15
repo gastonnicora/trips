@@ -1,11 +1,7 @@
 package com.gastonnicora.trips.config;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.tags.Tag;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.method.HandlerMethod;
 
-import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.tags.Tag;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Configuración para personalizar la documentación de OpenAPI generada por
@@ -62,7 +61,7 @@ public class SwaggerConfigCustomer {
      * </p>
      *
      * @return {@link OperationCustomizer} encargado de personalizar las
-     *         operaciones de OpenAPI
+     * operaciones de OpenAPI
      */
     @Bean
     public OperationCustomizer customizePreAuthorize() {
@@ -91,31 +90,6 @@ public class SwaggerConfigCustomer {
     }
 
     /**
-     * Ordena alfabéticamente las etiquetas de la documentación de OpenAPI.
-     *
-     * <p>
-     * Si la definición de OpenAPI no contiene etiquetas, no se realiza ninguna
-     * modificación.
-     * </p>
-     *
-     * @return {@link OpenApiCustomizer} encargado de ordenar las etiquetas
-     */
-    @Bean
-    public OpenApiCustomizer sortTagsAlphabetically() {
-        return openApi -> {
-
-            if (openApi.getTags() == null) {
-                return;
-            }
-
-            openApi.setTags(
-                    openApi.getTags().stream()
-                            .sorted(Comparator.comparing(Tag::getName))
-                            .toList());
-        };
-    }
-
-    /**
      * Extrae los roles definidos en una expresión de {@link PreAuthorize}.
      *
      * <p>
@@ -137,8 +111,9 @@ public class SwaggerConfigCustomer {
      *
      * @param expression expresión de {@link PreAuthorize} que contiene las
      *                   reglas de autorización
+     *
      * @return roles extraídos de la expresión, separados por comas, o la
-     *         expresión original si no se encuentra ningún rol
+     * expresión original si no se encuentra ningún rol
      */
     private String extractRoles(String expression) {
         List<String> roles = new ArrayList<>();
@@ -203,5 +178,30 @@ public class SwaggerConfigCustomer {
         }
 
         return String.join(", ", roles);
+    }
+
+    /**
+     * Ordena alfabéticamente las etiquetas de la documentación de OpenAPI.
+     *
+     * <p>
+     * Si la definición de OpenAPI no contiene etiquetas, no se realiza ninguna
+     * modificación.
+     * </p>
+     *
+     * @return {@link OpenApiCustomizer} encargado de ordenar las etiquetas
+     */
+    @Bean
+    public OpenApiCustomizer sortTagsAlphabetically() {
+        return openApi -> {
+
+            if (openApi.getTags() == null) {
+                return;
+            }
+
+            openApi.setTags(
+                    openApi.getTags().stream()
+                            .sorted(Comparator.comparing(Tag::getName))
+                            .toList());
+        };
     }
 }

@@ -1,10 +1,6 @@
 package com.gastonnicora.trips.dtos.request.worker;
 
-import java.util.Set;
-import java.util.UUID;
-
 import com.gastonnicora.trips.enums.RoleCompany;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * DTO utilizado para solicitar la incorporación de un usuario como trabajador

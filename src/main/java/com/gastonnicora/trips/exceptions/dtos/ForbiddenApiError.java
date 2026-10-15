@@ -1,8 +1,7 @@
 package com.gastonnicora.trips.exceptions.dtos;
 
-import org.springframework.http.HttpStatus;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.http.HttpStatus;
 
 /**
  * Representa un error de acceso prohibido correspondiente al código de estado

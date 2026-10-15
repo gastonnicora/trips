@@ -1,10 +1,11 @@
 package com.gastonnicora.trips.integration.user;
 
-import java.util.Set;
-
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.enums.Role;
+import com.gastonnicora.trips.helpers.UserApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.jayway.jsonpath.JsonPath;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +15,12 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.Set;
+
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.helpers.UserApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.jayway.jsonpath.JsonPath;
-
-import jakarta.transaction.Transactional;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -31,16 +28,15 @@ import jakarta.transaction.Transactional;
 @Transactional
 class ChangeUserRoleTest {
 
+    private final String userPassword = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
-
     private String token;
     private UserApiTestClient userApi;
     @Value("${superadmin.email}")
     private String adminEmail;
     @Value("${superadmin.password}")
     private String adminPassword;
-    private final String userPassword = "goodPassword";
     private UserDTO user;
 
     @BeforeEach
@@ -48,39 +44,6 @@ class ChangeUserRoleTest {
         token = UserTestFactory.login(mockMvc, adminEmail, adminPassword).getToken();
         this.userApi = new UserApiTestClient(mockMvc).withToken(token);
         this.user = UserTestFactory.registerUser(mockMvc, "User", userPassword);
-    }
-
-    @Test
-    void shouldReturnOkWhenAdminRoleIsAdded() throws Exception {
-        userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.role").isArray())
-                .andExpect(jsonPath("$.role", hasSize(2)))
-                .andExpect(jsonPath("$.role", hasItem(Role.ADMIN.name())))// se puede sustituir por
-                // containsInAnyOrder("ADMIN",
-                // "OTRO_ROLE")
-                .andExpect(jsonPath("$.role", hasItem(Role.USER.name()))); // User siempre esta
-    }
-
-    @Test
-    void shouldReturnOkWhenMultipleRolesAreAdded() throws Exception {
-        Set<Role> roles = Set.of(Role.USER, Role.HR_MANAGER, Role.ADMIN);
-        userApi.changeRole(user.getUuid().toString(), roles)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.role").isArray())
-                .andExpect(jsonPath("$.role", hasSize(3)))
-                .andExpect(jsonPath("$.role", containsInAnyOrder("ADMIN", "HR_MANAGER", "USER")));
-    }
-
-    @Test
-    void shouldReturnOkWhenAdminRoleIsRemoved() throws Exception {
-        Set<Role> roles = Set.of(Role.USER, Role.HR_MANAGER, Role.ADMIN);
-        userApi.changeRole(user.getUuid().toString(), roles)
-                .andExpect(status().isOk());
-        userApi.changeRole(user.getUuid().toString(), Set.of(Role.USER))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.role", hasSize(1)))
-                .andExpect(jsonPath("$.role", hasItem(Role.USER.name())));
     }
 
     @Test
@@ -104,6 +67,39 @@ class ChangeUserRoleTest {
         userApi.withToken(tokenUser);
         userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnOkWhenAdminRoleIsAdded() throws Exception {
+        userApi.changeRole(user.getUuid().toString(), Set.of(Role.ADMIN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.role").isArray())
+                .andExpect(jsonPath("$.role", hasSize(2)))
+                .andExpect(jsonPath("$.role", hasItem(Role.ADMIN.name())))// se puede sustituir por
+                // containsInAnyOrder("ADMIN",
+                // "OTRO_ROLE")
+                .andExpect(jsonPath("$.role", hasItem(Role.USER.name()))); // User siempre esta
+    }
+
+    @Test
+    void shouldReturnOkWhenAdminRoleIsRemoved() throws Exception {
+        Set<Role> roles = Set.of(Role.USER, Role.HR_MANAGER, Role.ADMIN);
+        userApi.changeRole(user.getUuid().toString(), roles)
+                .andExpect(status().isOk());
+        userApi.changeRole(user.getUuid().toString(), Set.of(Role.USER))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.role", hasSize(1)))
+                .andExpect(jsonPath("$.role", hasItem(Role.USER.name())));
+    }
+
+    @Test
+    void shouldReturnOkWhenMultipleRolesAreAdded() throws Exception {
+        Set<Role> roles = Set.of(Role.USER, Role.HR_MANAGER, Role.ADMIN);
+        userApi.changeRole(user.getUuid().toString(), roles)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.role").isArray())
+                .andExpect(jsonPath("$.role", hasSize(3)))
+                .andExpect(jsonPath("$.role", containsInAnyOrder("ADMIN", "HR_MANAGER", "USER")));
     }
 
     @Test

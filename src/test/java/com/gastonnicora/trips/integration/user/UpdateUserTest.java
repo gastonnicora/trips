@@ -1,9 +1,9 @@
 package com.gastonnicora.trips.integration.user;
 
-import static org.hamcrest.Matchers.notNullValue;
-
-import java.util.stream.Stream;
-
+import com.gastonnicora.trips.dtos.entities.UserDTO;
+import com.gastonnicora.trips.helpers.UserApiTestClient;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,14 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.stream.Stream;
+
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.UserDTO;
-import com.gastonnicora.trips.helpers.UserApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-
-import jakarta.transaction.Transactional;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -29,93 +27,11 @@ import jakarta.transaction.Transactional;
 @Transactional
 class UpdateUserTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     UserDTO user;
     String token;
     UserApiTestClient apiUser;
-
-    @BeforeEach
-    void setup() throws Exception {
-
-        String name = "Juan";
-        String pass = "goodPassword";
-
-        user = UserTestFactory.registerUser(mockMvc, name, pass);
-        token = UserTestFactory.login(mockMvc, user.getEmail(), pass).getToken();
-        this.apiUser = new UserApiTestClient(mockMvc).withToken(token);
-    }
-
-    @Test
-    void shouldUpdateUserSuccessfully() throws Exception {
-        final String newName = "Marta";
-        final String newLastName = "Sierra";
-
-        apiUser.update(newName, newLastName, user.getEmail())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value(user.getEmail()))
-                .andExpect(jsonPath("$.name").value(newName))
-                .andExpect(jsonPath("$.lastname").value(newLastName))
-                .andExpect(jsonPath("$.uuid").value(user.getUuid().toString()))
-                .andExpect(jsonPath("$.enabled").value(true));
-    }
-
-    @Test
-    void shouldUpdateUserEmailSuccessfully() throws Exception {
-        final String newName = "Marta";
-        final String newLastName = "Sierra";
-        final String newEmail = "martaSierra@mail.com";
-        apiUser.update(newName, newLastName, newEmail)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value(newEmail.trim().toLowerCase()))
-                .andExpect(jsonPath("$.name").value(newName))
-                .andExpect(jsonPath("$.lastname").value(newLastName));
-    }
-
-    @Test
-    void shouldReturnUnauthorizedWhenChangeEmail() throws Exception {
-        final String newName = "Marta";
-        final String newLastName = "Sierra";
-        final String newEmail = "martaSierra@mail.com";
-        apiUser.update(newName, newLastName, newEmail)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value(newEmail.trim().toLowerCase()))
-                .andExpect(jsonPath("$.name").value(newName))
-                .andExpect(jsonPath("$.lastname").value(newLastName));
-        apiUser.update(newName, newLastName, newEmail)
-                .andExpect(status().isUnauthorized());
-    }
-
-    @ParameterizedTest
-    @MethodSource("invalidUsers")
-    void shouldReturnBadRequestWhenUserFieldsAreInvalid(
-            String name,
-            String lastname,
-            String email,
-            String expectedField) throws Exception {
-        apiUser.update(name, lastname, email)
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors").exists())
-                .andExpect(
-                        jsonPath("$.errors.%s".formatted(expectedField))
-                                .value(notNullValue()));
-
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenEmailIsAlreadyInUse() throws Exception {
-        UserDTO otherUser = UserTestFactory.registerUser(mockMvc, "Maria", "goodPassword");
-        apiUser.update(user.getName(), user.getLastname(), otherUser.getEmail())
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-        apiUser.withToken("");
-        apiUser.update(user.getName(), user.getLastname(), user.getEmail())
-                .andExpect(status().isUnauthorized());
-    }
+    @Autowired
+    private MockMvc mockMvc;
 
     static Stream<Arguments> invalidUsers() {
         return Stream.of(
@@ -135,6 +51,87 @@ class UpdateUserTest {
                 Arguments.of(
                         null, null, null,
                         "email"));
+    }
+
+    @BeforeEach
+    void setup() throws Exception {
+
+        String name = "Juan";
+        String pass = "goodPassword";
+
+        user = UserTestFactory.registerUser(mockMvc, name, pass);
+        token = UserTestFactory.login(mockMvc, user.getEmail(), pass).getToken();
+        this.apiUser = new UserApiTestClient(mockMvc).withToken(token);
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenEmailIsAlreadyInUse() throws Exception {
+        UserDTO otherUser = UserTestFactory.registerUser(mockMvc, "Maria", "goodPassword");
+        apiUser.update(user.getName(), user.getLastname(), otherUser.getEmail())
+                .andExpect(status().isConflict());
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidUsers")
+    void shouldReturnBadRequestWhenUserFieldsAreInvalid(
+            String name,
+            String lastname,
+            String email,
+            String expectedField) throws Exception {
+        apiUser.update(name, lastname, email)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").exists())
+                .andExpect(
+                        jsonPath("$.errors.%s".formatted(expectedField))
+                                .value(notNullValue()));
+
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenChangeEmail() throws Exception {
+        final String newName = "Marta";
+        final String newLastName = "Sierra";
+        final String newEmail = "martaSierra@mail.com";
+        apiUser.update(newName, newLastName, newEmail)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(newEmail.trim().toLowerCase()))
+                .andExpect(jsonPath("$.name").value(newName))
+                .andExpect(jsonPath("$.lastname").value(newLastName));
+        apiUser.update(newName, newLastName, newEmail)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+        apiUser.withToken("");
+        apiUser.update(user.getName(), user.getLastname(), user.getEmail())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldUpdateUserEmailSuccessfully() throws Exception {
+        final String newName = "Marta";
+        final String newLastName = "Sierra";
+        final String newEmail = "martaSierra@mail.com";
+        apiUser.update(newName, newLastName, newEmail)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(newEmail.trim().toLowerCase()))
+                .andExpect(jsonPath("$.name").value(newName))
+                .andExpect(jsonPath("$.lastname").value(newLastName));
+    }
+
+    @Test
+    void shouldUpdateUserSuccessfully() throws Exception {
+        final String newName = "Marta";
+        final String newLastName = "Sierra";
+
+        apiUser.update(newName, newLastName, user.getEmail())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(user.getEmail()))
+                .andExpect(jsonPath("$.name").value(newName))
+                .andExpect(jsonPath("$.lastname").value(newLastName))
+                .andExpect(jsonPath("$.uuid").value(user.getUuid().toString()))
+                .andExpect(jsonPath("$.enabled").value(true));
     }
 
 }

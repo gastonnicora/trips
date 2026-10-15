@@ -1,15 +1,14 @@
 package com.gastonnicora.trips.mappers;
 
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
 import com.gastonnicora.trips.dtos.response.worker.WorkerCompany;
 import com.gastonnicora.trips.dtos.response.worker.WorkerUser;
 import com.gastonnicora.trips.dtos.response.worker.WorkersByCompany;
 import com.gastonnicora.trips.dtos.response.worker.WorkersByUser;
 import com.gastonnicora.trips.entities.Worker;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Componente encargado de convertir entidades {@link Worker} en los diferentes
@@ -32,6 +31,26 @@ public class WorkerMapper {
     }
 
     /**
+     * Convierte una entidad {@link Worker} en un {@link WorkerUser}.
+     *
+     * <p>
+     * La conversión incluye los datos de identificación, usuario, roles y estado
+     * del trabajador.
+     * </p>
+     *
+     * @param worker Entidad de trabajador que se desea convertir.
+     *
+     * @return DTO de trabajador asociado a un usuario.
+     */
+    private WorkerUser toCompanyDTO(Worker worker) {
+        return new WorkerUser(
+                worker.getUuid(),
+                userMapper.toDTO(worker.getUser()),
+                worker.getRoles(),
+                worker.isActive());
+    }
+
+    /**
      * Convierte una entidad {@link Worker} en un {@link WorkerDTO}.
      *
      * <p>
@@ -40,6 +59,7 @@ public class WorkerMapper {
      * </p>
      *
      * @param worker Entidad de trabajador que se desea convertir.
+     *
      * @return DTO de trabajador correspondiente a la entidad proporcionada.
      */
     public WorkerDTO toDTO(Worker worker) {
@@ -58,6 +78,7 @@ public class WorkerMapper {
      * {@link WorkerDTO}.
      *
      * @param workers Lista de entidades de trabajadores que se desea convertir.
+     *
      * @return Lista de DTOs de trabajadores correspondientes a las entidades proporcionadas.
      */
     public List<WorkerDTO> toDTOList(List<Worker> workers) {
@@ -67,20 +88,21 @@ public class WorkerMapper {
     }
 
     /**
-     * Convierte una entidad {@link Worker} en un {@link WorkerUser}.
+     * Convierte una entidad {@link Worker} en un {@link WorkerCompany}.
      *
      * <p>
-     * La conversión incluye los datos de identificación, usuario, roles y estado
+     * La conversión incluye los datos de identificación, empresa, roles y estado
      * del trabajador.
      * </p>
      *
      * @param worker Entidad de trabajador que se desea convertir.
-     * @return DTO de trabajador asociado a un usuario.
+     *
+     * @return DTO de trabajador asociado a una empresa.
      */
-    private WorkerUser toCompanyDTO(Worker worker) {
-        return new WorkerUser(
+    private WorkerCompany toUserDTO(Worker worker) {
+        return new WorkerCompany(
                 worker.getUuid(),
-                userMapper.toDTO(worker.getUser()),
+                companyMapper.toDTO(worker.getCompany()),
                 worker.getRoles(),
                 worker.isActive());
     }
@@ -95,6 +117,7 @@ public class WorkerMapper {
      * </p>
      *
      * @param worker Lista de entidades de trabajadores.
+     *
      * @return DTO que agrupa los trabajadores por empresa.
      */
     public WorkersByCompany toWorkersByCompanyDTO(List<Worker> worker) {
@@ -103,25 +126,6 @@ public class WorkerMapper {
                 worker.stream()
                         .map(this::toCompanyDTO)
                         .toList());
-    }
-
-    /**
-     * Convierte una entidad {@link Worker} en un {@link WorkerCompany}.
-     *
-     * <p>
-     * La conversión incluye los datos de identificación, empresa, roles y estado
-     * del trabajador.
-     * </p>
-     *
-     * @param worker Entidad de trabajador que se desea convertir.
-     * @return DTO de trabajador asociado a una empresa.
-     */
-    private WorkerCompany toUserDTO(Worker worker) {
-        return new WorkerCompany(
-                worker.getUuid(),
-                companyMapper.toDTO(worker.getCompany()),
-                worker.getRoles(),
-                worker.isActive());
     }
 
     /**
@@ -134,6 +138,7 @@ public class WorkerMapper {
      * </p>
      *
      * @param worker Lista de entidades de trabajadores.
+     *
      * @return DTO que agrupa los trabajadores por usuario.
      */
     public WorkersByUser toWorkersByUserDTO(List<Worker> worker) {

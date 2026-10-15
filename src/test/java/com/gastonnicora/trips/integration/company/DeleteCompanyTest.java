@@ -1,7 +1,11 @@
 package com.gastonnicora.trips.integration.company;
 
-import java.util.UUID;
-
+import com.gastonnicora.trips.dtos.entities.CompanyDTO;
+import com.gastonnicora.trips.helpers.CompanyApiTestClient;
+import com.gastonnicora.trips.helpers.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.services.GeocodingService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +14,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.helpers.CompanyApiTestClient;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.services.GeocodingService;
-
-import jakarta.transaction.Transactional;
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -66,13 +65,6 @@ class DeleteCompanyTest {
     }
 
     @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-        companyApi.withToken(null);
-        companyApi.deleteCompany(company.getUuid())
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
         companyApi.deleteCompany(UUID.randomUUID())
                 .andExpect(status().isForbidden());
@@ -85,5 +77,12 @@ class DeleteCompanyTest {
         companyApi.withToken(token2);
         companyApi.deleteCompany(company.getUuid())
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+        companyApi.withToken(null);
+        companyApi.deleteCompany(company.getUuid())
+                .andExpect(status().isUnauthorized());
     }
 }
