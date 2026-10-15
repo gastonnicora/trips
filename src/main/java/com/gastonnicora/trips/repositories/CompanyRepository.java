@@ -1,11 +1,10 @@
 package com.gastonnicora.trips.repositories;
 
-import java.util.Optional;
-import java.util.UUID;
-
+import com.gastonnicora.trips.entities.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.gastonnicora.trips.entities.Company;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repositorio encargado de gestionar la persistencia de entidades
@@ -22,6 +21,7 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
      * Busca una empresa por su identificador único que este activo.
      *
      * @param uuid Identificador único de la empresa.
+     *
      * @return {@link Optional} que contiene la empresa encontrada, o vacío si no existe.
      */
     Optional<Company> findByUuidAndActiveTrue(UUID uuid);

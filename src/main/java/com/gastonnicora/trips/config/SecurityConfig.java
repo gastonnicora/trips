@@ -51,15 +51,15 @@ public class SecurityConfig {
     /**
      * Crea una instancia de la configuración de seguridad.
      *
-     * @param userService              servicio utilizado por Spring Security para
+     * @param userService              ({@link UserDetailsServiceImpl})servicio utilizado por Spring Security para
      *                                 cargar los
      *                                 datos de los usuarios
-     * @param jwtFilter                filtro encargado de procesar la autenticación
+     * @param jwtFilter                ({@link JwtAuthenticationFilter})filtro encargado de procesar la autenticación
      *                                 mediante
      *                                 JWT
-     * @param accessDeniedHandler      handler encargado de gestionar accesos
+     * @param accessDeniedHandler      ({@link CustomAccessDeniedHandler}) handler encargado de gestionar accesos
      *                                 denegados
-     * @param authenticationEntryPoint handler encargado de gestionar
+     * @param authenticationEntryPoint ({@link CustomAuthenticationEntryPoint})handler encargado de gestionar
      *                                 solicitudes no autenticadas
      */
     public SecurityConfig(

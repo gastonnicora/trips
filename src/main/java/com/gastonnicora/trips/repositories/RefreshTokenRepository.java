@@ -1,15 +1,14 @@
 package com.gastonnicora.trips.repositories;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.gastonnicora.trips.entities.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gastonnicora.trips.entities.RefreshToken;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repositorio encargado de gestionar la persistencia de entidades
@@ -24,30 +23,11 @@ import com.gastonnicora.trips.entities.RefreshToken;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
 
     /**
-     * Busca un token de refresco por su valor.
-     *
-     * @param refreshToken Valor del token de refresco.
-     * @return {@link Optional} que contiene el token encontrado, o vacío si no
-     *         existe.
-     */
-    Optional<RefreshToken> findByRefreshToken(String refreshToken);
-
-    /**
-     * Obtiene todos los tokens activos asociados a un usuario.
-     *
-     * @param userUuid Identificador único del usuario.
-     * @return Lista de tokens de refresco activos asociados al usuario.
-     */
-    List<RefreshToken> findAllByUser_UuidAndActiveTrue(UUID userUuid);
-
-    /**
-     * Elimina todos los tokens asociados a un usuario.
-     *
-     * @param userUuid Identificador único del usuario.
+     * Elimina todos los tokens que se encuentran desactivados.
      */
     @Modifying
     @Transactional
-    void deleteAllByUser_Uuid(UUID userUuid);
+    void deleteAllByActiveFalse();
 
     /**
      * Elimina todos los tokens cuya fecha de expiración sea anterior a la fecha
@@ -60,11 +40,13 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     void deleteAllByExpiryDateBefore(Instant now);
 
     /**
-     * Elimina todos los tokens que se encuentran desactivados.
+     * Elimina todos los tokens asociados a un usuario.
+     *
+     * @param userUuid Identificador único del usuario.
      */
     @Modifying
     @Transactional
-    void deleteAllByActiveFalse();
+    void deleteAllByUser_Uuid(UUID userUuid);
 
     /**
      * Elimina un token de refresco por su valor.
@@ -76,30 +58,52 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
     void deleteByRefreshToken(String refreshToken);
 
     /**
-     * Busca un token por su identificador único.
+     * Verifica si existe un token de refresco con el valor indicado.
      *
-     * @param uuid Identificador único del token.
-     * @return {@link Optional} que contiene el token encontrado, o vacío si no
-     *         existe.
+     * @param refreshToken Valor del token de refresco.
+     *
+     * @return {@code true} si existe un token con el valor indicado; {@code false}
+     * en caso contrario.
      */
-    Optional<RefreshToken> findByUuid(UUID uuid);
+    boolean existsByRefreshToken(String refreshToken);
+
+    /**
+     * Obtiene todos los tokens activos asociados a un usuario.
+     *
+     * @param userUuid Identificador único del usuario.
+     *
+     * @return Lista de tokens de refresco activos asociados al usuario.
+     */
+    List<RefreshToken> findAllByUser_UuidAndActiveTrue(UUID userUuid);
+
+    /**
+     * Busca un token de refresco por su valor.
+     *
+     * @param refreshToken Valor del token de refresco.
+     *
+     * @return {@link Optional} que contiene el token encontrado, o vacío si no
+     * existe.
+     */
+    Optional<RefreshToken> findByRefreshToken(String refreshToken);
 
     /**
      * Busca un token por su valor.
      *
      * @param token Valor del token.
+     *
      * @return {@link Optional} que contiene el token encontrado, o vacío si no
-     *         existe.
+     * existe.
      */
     Optional<RefreshToken> findByToken(String token);
 
     /**
-     * Verifica si existe un token de refresco con el valor indicado.
+     * Busca un token por su identificador único.
      *
-     * @param refreshToken Valor del token de refresco.
-     * @return {@code true} si existe un token con el valor indicado; {@code false}
-     *         en caso contrario.
+     * @param uuid Identificador único del token.
+     *
+     * @return {@link Optional} que contiene el token encontrado, o vacío si no
+     * existe.
      */
-    boolean existsByRefreshToken(String refreshToken);
+    Optional<RefreshToken> findByUuid(UUID uuid);
 
 }

@@ -1,10 +1,5 @@
 package com.gastonnicora.trips.services;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.request.company.CompanyCreate;
 import com.gastonnicora.trips.dtos.response.ListResponse;
@@ -14,8 +9,12 @@ import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.CompanyMapper;
 import com.gastonnicora.trips.repositories.CompanyRepository;
-
 import jakarta.transaction.Transactional;
+import org.jspecify.annotations.NonNull;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Servicio encargado de gestionar las operaciones relacionadas con empresas.
@@ -33,8 +32,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class CompanyService {
 
-    private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
+    private final CompanyRepository companyRepository;
     private final GeocodingService geocodingService;
 
     /**
@@ -63,12 +62,14 @@ public class CompanyService {
      * </p>
      *
      * @param companyCreate Datos necesarios para crear la empresa ({@link CompanyCreate}).
+     *
      * @return {@link CompanyDTO} correspondiente a la empresa creada.
+     *
      * @throws BadRequestException Si no se puede obtener una dirección válida.
      * @see GeocodingService#obtenerDireccion(double, double)
      * @see CompanyMapper#toDTO(Company)
      */
-    public CompanyDTO createCompany(CompanyCreate companyCreate) {
+    public CompanyDTO createCompany(@NonNull CompanyCreate companyCreate) {
         AddressResponse addressR = geocodingService.obtenerDireccion(companyCreate.getLatitude(),
                 companyCreate.getLongitude());
         if (addressR.displayName() == null) {
@@ -84,10 +85,31 @@ public class CompanyService {
     }
 
     /**
+     * Desactiva una empresa mediante su identificador único.
+     *
+     * <p>
+     * La empresa no se elimina físicamente de la base de datos, sino que se
+     * marca como inactiva.
+     * </p>
+     *
+     * @param uuid Identificador único de la empresa que se desea desactivar.
+     *
+     * @see CompanyService#getCompanyEntity(UUID)
+     */
+    @Transactional
+    public void deleteCompany(UUID uuid) {
+        Company company = this.getCompanyEntity(uuid);
+        company.setActive(false);
+        companyRepository.save(company);
+    }
+
+    /**
      * Obtiene una empresa mediante su identificador único.
      *
      * @param uuid Identificador único de la empresa.
+     *
      * @return {@link CompanyDTO} correspondiente a la empresa encontrada.
+     *
      * @throws NotFoundException Si no existe una empresa con el identificador
      *                           indicado.
      * @see CompanyService#getCompanyEntity(UUID)
@@ -107,7 +129,9 @@ public class CompanyService {
      * </p>
      *
      * @param uuid Identificador único de la empresa.
+     *
      * @return {@link Company} entidad de la empresa encontrada.
+     *
      * @throws NotFoundException Si no existe una empresa con el identificador
      *                           indicado.
      */
@@ -121,7 +145,9 @@ public class CompanyService {
      * {@link ListResponse}.
      *
      * @param companies Lista de empresas que se desea convertir.
+     *
      * @return {@link ListResponse} que contiene los DTOs de las empresas.
+     *
      * @see CompanyMapper#toDTOList(List)
      */
     public ListResponse<CompanyDTO> toListResponse(List<Company> companies) {
@@ -138,7 +164,9 @@ public class CompanyService {
      *
      * @param uuid          Identificador único de la empresa que se desea actualizar.
      * @param companyCreate Nuevos datos de la empresa ({@link CompanyCreate}).
+     *
      * @return {@link CompanyDTO} correspondiente a la empresa actualizada.
+     *
      * @throws BadRequestException Si no se puede obtener una dirección válida.
      * @see CompanyService#getCompanyEntity(UUID)
      * @see GeocodingService#obtenerDireccion(double, double)
@@ -160,24 +188,6 @@ public class CompanyService {
         company.setLongitude(companyCreate.getLongitude());
         company.setAddress(address);
         return companyMapper.toDTO(companyRepository.save(company));
-    }
-
-    /**
-     * Desactiva una empresa mediante su identificador único.
-     *
-     * <p>
-     * La empresa no se elimina físicamente de la base de datos, sino que se
-     * marca como inactiva.
-     * </p>
-     *
-     * @param uuid Identificador único de la empresa que se desea desactivar.
-     * @see CompanyService#getCompanyEntity(UUID)
-     */
-    @Transactional
-    public void deleteCompany(UUID uuid) {
-        Company company = this.getCompanyEntity(uuid);
-        company.setActive(false);
-        companyRepository.save(company);
     }
 
 }

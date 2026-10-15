@@ -29,6 +29,7 @@ public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Ob
     /**
      * Inicializa el validador con los valores definidos en la anotación
      * FieldsMatch.
+     * @param  constraintAnnotation ({@link FieldsMatch}) validación igualdad de campos
      */
     @Override
     public void initialize(FieldsMatch constraintAnnotation) {

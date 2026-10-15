@@ -41,8 +41,9 @@ public class DataInitializer {
      * Si el usuario ya existe, no se crea uno nuevo.
      * </p>
      *
-     * @param userService servicio utilizado para gestionar usuarios
+     * @param userService ({@link UserService}) servicio utilizado para gestionar usuarios
      * @return ejecutor encargado de inicializar el usuario {@code SUPER_ADMIN}
+     * @see  UserService#createSuperAdminIfNotExists(String, String)
      */
     @Bean
     CommandLineRunner init(UserService userService) {
