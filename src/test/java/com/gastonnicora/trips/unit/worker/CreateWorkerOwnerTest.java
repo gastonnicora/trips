@@ -93,7 +93,7 @@ class CreateWorkerOwnerTest {
                 () -> workerService.createWorkerOwner(user, company));
 
         assertEquals(409, exception.getStatus());
-        assertEquals("Ya existen trabajadores", exception.getMessage());
+        assertEquals("Ya existe el trabajador", exception.getMessage());
 
         verify(workerRepository)
                 .findAllByCompanyUuidAndActiveTrue(company.getUuid());

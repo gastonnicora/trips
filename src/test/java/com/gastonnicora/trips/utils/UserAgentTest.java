@@ -1,6 +1,5 @@
-package com.gastonnicora.trips.unit.utils;
+package com.gastonnicora.trips.utils;
 
-import com.gastonnicora.trips.utils.UserAgent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
