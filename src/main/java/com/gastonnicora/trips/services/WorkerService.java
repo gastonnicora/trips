@@ -9,6 +9,7 @@ import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.ConflictException;
+import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.WorkerMapper;
 import com.gastonnicora.trips.repositories.WorkerRepository;
@@ -99,7 +100,7 @@ public class WorkerService {
     public WorkerDTO createWorkerOwner(User user, Company company) {
         if (!workerRepository.findAllByCompanyUuidAndActiveTrue(company.getUuid())
                 .isEmpty()) {
-            throw new ConflictException("Ya existen trabajadores");
+            throw new ConflictException("Ya existe el trabajador");
         }
         return WorkerMapper.toDTO(workerRepository.save(new Worker(user, company, Set.of(RoleCompany.OWNER))));
     }
@@ -111,10 +112,12 @@ public class WorkerService {
      * @param company UUID de la empresa asociada al trabajador.
      *
      * @see WorkerService#getWorker(UUID, UUID)
+     * @see WorkerService#verifyNotOwner(Worker)
      */
     @Transactional
     public void deleteWorker(UUID user, UUID company) {
         Worker worker = this.getWorker(user, company);
+        this.verifyNotOwner(worker);
         worker.setActive(false);
         workerRepository.save(worker);
     }
@@ -234,6 +237,7 @@ public class WorkerService {
      * @return {@link WorkerDTO} correspondiente al trabajador actualizado.
      *
      * @see WorkerService#verifyRole(Set)
+     * @see WorkerService#verifyNotOwner(Worker)
      * @see WorkerService#getWorker(UUID, UUID)
      * @see WorkerMapper#toDTO(Worker)
      */
@@ -241,9 +245,24 @@ public class WorkerService {
     public WorkerDTO updateWorker(UUID user, UUID company, Set<RoleCompany> roles) {
         this.verifyRole(roles);
         Worker worker = this.getWorker(user, company);
+        this.verifyNotOwner(worker);
         worker.setRoles(roles);
         worker = workerRepository.save(worker);
         return WorkerMapper.toDTO(worker);
+    }
+
+    /**
+     * Verifica que el trabajador no sea el propietario de la empresa. El rol
+     * OWNER solo se asigna al crear la empresa y no puede otorgarse después.
+     *
+     * @param worker ({@link Worker}) relación trabajador/empresa
+     *
+     * @throws ForbiddenException Error de permisos.
+     */
+    private void verifyNotOwner(Worker worker) {
+        if (worker.hasRole(RoleCompany.OWNER)) {
+            throw new ForbiddenException("No se puede modificar ni eliminar al propietario de la empresa");
+        }
     }
 
     /**

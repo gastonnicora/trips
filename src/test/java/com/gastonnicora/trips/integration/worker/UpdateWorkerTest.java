@@ -144,6 +144,19 @@ class UpdateWorkerTest {
     }
 
     @Test
+    void shouldReturnForbiddenWhenAdminTriesToChangeOwnerRoles() throws Exception {
+        UserDTO admin = createWorkerWithRole(RoleCompany.ADMIN);
+
+        loginAs(admin)
+                .updateWorkerRoles(
+                        companyUuid,
+                        owner.getUuid(),
+                        Set.of(RoleCompany.DRIVER)
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
         workerApi
                 .updateWorkerRoles(
@@ -173,6 +186,17 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.ADMIN)
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenOwnerTriesToChangeOwnRoles() throws Exception {
+        workerApi
+                .updateWorkerRoles(
+                        companyUuid,
+                        owner.getUuid(),
+                        Set.of(RoleCompany.DRIVER)
                 )
                 .andExpect(status().isForbidden());
     }

@@ -99,6 +99,24 @@ class DeleteWorkerTest {
     }
 
     @Test
+    void shouldReturnForbiddenWhenAdminTriesToDeleteOwner() throws Exception {
+        workerApi.updateWorkerRoles(companyUuid, worker.getUuid(), Set.of(RoleCompany.ADMIN))
+                .andExpect(status().isOk());
+        LoginResponse adminLogin = UserTestFactory.login(
+                mockMvc,
+                worker.getEmail(),
+                "goodPassword"
+        );
+
+        workerApi.withToken(adminLogin.getToken())
+                .deleteWorker(
+                        companyUuid,
+                        owner.getUuid()
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
         workerApi
                 .deleteWorker(
@@ -121,6 +139,16 @@ class DeleteWorkerTest {
                 .deleteWorker(
                         companyUuid,
                         worker.getUuid()
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnForbiddenWhenOwnerTriesToDeleteThemselves() throws Exception {
+        workerApi
+                .deleteWorker(
+                        companyUuid,
+                        owner.getUuid()
                 )
                 .andExpect(status().isForbidden());
     }

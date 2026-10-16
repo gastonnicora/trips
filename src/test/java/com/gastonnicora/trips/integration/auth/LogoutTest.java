@@ -12,7 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,6 +43,24 @@ class LogoutTest {
         refreshToken = response.getRefreshToken();
 
         this.authApi = new AuthApiTestClient(mockMvc).withToken(token);
+    }
+
+    @Test
+    void shouldClearRefreshCookieWithTheSamePathUsedToCreateIt() throws Exception {
+        // El navegador solo borra la cookie si nombre y path coinciden con los de la original
+        MvcResult login = authApi.login(email, pass)
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("refreshToken"))
+                .andReturn();
+        jakarta.servlet.http.Cookie created = login.getResponse().getCookie("refreshToken");
+
+        MvcResult logout = authApi.logout(created.getValue())
+                .andExpect(status().isOk())
+                .andReturn();
+        jakarta.servlet.http.Cookie cleared = logout.getResponse().getCookie("refreshToken");
+
+        assertEquals(created.getPath(), cleared.getPath());
+        assertEquals(0, cleared.getMaxAge());
     }
 
     @Test

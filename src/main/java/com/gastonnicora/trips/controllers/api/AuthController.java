@@ -20,6 +20,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,11 +53,16 @@ import java.util.Optional;
 @Tag(name = "Auth API", description = "Endpoints para autenticación y gestión de sesiones")
 public class AuthController {
 
+    private static final String REFRESH_COOKIE_NAME = "refreshToken";
+    /**
+     * Solo la necesitan los endpoints de /api/auth (refresh y logout).
+     */
+    private static final String REFRESH_COOKIE_PATH = "/api/auth";
+    private static final int REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
-
     @Value("${cookie.secure}")
     private boolean cookieSecure;
 
@@ -92,14 +98,25 @@ public class AuthController {
      * @param refreshToken refresh token que se almacenará en la cookie
      */
     private void addRefreshCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        response.addCookie(buildRefreshCookie(refreshToken, REFRESH_COOKIE_MAX_AGE));
+    }
+
+    private Cookie buildRefreshCookie(String value, int maxAge) {
+        Cookie cookie = new Cookie(REFRESH_COOKIE_NAME, value);
         cookie.setHttpOnly(true);
         cookie.setSecure(cookieSecure);
-        cookie.setPath("/");
-        cookie.setMaxAge(7 * 24 * 60 * 60);
+        cookie.setPath(REFRESH_COOKIE_PATH);
+        cookie.setMaxAge(maxAge);
         cookie.setAttribute("SameSite", "Lax");
+        return cookie;
+    }
 
-        response.addCookie(cookie);
+    /**
+     * Elimina la cookie del refresh token. Para que el navegador la borre debe
+     * enviarse con los mismos atributos (nombre y path) con los que se creó.
+     */
+    private void clearRefreshCookie(HttpServletResponse response) {
+        response.addCookie(buildRefreshCookie(null, 0));
     }
 
     /**
@@ -139,7 +156,7 @@ public class AuthController {
     @Operation(summary = "Iniciar sesión", description = "Autentica un usuario mediante email y contraseña y genera un token de acceso JWT. "
             + "Para clientes web, el refresh token se envía mediante una cookie; "
             + "para clientes Android, se devuelve en el cuerpo de la respuesta.")
-    public LoginResponse login(@Valid @RequestBody LoginRequest login, HttpServletRequest request,
+    public LoginResponse login(@Valid @RequestBody @NonNull LoginRequest login, @NonNull HttpServletRequest request,
                                HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
@@ -159,7 +176,7 @@ public class AuthController {
         }
 
         return new LoginResponse(token,
-                "android".equals(device) ? refreshTokenE.getRefreshToken() : null);
+                !"web".equals(device) ? refreshTokenE.getRefreshToken() : null);
     }
 
     /**
@@ -206,13 +223,9 @@ public class AuthController {
         }
 
         if ("web".equals(rt.get().getDevice())) {
-            Cookie cookie = new Cookie("refreshToken", null);
-            cookie.setMaxAge(0);
-            cookie.setPath("/api/auth/refresh");
-            cookie.setHttpOnly(true);
-            cookie.setSecure(cookieSecure);
-            response.addCookie(cookie);
+            clearRefreshCookie(response);
         }
+
         return ResponseEntity.ok().build();
     }
 
@@ -292,6 +305,6 @@ public class AuthController {
         }
         return new RefreshResponse(
                 newAccess,
-                "android".equals(rt.getDevice()) ? newRefresh.getToken() : null);
+                !"web".equals(rt.getDevice()) ? newRefresh.getRefreshToken() : null);
     }
 }

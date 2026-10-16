@@ -1,18 +1,25 @@
 package com.gastonnicora.trips.utils;
 
+import java.util.Locale;
+
 /**
- * Clase utilitaria para identificar el tipo de dispositivo a partir del
+ * Clase utilitaria para identificar el tipo de cliente a partir del
  * User-Agent de una solicitud HTTP.
  *
  * <p>
- * Actualmente distingue entre dispositivos Android, iOS y web según el
- * contenido del User-Agent recibido.
+ * Los navegadores, incluidos los de Android e iOS, se identifican siempre con
+ * el prefijo {@code Mozilla/}. Por eso se consideran clientes web aunque su
+ * User-Agent mencione {@code Android} o {@code iPhone}; de lo contrario un
+ * Chrome en Android recibiría el refresh token en el cuerpo en lugar de la
+ * cookie.
  * </p>
  *
  * <ul>
- * <li>Android: si el User-Agent contiene {@code okhttp}, {@code retrofit} o
- * {@code android}.</li>
- * <li>iOS: si el User-Agent contiene {@code iphone} o {@code ios}.</li>
+ * <li>Web: User-Agent vacío, o que empieza con {@code Mozilla/}.</li>
+ * <li>Android (app nativa): contiene {@code okhttp}, {@code retrofit},
+ * {@code dalvik} o {@code android}.</li>
+ * <li>iOS (app nativa): contiene {@code cfnetwork}, {@code darwin} o
+ * {@code alamofire}.</li>
  * <li>Web: por defecto, cuando no coincide con ninguno de los casos
  * anteriores.</li>
  * </ul>
@@ -23,28 +30,32 @@ public class UserAgent {
      * Determina el tipo de dispositivo a partir del User-Agent.
      *
      * <p>
-     * La identificación se realiza de forma independiente de mayúsculas y
-     * minúsculas mediante la conversión del User-Agent recibido a minúsculas.
+     * La identificación no distingue mayúsculas de minúsculas.
      * </p>
      *
      * @param userAgent String con el User-Agent de la solicitud HTTP.
      *
-     * @return {@code "android"} si corresponde a Android, {@code "ios"} si
-     * corresponde a iOS, o {@code "web"} en cualquier otro caso,
-     * incluyendo cuando el User-Agent es {@code null}.
+     * @return {@code "android"} o {@code "ios"} para apps nativas, o
+     * {@code "web"} en cualquier otro caso, incluyendo cuando el User-Agent es
+     * {@code null} o está vacío.
      */
     public static String getDevice(String userAgent) {
-        String deviceType = "web";
-        if (userAgent != null) {
-            userAgent = userAgent.toLowerCase();
-
-            if (userAgent.contains("okhttp") || userAgent.contains("retrofit") || userAgent.contains("android")) {
-                deviceType = "android";
-            } else if (userAgent.contains("iphone") || userAgent.contains("ios")) {
-                deviceType = "ios";
-            }
+        if (userAgent == null || userAgent.isBlank()) {
+            return "web";
         }
-        return deviceType;
+
+        String ua = userAgent.toLowerCase(Locale.ROOT);
+
+        if (ua.startsWith("mozilla/")) {
+            return "web";
+        }
+        if (ua.contains("okhttp") || ua.contains("retrofit") || ua.contains("dalvik") || ua.contains("android")) {
+            return "android";
+        }
+        if (ua.contains("cfnetwork") || ua.contains("darwin") || ua.contains("alamofire")) {
+            return "ios";
+        }
+        return "web";
     }
 
 }

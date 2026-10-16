@@ -5,6 +5,7 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
+import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.WorkerMapper;
 import com.gastonnicora.trips.repositories.WorkerRepository;
@@ -22,8 +23,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class UpdateWorkerTest {
@@ -36,6 +37,31 @@ class UpdateWorkerTest {
 
     @Mock
     private WorkerMapper workerMapper;
+
+    @Test
+    void shouldThrowForbiddenExceptionWhenWorkerIsOwner() {
+        User user = new User();
+        UUID userUuid = UUID.randomUUID();
+        user.setUuid(userUuid);
+
+        Company company = new Company();
+        UUID companyUuid = UUID.randomUUID();
+        company.setUuid(companyUuid);
+
+        Worker owner = new Worker(user, company, Set.of(RoleCompany.OWNER));
+
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid))
+                .thenReturn(java.util.Optional.of(owner));
+
+        ForbiddenException exception = assertThrows(
+                ForbiddenException.class,
+                () -> workerService.updateWorker(userUuid, companyUuid, Set.of(RoleCompany.ADMIN))
+        );
+
+        assertEquals(403, exception.getStatus());
+        assertEquals(Set.of(RoleCompany.OWNER), owner.getRoles());
+        verify(workerRepository, never()).save(any(Worker.class));
+    }
 
     @Test
     void shouldThrowNotFoundExceptionWhenWorkerDoesNotExist() {

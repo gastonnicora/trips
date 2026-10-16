@@ -2,6 +2,7 @@ package com.gastonnicora.trips.services;
 
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.exceptions.InternalErrorException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -22,6 +23,8 @@ import org.springframework.web.client.RestClient;
 public class GeocodingService {
 
     private final RestClient restClient;
+    @Value("${geocoding.contact-email}")
+    private String contactEmail;
 
     /**
      * Crea una instancia del servicio de geocodificación e inicializa el cliente
@@ -31,10 +34,11 @@ public class GeocodingService {
      *                                servicio de geocodificación.
      */
     public GeocodingService() {
+
         try {
             this.restClient = RestClient.builder()
                     .baseUrl("https://nominatim.openstreetmap.org")
-                    .defaultHeader("User-Agent", "Trips/1.0 (gastonmatias.21@gmail.com)")
+                    .defaultHeader("User-Agent", "Trips/1.0 (" + contactEmail + ")")
                     .build();
         } catch (Exception e) {
             e.printStackTrace();

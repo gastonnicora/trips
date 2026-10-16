@@ -4,6 +4,7 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
 import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
+import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.repositories.WorkerRepository;
 import com.gastonnicora.trips.services.WorkerService;
@@ -67,6 +68,32 @@ class DeleteWorkerTest {
 
         assertEquals(worker, deleted);
         assertFalse(deleted.isActive());
+    }
+
+    @Test
+    void shouldThrowForbiddenExceptionWhenWorkerIsOwner() {
+        UUID userUuid = UUID.randomUUID();
+        UUID companyUuid = UUID.randomUUID();
+
+        User user = new User();
+        user.setUuid(userUuid);
+
+        Company company = new Company();
+        company.setUuid(companyUuid);
+
+        Worker owner = new Worker(user, company, Set.of(RoleCompany.OWNER));
+
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid))
+                .thenReturn(Optional.of(owner));
+
+        ForbiddenException exception = assertThrows(
+                ForbiddenException.class,
+                () -> workerService.deleteWorker(userUuid, companyUuid)
+        );
+
+        assertEquals(403, exception.getStatus());
+        assertTrue(owner.isActive());
+        verify(workerRepository, never()).save(any(Worker.class));
     }
 
     @Test

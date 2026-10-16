@@ -2,6 +2,7 @@ package com.gastonnicora.trips.integration.auth;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
+import com.gastonnicora.trips.dtos.response.auth.RefreshResponse;
 import com.gastonnicora.trips.helpers.AuthApiTestClient;
 import com.gastonnicora.trips.helpers.UserTestFactory;
 import jakarta.servlet.http.Cookie;
@@ -14,8 +15,14 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -112,6 +119,26 @@ class RefreshTokenTest {
                                 """.formatted(refreshToken))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnUsableRefreshTokenInBodyWhenRefreshingInAndroid() throws Exception {
+        LoginResponse log = UserTestFactory.loginWithAndroid(mockMvc, email, pass);
+
+        MvcResult result = authApi.refreshAndroid(log.getRefreshToken())
+                .andExpect(status().isOk())
+                .andReturn();
+        RefreshResponse refreshed = new ObjectMapper()
+                .readValue(result.getResponse().getContentAsString(), RefreshResponse.class);
+
+        // Debe ser un refresh token nuevo (UUID), no el access token ni el anterior
+        assertNotEquals(refreshed.getToken(), refreshed.getRefreshToken());
+        assertNotEquals(log.getRefreshToken(), refreshed.getRefreshToken());
+        assertDoesNotThrow(() -> UUID.fromString(refreshed.getRefreshToken()));
+
+        // Y tiene que servir para renovar otra vez
+        authApi.refreshAndroid(refreshed.getRefreshToken())
+                .andExpect(status().isOk());
     }
 
     @Test

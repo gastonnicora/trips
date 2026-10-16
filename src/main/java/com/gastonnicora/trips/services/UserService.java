@@ -14,9 +14,9 @@ import com.gastonnicora.trips.exceptions.ValidationException;
 import com.gastonnicora.trips.mappers.UserMapper;
 import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.utils.SecurityUtils;
-import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -281,6 +281,7 @@ public class UserService {
      * @see UserService#updateUser(UUID, UserPut)
      * @see SecurityUtils#getCurrentUserUuid()
      */
+    @Transactional
     public UserDTO updateCurrentUser(UserPut userPut) {
         return updateUser(getCurrentUserUuid(), userPut);
     }
@@ -352,7 +353,6 @@ public class UserService {
      * @see RefreshTokenService#deactivateAllByUserUuid(UUID)
      * @see UserMapper#toDTO(User)
      */
-    @Transactional
     private UserDTO updateUser(UUID uuid, UserPut userPut) {
         User userEntity = this.getUser(uuid);
         userEntity.setName(userPut.getName());
@@ -389,6 +389,7 @@ public class UserService {
      *
      * @see UserService#updateUser(UUID, UserPut)
      */
+    @Transactional
     public UserDTO updateUserByUuid(UUID uuid, UserPut userPut) {
         return updateUser(uuid, userPut);
     }
