@@ -39,7 +39,7 @@ public class TokenCleanupService {
      * dependencias
      * necesarias.
      *
-     * @param repo Repositorio de tokens de refresco ({@link RefreshTokenRepository) utilizado para
+     * @param  repo Repositorio de tokens de refresco ({@link RefreshTokenRepository}) utilizado para
      *             acceder a
      *             la
      *             base de datos.
