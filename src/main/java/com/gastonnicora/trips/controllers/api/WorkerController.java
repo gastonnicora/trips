@@ -119,8 +119,6 @@ public class WorkerController {
      * @param companyUuid UUID de la empresa
      * @param userUuid    UUID del usuario que se eliminará de la empresa
      *
-     * @see CompanyService#getCompanyEntity(UUID)
-     * @see UserService#getUser(UUID)
      * @see WorkerService#deleteWorker(UUID, UUID)
      */
     @DeleteMapping("/companies/{companyUuid}/worker/{userUuid}")
@@ -133,9 +131,6 @@ public class WorkerController {
     public void deleteWorker(
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("userUuid") UUID userUuid) {
-
-        companyService.getCompanyEntity(companyUuid);
-        userService.getUser(userUuid);
 
         workerService.deleteWorker(userUuid, companyUuid);
     }
@@ -205,8 +200,6 @@ public class WorkerController {
      *
      * @return datos actualizados del trabajador
      *
-     * @see CompanyService#getCompanyEntity(UUID)
-     * @see UserService#getUser(UUID)
      * @see WorkerService#updateWorker(UUID, UUID, java.util.Set)
      */
     @PutMapping("/companies/{companyUuid}/worker/{userUuid}")
@@ -220,9 +213,6 @@ public class WorkerController {
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("userUuid") UUID userUuid,
             @RequestBody @Valid WorkerCreate workerCreate) {
-
-        companyService.getCompanyEntity(companyUuid);
-        userService.getUser(userUuid);
 
         return workerService.updateWorker(
                 userUuid,
