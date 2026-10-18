@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import org.hibernate.annotations.BatchSize;
 
 /**
  * Entidad que representa un usuario en el sistema.
@@ -40,12 +41,14 @@ import java.util.UUID;
  * @since 2026-04-21
  */
 @Entity
-@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString(exclude = "password")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_email_enabled", columnList = "email, enabled")
+})
 public class User {
 
     /**
@@ -95,6 +98,7 @@ public class User {
      * </p>
      */
     @ElementCollection(fetch = FetchType.EAGER)
+    @BatchSize(size = 50)
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Set<Role> role;

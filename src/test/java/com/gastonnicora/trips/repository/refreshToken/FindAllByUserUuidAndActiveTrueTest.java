@@ -12,11 +12,10 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -31,9 +30,9 @@ class FindAllByUserUuidAndActiveTrueTest {
 
     @Test
     void shouldReturnEmptyWhenRefreshTokenDoesNotExist() {
-        Optional<RefreshToken> found = refreshTokenRepository.findByRefreshToken("non-existent-token");
+        List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(UUID.randomUUID());
 
-        assertFalse(found.isPresent());
+        assertTrue(found.isEmpty());
 
     }
 
@@ -57,6 +56,6 @@ class FindAllByUserUuidAndActiveTrueTest {
         List<RefreshToken> found = refreshTokenRepository.findAllByUser_UuidAndActiveTrue(user.getUuid());
 
         assertFalse(found.isEmpty());
-        assertEquals(found.get(0), rt);
+        assertEquals(found.getFirst(), rt);
     }
 }

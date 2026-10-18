@@ -5,6 +5,10 @@ import com.gastonnicora.trips.exceptions.InternalErrorException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
+
+import java.net.http.HttpClient;
+import java.time.Duration;
 
 /**
  * Servicio encargado de obtener direcciones a partir de coordenadas
@@ -32,6 +36,12 @@ public class GeocodingService {
      * Crea una instancia del servicio de geocodificación e inicializa el cliente
      * HTTP utilizado para realizar las consultas.
      *
+     * <p>
+     * El cliente se configura con un tiempo máximo de 3 segundos para conectar y
+     * de 5 segundos para recibir la respuesta, de modo que un servicio externo
+     * lento no deje bloqueada la petición.
+     * </p>
+     *
      * @param contactEmail Correo de contacto, tomado de la propiedad
      *                     {@code geocoding.contact-email}, que se informa en el
      *                     encabezado {@code User-Agent} de las consultas.
@@ -42,7 +52,14 @@ public class GeocodingService {
     public GeocodingService(@Value("${geocoding.contact-email}") String contactEmail) {
 
         try {
+            HttpClient httpClient = HttpClient.newBuilder()
+                    .connectTimeout(Duration.ofSeconds(3))
+                    .build();
+            JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
+            requestFactory.setReadTimeout(Duration.ofSeconds(5));
+
             this.restClient = RestClient.builder()
+                    .requestFactory(requestFactory)
                     .baseUrl("https://nominatim.openstreetmap.org")
                     .defaultHeader("User-Agent", "Trips/1.0 (" + contactEmail + ")")
                     .build();

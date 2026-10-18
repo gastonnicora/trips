@@ -32,11 +32,14 @@ import java.util.UUID;
  * @since 2026-04-21
  */
 @Entity
-@Table(name = "refreshTokens")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "refreshTokens", indexes = {
+        @Index(name = "idx_refresh_tokens_token", columnList = "token"),
+        @Index(name = "idx_refresh_tokens_refresh_token", columnList = "refresh_token")
+})
 public class RefreshToken {
 
     /**
@@ -51,7 +54,7 @@ public class RefreshToken {
     /**
      * Token JWT de acceso asociado a la sesión.
      */
-    @Column(name = "token", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "token", nullable = false, length = 700)
     private String token;
 
     /**
