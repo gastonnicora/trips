@@ -119,7 +119,6 @@ public class CompanyController {
      * @return respuesta con la lista de empresas asociadas al usuario actual.
      *
      * @see SecurityUtils#getCurrentUserUuid()
-     * @see UserService#getUser(UUID)
      * @see WorkerService#getCompaniesByOwner(UUID)
      * @see CompanyService#toListResponse(List)
      *
@@ -129,7 +128,6 @@ public class CompanyController {
     @Operation(summary = "Obtener mis empresas", description = "Obtiene las empresas asociadas al usuario autenticado.")
     public ListResponse<CompanyDTO> getCompaniesByCurrentUser() {
         UUID uuid = getCurrentUserUuid();
-        userService.getUser(uuid);
         List<Company> companies = workerService.getCompaniesByOwner(uuid);
         return companyService.toListResponse(companies);
     }
@@ -145,7 +143,6 @@ public class CompanyController {
      *
      * @return respuesta con la lista de empresas asociadas al usuario
      *
-     * @see UserService#getUser(UUID)
      * @see WorkerService#getCompaniesByOwner(UUID)
      * @see CompanyService#toListResponse(List)
      */
@@ -155,7 +152,6 @@ public class CompanyController {
     @Operation(summary = "Obtener empresas de un usuario", description = "Obtiene las empresas asociadas a un usuario mediante su UUID. "
             + "Requiere los roles ADMIN o SUPER_ADMIN.")
     public ListResponse<CompanyDTO> getCompaniesByUser(@PathVariable UUID uuid) {
-        userService.getUser(uuid);
         List<Company> companies = workerService.getCompaniesByOwner(uuid);
         return companyService.toListResponse(companies);
     }
