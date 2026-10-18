@@ -25,7 +25,7 @@ import java.util.UUID;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-06-03
+ * @since 2026-06-04
  */
 @Getter
 @Setter

@@ -35,7 +35,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @Configuration
 @EnableWebSecurity
@@ -52,14 +52,14 @@ public class SecurityConfig {
      *
      * @param userService              ({@link UserDetailsServiceImpl})servicio utilizado por Spring Security para
      *                                 cargar los
-     *                                 datos de los usuarios
+     *                                 datos de los usuarios.
      * @param jwtFilter                ({@link JwtAuthenticationFilter})filtro encargado de procesar la autenticación
      *                                 mediante
-     *                                 JWT
+     *                                 JWT.
      * @param accessDeniedHandler      ({@link CustomAccessDeniedHandler}) handler encargado de gestionar accesos
-     *                                 denegados
+     *                                 denegados.
      * @param authenticationEntryPoint ({@link CustomAuthenticationEntryPoint})handler encargado de gestionar
-     *                                 solicitudes no autenticadas
+     *                                 solicitudes no autenticadas.
      */
     public SecurityConfig(
             UserDetailsServiceImpl userService,
@@ -75,13 +75,13 @@ public class SecurityConfig {
     /**
      * Proporciona el administrador de autenticación de Spring Security.
      *
-     * @param config configuración utilizada por Spring Security para construir
-     *               el administrador de autenticación
+     * @param config Configuración utilizada por Spring Security para construir
+     *               el administrador de autenticación.
      *
-     * @return instancia de {@link AuthenticationManager}
+     * @return Instancia de {@link AuthenticationManager}.
      *
-     * @throws Exception si no es posible obtener el administrador de
-     *                   autenticación
+     * @throws Exception Si no es posible obtener el administrador de
+     *                   autenticación.
      */
     @Bean
     public AuthenticationManager authenticationManager(
@@ -97,7 +97,7 @@ public class SecurityConfig {
      * contraseñas antes de almacenarlas.
      * </p>
      *
-     * @return instancia de {@link PasswordEncoder} basada en BCrypt
+     * @return Instancia de {@link PasswordEncoder} basada en BCrypt.
      */
     @Bean
     public PasswordEncoder codificaPass() {
@@ -125,11 +125,11 @@ public class SecurityConfig {
      * seguridad a nivel de método.
      * </p>
      *
-     * @param http objeto utilizado para configurar la seguridad HTTP
+     * @param http Objeto utilizado para configurar la seguridad HTTP.
      *
-     * @return cadena de filtros de seguridad configurada para la API
+     * @return Cadena de filtros de seguridad configurada para la API
      *
-     * @throws Exception si ocurre un error durante la configuración de
+     * @throws Exception Si ocurre un error durante la configuración de
      *                   seguridad
      * @see JwtAuthenticationFilter
      */
@@ -168,14 +168,14 @@ public class SecurityConfig {
      * {@code JSESSIONID}.
      * </p>
      *
-     * @param http                  objeto utilizado para configurar la seguridad
+     * @param http                  Objeto utilizado para configurar la seguridad
      *                              HTTP
-     * @param authenticationManager administrador utilizado para autenticar
+     * @param authenticationManager Administrador utilizado para autenticar
      *                              usuarios
      *
-     * @return cadena de filtros de seguridad configurada para la interfaz web
+     * @return Cadena de filtros de seguridad configurada para la interfaz web
      *
-     * @throws Exception si ocurre un error durante la configuración de
+     * @throws Exception Si ocurre un error durante la configuración de
      *                   seguridad
      */
     @Bean

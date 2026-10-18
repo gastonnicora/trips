@@ -27,7 +27,7 @@ import java.time.Instant;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-11
  */
 @Service
 public class TokenCleanupService {
@@ -39,7 +39,7 @@ public class TokenCleanupService {
      * dependencias
      * necesarias.
      *
-     * @param  repo Repositorio de tokens de refresco ({@link RefreshTokenRepository}) utilizado para
+     * @param repo Repositorio de tokens de refresco ({@link RefreshTokenRepository}) utilizado para
      *             acceder a
      *             la
      *             base de datos.

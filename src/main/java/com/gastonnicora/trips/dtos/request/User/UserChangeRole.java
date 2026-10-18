@@ -29,7 +29,7 @@ import java.util.Set;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-21
  */
 @Schema(description = "Datos necesarios para modificar los roles de un usuario")
 @NoArgsConstructor
@@ -58,7 +58,7 @@ public class UserChangeRole {
      * Si el conjunto recibido es {@code null}, se inicializa un conjunto vacío.
      * </p>
      *
-     * @param roles conjunto de {@link Role} que serán asignados al usuario
+     * @param roles conjunto de {@link Role} que serán asignados al usuario.
      */
     public UserChangeRole(Set<Role> roles) {
         this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
@@ -67,7 +67,7 @@ public class UserChangeRole {
     /**
      * Establece el conjunto de roles del usuario.
      *
-     * @param roles conjunto de roles que serán asignados al usuario
+     * @param roles conjunto de roles que serán asignados al usuario.
      */
     public void setRoles(Set<Role> roles) {
         this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();

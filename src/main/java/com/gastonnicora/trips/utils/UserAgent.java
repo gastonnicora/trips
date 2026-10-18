@@ -23,6 +23,10 @@ import java.util.Locale;
  * <li>Web: por defecto, cuando no coincide con ninguno de los casos
  * anteriores.</li>
  * </ul>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-04-21
  */
 public class UserAgent {
 

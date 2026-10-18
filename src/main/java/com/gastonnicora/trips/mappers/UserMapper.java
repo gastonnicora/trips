@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
  * entidades en los DTOs correspondientes.
  * </p>
  *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-03-18
  */
 @Component
 public class UserMapper {

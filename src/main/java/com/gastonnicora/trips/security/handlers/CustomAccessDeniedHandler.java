@@ -22,6 +22,10 @@ import java.io.IOException;
  * Genera una respuesta HTTP con estado {@code 403 Forbidden} y un cuerpo en
  * formato JSON utilizando {@link ForbiddenApiError}.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-04-21
  */
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {

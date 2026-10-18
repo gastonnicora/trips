@@ -46,7 +46,7 @@ import java.util.Optional;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @RestController
 @RequestMapping("/api/auth")
@@ -70,11 +70,11 @@ public class AuthController {
      * Crea una instancia del controlador de autenticación.
      *
      * @param authenticationManager administrador utilizado para autenticar
-     *                              usuarios
+     *                              usuarios.
      * @param jwtService            ({@link JwtService}) servicio encargado de generar y gestionar tokens
-     *                              JWT
-     * @param refreshTokenService   ({@link RefreshTokenService}) servicio encargado de gestionar refresh tokens
-     * @param userRepository        ({@link UserRepository}) repositorio utilizado para consultar usuarios
+     *                              JWT.
+     * @param refreshTokenService   ({@link RefreshTokenService}) servicio encargado de gestionar refresh tokens.
+     * @param userRepository        ({@link UserRepository}) repositorio utilizado para consultar usuarios.
      */
     public AuthController(AuthenticationManager authenticationManager,
                           JwtService jwtService, RefreshTokenService refreshTokenService,
@@ -94,8 +94,8 @@ public class AuthController {
      * {@code SameSite=Lax}.
      * </p>
      *
-     * @param response     respuesta HTTP a la que se agrega la cookie
-     * @param refreshToken refresh token que se almacenará en la cookie
+     * @param response     respuesta HTTP a la que se agrega la cookie.
+     * @param refreshToken refresh token que se almacenará en la cookie.
      */
     private void addRefreshCookie(HttpServletResponse response, String refreshToken) {
         response.addCookie(buildRefreshCookie(refreshToken, REFRESH_COOKIE_MAX_AGE));
@@ -135,7 +135,7 @@ public class AuthController {
      *
      * @param login    datos de inicio de sesión del usuario ({@link LoginRequest}).
      * @param request  solicitud HTTP utilizada para obtener información del
-     *                 cliente, como User-Agent e IP
+     *                 cliente, como User-Agent e IP.
      * @param response respuesta HTTP utilizada para establecer la cookie del
      *                 refresh token en clientes web
      *

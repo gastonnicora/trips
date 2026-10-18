@@ -17,23 +17,29 @@ import org.springframework.web.client.RestClient;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-20
+ * @since 2026-05-21
  */
 @Service
 public class GeocodingService {
 
+    /**
+     * Cliente HTTP utilizado para consultar el servicio Nominatim de
+     * OpenStreetMap.
+     */
     private final RestClient restClient;
-    @Value("${geocoding.contact-email}")
-    private String contactEmail;
 
     /**
      * Crea una instancia del servicio de geocodificación e inicializa el cliente
      * HTTP utilizado para realizar las consultas.
      *
+     * @param contactEmail Correo de contacto, tomado de la propiedad
+     *                     {@code geocoding.contact-email}, que se informa en el
+     *                     encabezado {@code User-Agent} de las consultas.
+     *
      * @throws InternalErrorException Si ocurre un error al inicializar el
      *                                servicio de geocodificación.
      */
-    public GeocodingService() {
+    public GeocodingService(@Value("${geocoding.contact-email}") String contactEmail) {
 
         try {
             this.restClient = RestClient.builder()

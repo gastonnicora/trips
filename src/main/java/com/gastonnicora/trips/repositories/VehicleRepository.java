@@ -15,6 +15,10 @@ import java.util.UUID;
  * Proporciona operaciones para consultar vehículos por identificador único,
  * empresa, patente y estado de actividad.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-09-06
  */
 public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
 

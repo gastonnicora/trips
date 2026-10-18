@@ -73,7 +73,7 @@ public class CompanyController {
      *
      * @param companyCreate datos necesarios para crear la empresa({@link CompanyCreate}).
      *
-     * @return datos de la empresa creada
+     * @return datos de la empresa creada.
      *
      * @see UserService#getUser(UUID)
      * @see CompanyService#createCompany(CompanyCreate)
@@ -101,7 +101,7 @@ public class CompanyController {
      * la empresa indicada.
      * </p>
      *
-     * @param uuid UUID de la empresa que se desea eliminar
+     * @param uuid UUID de la empresa que se desea eliminar.
      *
      * @see CompanyService#deleteCompany(UUID)
      */
@@ -116,7 +116,7 @@ public class CompanyController {
     /**
      * Obtiene las empresas cuyo propietario es el usuario autenticado.
      *
-     * @return respuesta con la lista de empresas asociadas al usuario actual
+     * @return respuesta con la lista de empresas asociadas al usuario actual.
      *
      * @see SecurityUtils#getCurrentUserUuid()
      * @see UserService#getUser(UUID)
@@ -141,7 +141,7 @@ public class CompanyController {
      * Esta operación requiere los roles {@code ADMIN} o {@code SUPER_ADMIN}.
      * </p>
      *
-     * @param uuid UUID del usuario propietario de las empresas
+     * @param uuid UUID del usuario propietario de las empresas.
      *
      * @return respuesta con la lista de empresas asociadas al usuario
      *

@@ -14,6 +14,10 @@ import java.util.UUID;
  * Extiende {@link JpaRepository} para proporcionar las operaciones de acceso
  * y gestión de datos correspondientes a la entidad empresa.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-05-20
  */
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
 

@@ -28,7 +28,7 @@ import java.util.UUID;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-09-04
+ * @since 2026-09-06
  */
 @Entity
 @Table(name = "vehicles")

@@ -29,7 +29,7 @@ import org.jspecify.annotations.NonNull;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-11
  */
 @Schema(description = "Credenciales necesarias para iniciar sesión")
 @NoArgsConstructor
@@ -90,8 +90,8 @@ public class LoginRequest {
      * espacios al inicio y al final.
      * </p>
      *
-     * @param email    dirección de correo electrónico del usuario
-     * @param password contraseña del usuario
+     * @param email    dirección de correo electrónico del usuario.
+     * @param password contraseña del usuario.
      */
     public LoginRequest(String email, String password) {
         this.email = email.trim().toLowerCase();
@@ -106,7 +106,7 @@ public class LoginRequest {
      * espacios al inicio y al final.
      * </p>
      *
-     * @param email dirección de correo electrónico del usuario
+     * @param email dirección de correo electrónico del usuario.
      */
     public void setEmail(@NonNull String email) {
         this.email = email.trim().toLowerCase();

@@ -28,7 +28,7 @@ import java.util.UUID;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-09-07
+ * @since 2026-09-10
  */
 @Schema(description = "DTO utilizado para agregar un trabajador a una empresa")
 @AllArgsConstructor

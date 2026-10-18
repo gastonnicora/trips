@@ -23,6 +23,10 @@ import java.io.IOException;
  * Genera una respuesta HTTP con estado {@code 401 Unauthorized} y un cuerpo en
  * formato JSON utilizando {@link UnauthorizedApiError}.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-04-21
  */
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {

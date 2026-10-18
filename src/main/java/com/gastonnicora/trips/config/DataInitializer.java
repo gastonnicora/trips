@@ -14,6 +14,10 @@ import org.springframework.context.annotation.Configuration;
  * credenciales definidas mediante las propiedades {@code superadmin.email} y
  * {@code superadmin.password}.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-04-19
  */
 @Configuration
 public class DataInitializer {
@@ -40,9 +44,9 @@ public class DataInitializer {
      * Si el usuario ya existe, no se crea uno nuevo.
      * </p>
      *
-     * @param userService ({@link UserService}) servicio utilizado para gestionar usuarios
+     * @param userService ({@link UserService}) servicio utilizado para gestionar usuarios.
      *
-     * @return ejecutor encargado de inicializar el usuario {@code SUPER_ADMIN}
+     * @return Ejecutor encargado de inicializar el usuario {@code SUPER_ADMIN}.
      *
      * @see UserService#createSuperAdminIfNotExists(String, String)
      */

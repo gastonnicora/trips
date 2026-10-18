@@ -123,14 +123,14 @@ public class UserDTO {
     /**
      * Crea una instancia completa del DTO de usuario.
      *
-     * @param uuid      identificador único del usuario
-     * @param name      nombre del usuario
-     * @param lastname  apellido del usuario
-     * @param email     dirección de correo electrónico del usuario
-     * @param role      conjunto de roles globales asignados al usuario
-     * @param enabled   indica si la cuenta está habilitada
-     * @param createdAt fecha y hora de creación
-     * @param updatedAt fecha y hora de la última actualización
+     * @param uuid      identificador único del usuario.
+     * @param name      nombre del usuario.
+     * @param lastname  apellido del usuario.
+     * @param email     dirección de correo electrónico del usuario.
+     * @param role      conjunto de roles globales asignados al usuario.
+     * @param enabled   indica si la cuenta está habilitada.
+     * @param createdAt fecha y hora de creación.
+     * @param updatedAt fecha y hora de la última actualización.
      */
     public UserDTO(
             UUID uuid,

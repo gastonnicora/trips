@@ -27,7 +27,7 @@ import lombok.Setter;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @Schema(description = "DTO básico de usuario utilizado como clase base para Requests")
 @NoArgsConstructor
@@ -87,9 +87,9 @@ public abstract class UserBasic {
     /**
      * Constructor completo.
      *
-     * @param name     Nombre del usuario
-     * @param lastname Apellido del usuario
-     * @param email    Email del usuario
+     * @param name     Nombre del usuario.
+     * @param lastname Apellido del usuario.
+     * @param email    Email del usuario.
      */
     public UserBasic(String name, String lastname, String email) {
         this.name = name;
@@ -106,7 +106,7 @@ public abstract class UserBasic {
      * mantiene como {@code null}.
      * </p>
      *
-     * @param email Email del usuario
+     * @param email Email del usuario.
      */
     public void setEmail(String email) {
         this.email = email != null ? email.trim().toLowerCase() : null;

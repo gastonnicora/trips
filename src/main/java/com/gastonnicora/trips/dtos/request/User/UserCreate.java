@@ -34,7 +34,7 @@ import lombok.Setter;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 @Schema(description = "Datos necesarios para crear un nuevo usuario")
@@ -97,8 +97,8 @@ public class UserCreate extends UserBasic {
     /**
      * Crea una solicitud para registrar un nuevo usuario.
      *
-     * @param name        nombre del usuario
-     * @param lastname    apellido del usuario
+     * @param name        nombre del usuario.
+     * @param lastname    apellido del usuario.
      * @param email       dirección de correo electrónico del usuario
      * @param password    contraseña del usuario
      * @param confirmPass confirmación de la contraseña

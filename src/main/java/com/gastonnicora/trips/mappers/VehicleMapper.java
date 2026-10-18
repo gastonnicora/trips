@@ -14,12 +14,22 @@ import java.util.List;
  * Proporciona métodos para transformar una entidad individual o una lista de
  * entidades en los DTOs correspondientes.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-09-06
  */
 @Component
 public class VehicleMapper {
 
     private final CompanyMapper companyMapper;
 
+    /**
+     * Crea una instancia del mapper de vehículos.
+     *
+     * @param companyMapper Mapper ({@link CompanyMapper}) utilizado para convertir la empresa asociada al
+     *                      vehículo.
+     */
     public VehicleMapper(CompanyMapper companyMapper) {
         this.companyMapper = companyMapper;
     }

@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Gastón
  * @version 1.1
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @Configuration
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
@@ -41,8 +41,8 @@ public class SwaggerConfig {
      * contacto y licencia del proyecto.
      * </p>
      *
-     * @return definición de {@link OpenAPI} con la información general de la
-     * API
+     * @return Definición de {@link OpenAPI} con la información general de la
+     * API.
      */
     @Bean
     public OpenAPI apiInfo() {

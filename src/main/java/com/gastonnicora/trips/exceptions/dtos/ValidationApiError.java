@@ -23,7 +23,7 @@ import java.util.Map;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-21
  */
 @Schema(
         description = "Error correspondiente a datos de entrada que no cumplen con las restricciones de validación.",

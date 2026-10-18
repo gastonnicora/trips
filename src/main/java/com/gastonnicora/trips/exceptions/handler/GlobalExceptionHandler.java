@@ -39,6 +39,10 @@ import java.util.Map;
  * Las respuestas generadas se documentan mediante Swagger/OpenAPI para
  * representar los diferentes tipos de error que puede devolver la API.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-04-21
  */
 @RestControllerAdvice
 @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Error de validación de campos (Bean Validation)", content = @Content(schema = @Schema(implementation = ValidationApiError.class)))

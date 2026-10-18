@@ -31,7 +31,7 @@ import java.util.UUID;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @RestController
 @RequestMapping("/api/users")
@@ -43,7 +43,7 @@ public class UserController {
     /**
      * Crea una instancia del controlador de usuarios.
      *
-     * @param userService ({@link UserService}) servicio encargado de la gestión de usuarios
+     * @param userService ({@link UserService}) servicio encargado de la gestión de usuarios.
      */
     public UserController(UserService userService) {
         this.userService = userService;
@@ -57,9 +57,9 @@ public class UserController {
      * del usuario.
      * </p>
      *
-     * @param userChangePasswordRequest ({@link UserChangePassword}) datos necesarios para cambiar la contraseña
+     * @param userChangePasswordRequest ({@link UserChangePassword}) datos necesarios para cambiar la contraseña.
      *
-     * @return datos del usuario actualizado
+     * @return datos del usuario actualizado.
      *
      * @see UserService#updatePassword(UserChangePassword)
      */
@@ -78,10 +78,10 @@ public class UserController {
      * {@code HR_MANAGER}.
      * </p>
      *
-     * @param uuid                  UUID del usuario cuyos roles se modificarán
-     * @param userChangeRoleRequest ({@link UserChangeRole}) nuevos roles globales del usuario
+     * @param uuid                  UUID del usuario cuyos roles se modificarán.
+     * @param userChangeRoleRequest ({@link UserChangeRole}) nuevos roles globales del usuario.
      *
-     * @return datos actualizados del usuario
+     * @return datos actualizados del usuario.
      *
      * @see UserService#setRole(UUID, UserChangeRole)
      */

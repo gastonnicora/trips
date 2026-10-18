@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -38,7 +38,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * habilitados durante el proceso de autenticación.
      * </p>
      *
-     * @param userRepository repositorio ({@link UserRepository}) utilizado para consultar los usuarios
+     * @param userRepository Repositorio ({@link UserRepository}) utilizado para consultar los usuarios
      *                       por correo electrónico y estado de habilitación.
      */
     public UserDetailsServiceImpl(UserRepository userRepository) {

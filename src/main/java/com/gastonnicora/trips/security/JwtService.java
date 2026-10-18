@@ -29,14 +29,25 @@ import java.util.UUID;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @Service
 public class JwtService {
 
+    /**
+     * Clave secreta, tomada de la propiedad {@code jwt.secret}, a partir de la
+     * cual se genera la clave de firma de los tokens.
+     */
     @Value("${jwt.secret}")
     private String SECRET;
 
+    /**
+     * Clave criptográfica con la que se firman y verifican los tokens JWT.
+     *
+     * <p>
+     * Se genera en {@link #init()} a partir de {@code SECRET}.
+     * </p>
+     */
     private SecretKey key;
 
     /**

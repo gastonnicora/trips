@@ -30,7 +30,7 @@ import lombok.Setter;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-21
  */
 @FieldsMatch(field = "password", fieldMatch = "confirmPassword", message = "Las contraseñas deben coincidir")
 @Schema(description = "DTO utilizado para solicitar el cambio de contraseña de un usuario")
@@ -40,6 +40,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserChangePassword {
 
+    /**
+     * Longitud mínima requerida para la contraseña.
+     */
     private final int minLengthPass = 8;
 
     /**

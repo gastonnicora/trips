@@ -20,7 +20,7 @@ import lombok.Setter;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-20
+ * @since 2026-05-21
  *
  */
 @Schema(description = "DTO de empresa para creación (POST)")

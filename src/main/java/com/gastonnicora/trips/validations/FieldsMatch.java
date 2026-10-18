@@ -23,6 +23,10 @@ import java.lang.annotation.*;
  * Esta anotación se aplica a nivel de clase mediante {@link ElementType#TYPE}
  * y es procesada por {@link FieldsMatchValidator}.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-03-18
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-21
  */
 @Schema(
         description = "Error correspondiente a un acceso prohibido.",

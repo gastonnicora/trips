@@ -8,6 +8,11 @@ import java.lang.reflect.Field;
 /**
  * Validador personalizado que verifica que dos campos de un objeto sean
  * iguales. Se usa junto con la anotación {@link FieldsMatch}.
+ *
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-03-18
  */
 public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Object> {
 
@@ -30,7 +35,7 @@ public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Ob
      * Inicializa el validador con los valores definidos en la anotación
      * FieldsMatch.
      *
-     * @param constraintAnnotation ({@link FieldsMatch}) validación igualdad de campos
+     * @param constraintAnnotation ({@link FieldsMatch}) validación igualdad de campos.
      */
     @Override
     public void initialize(FieldsMatch constraintAnnotation) {
@@ -42,12 +47,12 @@ public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Ob
     /**
      * Valida que los dos campos especificados tengan valores iguales.
      *
-     * @param value   el objeto que se va a validar
+     * @param value   el objeto que se va a validar.
      * @param context contexto de validación para agregar mensajes de error
-     *                personalizados
+     *                personalizados.
      *
      * @return {@code true} si los campos son iguales, {@code false} si no lo
-     * son o si ocurre algún error
+     * son o si ocurre algún error.
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {

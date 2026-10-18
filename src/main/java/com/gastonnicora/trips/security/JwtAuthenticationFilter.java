@@ -34,6 +34,10 @@ import java.util.Optional;
  * Utiliza {@link JwtService} para validar y extraer información del token y
  * {@link UserDetailsServiceImpl} para cargar los detalles del usuario.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-03-18
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -42,6 +46,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
 
+
+    /**
+     * Crea una instancia del filtro de autenticación JWT.
+     *
+     * @param jwtService             Servicio ({@link JwtService}) utilizado para validar el token y extraer
+     *                               sus datos.
+     * @param userDetailsService     Servicio ({@link UserDetailsServiceImpl}) utilizado para cargar el
+     *                               usuario autenticado.
+     * @param refreshTokenRepository Repositorio ({@link RefreshTokenRepository}) utilizado para consultar
+     *                               el registro asociado al token recibido.
+     */
     public JwtAuthenticationFilter(JwtService jwtService,
                                    UserDetailsServiceImpl userDetailsService,
                                    RefreshTokenRepository refreshTokenRepository) {

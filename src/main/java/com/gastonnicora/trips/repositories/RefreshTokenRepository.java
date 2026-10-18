@@ -19,6 +19,11 @@ import java.util.UUID;
  * incluyendo búsquedas por usuario, UUID, valor del token, fecha de expiración
  * y estado de activación.
  * </p>
+ *
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-04-11
  */
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
 

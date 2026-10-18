@@ -23,7 +23,7 @@ import lombok.Setter;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-11
  */
 @Schema(description = "Respuesta generada tras una autenticación exitosa")
 @NoArgsConstructor

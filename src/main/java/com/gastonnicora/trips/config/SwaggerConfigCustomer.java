@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @Configuration
 public class SwaggerConfigCustomer {
@@ -61,7 +61,7 @@ public class SwaggerConfigCustomer {
      * </p>
      *
      * @return {@link OperationCustomizer} encargado de personalizar las
-     * operaciones de OpenAPI
+     * operaciones de OpenAPI.
      */
     @Bean
     public OperationCustomizer customizePreAuthorize() {
@@ -109,11 +109,11 @@ public class SwaggerConfigCustomer {
      * original como mecanismo de fallback.
      * </p>
      *
-     * @param expression expresión de {@link PreAuthorize} que contiene las
-     *                   reglas de autorización
+     * @param expression Expresión de {@link PreAuthorize} que contiene las
+     *                   reglas de autorización.
      *
-     * @return roles extraídos de la expresión, separados por comas, o la
-     * expresión original si no se encuentra ningún rol
+     * @return Roles extraídos de la expresión, separados por comas, o la
+     * expresión original si no se encuentra ningún rol.
      */
     private String extractRoles(String expression) {
         List<String> roles = new ArrayList<>();
@@ -149,7 +149,7 @@ public class SwaggerConfigCustomer {
          * Detecta roles definidos mediante referencias SpEL a enums:
          *
          * T(com.gastonnicora.trips.enums.RoleCompany).OWNER
-         * T(com.gastonnicora.trips.enums.RoleCompany).ADMIN
+         * T(com.gastonnicora.trips.enums.RoleCompany).ADMIN.
          */
         Pattern enumRolePattern = Pattern.compile(
                 "T\\([^)]*\\)\\.(\\w+)");
@@ -188,7 +188,7 @@ public class SwaggerConfigCustomer {
      * modificación.
      * </p>
      *
-     * @return {@link OpenApiCustomizer} encargado de ordenar las etiquetas
+     * @return {@link OpenApiCustomizer} encargado de ordenar las etiquetas.
      */
     @Bean
     public OpenApiCustomizer sortTagsAlphabetically() {

@@ -210,7 +210,7 @@ public class WorkerService {
      * @return {@link WorkersByUser} con los datos del usuario y sus trabajadores
      * activos.
      *
-     * @throws NotFoundException Si el usuario no posee trabajadores activos
+     * @throws NotFoundException Si el usuario no posee trabajadores activos.
      * @see WorkerRepository#findAllByUserUuidAndActiveTrue(UUID)
      * @see WorkerMapper#toWorkersByUserDTO(List)
      */
@@ -255,7 +255,7 @@ public class WorkerService {
      * Verifica que el trabajador no sea el propietario de la empresa. El rol
      * OWNER solo se asigna al crear la empresa y no puede otorgarse después.
      *
-     * @param worker ({@link Worker}) relación trabajador/empresa
+     * @param worker ({@link Worker}) relación trabajador/empresa.
      *
      * @throws ForbiddenException Error de permisos.
      */

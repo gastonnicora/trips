@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
  * Proporciona métodos para transformar una entidad individual o una lista de
  * entidades en los DTOs correspondientes.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-05-20
  */
 @Component
 public class CompanyMapper {

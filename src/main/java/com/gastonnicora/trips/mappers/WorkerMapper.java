@@ -18,6 +18,10 @@ import java.util.List;
  * Proporciona métodos para transformar un trabajador individual, una lista de
  * trabajadores y agrupaciones de trabajadores asociadas a usuarios o empresas.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-06-04
  */
 @Component
 public class WorkerMapper {
@@ -25,6 +29,14 @@ public class WorkerMapper {
     private final UserMapper userMapper;
     private final CompanyMapper companyMapper;
 
+    /**
+     * Crea una instancia del mapper de trabajadores.
+     *
+     * @param userMapper    Mapper ({@link UserMapper}) utilizado para convertir el usuario asociado al
+     *                      trabajador.
+     * @param companyMapper Mapper ({@link CompanyMapper}) utilizado para convertir la empresa asociada al
+     *                      trabajador.
+     */
     public WorkerMapper(UserMapper userMapper, CompanyMapper companyMapper) {
         this.userMapper = userMapper;
         this.companyMapper = companyMapper;

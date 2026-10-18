@@ -37,7 +37,7 @@ import java.util.UUID;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-21
  */
 @Entity
 @Table(name = "users")

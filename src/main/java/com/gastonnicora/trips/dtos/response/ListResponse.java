@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-05-02
  */
 @Schema(description = "DTO genérico utilizado para representar una respuesta de la API que contiene una lista de elementos.")
 @NoArgsConstructor

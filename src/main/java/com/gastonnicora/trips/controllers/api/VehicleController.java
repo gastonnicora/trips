@@ -43,8 +43,8 @@ public class VehicleController {
     /**
      * Crea una instancia del controlador de vehículos.
      *
-     * @param vehicleService servicio encargado de la gestión de vehículos ({@link VehicleService})
-     * @param companyService servicio encargado de consultar las empresas ({@link CompanyService})
+     * @param vehicleService servicio encargado de la gestión de vehículos ({@link VehicleService}).
+     * @param companyService servicio encargado de consultar las empresas ({@link CompanyService}).
      */
     public VehicleController(VehicleService vehicleService, CompanyService companyService) {
         this.vehicleService = vehicleService;

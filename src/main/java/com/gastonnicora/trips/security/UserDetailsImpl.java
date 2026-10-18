@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 public class UserDetailsImpl implements UserDetails {
 

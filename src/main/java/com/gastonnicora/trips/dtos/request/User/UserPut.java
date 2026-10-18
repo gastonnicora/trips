@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-03-18
  */
 @Schema(description = "Datos necesarios para actualizar la información básica de un usuario")
 @NoArgsConstructor

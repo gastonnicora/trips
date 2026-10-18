@@ -52,9 +52,9 @@ public class WorkerController {
     /**
      * Crea una instancia del controlador de trabajadores.
      *
-     * @param workerService  ({@link WorkerService}) servicio encargado de la gestión de trabajadores
-     * @param companyService ({@link CompanyService}) servicio encargado de la gestión de empresas
-     * @param userService    ({@link UserService}) servicio encargado de la gestión de usuarios
+     * @param workerService  ({@link WorkerService}) servicio encargado de la gestión de trabajadores.
+     * @param companyService ({@link CompanyService}) servicio encargado de la gestión de empresas.
+     * @param userService    ({@link UserService}) servicio encargado de la gestión de usuarios.
      */
     public WorkerController(
             WorkerService workerService,
@@ -78,7 +78,7 @@ public class WorkerController {
      * {@code ADMIN} o {@code HR_MANAGER} dentro de la empresa.
      * </p>
      *
-     * @param uuid         UUID de la empresa
+     * @param uuid         UUID de la empresa.
      * @param workerCreate datos del usuario y roles con los que se registrará
      *                     como trabajador ({@link WorkerCreate}).
      *

@@ -17,7 +17,7 @@ import lombok.Setter;
  *
  * @author Gastón
  * @version 1.0
- * @since 2026-05-04
+ * @since 2026-04-11
  */
 @Schema(
         description = "Solicitud para renovar el token de acceso mediante un refresh token"

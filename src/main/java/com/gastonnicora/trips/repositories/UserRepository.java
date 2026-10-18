@@ -15,6 +15,10 @@ import java.util.UUID;
  * Proporciona operaciones para consultar usuarios por correo electrónico,
  * identificador único, estado de habilitación y rol.
  * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-03-18
  */
 public interface UserRepository extends JpaRepository<User, UUID> {
 
