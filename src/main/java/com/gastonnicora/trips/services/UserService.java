@@ -141,7 +141,6 @@ public class UserService {
      * @see UserService#getUser(UUID)
      * @see RefreshTokenService#deactivateAllByUserUuid(UUID)
      */
-    @Transactional
     public void deleteCurrentUser() {
         User user = this.getUser(getCurrentUserUuid());
         user.setEnabled(false);
@@ -281,7 +280,6 @@ public class UserService {
      * @see UserService#updateUser(UUID, UserPut)
      * @see SecurityUtils#getCurrentUserUuid()
      */
-    @Transactional
     public UserDTO updateCurrentUser(UserPut userPut) {
         return updateUser(getCurrentUserUuid(), userPut);
     }
@@ -308,7 +306,6 @@ public class UserService {
      * @see RefreshTokenService#deactivateAllByUserUuid(UUID)
      * @see UserMapper#toDTO(User)
      */
-    @Transactional
     public UserDTO updatePassword(UserChangePassword userChangePassword) {
         User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(() -> new NotFoundException("El usuario solicitado no existe"));
 
@@ -389,7 +386,6 @@ public class UserService {
      *
      * @see UserService#updateUser(UUID, UserPut)
      */
-    @Transactional
     public UserDTO updateUserByUuid(UUID uuid, UserPut userPut) {
         return updateUser(uuid, userPut);
     }

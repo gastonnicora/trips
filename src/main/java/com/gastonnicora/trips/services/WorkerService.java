@@ -114,7 +114,6 @@ public class WorkerService {
      * @see WorkerService#getWorker(UUID, UUID)
      * @see WorkerService#verifyNotOwner(Worker)
      */
-    @Transactional
     public void deleteWorker(UUID user, UUID company) {
         Worker worker = this.getWorker(user, company);
         this.verifyNotOwner(worker);
@@ -241,7 +240,6 @@ public class WorkerService {
      * @see WorkerService#getWorker(UUID, UUID)
      * @see WorkerMapper#toDTO(Worker)
      */
-    @Transactional
     public WorkerDTO updateWorker(UUID user, UUID company, Set<RoleCompany> roles) {
         this.verifyRole(roles);
         Worker worker = this.getWorker(user, company);

@@ -96,7 +96,6 @@ public class CompanyService {
      *
      * @see CompanyService#getCompanyEntity(UUID)
      */
-    @Transactional
     public void deleteCompany(UUID uuid) {
         Company company = this.getCompanyEntity(uuid);
         company.setActive(false);
@@ -172,7 +171,6 @@ public class CompanyService {
      * @see GeocodingService#obtenerDireccion(double, double)
      * @see CompanyMapper#toDTO(Company)
      */
-    @Transactional
     public CompanyDTO updateCompany(UUID uuid, CompanyCreate companyCreate) {
         Company company = this.getCompanyEntity(uuid);
         AddressResponse addressR = geocodingService.obtenerDireccion(companyCreate.getLatitude(),

@@ -90,7 +90,6 @@ public class VehicleService {
      *                            indicada.
      * @see VehicleService#findByUuid(UUID)
      */
-    @Transactional
     public void deleteVehicle(UUID companyUuid, UUID vehicleUuid) {
         Vehicle existingVehicle = findByUuid(vehicleUuid);
         if (!companyUuid.equals(existingVehicle.getCompany().getUuid())) {
