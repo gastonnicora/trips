@@ -9,9 +9,11 @@ import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.VehicleMapper;
 import com.gastonnicora.trips.repositories.VehicleRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -132,6 +134,59 @@ public class VehicleService {
         if (!vehicle.getCompany().getUuid().equals(companyUuid)) {
             throw new ForbiddenException("El vehiculo no existe");
         }
+        return vehicleMapper.toDTO(vehicle);
+    }
+
+    /**
+     * Obtiene los vehículos activos por el uuid de la empresa.
+     *
+     * @param companyUuid UUID de la compañía propietaria de los vehículos.
+     *
+     * @return Lista de {@link VehicleDTO} correspondiente a los vehículos encontrados.
+     *
+     * @throws NotFoundException Si la empresa no tiene vehículos.
+     * @see VehicleRepository#findAllByCompanyUuidAndActiveTrue(UUID)
+     * @see VehicleMapper#toDTOList(List)
+     */
+    public List<VehicleDTO> getVehicles(UUID companyUuid) {
+        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyUuidAndActiveTrue(companyUuid);
+        if (vehicles.isEmpty()) {
+            throw new NotFoundException("No existen vehículos para esa empresa");
+        }
+        return vehicleMapper.toDTOList(vehicles);
+    }
+
+
+    /**
+     * Actualiza un vehículo por su uuid.
+     *
+     * <p>
+     * Antes de actualizar el vehículo, verifica que sean diferentes las patentes y si lo son, que no exista otro vehículo activo
+     * con la misma patente asociado a la empresa.
+     * </p>
+     *
+     * @param vehicleUuid   Uuid del vehículo a modificar.
+     * @param vehicleUpdate Datos del vehículo que se desea crear ({@link VehicleCreate}).
+     *
+     * @return {@link VehicleDTO} correspondiente al vehículo actualizado.
+     *
+     * @throws ConflictException Si ya existe un vehículo activo con la misma
+     *                           patente para la empresa.
+     * @see VehicleRepository#findByCompanyUuidAndPlateAndActiveTrue(UUID, String)
+     * @see VehicleMapper#toDTO(Vehicle)
+     */
+    public VehicleDTO updateVehicle(UUID vehicleUuid, VehicleCreate vehicleUpdate) {
+        Vehicle vehicle = findByUuid(vehicleUuid);
+        if (!Objects.equals(vehicle.getPlate(), vehicleUpdate.getPlate())) {
+            Optional<Vehicle> ve = vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(vehicle.getCompany().getUuid(), vehicleUpdate.getPlate());
+            if (ve.isPresent()) {
+                throw new ConflictException("No se puede guardar el cambio por que la patente ya esta registrada.");
+            }
+        }
+        vehicle.setPlate(vehicleUpdate.getPlate());
+        vehicle.setCapacity(vehicleUpdate.getCapacity());
+        vehicle.setModel(vehicleUpdate.getModel());
+        vehicle = vehicleRepository.save(vehicle);
         return vehicleMapper.toDTO(vehicle);
     }
 

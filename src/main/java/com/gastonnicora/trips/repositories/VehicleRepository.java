@@ -32,6 +32,15 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
     List<Vehicle> findAllByCompanyUuid(UUID companyUuid);
 
     /**
+     * Busca todos los vehículos asociados a una empresa.
+     *
+     * @param companyUuid Identificador único de la empresa.
+     *
+     * @return Lista de vehículos asociados a la empresa indicada.
+     */
+    List<Vehicle> findAllByCompanyUuidAndActiveTrue(UUID companyUuid);
+
+    /**
      * Busca un vehículo por el identificador de su empresa y su patente.
      *
      * @param companyUuid Identificador único de la empresa.
@@ -74,4 +83,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
      * si no existe.
      */
     Optional<Vehicle> findByUuidAndActiveTrue(UUID uuid);
+
+
 }

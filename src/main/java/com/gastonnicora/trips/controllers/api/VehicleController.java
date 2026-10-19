@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -142,5 +143,66 @@ public class VehicleController {
             @PathVariable("vehicleUuid") UUID vehicleUuid) {
 
         return vehicleService.getVehicle(vehicleUuid, companyUuid);
+    }
+
+    /**
+     * Obtiene un vehículo perteneciente a una empresa.
+     *
+     * <p>
+     * El acceso requiere que el usuario autenticado tenga rol {@code OWNER} o
+     * {@code ADMIN} dentro de la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece el vehículo.
+     *
+     * @return Lista de vehículos de una empresa.
+     *
+     * @see VehicleService#getVehicles(UUID)
+     */
+    @GetMapping("/companies/{companyUuid}/vehicles/")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(
+            summary = "Obtener vehículos",
+            description = "Obtiene los vehículos perteneciente a una empresa."
+    )
+    public List<VehicleDTO> getVehicles(
+            @PathVariable("companyUuid") UUID companyUuid) {
+
+        return vehicleService.getVehicles(companyUuid);
+    }
+
+
+    /**
+     * Actualiza un vehículo asociado a una empresa, por su uuid.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN}
+     * dentro de la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid   UUID de la empresa a la que se asociará el vehículo
+     * @param vehicleUpdate ({@link VehicleCreate}) datos necesarios para actualizar el vehículo
+     *
+     * @return datos del vehículo actualizado
+     *
+     * @see VehicleService#updateVehicle(UUID, VehicleCreate) 
+     */
+    @PutMapping("/companies/{companyUuid}/vehicle/{vehicleUuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(
+            summary = "Actualizar vehículo",
+            description = "Actualiza un vehiculo por su uuid."
+    )
+    public VehicleDTO updateVehicle(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("vehicleUuid") UUID vehicleUuid,
+            @RequestBody @Valid VehicleCreate vehicleUpdate) {
+        return vehicleService.updateVehicle(vehicleUuid, vehicleUpdate);
     }
 }
