@@ -175,10 +175,13 @@ public class VehicleService {
      * @see VehicleRepository#findByCompanyUuidAndPlateAndActiveTrue(UUID, String)
      * @see VehicleMapper#toDTO(Vehicle)
      */
-    public VehicleDTO updateVehicle(UUID vehicleUuid, VehicleCreate vehicleUpdate) {
+    public VehicleDTO updateVehicle(UUID companyUuid, UUID vehicleUuid, VehicleCreate vehicleUpdate) {
         Vehicle vehicle = findByUuid(vehicleUuid);
+        if (!vehicle.getCompany().getUuid().equals(companyUuid)) {
+            throw new ForbiddenException("Acceso denegado");
+        }
         if (!Objects.equals(vehicle.getPlate(), vehicleUpdate.getPlate())) {
-            Optional<Vehicle> ve = vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(vehicle.getCompany().getUuid(), vehicleUpdate.getPlate());
+            Optional<Vehicle> ve = vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(companyUuid, vehicleUpdate.getPlate());
             if (ve.isPresent()) {
                 throw new ConflictException("No se puede guardar el cambio por que la patente ya esta registrada.");
             }

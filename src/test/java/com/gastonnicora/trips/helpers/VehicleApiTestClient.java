@@ -49,6 +49,24 @@ public class VehicleApiTestClient {
                 .header("User-Agent", "JUnit-Test"));
     }
 
+    public ResultActions updateVehicle(UUID companyUuid, UUID vehicleUuid, String plate, String model, Integer capacity)
+            throws Exception {
+
+        VehicleCreate body = new VehicleCreate(
+                plate,
+                model,
+                capacity
+        );
+
+        String json = objectMapper.writeValueAsString(body);
+
+        return mockMvc.perform(put("/api/companies/" + companyUuid + "/vehicle/" + vehicleUuid)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test")
+                .content(json));
+    }
+
     public ResultActions getVehicle(UUID companyUuid, UUID uuid)
             throws Exception {
 

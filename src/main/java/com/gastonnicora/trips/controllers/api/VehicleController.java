@@ -188,7 +188,7 @@ public class VehicleController {
      *
      * @return datos del vehículo actualizado
      *
-     * @see VehicleService#updateVehicle(UUID, VehicleCreate) 
+     * @see VehicleService#updateVehicle(UUID, UUID, VehicleCreate)  
      */
     @PutMapping("/companies/{companyUuid}/vehicle/{vehicleUuid}")
     @SecurityRequirement(name = "bearerAuth")
@@ -203,6 +203,6 @@ public class VehicleController {
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("vehicleUuid") UUID vehicleUuid,
             @RequestBody @Valid VehicleCreate vehicleUpdate) {
-        return vehicleService.updateVehicle(vehicleUuid, vehicleUpdate);
+        return vehicleService.updateVehicle(companyUuid,vehicleUuid, vehicleUpdate);
     }
 }
