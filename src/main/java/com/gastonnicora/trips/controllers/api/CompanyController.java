@@ -114,6 +114,25 @@ public class CompanyController {
     }
 
     /**
+     * Obtiene todas las empresas activas registradas en el sistema.
+     *
+     * <p>
+     * Esta operación requiere los roles {@code ADMIN} o {@code SUPER_ADMIN}.
+     * </p>
+     *
+     * @return Lista con los datos de las empresas activas.
+     *
+     * @see CompanyService#getCompanies()
+     */
+    @GetMapping("/")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @Operation(summary = "Obtener empresas", description = "Obtiene todas las empresas activas del sistema. Requiere rol ADMIN o SUPER_ADMIN.")
+    public List<CompanyDTO> getCompanies() {
+        return companyService.getCompanies();
+    }// TODO: Testear
+
+    /**
      * Obtiene las empresas cuyo propietario es el usuario autenticado.
      *
      * @return respuesta con la lista de empresas asociadas al usuario actual.
@@ -201,6 +220,4 @@ public class CompanyController {
     public CompanyDTO updateCompany(@PathVariable("uuid") UUID uuid, @Valid @RequestBody CompanyCreate company) {
         return companyService.updateCompany(uuid, company);
     }
-
-    // TODO: Agregar endpoint para obtener todas las empresas
 }

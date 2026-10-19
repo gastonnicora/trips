@@ -29,7 +29,7 @@ import java.util.List;
 @Schema(description = "DTO genérico utilizado para representar una respuesta de la API que contiene una lista de elementos.")
 @NoArgsConstructor
 public class ListResponse<T> {
-
+    //TODO: agregar a las demás clases
     /**
      * Lista de elementos devueltos en la respuesta.
      */

@@ -223,7 +223,7 @@ public class UserService {
      */
     public ListResponse<UserDTO> getUsers() {
         List<User> users = userRepository.findAll();
-        return new ListResponse<>(userMapper.toDTOList(users));
+        return new ListResponse<>(userMapper.toDTOList(users)); //TODO: verificar que devuelva algo
     }
 
     /**

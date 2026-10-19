@@ -139,6 +139,31 @@ public class CompanyService {
                 .orElseThrow(() -> new NotFoundException("Empresa no encontrada"));
     }
 
+
+    /**
+     * Obtiene todas las empresas activas registradas en el sistema.
+     *
+     * <p>
+     * Las entidades obtenidas del repositorio se convierten en
+     * {@link CompanyDTO} mediante {@link CompanyMapper}. Si no existe ninguna
+     * empresa activa se lanza una excepción en lugar de devolver una lista vacía.
+     * </p>
+     *
+     * @return Lista de {@link CompanyDTO} con los datos de las empresas activas.
+     *
+     * @throws NotFoundException Si no hay empresas activas registradas.
+     *
+     * @see CompanyRepository#findAllByActiveTrue()
+     * @see CompanyMapper#toDTOList(List)
+     */
+    public List<CompanyDTO> getCompanies(){
+        List<Company> companies= companyRepository.findAllByActiveTrue();
+        if (companies.isEmpty()){
+            throw new NotFoundException("No hay compañias registradas");
+        }
+        return companyMapper.toDTOList(companies);
+    }
+
     /**
      * Convierte una lista de entidades de empresa en una respuesta de tipo
      * {@link ListResponse}.

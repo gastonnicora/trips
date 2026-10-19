@@ -3,6 +3,7 @@ package com.gastonnicora.trips.repositories;
 import com.gastonnicora.trips.entities.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,7 +23,7 @@ import java.util.UUID;
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     /**
-     * Busca una empresa por su identificador único que este activo.
+     * Busca una empresa activa por su identificador único.
      *
      * @param uuid Identificador único de la empresa.
      *
@@ -30,4 +31,10 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
      */
     Optional<Company> findByUuidAndActiveTrue(UUID uuid);
 
+    /**
+     * Obtiene todas las empresas que se encuentran activas.
+     *
+     * @return Lista de {@link Company} activas, o una lista vacía si no existe ninguna.
+     */
+    List<Company> findAllByActiveTrue();
 }
