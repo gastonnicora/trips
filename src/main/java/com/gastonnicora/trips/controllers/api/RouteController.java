@@ -14,6 +14,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * Controlador REST encargado de gestionar las rutas de las empresas.
+ *
+ * <p>
+ * Proporciona operaciones para registrar rutas pertenecientes a una empresa.
+ * </p>
+ *
+ * <p>
+ * Las operaciones requieren autorización sobre la empresa asociada. Los
+ * usuarios con rol {@code OWNER}, {@code ADMIN} o {@code HR_MANAGER} dentro
+ * de la empresa pueden gestionar sus rutas.
+ * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-10-20
+ */
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Route", description = "Gestión de rutas")
@@ -21,11 +38,33 @@ public class RouteController {
     private final RouteService routeService;
     private final CompanyService companyService;
 
+    /**
+     * Crea una instancia del controlador de rutas.
+     *
+     * @param routeService   servicio encargado de la gestión de rutas ({@link RouteService}).
+     * @param companyService servicio encargado de consultar las empresas ({@link CompanyService}).
+     */
     public RouteController(RouteService routeService, CompanyService companyService) {
         this.routeService = routeService;
         this.companyService = companyService;
     }
 
+    /**
+     * Registra una nueva ruta asociada a una empresa.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER}, {@code ADMIN} o
+     * {@code HR_MANAGER} dentro de la empresa indicada.
+     * </p>
+     *
+     * @param uuid        UUID de la empresa a la que se asociará la ruta
+     * @param routeCreate ({@link RouteCreate}) datos necesarios para crear la ruta
+     *
+     * @return datos de la ruta creada
+     *
+     * @see CompanyService#getCompanyEntity(UUID)
+     * @see RouteService#createRoute(Company, RouteCreate)
+     */
     @PostMapping("/companies/{uuid}/route")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("@companySecurity.hasAnyRole(#uuid, "

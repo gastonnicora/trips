@@ -53,11 +53,17 @@ import java.util.Optional;
 @Tag(name = "Auth API", description = "Endpoints para autenticación y gestión de sesiones")
 public class AuthController {
 
+    /**
+     * Nombre de la cookie en la que se almacena el refresh token.
+     */
     private static final String REFRESH_COOKIE_NAME = "refreshToken";
     /**
      * Solo la necesitan los endpoints de /api/auth (refresh y logout).
      */
     private static final String REFRESH_COOKIE_PATH = "/api/auth";
+    /**
+     * Tiempo de vida de la cookie del refresh token, expresado en segundos (7 días).
+     */
     private static final int REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -101,6 +107,21 @@ public class AuthController {
         response.addCookie(buildRefreshCookie(refreshToken, REFRESH_COOKIE_MAX_AGE));
     }
 
+    /**
+     * Construye la cookie que contiene el refresh token.
+     *
+     * <p>
+     * La cookie se configura como {@code HttpOnly}, utiliza el atributo
+     * {@code Secure} según la configuración de la aplicación, se limita al path
+     * {@code /api/auth} y establece {@code SameSite=Lax}.
+     * </p>
+     *
+     * @param value  valor de la cookie (el refresh token), o {@code null} para
+     *               construir una cookie de borrado.
+     * @param maxAge tiempo de vida de la cookie en segundos.
+     *
+     * @return cookie configurada con los atributos del refresh token.
+     */
     private Cookie buildRefreshCookie(String value, int maxAge) {
         Cookie cookie = new Cookie(REFRESH_COOKIE_NAME, value);
         cookie.setHttpOnly(true);
@@ -114,6 +135,8 @@ public class AuthController {
     /**
      * Elimina la cookie del refresh token. Para que el navegador la borre debe
      * enviarse con los mismos atributos (nombre y path) con los que se creó.
+     *
+     * @param response respuesta HTTP a la que se agrega la cookie de borrado.
      */
     private void clearRefreshCookie(HttpServletResponse response) {
         response.addCookie(buildRefreshCookie(null, 0));

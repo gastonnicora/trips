@@ -165,13 +165,17 @@ public class VehicleService {
      * con la misma patente asociado a la empresa.
      * </p>
      *
+     * @param companyUuid   UUID de la empresa a la que debe pertenecer el vehículo.
      * @param vehicleUuid   Uuid del vehículo a modificar.
-     * @param vehicleUpdate Datos del vehículo que se desea crear ({@link VehicleCreate}).
+     * @param vehicleUpdate Nuevos datos del vehículo ({@link VehicleCreate}).
      *
      * @return {@link VehicleDTO} correspondiente al vehículo actualizado.
      *
-     * @throws ConflictException Si ya existe un vehículo activo con la misma
-     *                           patente para la empresa.
+     * @throws NotFoundException  Si el vehículo no existe o se encuentra inactivo.
+     * @throws ForbiddenException Si el vehículo no pertenece a la empresa indicada.
+     * @throws ConflictException  Si la patente cambia y ya existe un vehículo activo
+     *                            con esa patente para la empresa.
+     * @see #findByUuid(UUID)
      * @see VehicleRepository#findByCompanyUuidAndPlateAndActiveTrue(UUID, String)
      * @see VehicleMapper#toDTO(Vehicle)
      */

@@ -183,7 +183,8 @@ public class VehicleController {
      * dentro de la empresa indicada.
      * </p>
      *
-     * @param companyUuid   UUID de la empresa a la que se asociará el vehículo
+     * @param companyUuid   UUID de la empresa a la que pertenece el vehículo
+     * @param vehicleUuid   UUID del vehículo que se desea actualizar
      * @param vehicleUpdate ({@link VehicleCreate}) datos necesarios para actualizar el vehículo
      *
      * @return datos del vehículo actualizado

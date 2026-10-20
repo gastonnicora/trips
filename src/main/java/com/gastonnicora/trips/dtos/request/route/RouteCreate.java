@@ -10,6 +10,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO utilizado para solicitar la creación de una nueva ruta.
+ *
+ * <p>
+ * Contiene la información necesaria para registrar una ruta y asociarla a una
+ * empresa.
+ * </p>
+ *
+ * <p>
+ * Los campos cuentan con validaciones mediante Jakarta Bean Validation para
+ * garantizar que se proporcione un nombre y un tipo de precio válidos.
+ * </p>
+ *
+ * @author Gastón
+ * @version 1.0
+ * @since 2026-10-20
+ */
 @Schema(description = "DTO de rutas para creación")
 @NoArgsConstructor
 @Getter
