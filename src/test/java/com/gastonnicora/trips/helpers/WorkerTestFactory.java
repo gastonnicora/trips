@@ -32,11 +32,9 @@ public class WorkerTestFactory {
                 .getResponse()
                 .getContentAsString();
 
-        WorkerDTO vehicle = objectMapper.readValue(
+        return objectMapper.readValue(
                 responseJson,
                 WorkerDTO.class
-        );
-
-        return vehicle;
+                                     );
     }
 }

@@ -36,6 +36,9 @@ public class CompanyMapper {
      * @return DTO de empresa correspondiente a la entidad proporcionada.
      */
     public CompanyDTO toDTO(Company company) {
+        if (company == null) {
+            return null;
+        }
         return new CompanyDTO(
                 company.getUuid(),
                 company.getName(),
