@@ -57,7 +57,7 @@ public class RouteController {
      * {@code HR_MANAGER} dentro de la empresa indicada.
      * </p>
      *
-     * @param uuid        UUID de la empresa a la que se asociará la ruta
+     * @param companyUuid UUID de la empresa a la que se asociará la ruta
      * @param routeCreate ({@link RouteCreate}) datos necesarios para crear la ruta
      *
      * @return datos de la ruta creada
@@ -67,20 +67,47 @@ public class RouteController {
      */
     @PostMapping("/companies/{uuid}/route")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("@companySecurity.hasAnyRole(#uuid, "
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
-            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN, "
-            + "T(com.gastonnicora.trips.enums.RoleCompany).HR_MANAGER)")
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
     @Operation(summary = "Agregar ruta", description = "Agrega una ruta de una empresa.")
     public RouteDTO createRoute(
-            @PathVariable("uuid") UUID uuid,
+            @PathVariable("uuid") UUID companyUuid,
             @RequestBody @Valid RouteCreate routeCreate
                                ) {
 
-        Company company = companyService.getCompanyEntity(uuid);
+        Company company = companyService.getCompanyEntity(companyUuid);
         return routeService.createRoute(
                 company,
                 routeCreate
                                        );
+    }
+
+    /**
+     * Obtiene una ruta activa de una empresa.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN}
+     * dentro de la empresa indicada.
+     * </p>
+     *
+     * @param uuid      UUID de la empresa a la que pertenece la ruta
+     * @param routeUuid UUID de la ruta que se desea obtener
+     *
+     * @return datos de la ruta encontrada
+     *
+     * @see RouteService#getRoute(UUID, UUID)
+     */
+    @GetMapping("/companies/{uuid}/route/{routeUuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#uuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Obtener ruta", description = "Obtiene una ruta de una empresa por su uuid.")
+    public RouteDTO getRoute(
+            @PathVariable("uuid") UUID uuid,
+            @PathVariable("routeUuid") UUID routeUuid
+                            ) {
+        return routeService.getRoute(uuid, routeUuid);
     }
 }

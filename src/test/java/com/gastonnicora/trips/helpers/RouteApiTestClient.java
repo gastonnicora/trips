@@ -10,6 +10,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 public class RouteApiTestClient {
 
@@ -45,6 +46,14 @@ public class RouteApiTestClient {
                                        .header("User-Agent", "JUnit-Test")
                                        .content(json));
     }
+    public ResultActions getRoute(UUID companyUuid, UUID routeUuid) throws Exception {
+
+        return mockMvc.perform(get("/api/companies/" + companyUuid + "/route/" + routeUuid)
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
+    }
+
 
     public RouteApiTestClient withToken(String token) {
         this.token = token;

@@ -80,7 +80,6 @@ class CreateRouteTest {
         return new RouteApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
     }
 
-    // ---------- casos felices ----------
 
     @Test
     void shouldCreateRouteWithPerKmPricingSuccessfully() throws Exception {
@@ -120,15 +119,6 @@ class CreateRouteTest {
     }
 
     @Test
-    void shouldAllowHrManagerToCreateRoute() throws Exception {
-
-        routeApiForWorkerWithRoles("hr", Set.of(RoleCompany.HR_MANAGER))
-                .createRoute(company.getUuid(), "Ruta hr", PricingType.PER_KM)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Ruta hr"));
-    }
-
-    @Test
     void shouldAllowCreatingTwoRoutesWithTheSameName() throws Exception {
 
         routeApi.createRoute(company.getUuid(), "Ruta repetida", PricingType.PER_KM)
@@ -138,7 +128,6 @@ class CreateRouteTest {
                 .andExpect(status().isOk());
     }
 
-    // ---------- validaciones ----------
 
     @Test
     void shouldReturnBadRequestWhenNameIsBlank() throws Exception {
@@ -198,7 +187,6 @@ class CreateRouteTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------- autenticación / autorización ----------
 
     @Test
     void shouldReturnForbiddenWhenUserHasNoAllowedRole() throws Exception {
