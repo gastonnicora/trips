@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.helpers.vehicle;
 
 import com.gastonnicora.trips.dtos.entities.VehicleDTO;
 import org.springframework.test.web.servlet.MockMvc;

@@ -1,10 +1,10 @@
 package com.gastonnicora.trips.integration.vehicle;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
-import com.gastonnicora.trips.helpers.CompanyTestFactory;
-import com.gastonnicora.trips.helpers.UserTestFactory;
-import com.gastonnicora.trips.helpers.VehicleApiTestClient;
-import com.gastonnicora.trips.helpers.VehicleTestFactory;
+import com.gastonnicora.trips.helpers.company.CompanyTestFactory;
+import com.gastonnicora.trips.helpers.user.UserTestFactory;
+import com.gastonnicora.trips.helpers.vehicle.VehicleApiTestClient;
+import com.gastonnicora.trips.helpers.vehicle.VehicleTestFactory;
 import com.gastonnicora.trips.services.GeocodingService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;

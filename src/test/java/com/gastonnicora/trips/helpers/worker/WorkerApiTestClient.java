@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.helpers.worker;
 
 import com.gastonnicora.trips.dtos.request.worker.WorkerCreate;
 import com.gastonnicora.trips.enums.RoleCompany;

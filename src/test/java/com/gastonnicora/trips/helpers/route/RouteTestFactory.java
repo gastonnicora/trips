@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.helpers.route;
 
 import com.gastonnicora.trips.dtos.entities.RouteDTO;
 import com.gastonnicora.trips.enums.PricingType;

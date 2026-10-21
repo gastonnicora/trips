@@ -42,8 +42,8 @@ public class FindByUuidTest {
 
         Route route = routeRepository.save(new Route(company, "Test route", PricingType.PER_KM));
 
-        RoutePoint routePoint = new RoutePoint(route,"Test routePoint",35.00,36.00);
-
+        RoutePoint routePoint = new RoutePoint("Test routePoint",35.00,36.00);
+        routePoint.setRoute(route);
         routePoint = routePointRepository.save(routePoint);
 
 

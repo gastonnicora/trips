@@ -4,7 +4,7 @@ import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.dtos.response.auth.RefreshResponse;
 import com.gastonnicora.trips.helpers.AuthApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.helpers.user.UserTestFactory;
 import jakarta.servlet.http.Cookie;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.helpers.company;
 
 import com.gastonnicora.trips.dtos.entities.CompanyDTO;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;

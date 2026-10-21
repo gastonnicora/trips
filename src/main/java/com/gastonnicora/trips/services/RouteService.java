@@ -116,6 +116,23 @@ public class RouteService {
     }
 
     /**
+     * Obtiene la ruta activas de una empresa por su uuid.
+     *
+     * @param companyUuid UUID de la empresa de la que se desean obtener las rutas.
+     * @param routeUuid UUID de la ruta a buscar.
+     *
+     * @return Lista de {@link Route} correspondiente a las rutas activas de la
+     * empresa.
+     *
+     * @throws NotFoundException Si la empresa no posee rutas activas.
+     * @see RouteRepository#findByUuidAndCompanyUuidAndActiveTrue(UUID, UUID)
+     */
+    public Route getRouteByUuid(UUID companyUuid, UUID routeUuid) {//TODO testear
+        return routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid)
+                .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
+    }
+
+    /**
      * Obtiene las rutas activas de una empresa.
      *
      * @param companyUuid UUID de la empresa de la que se desean obtener las rutas.

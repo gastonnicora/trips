@@ -1,7 +1,8 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.helpers.user;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
+import com.gastonnicora.trips.helpers.AuthApiTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.ObjectMapper;

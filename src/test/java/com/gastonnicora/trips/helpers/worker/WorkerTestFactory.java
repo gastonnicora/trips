@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.helpers.worker;
 
 import com.gastonnicora.trips.dtos.entities.WorkerDTO;
 import com.gastonnicora.trips.enums.RoleCompany;

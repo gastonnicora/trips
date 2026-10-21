@@ -65,13 +65,11 @@ public class RoutePoint {
     /**
      * Constructor para crear un nuevo punto.
      *
-     * @param route     Ruta a la que pertenece el punto.
      * @param name      Nombre del punto.
      * @param latitude  Latitud del punto.
      * @param longitude Longitud del punto.
      */
-    public RoutePoint(Route route, String name, Double latitude, Double longitude) {
-        this.route = route;
+    public RoutePoint(String name, Double latitude, Double longitude) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;

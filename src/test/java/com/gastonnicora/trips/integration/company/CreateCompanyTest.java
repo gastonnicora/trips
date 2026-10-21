@@ -2,8 +2,8 @@ package com.gastonnicora.trips.integration.company;
 
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse.Address;
-import com.gastonnicora.trips.helpers.CompanyApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.helpers.company.CompanyApiTestClient;
+import com.gastonnicora.trips.helpers.user.UserTestFactory;
 import com.gastonnicora.trips.services.GeocodingService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;

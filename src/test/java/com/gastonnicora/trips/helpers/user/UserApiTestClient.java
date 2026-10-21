@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.helpers.user;
 
 import com.gastonnicora.trips.enums.Role;
 import org.springframework.http.MediaType;

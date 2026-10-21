@@ -2,8 +2,8 @@ package com.gastonnicora.trips.integration.user;
 
 import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.enums.Role;
-import com.gastonnicora.trips.helpers.UserApiTestClient;
-import com.gastonnicora.trips.helpers.UserTestFactory;
+import com.gastonnicora.trips.helpers.user.UserApiTestClient;
+import com.gastonnicora.trips.helpers.user.UserTestFactory;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;

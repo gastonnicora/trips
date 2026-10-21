@@ -1,4 +1,4 @@
-package com.gastonnicora.trips.helpers;
+package com.gastonnicora.trips.helpers.company;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
