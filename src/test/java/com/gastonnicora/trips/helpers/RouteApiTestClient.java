@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 public class RouteApiTestClient {
 
@@ -61,6 +63,21 @@ public class RouteApiTestClient {
                                        .header("Authorization", "Bearer " + token)
                                        .contentType(MediaType.APPLICATION_JSON)
                                        .header("User-Agent", "JUnit-Test"));
+    }
+    public ResultActions updateRoute(
+            UUID companyUuid,
+            UUID routeUuid,
+            String name,
+            PricingType pricingType
+                                    ) throws Exception {
+
+        String json = objectMapper.writeValueAsString(new RouteCreate(name, pricingType));
+
+        return mockMvc.perform(put("/api/companies/" + companyUuid + "/route/" + routeUuid)
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content(json));
     }
 
     public RouteApiTestClient withToken(String token) {

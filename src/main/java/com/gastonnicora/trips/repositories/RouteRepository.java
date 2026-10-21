@@ -24,6 +24,16 @@ import java.util.UUID;
 public interface RouteRepository extends JpaRepository<Route, UUID> {
 
     /**
+     * Busca todas las rutas activas asociadas a una empresa.
+     *
+     * @param companyUuid Identificador único de la empresa.
+     *
+     * @return Lista de rutas activas de la empresa indicada, o una lista vacía
+     * si no tiene ninguna.
+     */
+    List<Route> findAllByCompanyUuidAndActiveTrue(UUID companyUuid);
+
+    /**
      * Busca una ruta activa por su identificador único.
      *
      * @param uuid Identificador único de la ruta.
@@ -34,12 +44,13 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
     Optional<Route> findByUuidAndActiveTrue(UUID uuid);
 
     /**
-     * Busca todas las rutas activas asociadas a una empresa.
+     * Busca una ruta activa por su uuid y el uuid de la empresa a la que pertenece.
      *
+     * @param routeUuid   Identificador único de la ruta.
      * @param companyUuid Identificador único de la empresa.
      *
-     * @return Lista de rutas activas de la empresa indicada, o una lista vacía
-     * si no tiene ninguna.
+     * @return {@link Optional} que contiene la ruta activa encontrada, o vacío si
+     * no existe.
      */
-    List<Route> findAllByCompanyUuidAndActiveTrue(UUID companyUuid);
+    Optional<Route> findByUuidAndCompanyUuidAndActiveTrue(UUID routeUuid, UUID companyUuid);
 }

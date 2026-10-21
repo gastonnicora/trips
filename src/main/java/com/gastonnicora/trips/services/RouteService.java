@@ -112,4 +112,32 @@ public class RouteService {
         }
         return routeMapper.toDTOList(routes);
     }
+
+    /**
+     * Actualiza el nombre y el tipo de precio de una ruta de una empresa.
+     *
+     * <p>
+     * La ruta debe estar activa y pertenecer a la empresa indicada. Los puntos
+     * y los precios de la ruta no se modifican en esta operación.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece la ruta.
+     * @param routeUuid   UUID de la ruta que se desea actualizar.
+     * @param routeUpdate Nuevos datos de la ruta ({@link RouteCreate}).
+     *
+     * @return {@link RouteDTO} correspondiente a la ruta actualizada.
+     *
+     * @throws NotFoundException Si la ruta no existe, está inactiva o no
+     *                           pertenece a la empresa indicada.
+     * @see RouteRepository#findByUuidAndCompanyUuidAndActiveTrue(UUID, UUID)
+     * @see RouteMapper#toDTO(Route)
+     */
+    public RouteDTO updateRoute(UUID companyUuid, UUID routeUuid, RouteCreate routeUpdate) {
+        Route route = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid)
+                .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
+        route.setName(routeUpdate.getName());
+        route.setPricingType(routeUpdate.getPricingType());
+        return routeMapper.toDTO(routeRepository.save(route));
+    }
+
 }
