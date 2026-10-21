@@ -66,6 +66,28 @@ public class RouteService {
     }
 
     /**
+     * Elimina una ruta de una empresa mediante una baja lógica.
+     *
+     * <p>
+     * La ruta no se borra de la base de datos: se marca como inactiva, por lo
+     * que deja de ser visible para el resto de las operaciones.
+     * </p>
+     *
+     * @param companyUuid Uuid de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Uuid de la ruta a eliminar.
+     *
+     * @throws NotFoundException Si la ruta no existe, se encuentra inactiva o no
+     *                           pertenece a la empresa indicada.
+     * @see RouteRepository#findByUuidAndCompanyUuidAndActiveTrue(UUID, UUID)
+     */
+    public void deleteRoute(UUID companyUuid, UUID routeUuid) {
+        Route route = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid)
+                .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
+        route.setActive(false);
+        routeRepository.save(route);
+    }
+
+    /**
      * Obtiene una ruta activa de una empresa mediante su identificador único.
      *
      * <p>
@@ -83,7 +105,7 @@ public class RouteService {
      * @see RouteRepository#findByUuidAndActiveTrue(UUID)
      * @see RouteMapper#toDTO(Route)
      */
-    public RouteDTO getRoute(UUID companyUuid, UUID routeUuid) {
+    public RouteDTO getRoute(UUID companyUuid, UUID routeUuid) { //TODO mejorar
         Route route = routeRepository.findByUuidAndActiveTrue(routeUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
 

@@ -84,6 +84,32 @@ public class RouteController {
     }
 
     /**
+     * Elimina una ruta activa de una empresa mediante una baja lógica.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN}
+     * dentro de la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece la ruta
+     * @param routeUuid   UUID de la ruta que se desea eliminar
+     *
+     * @see RouteService#deleteRoute(UUID, UUID)
+     */
+    @DeleteMapping("/companies/{companyUuid}/route/{routeUuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Eliminar ruta", description = "Elimina una ruta de una empresa por su uuid.")
+    public void deleteRoute(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid
+                           ) {
+        routeService.deleteRoute(companyUuid, routeUuid);
+    }
+
+    /**
      * Obtiene una ruta activa de una empresa.
      *
      * <p>
@@ -91,8 +117,8 @@ public class RouteController {
      * dentro de la empresa indicada.
      * </p>
      *
-     * @param companyUuid      UUID de la empresa a la que pertenece la ruta
-     * @param routeUuid UUID de la ruta que se desea obtener
+     * @param companyUuid UUID de la empresa a la que pertenece la ruta
+     * @param routeUuid   UUID de la ruta que se desea obtener
      *
      * @return datos de la ruta encontrada
      *
@@ -110,7 +136,6 @@ public class RouteController {
                             ) {
         return routeService.getRoute(companyUuid, routeUuid);
     }
-
 
     /**
      * Obtiene las rutas activas de una empresa.

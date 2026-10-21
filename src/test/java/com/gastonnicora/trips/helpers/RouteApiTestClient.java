@@ -57,6 +57,15 @@ public class RouteApiTestClient {
                                        .header("User-Agent", "JUnit-Test"));
     }
 
+    public ResultActions deleteRoute(UUID companyUuid, UUID routeUuid) throws Exception {
+
+        return mockMvc.perform(delete("/api/companies/" + companyUuid + "/route/" + routeUuid)
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
+    }
+
+
     public ResultActions getRoutes(UUID companyUuid) throws Exception {
 
         return mockMvc.perform(get("/api/companies/" + companyUuid + "/routes")
