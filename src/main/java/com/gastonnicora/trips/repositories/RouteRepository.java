@@ -3,6 +3,7 @@ package com.gastonnicora.trips.repositories;
 import com.gastonnicora.trips.entities.Route;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,4 +32,14 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
      * no existe.
      */
     Optional<Route> findByUuidAndActiveTrue(UUID uuid);
+
+    /**
+     * Busca todas las rutas activas asociadas a una empresa.
+     *
+     * @param companyUuid Identificador único de la empresa.
+     *
+     * @return Lista de rutas activas de la empresa indicada, o una lista vacía
+     * si no tiene ninguna.
+     */
+    List<Route> findAllByCompanyUuidAndActiveTrue(UUID companyUuid);
 }

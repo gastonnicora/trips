@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -109,5 +110,32 @@ public class RouteController {
             @PathVariable("routeUuid") UUID routeUuid
                             ) {
         return routeService.getRoute(uuid, routeUuid);
+    }
+
+
+    /**
+     * Obtiene las rutas activas de una empresa.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN}
+     * dentro de la empresa indicada.
+     * </p>
+     *
+     * @param uuid UUID de la empresa de la que se desean obtener las rutas
+     *
+     * @return Lista de rutas activas de la empresa
+     *
+     * @see RouteService#getRoutes(UUID)
+     */
+    @GetMapping("/companies/{uuid}/routes")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#uuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Obtener rutas", description = "Obtiene las rutas activas de una empresa.")
+    public List<RouteDTO> getRoutes(
+            @PathVariable("uuid") UUID uuid
+                                   ) {
+        return routeService.getRoutes(uuid);
     }
 }

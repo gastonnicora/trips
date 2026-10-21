@@ -124,7 +124,7 @@ public class CompanyController {
      *
      * @see CompanyService#getCompanies()
      */
-    @GetMapping("/")
+    @GetMapping("")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "Obtener empresas", description = "Obtiene todas las empresas activas del sistema. Requiere rol ADMIN o SUPER_ADMIN.")

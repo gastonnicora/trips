@@ -159,7 +159,7 @@ public class VehicleController {
      *
      * @see VehicleService#getVehicles(UUID)
      */
-    @GetMapping("/companies/{companyUuid}/vehicles/")
+    @GetMapping("/companies/{companyUuid}/vehicles")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "

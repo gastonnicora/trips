@@ -79,7 +79,7 @@ public class VehicleApiTestClient {
     public ResultActions getVehicles(UUID companyUuid)
             throws Exception {
 
-        return mockMvc.perform(get("/api/companies/" + companyUuid + "/vehicles/")
+        return mockMvc.perform(get("/api/companies/" + companyUuid + "/vehicles")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test"));

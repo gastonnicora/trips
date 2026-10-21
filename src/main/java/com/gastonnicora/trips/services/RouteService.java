@@ -10,6 +10,7 @@ import com.gastonnicora.trips.mappers.RouteMapper;
 import com.gastonnicora.trips.repositories.RouteRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -90,5 +91,25 @@ public class RouteService {
             throw new ForbiddenException("No tienes permisos para acceder a esta ruta");
         }
         return routeMapper.toDTO(route);
+    }
+
+    /**
+     * Obtiene las rutas activas de una empresa.
+     *
+     * @param companyUuid UUID de la empresa de la que se desean obtener las rutas.
+     *
+     * @return Lista de {@link RouteDTO} correspondiente a las rutas activas de la
+     * empresa.
+     *
+     * @throws NotFoundException Si la empresa no posee rutas activas.
+     * @see RouteRepository#findAllByCompanyUuidAndActiveTrue(UUID)
+     * @see RouteMapper#toDTOList(List)
+     */
+    public List<RouteDTO> getRoutes(UUID companyUuid) {
+        List<Route> routes = routeRepository.findAllByCompanyUuidAndActiveTrue(companyUuid);
+        if (routes.isEmpty()) {
+            throw new NotFoundException("La empresa no posee rutas.");
+        }
+        return routeMapper.toDTOList(routes);
     }
 }
