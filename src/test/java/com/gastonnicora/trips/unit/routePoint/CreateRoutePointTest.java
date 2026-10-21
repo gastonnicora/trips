@@ -8,6 +8,7 @@ import com.gastonnicora.trips.entities.RoutePoint;
 import com.gastonnicora.trips.enums.PricingType;
 import com.gastonnicora.trips.mappers.RoutePointMapper;
 import com.gastonnicora.trips.repositories.RoutePointRepository;
+import com.gastonnicora.trips.repositories.RouteRepository;
 import com.gastonnicora.trips.services.RoutePointService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +33,8 @@ class CreateRoutePointTest {
 
     @Mock
     private RoutePointRepository routePointRepository;
+    @Mock
+    private RouteRepository routeRepository;
 
     @Mock
     private RoutePointMapper routePointMapper;
@@ -42,6 +46,7 @@ class CreateRoutePointTest {
         company.setUuid(UUID.randomUUID());
 
         Route route = new Route(company, "Test route", PricingType.PER_KM);
+        route.setUuid(UUID.randomUUID());
 
         RoutePointCreate request = new RoutePointCreate(
                 "Terminal La Plata",
@@ -61,8 +66,9 @@ class CreateRoutePointTest {
 
         when(routePointMapper.toDTO(any(RoutePoint.class)))
                 .thenReturn(expectedDTO);
+        when(routeRepository.findByUuidAndCompanyUuidAndActiveTrue(route.getUuid(),company.getUuid())).thenReturn(Optional.of(route));
 
-        RoutePointDTO result = routePointService.createRoutePoint(route, request);
+        RoutePointDTO result = routePointService.createRoutePoint(company.getUuid(),route.getUuid(), request);
 
         assertNotNull(result);
         assertEquals(expectedDTO, result);
@@ -71,6 +77,9 @@ class CreateRoutePointTest {
                 ArgumentCaptor.forClass(RoutePoint.class);
 
         verify(routePointRepository).save(captor.capture());
+
+
+        verify(routeRepository).findByUuidAndCompanyUuidAndActiveTrue(route.getUuid(),company.getUuid());
 
         RoutePoint savedPoint = captor.getValue();
 

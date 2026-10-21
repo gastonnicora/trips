@@ -65,7 +65,7 @@ public class RoutePointController {
      * @return datos del punto de ruta creada
      *
      * @see RouteService#getRouteByUuid(UUID, UUID)
-     * @see RoutePointService#createRoutePoint(Route, RoutePointCreate)
+     * @see RoutePointService#createRoutePoint(UUID,UUID, RoutePointCreate)
      */
     @PostMapping("/companies/{companyUuid}/route/{routeUuid}/routePoint")
     @SecurityRequirement(name = "bearerAuth")
@@ -78,8 +78,7 @@ public class RoutePointController {
             @PathVariable("routeUuid") UUID routeUuid,
             @RequestBody @Valid RoutePointCreate routePointCreate
                                          ) {
-        Route route = routeService.getRouteByUuid(companyUuid, routeUuid);
-        return routePointService.createRoutePoint(route, routePointCreate);
+        return routePointService.createRoutePoint(companyUuid,routeUuid, routePointCreate);
     }
 }
 

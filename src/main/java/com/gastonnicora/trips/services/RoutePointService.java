@@ -4,10 +4,14 @@ import com.gastonnicora.trips.dtos.entities.RoutePointDTO;
 import com.gastonnicora.trips.dtos.request.routePoint.RoutePointCreate;
 import com.gastonnicora.trips.entities.Route;
 import com.gastonnicora.trips.entities.RoutePoint;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.RoutePointMapper;
 import com.gastonnicora.trips.repositories.RoutePointRepository;
+import com.gastonnicora.trips.repositories.RouteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * Servicio que encapsula la lógica de negocio relacionada con los puntos de ruta
@@ -29,15 +33,21 @@ public class RoutePointService {
 
     private final RoutePointMapper routePointMapper;
 
+    private final RouteRepository routeRepository;
+
     /**
      * Crea una instancia del servicio de puntos de rutas.
      *
      * @param routePointRepository repositorio utilizado para acceder a los puntos de ruta
      * @param routePointMapper     mapper utilizado para convertir entre entidades y DTOs
      */
-    public RoutePointService(RoutePointRepository routePointRepository, RoutePointMapper routePointMapper) {
+    public RoutePointService(
+            RoutePointRepository routePointRepository, RoutePointMapper routePointMapper,
+            RouteRepository routeRepository
+                            ) {
         this.routePointRepository = routePointRepository;
         this.routePointMapper = routePointMapper;
+        this.routeRepository = routeRepository;
     }
 
     /**
@@ -47,15 +57,19 @@ public class RoutePointService {
      * El punto de ruta se crea con el nombre y las coordenadas geográficas.
      * </p>
      *
-     * @param route            Ruta ({@link Route}) a la que se asociará el punto de ruta.
+     * @param  companyUuid Identificador unico de la empresa a la que pertenece la ruta.
+     * @param routeUuid        Identificador unico de la ruta a la que se asociará el punto de ruta.
      * @param routePointCreate Datos del punto de ruta que se desea crear ({@link RoutePointCreate}).
      *
      * @return {@link RoutePointDTO} correspondiente al punto de ruta creado.
      *
+     * @see  RouteRepository#findByUuidAndCompanyUuidAndActiveTrue(UUID, UUID) 
      * @see RoutePointMapper#toDTO(RoutePoint)
      */
     @Transactional
-    public RoutePointDTO createRoutePoint(Route route, RoutePointCreate routePointCreate) {
+    public RoutePointDTO createRoutePoint(UUID companyUuid,UUID routeUuid, RoutePointCreate routePointCreate) {
+        Route route = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid)
+                .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
         RoutePoint routePoint = new RoutePoint(
                 routePointCreate.getName(), routePointCreate.getLatitude(), routePointCreate.getLongitude());
         route.addPoint(routePoint);
