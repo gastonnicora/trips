@@ -171,4 +171,35 @@ public class RoutePointController {
                                          ) {
         return routePointService.updateRoutePoint(companyUuid, routeUuid, uuid, routePointUpdate);
     }
+
+    /**
+     * Da de baja un punto de ruta activo.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de la empresa indicada.
+     * La baja es lógica: el punto se marca como inactivo y deja de aparecer en las consultas.
+     * Si el punto no existe, ya está inactivo o no pertenece a una ruta activa de la empresa,
+     * se responde con 404.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece la ruta.
+     * @param routeUuid   UUID de la ruta a la que pertenece el punto.
+     * @param uuid        UUID del punto de ruta que se desea dar de baja.
+     *
+     * @see RoutePointService#deleteRoutePoint(UUID, UUID, UUID)
+     */
+    @DeleteMapping("/companies/{companyUuid}/route/{routeUuid}/routePoint/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Eliminar punto de ruta",
+            description = "Da de baja un punto activo de una ruta de una empresa.")
+    public void deleteRoutePoint(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid,
+            @PathVariable("uuid") UUID uuid
+                                ) {
+        routePointService.deleteRoutePoint(companyUuid, routeUuid, uuid);
+    }
 }

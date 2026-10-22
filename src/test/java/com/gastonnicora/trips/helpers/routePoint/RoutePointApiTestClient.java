@@ -127,6 +127,23 @@ public class RoutePointApiTestClient {
         return mockMvc.perform(request);
     }
 
+    public ResultActions deleteRoutePoint(UUID companyUuid, UUID routeUuid, UUID routePointUuid) throws Exception {
+
+        var request = delete(
+                "/api/companies/{companyUuid}/route/{routeUuid}/routePoint/{uuid}",
+                companyUuid,
+                routeUuid,
+                routePointUuid
+                            )
+                .header("User-Agent", "JUnit-Test");
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
+
     public RoutePointApiTestClient withToken(String token) {
         this.token = token;
         return this;

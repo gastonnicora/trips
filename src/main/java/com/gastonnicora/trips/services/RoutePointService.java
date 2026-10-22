@@ -78,6 +78,34 @@ public class RoutePointService {
     }
 
     /**
+     * Da de baja un punto de ruta activo.
+     *
+     * <p>
+     * La baja es lógica: el punto no se elimina de la base de datos, sino que se marca
+     * como inactivo. El punto se busca con
+     * {@link RoutePointRepository#findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(UUID, UUID, UUID)},
+     * por lo que solo se pueden dar de baja puntos activos, cuya ruta esté activa, que pertenezca
+     * a la empresa indicada y cuya empresa también esté activa.
+     * </p>
+     *
+     * @param companyUuid    Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid      Identificador único de la ruta a la que pertenece el punto.
+     * @param routePointUuid Identificador único del punto de ruta que se desea dar de baja.
+     *
+     * @throws NotFoundException Si no existe un punto de ruta activo que cumpla con las
+     *                           condiciones indicadas.
+     * @see RoutePointRepository#findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(UUID, UUID, UUID)
+     */
+    public void deleteRoutePoint(UUID companyUuid, UUID routeUuid, UUID routePointUuid) {
+        RoutePoint routePoint = routePointRepository
+                .findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(
+                        companyUuid, routeUuid, routePointUuid)
+                .orElseThrow(() -> new NotFoundException("No existe el punto de ruta."));
+        routePoint.setActive(false);
+        routePointRepository.save(routePoint);
+    }
+
+    /**
      * Obtiene un punto de ruta activo que pertenezca a una ruta activa de una empresa activa.
      *
      * <p>
@@ -105,7 +133,6 @@ public class RoutePointService {
                 .orElseThrow(() -> new NotFoundException("No existe el punto de ruta."));
         return routePointMapper.toDTO(routePoint);
     }
-
 
     /**
      * Obtiene todos los puntos de ruta activos de una ruta activa de una empresa activa.
