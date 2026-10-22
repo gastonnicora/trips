@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
  * </p>
  *
  * @author Gastón
- * @version 1.1
+ * @version 1.0
  * @since 2026-03-18
  */
 @Configuration

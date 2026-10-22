@@ -12,8 +12,7 @@ import java.util.UUID;
  *
  * <p>
  * Contiene los datos del punto (nombre y coordenadas). El orden del punto
- * dentro de la ruta está dado por su posición en la lista
- * {@link RouteDTO#getPoints()}.
+ * dentro de la ruta está dado por su posición en la lista.
  * </p>
  *
  * <p>

@@ -1,10 +1,8 @@
 package com.gastonnicora.trips.controllers.api;
 
 import com.gastonnicora.trips.dtos.entities.RoutePointDTO;
-import com.gastonnicora.trips.dtos.request.route.RouteCreate;
 import com.gastonnicora.trips.dtos.request.routePoint.RoutePointCreate;
 import com.gastonnicora.trips.services.RoutePointService;
-import com.gastonnicora.trips.services.RouteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +21,7 @@ import java.util.UUID;
  *
  * <p>
  * Las operaciones requieren autorización sobre la empresa asociada. Los
- * usuarios con rol {@code OWNER}, {@code ADMIN} dentro
+ * usuarios con rol {@code OWNER} o {@code ADMIN} dentro
  * de la empresa pueden gestionar sus puntos de rutas.
  * </p>
  *
@@ -37,17 +35,14 @@ import java.util.UUID;
 public class RoutePointController {
 
     private final RoutePointService routePointService;
-    private final RouteService routeService;
 
     /**
      * Crea una instancia del controlador de puntos de rutas.
      *
      * @param routePointService servicio encargado de la gestión de puntos de rutas ({@link RoutePointService}).
-     * @param routeService      servicio encargado de consultar las rutas ({@link RouteService}).
      */
-    public RoutePointController(RoutePointService routePointService, RouteService routeService) {
+    public RoutePointController(RoutePointService routePointService) {
         this.routePointService = routePointService;
-        this.routeService = routeService;
     }
 
     /**
@@ -57,11 +52,11 @@ public class RoutePointController {
      * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de la empresa indicada.
      * </p>
      *
-     * @param companyUuid      UUID de la empresa a la que se asociará la ruta.
+     * @param companyUuid      UUID de la empresa a la que pertenece la ruta.
      * @param routeUuid        UUID de la ruta a la que se le va a agregar el punto.
-     * @param routePointCreate ({@link RouteCreate}) datos necesarios para crear la ruta.
+     * @param routePointCreate ({@link RoutePointCreate}) datos necesarios para crear el punto de ruta.
      *
-     * @return datos del punto de ruta creada
+     * @return datos del punto de ruta creado.
      *
      * @see RoutePointService#createRoutePoint(UUID, UUID, RoutePointCreate)
      */
@@ -70,7 +65,8 @@ public class RoutePointController {
     @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
             + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
-    @Operation(summary = "Agregar ruta", description = "Agrega una ruta de una empresa.")
+    @Operation(summary = "Agregar punto de ruta",
+            description = "Agrega un punto de ruta a una ruta de una empresa.")
     public RoutePointDTO createRoutePoint(
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("routeUuid") UUID routeUuid,
@@ -79,4 +75,3 @@ public class RoutePointController {
         return routePointService.createRoutePoint(companyUuid, routeUuid, routePointCreate);
     }
 }
-

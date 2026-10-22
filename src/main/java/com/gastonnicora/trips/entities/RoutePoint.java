@@ -15,7 +15,7 @@ import java.util.UUID;
  * Entidad que representa un punto de una ruta.
  *
  * <p>
- * El orden del punto dentro de la ruta lo administra {@link Route#getPoints()}
+ * El orden del punto dentro de la ruta lo administra
  * mediante {@link OrderColumn}, por lo que no se define una posición en esta
  * entidad.
  * </p>

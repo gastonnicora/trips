@@ -22,9 +22,8 @@ import java.util.UUID;
  * {@link RoutePointMapper} para convertir entre entidades y DTOs.</p>
  *
  * @author Gastón Nicora
- * @see RoutePointRepository
- * @see RoutePointMapper
- * @since 1.0
+ * @version 1.0
+ * @since 2026-10-19
  */
 @Service
 public class RoutePointService {
@@ -40,6 +39,7 @@ public class RoutePointService {
      *
      * @param routePointRepository repositorio utilizado para acceder a los puntos de ruta
      * @param routePointMapper     mapper utilizado para convertir entre entidades y DTOs
+     * @param routeRepository      repositorio utilizado para acceder a las rutas
      */
     public RoutePointService(
             RoutePointRepository routePointRepository, RoutePointMapper routePointMapper,
