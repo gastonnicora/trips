@@ -11,6 +11,7 @@ import com.gastonnicora.trips.repositories.RouteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -98,8 +99,40 @@ public class RoutePointService {
      * @see RoutePointMapper#toDTO(RoutePoint)
      */
     public RoutePointDTO getRoutePoint(UUID companyUuid, UUID routeUuid, UUID routePointUuid) {
-        RoutePoint routePoint = routePointRepository.findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(
-                companyUuid, routeUuid, routePointUuid).orElseThrow(()->new NotFoundException("No existe el punto de ruta."));
+        RoutePoint routePoint = routePointRepository
+                .findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(
+                        companyUuid, routeUuid, routePointUuid)
+                .orElseThrow(() -> new NotFoundException("No existe el punto de ruta."));
         return routePointMapper.toDTO(routePoint);
+    }
+
+
+    /**
+     * Obtiene todos los puntos de ruta activos de una ruta activa de una empresa activa.
+     *
+     * <p>
+     * La búsqueda delega en
+     * {@link RoutePointRepository#findAllByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(UUID, UUID)}.
+     * Solo se devuelven los puntos cuya ruta pertenece a la empresa indicada y está activa,
+     * y cuya empresa también está activa.
+     * </p>
+     *
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta cuyos puntos se desean obtener.
+     *
+     * @return lista de {@link RoutePointDTO} con los puntos activos de la ruta.
+     *
+     * @throws NotFoundException Si la ruta no tiene puntos activos, o si la ruta no existe
+     *                           o no pertenece a la empresa indicada.
+     * @see RoutePointRepository#findAllByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(UUID, UUID)
+     * @see RoutePointMapper#toDTOList(List)
+     */
+    public List<RoutePointDTO> getRoutePoints(UUID companyUuid, UUID routeUuid) {
+        List<RoutePoint> routePoints = routePointRepository.findAllByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
+                companyUuid, routeUuid);
+        if (routePoints.isEmpty()) {
+            throw new NotFoundException("No existen puntos de rutas para la ruta.");
+        }
+        return routePointMapper.toDTOList(routePoints);
     }
 }

@@ -3,6 +3,7 @@ package com.gastonnicora.trips.repositories;
 import com.gastonnicora.trips.entities.RoutePoint;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,4 +41,20 @@ public interface RoutePointRepository extends JpaRepository<RoutePoint, UUID> {
      */
     Optional<RoutePoint> findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(
             UUID companyUuid, UUID routeUuid, UUID routePointUuid);
+
+    /**
+     * Obtiene todos los puntos de ruta activos de una ruta activa que pertenezca a una empresa activa.
+     *
+     * <p>
+     * Devuelve una lista vacía si la ruta o la empresa no están activas, si la ruta no
+     * pertenece a la empresa indicada o si la ruta no tiene puntos activos.
+     * </p>
+     *
+     * @param companyUuid Identificador único de la empresa a la que debe pertenecer la ruta.
+     * @param routeUuid   Identificador único de la ruta cuyos puntos se desean obtener.
+     *
+     * @return lista de puntos de ruta activos de la ruta indicada; vacía si no hay coincidencias.
+     */
+    List<RoutePoint> findAllByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
+            UUID companyUuid, UUID routeUuid);
 }

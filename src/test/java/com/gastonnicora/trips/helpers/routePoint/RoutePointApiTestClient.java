@@ -81,6 +81,23 @@ public class RoutePointApiTestClient {
         return mockMvc.perform(request);
     }
 
+    public ResultActions getRoutePoints(UUID companyUuid, UUID routeUuid) throws Exception {
+
+        var request = get(
+                "/api/companies/{companyUuid}/route/{routeUuid}/routePoint",
+                companyUuid,
+                routeUuid
+                         )
+                .header("User-Agent", "JUnit-Test");
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
+
+
     public RoutePointApiTestClient withToken(String token) {
         this.token = token;
         return this;
