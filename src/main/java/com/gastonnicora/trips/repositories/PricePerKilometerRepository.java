@@ -22,12 +22,20 @@ import java.util.UUID;
 public interface PricePerKilometerRepository extends JpaRepository<PricePerKilometer, UUID> {
 
     /**
-     * Busca la configuración de precio por kilómetro por su identificador único.
+     * Busca la configuración de precio por kilómetro activa de una ruta activa,
+     * perteneciente a una empresa activa.
      *
-     * @param uuid Identificador único de la configuración de precio por kilómetro.
+     * <p>
+     * La búsqueda devuelve la configuración solo si la configuración, la ruta y
+     * la empresa se encuentran activas, y si la ruta pertenece a la empresa
+     * indicada.
+     * </p>
+     *
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta a la que pertenece el precio.
      *
      * @return {@link Optional} que contiene la configuración encontrada, o vacío si
-     * no existe.
+     * no existe o no cumple alguna de las condiciones.
      */
-    Optional<PricePerKilometer> findByUuid(UUID uuid);
-}
+    Optional<PricePerKilometer> findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
+            UUID companyUuid, UUID routeUuid);}
