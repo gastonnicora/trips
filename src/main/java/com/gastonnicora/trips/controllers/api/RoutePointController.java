@@ -64,7 +64,6 @@ public class RoutePointController {
      *
      * @return datos del punto de ruta creada
      *
-     * @see RouteService#getRouteByUuid(UUID, UUID)
      * @see RoutePointService#createRoutePoint(UUID,UUID, RoutePointCreate)
      */
     @PostMapping("/companies/{companyUuid}/route/{routeUuid}/routePoint")

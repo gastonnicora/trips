@@ -8,6 +8,7 @@ import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.RouteMapper;
 import com.gastonnicora.trips.repositories.RouteRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -105,28 +106,12 @@ public class RouteService {
      * @see RouteRepository#findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID)
      * @see RouteMapper#toDTO(Route)
      */
+    @Transactional
     public RouteDTO getRoute(UUID companyUuid, UUID routeUuid) { //TODO mejorar
-        Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid,companyUuid)
+        Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
 
         return routeMapper.toDTO(route);
-    }
-
-    /**
-     * Obtiene la ruta activas de una empresa por su uuid.
-     *
-     * @param companyUuid UUID de la empresa de la que se desean obtener las rutas.
-     * @param routeUuid UUID de la ruta a buscar.
-     *
-     * @return Lista de {@link Route} correspondiente a las rutas activas de la
-     * empresa.
-     *
-     * @throws NotFoundException Si la empresa no posee rutas activas.
-     * @see RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
-     */
-    public Route getRouteByUuid(UUID companyUuid, UUID routeUuid) {//TODO testear
-        return routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
-                .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
     }
 
     /**
@@ -141,6 +126,7 @@ public class RouteService {
      * @see RouteRepository#findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID)
      * @see RouteMapper#toDTOList(List)
      */
+    @Transactional
     public List<RouteDTO> getRoutes(UUID companyUuid) {
         List<Route> routes = routeRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(companyUuid);
         if (routes.isEmpty()) {
