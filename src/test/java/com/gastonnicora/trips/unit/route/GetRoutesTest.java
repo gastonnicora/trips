@@ -47,14 +47,14 @@ class GetRoutesTest {
                                     );
         List<RouteDTO> routeDTOs = List.of(new RouteDTO(), new RouteDTO());
 
-        when(routeRepository.findAllByCompanyUuidAndActiveTrue(company.getUuid())).thenReturn(routes);
+        when(routeRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid())).thenReturn(routes);
         when(routeMapper.toDTOList(routes)).thenReturn(routeDTOs);
 
         List<RouteDTO> result = routeService.getRoutes(company.getUuid());
 
         assertEquals(routeDTOs, result);
 
-        verify(routeRepository).findAllByCompanyUuidAndActiveTrue(company.getUuid());
+        verify(routeRepository).findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid());
         verify(routeMapper).toDTOList(routes);
     }
 
@@ -62,11 +62,11 @@ class GetRoutesTest {
     void shouldThrowNotFoundExceptionWhenCompanyHasNoRoutes() {
         UUID companyUuid = UUID.randomUUID();
 
-        when(routeRepository.findAllByCompanyUuidAndActiveTrue(companyUuid)).thenReturn(List.of());
+        when(routeRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(companyUuid)).thenReturn(List.of());
 
         assertThrows(NotFoundException.class, () -> routeService.getRoutes(companyUuid));
 
-        verify(routeRepository).findAllByCompanyUuidAndActiveTrue(companyUuid);
+        verify(routeRepository).findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(companyUuid);
         verify(routeMapper, never()).toDTOList(anyList());
     }
 }

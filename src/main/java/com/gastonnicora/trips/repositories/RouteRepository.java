@@ -1,7 +1,6 @@
 package com.gastonnicora.trips.repositories;
 
 import com.gastonnicora.trips.entities.Route;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -25,15 +24,14 @@ import java.util.UUID;
 public interface RouteRepository extends JpaRepository<Route, UUID> {
 
     /**
-     * Busca todas las rutas activas asociadas a una empresa.
+     * Busca todas las rutas activas asociadas a una empresa activa.
      *
-     * @param companyUuid Identificador único de la empresa.
+     * @param companyUuid Identificador único de la empresa activa.
      *
      * @return Lista de rutas activas de la empresa indicada, o una lista vacía
      * si no tiene ninguna.
      */
-    @EntityGraph(attributePaths = "company")
-    List<Route> findAllByCompanyUuidAndActiveTrue(UUID companyUuid);
+    List<Route> findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID companyUuid);
 
     /**
      * Busca una ruta activa por su identificador único.
@@ -54,6 +52,5 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
      * @return {@link Optional} que contiene la ruta activa encontrada, o vacío si
      * no existe.
      */
-    @EntityGraph(attributePaths = "company")
     Optional<Route> findByUuidAndCompanyUuidAndActiveTrue(UUID routeUuid, UUID companyUuid);
 }

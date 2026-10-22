@@ -141,11 +141,11 @@ public class RouteService {
      * empresa.
      *
      * @throws NotFoundException Si la empresa no posee rutas activas.
-     * @see RouteRepository#findAllByCompanyUuidAndActiveTrue(UUID)
+     * @see RouteRepository#findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID)
      * @see RouteMapper#toDTOList(List)
      */
     public List<RouteDTO> getRoutes(UUID companyUuid) {
-        List<Route> routes = routeRepository.findAllByCompanyUuidAndActiveTrue(companyUuid);
+        List<Route> routes = routeRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(companyUuid);
         if (routes.isEmpty()) {
             throw new NotFoundException("La empresa no posee rutas.");
         }
