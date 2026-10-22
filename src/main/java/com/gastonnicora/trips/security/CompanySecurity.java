@@ -46,7 +46,7 @@ public class CompanySecurity {
         UUID userUuid = SecurityUtils.getCurrentUserUuid();
 
         Worker worker = workerRepository
-                .findByUserUuidAndCompanyUuid(
+                .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
                         userUuid,
                         companyUuid)
                 .orElse(null);
@@ -75,7 +75,7 @@ public class CompanySecurity {
         UUID userUuid = SecurityUtils.getCurrentUserUuid();
 
         Worker worker = workerRepository
-                .findByUserUuidAndCompanyUuid(
+                .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
                         userUuid,
                         companyUuid)
                 .orElse(null);

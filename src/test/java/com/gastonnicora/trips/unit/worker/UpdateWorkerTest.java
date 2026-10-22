@@ -50,7 +50,7 @@ class UpdateWorkerTest {
 
         Worker owner = new Worker(user, company, Set.of(RoleCompany.OWNER));
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(java.util.Optional.of(owner));
 
         ForbiddenException exception = assertThrows(
@@ -68,7 +68,7 @@ class UpdateWorkerTest {
         UUID userUuid = UUID.randomUUID();
         UUID companyUuid = UUID.randomUUID();
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(java.util.Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
@@ -88,7 +88,7 @@ class UpdateWorkerTest {
 
         Worker worker = new Worker(user, company, Set.of(RoleCompany.DRIVER));
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(java.util.Optional.of(worker));
 
         WorkerDTO expectedDTO = new WorkerDTO();
@@ -106,7 +106,7 @@ class UpdateWorkerTest {
         Worker updated = captor.getValue();
         assertEquals(Set.of(RoleCompany.ADMIN), updated.getRoles());
 
-        verify(workerRepository).findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid);
+        verify(workerRepository).findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid);
     }
 
 }

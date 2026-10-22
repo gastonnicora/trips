@@ -30,16 +30,8 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
      *
      * @return Lista de trabajadores activos asociados a la empresa.
      */
-    List<Worker> findAllByCompanyUuidAndActiveTrue(UUID companyUuid);
+    List<Worker> findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(UUID companyUuid);
 
-    /**
-     * Busca todos los trabajadores asociados a un usuario.
-     *
-     * @param userUuid Identificador único del usuario.
-     *
-     * @return Lista de trabajadores asociados al usuario.
-     */
-    List<Worker> findAllByUserUuid(UUID userUuid);
 
     /**
      * Busca todos los trabajadores activos asociados a un usuario.
@@ -48,19 +40,8 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
      *
      * @return Lista de trabajadores activos asociados al usuario.
      */
-    List<Worker> findAllByUserUuidAndActiveTrue(UUID userUuid);
+    List<Worker> findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(UUID userUuid);
 
-    /**
-     * Busca todos los trabajadores asociados a un usuario que contengan un rol
-     * específico.
-     *
-     * @param userUuid Identificador único del usuario.
-     * @param role     Rol del trabajador que se desea buscar.
-     *
-     * @return Lista de trabajadores asociados al usuario que contienen el rol
-     * indicado.
-     */
-    List<Worker> findAllByUserUuidAndRolesContains(UUID userUuid, RoleCompany role);
 
     /**
      * Busca todos los trabajadores activos asociados a un usuario que contengan
@@ -72,7 +53,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
      * @return Lista de trabajadores activos asociados al usuario que contienen el
      * rol indicado.
      */
-    List<Worker> findAllByUserUuidAndRolesContainsAndActiveTrue(UUID userUuid, RoleCompany role);
+    List<Worker> findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(UUID userUuid, RoleCompany role);
 
     /**
      * Busca un trabajador por el identificador del usuario y de la empresa
@@ -84,7 +65,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
      * @return {@link Optional} que contiene el trabajador encontrado, o vacío si no
      * existe.
      */
-    Optional<Worker> findByUserUuidAndCompanyUuid(
+    Optional<Worker> findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
             UUID userUuid,
             UUID companyUuid);
 
@@ -98,7 +79,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
      * @return {@link Optional} que contiene el trabajador activo encontrado, o
      * vacío si no existe.
      */
-    Optional<Worker> findByUserUuidAndCompanyUuidAndActiveTrue(
+    Optional<Worker> findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
             UUID userUuid,
             UUID companyUuid);
 }

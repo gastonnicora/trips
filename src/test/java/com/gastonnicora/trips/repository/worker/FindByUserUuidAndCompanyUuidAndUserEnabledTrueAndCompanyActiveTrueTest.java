@@ -2,7 +2,6 @@ package com.gastonnicora.trips.repository.worker;
 
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.User;
-import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.repositories.UserRepository;
@@ -13,42 +12,34 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class FindAllByUserUuidTest {
-
-    @Autowired
-    private WorkerRepository workerRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+class FindByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrueTest {
 
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private WorkerRepository workerRepository;
 
     @Test
-    void shouldReturnEmptyWhenUserHasNoWorkers() {
-        User user = new User(
-                "username",
-                "latName",
-                "email@example.com",
-                "password");
-        user.setEnabled(true);
-        userRepository.save(user);
-
-        List<Worker> found = workerRepository.findAllByUserUuid(user.getUuid());
-        assertTrue(found.isEmpty());
+    void shouldReturnEmptyWhenWorkerDoesNotExist() {
+        Optional<com.gastonnicora.trips.entities.Worker> found = workerRepository
+                .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(UUID.randomUUID(), UUID.randomUUID());
+        assertFalse(found.isPresent());
     }
 
     @Test
-    void shouldReturnWorkersWhenUserExists() {
+    void shouldReturnWorkerWhenUserAndCompanyMatch() {
+
         User user = new User(
                 "username",
                 "latName",
@@ -61,16 +52,20 @@ class FindAllByUserUuidTest {
                 "Company Description",
                 -34.6037,
                 -58.3816,
-                "test@company.com",
+                "test@example.com",
                 "1234567890");
-        company = companyRepository.save(company);
+        companyRepository.save(company);
+
         workerRepository.save(new com.gastonnicora.trips.entities.Worker(
                 user,
                 company,
                 Set.of(RoleCompany.ADMIN)));
 
-        List<Worker> found = workerRepository.findAllByUserUuid(user.getUuid());
-        assertFalse(found.isEmpty());
-        assertTrue(found.stream().anyMatch(worker -> worker.getUser().getUuid().equals(user.getUuid())));
+        Optional<com.gastonnicora.trips.entities.Worker> found = workerRepository
+                .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(user.getUuid(), company.getUuid());
+        assertTrue(found.isPresent());
+        assertEquals(found.get().getUser().getUuid(), user.getUuid());
+        assertEquals(found.get().getCompany().getUuid(), company.getUuid());
+        assertTrue(found.get().getRoles().contains(RoleCompany.ADMIN));
     }
 }

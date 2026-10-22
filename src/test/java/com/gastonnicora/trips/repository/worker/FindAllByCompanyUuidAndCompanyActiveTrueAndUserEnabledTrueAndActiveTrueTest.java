@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class FindAllByCompanyUuidAndActiveTrueTest {
+class FindAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrueTest {
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -55,7 +55,7 @@ class FindAllByCompanyUuidAndActiveTrueTest {
                 company,
                 Set.of(RoleCompany.ADMIN)));
 
-        List<Worker> found = workerRepository.findAllByCompanyUuidAndActiveTrue(company.getUuid());
+        List<Worker> found = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company.getUuid());
         assertFalse(found.isEmpty());
         assertTrue(found.stream().anyMatch(worker -> worker.getUser().getUuid().equals(user.getUuid())));
     }
@@ -71,7 +71,7 @@ class FindAllByCompanyUuidAndActiveTrueTest {
                 "1234567890");
         company = companyRepository.save(company);
 
-        List<Worker> found = workerRepository.findAllByCompanyUuidAndActiveTrue(company.getUuid());
+        List<Worker> found = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company.getUuid());
         assertTrue(found.isEmpty());
     }
 }

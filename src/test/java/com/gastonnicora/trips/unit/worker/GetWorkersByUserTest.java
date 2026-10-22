@@ -54,7 +54,7 @@ class GetWorkersByUserTest {
 
         WorkersByUser expected = new WorkersByUser();
 
-        when(workerRepository.findAllByUserUuidAndActiveTrue(userUuid))
+        when(workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(userUuid))
                 .thenReturn(workers);
 
         when(workerMapper.toWorkersByUserDTO(workers))
@@ -66,7 +66,7 @@ class GetWorkersByUserTest {
         assertEquals(expected, result);
 
         verify(workerRepository)
-                .findAllByUserUuidAndActiveTrue(userUuid);
+                .findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(userUuid);
 
         verify(workerMapper)
                 .toWorkersByUserDTO(workers);
@@ -76,7 +76,7 @@ class GetWorkersByUserTest {
     void shouldThrowNotFoundExceptionWhenUserHasNoWorkers() {
         UUID userUuid = UUID.randomUUID();
 
-        when(workerRepository.findAllByUserUuidAndActiveTrue(userUuid))
+        when(workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(userUuid))
                 .thenReturn(List.of());
 
         NotFoundException exception = assertThrows(
@@ -87,7 +87,7 @@ class GetWorkersByUserTest {
         assertEquals(404, exception.getStatus());
         assertEquals("El usuario no tiene trabajos", exception.getMessage());
 
-        verify(workerRepository).findAllByUserUuidAndActiveTrue(userUuid);
+        verify(workerRepository).findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(userUuid);
         verify(workerMapper, never()).toWorkersByUserDTO(List.of());
     }
 
@@ -95,7 +95,7 @@ class GetWorkersByUserTest {
     void shouldThrowNotFoundExceptionWhenWorkersIsNull() {
         UUID userUuid = UUID.randomUUID();
 
-        when(workerRepository.findAllByUserUuidAndActiveTrue(userUuid))
+        when(workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(userUuid))
                 .thenReturn(null);
 
         NotFoundException exception = assertThrows(
@@ -106,7 +106,7 @@ class GetWorkersByUserTest {
         assertEquals(404, exception.getStatus());
         assertEquals("El usuario no tiene trabajos", exception.getMessage());
 
-        verify(workerRepository).findAllByUserUuidAndActiveTrue(userUuid);
+        verify(workerRepository).findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(userUuid);
         verify(workerMapper, never()).toWorkersByUserDTO(List.of());
     }
 }

@@ -36,7 +36,7 @@ class CompanySecurityTest {
     @Test
     void roleConvenienceMethodsShouldDelegateToRoleChecks() {
         Worker worker = workerWithRoles(RoleCompany.SELLER, RoleCompany.DRIVER);
-        when(workerRepository.findByUserUuidAndCompanyUuid(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(Optional.of(worker));
 
         assertTrue(companySecurity.isSeller(companyUuid));
@@ -62,7 +62,7 @@ class CompanySecurityTest {
     @Test
     void shouldReturnFalseWhenUserDoesNotHaveRequestedRole() {
         Worker worker = workerWithRoles(RoleCompany.SELLER);
-        when(workerRepository.findByUserUuidAndCompanyUuid(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(Optional.of(worker));
 
         assertFalse(companySecurity.hasRole(companyUuid, RoleCompany.ADMIN));
@@ -70,7 +70,7 @@ class CompanySecurityTest {
 
     @Test
     void shouldReturnFalseWhenUserIsNotWorkerOfCompany() {
-        when(workerRepository.findByUserUuidAndCompanyUuid(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(Optional.empty());
 
         assertFalse(companySecurity.hasRole(companyUuid, RoleCompany.ADMIN));
@@ -80,7 +80,7 @@ class CompanySecurityTest {
     @Test
     void shouldReturnTrueWhenUserHasAnyRequestedRole() {
         Worker worker = workerWithRoles(RoleCompany.HR_MANAGER);
-        when(workerRepository.findByUserUuidAndCompanyUuid(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(Optional.of(worker));
 
         assertTrue(companySecurity.hasAnyRole(
@@ -92,11 +92,11 @@ class CompanySecurityTest {
     @Test
     void shouldReturnTrueWhenUserHasRequestedRole() {
         Worker worker = workerWithRoles(RoleCompany.ADMIN);
-        when(workerRepository.findByUserUuidAndCompanyUuid(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(Optional.of(worker));
 
         assertTrue(companySecurity.hasRole(companyUuid, RoleCompany.ADMIN));
-        verify(workerRepository).findByUserUuidAndCompanyUuid(userUuid, companyUuid);
+        verify(workerRepository).findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid);
     }
 
     @AfterEach

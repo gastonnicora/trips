@@ -54,7 +54,7 @@ class GetWorkersByCompanyTest {
 
         WorkersByCompany expected = new WorkersByCompany();
 
-        when(workerRepository.findAllByCompanyUuidAndActiveTrue(companyUuid))
+        when(workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(companyUuid))
                 .thenReturn(workers);
 
         when(workerMapper.toWorkersByCompanyDTO(workers))
@@ -66,7 +66,7 @@ class GetWorkersByCompanyTest {
         assertEquals(expected, result);
 
         verify(workerRepository)
-                .findAllByCompanyUuidAndActiveTrue(companyUuid);
+                .findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(companyUuid);
 
         verify(workerMapper)
                 .toWorkersByCompanyDTO(workers);

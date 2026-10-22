@@ -13,16 +13,16 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
+class FindAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrueTest {
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -34,7 +34,7 @@ class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldReturnActiveWorkerWhenUserAndCompanyMatch() {
+    void shouldReturnActiveWorkersWhenUserAndRoleMatch() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);
@@ -44,24 +44,33 @@ class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
         company = companyRepository.save(company);
 
         Worker worker = workerRepository.save(
-                new Worker(user, company, Set.of(RoleCompany.ADMIN)));
+                new Worker(user, company, Set.of(RoleCompany.OWNER)));
 
-        Optional<Worker> found = workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(
-                user.getUuid(), company.getUuid());
+        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(
+                user.getUuid(), RoleCompany.OWNER);
 
-        assertTrue(found.isPresent());
-        assertEquals(found.get().getUuid(), worker.getUuid());
-        assertEquals(found.get().getUser().getUuid(), user.getUuid());
-        assertEquals(found.get().getCompany().getUuid(), company.getUuid());
-        assertTrue(found.get().isActive());
+        assertFalse(found.isEmpty());
+        assertTrue(found.stream().anyMatch(item -> item.getUuid().equals(worker.getUuid())));
+        assertTrue(found.stream().allMatch(Worker::isActive));
+        assertTrue(found.stream().allMatch(item -> item.getRoles().contains(RoleCompany.OWNER)));
     }
 
     @Test
-    void shouldReturnEmptyWhenWorkerDoesNotExist() {
-        Optional<Worker> found = workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(
-                UUID.randomUUID(), UUID.randomUUID());
+    void shouldReturnEmptyWhenRoleDoesNotMatch() {
+        User user = new User("username", "latName", "email@example.com", "password");
+        user.setEnabled(true);
+        user = userRepository.save(user);
 
-        assertFalse(found.isPresent());
+        Company company = new Company("Company Name", "Company Description", -34.6037, -58.3816,
+                "test@company.com", "1234567890");
+        company = companyRepository.save(company);
+
+        workerRepository.save(new Worker(user, company, Set.of(RoleCompany.DRIVER)));
+
+        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(
+                user.getUuid(), RoleCompany.OWNER);
+
+        assertTrue(found.isEmpty());
     }
 
     @Test
@@ -74,13 +83,13 @@ class FindByUserUuidAndCompanyUuidAndActiveTrueTest {
                 "test@company.com", "1234567890");
         company = companyRepository.save(company);
 
-        Worker worker = new Worker(user, company, Set.of(RoleCompany.ADMIN));
+        Worker worker = new Worker(user, company, Set.of(RoleCompany.OWNER));
         worker.setActive(false);
         workerRepository.save(worker);
 
-        Optional<Worker> found = workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(
-                user.getUuid(), company.getUuid());
+        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(
+                user.getUuid(), RoleCompany.OWNER);
 
-        assertFalse(found.isPresent());
+        assertTrue(found.isEmpty());
     }
 }

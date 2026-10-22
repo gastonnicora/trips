@@ -13,16 +13,16 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class FindAllByUserUuidAndActiveTrueTest {
+class FindByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrueTest {
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -34,7 +34,7 @@ class FindAllByUserUuidAndActiveTrueTest {
     private CompanyRepository companyRepository;
 
     @Test
-    void shouldReturnActiveWorkersWhenUserExists() {
+    void shouldReturnActiveWorkerWhenUserAndCompanyMatch() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);
@@ -46,15 +46,26 @@ class FindAllByUserUuidAndActiveTrueTest {
         Worker worker = workerRepository.save(
                 new Worker(user, company, Set.of(RoleCompany.ADMIN)));
 
-        List<Worker> found = workerRepository.findAllByUserUuidAndActiveTrue(user.getUuid());
+        Optional<Worker> found = workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
+                user.getUuid(), company.getUuid());
 
-        assertFalse(found.isEmpty());
-        assertTrue(found.stream().anyMatch(item -> item.getUuid().equals(worker.getUuid())));
-        assertTrue(found.stream().allMatch(Worker::isActive));
+        assertTrue(found.isPresent());
+        assertEquals(found.get().getUuid(), worker.getUuid());
+        assertEquals(found.get().getUser().getUuid(), user.getUuid());
+        assertEquals(found.get().getCompany().getUuid(), company.getUuid());
+        assertTrue(found.get().isActive());
     }
 
     @Test
-    void shouldReturnEmptyWhenAllWorkersAreInactive() {
+    void shouldReturnEmptyWhenWorkerDoesNotExist() {
+        Optional<Worker> found = workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
+                UUID.randomUUID(), UUID.randomUUID());
+
+        assertFalse(found.isPresent());
+    }
+
+    @Test
+    void shouldReturnEmptyWhenWorkerIsInactive() {
         User user = new User("username", "latName", "email@example.com", "password");
         user.setEnabled(true);
         user = userRepository.save(user);
@@ -67,19 +78,9 @@ class FindAllByUserUuidAndActiveTrueTest {
         worker.setActive(false);
         workerRepository.save(worker);
 
-        List<Worker> found = workerRepository.findAllByUserUuidAndActiveTrue(user.getUuid());
+        Optional<Worker> found = workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
+                user.getUuid(), company.getUuid());
 
-        assertTrue(found.isEmpty());
-    }
-
-    @Test
-    void shouldReturnEmptyWhenUserHasNoActiveWorkers() {
-        User user = new User("username", "latName", "email@example.com", "password");
-        user.setEnabled(true);
-        user = userRepository.save(user);
-
-        List<Worker> found = workerRepository.findAllByUserUuidAndActiveTrue(user.getUuid());
-
-        assertTrue(found.isEmpty());
+        assertFalse(found.isPresent());
     }
 }

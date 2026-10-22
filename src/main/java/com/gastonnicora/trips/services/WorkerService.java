@@ -13,7 +13,6 @@ import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.WorkerMapper;
 import com.gastonnicora.trips.repositories.WorkerRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,12 +68,12 @@ public class WorkerService {
      * @throws ConflictException Si ya existe un trabajador activo asociado al
      *                           usuario y la empresa indicados.
      * @see WorkerService#verifyRole(Set)
-     * @see WorkerRepository#findByUserUuidAndCompanyUuidAndActiveTrue(UUID, UUID)
+     * @see WorkerRepository#findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(UUID, UUID)
      * @see WorkerMapper#toDTO(Worker)
      */
     public WorkerDTO createWorker(User user, Company company, Set<RoleCompany> roles) {
         this.verifyRole(roles);
-        if (workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(user.getUuid(), company.getUuid())
+        if (workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(user.getUuid(), company.getUuid())
                 .isPresent()) {
             throw new ConflictException("Ya existe el trabajador");
         }
@@ -94,11 +93,11 @@ public class WorkerService {
      * @return {@link WorkerDTO} correspondiente al trabajador creado.
      *
      * @throws ConflictException Si la empresa ya posee trabajadores activos.
-     * @see WorkerRepository#findAllByCompanyUuidAndActiveTrue(UUID)
+     * @see WorkerRepository#findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(UUID)
      * @see WorkerMapper#toDTO(Worker)
      */
     public WorkerDTO createWorkerOwner(User user, Company company) {
-        if (!workerRepository.findAllByCompanyUuidAndActiveTrue(company.getUuid())
+        if (!workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company.getUuid())
                 .isEmpty()) {
             throw new ConflictException("Ya existe el trabajador");
         }
@@ -135,11 +134,11 @@ public class WorkerService {
      * @return Lista de {@link Company} asociadas al usuario como propietario.
      *
      * @throws NotFoundException Si el usuario no posee empresas como propietario.
-     * @see WorkerRepository#findAllByUserUuidAndRolesContainsAndActiveTrue(UUID, RoleCompany)
+     * @see WorkerRepository#findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(UUID, RoleCompany)
      */
     public List<Company> getCompaniesByOwner(UUID owner) {
-        List<Worker> workers = workerRepository.findAllByUserUuidAndRolesContainsAndActiveTrue(owner,
-                RoleCompany.OWNER);
+        List<Worker> workers = workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(owner,
+                                                                                                                 RoleCompany.OWNER);
         if (workers.isEmpty()) {
             throw new NotFoundException("Empresas no encontradas");
         }
@@ -158,10 +157,10 @@ public class WorkerService {
      *
      * @throws NotFoundException Si no existe una relación activa entre el
      *                           usuario y la empresa indicados.
-     * @see WorkerRepository#findByUserUuidAndCompanyUuidAndActiveTrue(UUID, UUID)
+     * @see WorkerRepository#findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(UUID, UUID)
      */
     private Worker getWorker(UUID user, UUID company) {
-        return workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(user, company)
+        return workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(user, company)
                 .orElseThrow(() -> new NotFoundException("Relación entre usuario y empresa no encontrada"));
     }
 
@@ -189,11 +188,11 @@ public class WorkerService {
      * @return {@link WorkersByCompany} con los datos de la empresa y sus
      * trabajadores activos.
      *
-     * @see WorkerRepository#findAllByCompanyUuidAndActiveTrue(UUID)
+     * @see WorkerRepository#findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(UUID)
      * @see WorkerMapper#toWorkersByCompanyDTO(List)
      */
     public WorkersByCompany getWorkersByCompany(UUID company) {
-        List<Worker> workers = workerRepository.findAllByCompanyUuidAndActiveTrue(company);
+        List<Worker> workers = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company);
         return WorkerMapper.toWorkersByCompanyDTO(workers);
     }
 
@@ -210,11 +209,11 @@ public class WorkerService {
      * activos.
      *
      * @throws NotFoundException Si el usuario no posee trabajadores activos.
-     * @see WorkerRepository#findAllByUserUuidAndActiveTrue(UUID)
+     * @see WorkerRepository#findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(UUID)
      * @see WorkerMapper#toWorkersByUserDTO(List)
      */
     public WorkersByUser getWorkersByUser(UUID user) {
-        List<Worker> workers = workerRepository.findAllByUserUuidAndActiveTrue(user);
+        List<Worker> workers = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(user);
         if (workers == null || workers.isEmpty()) {
             throw new NotFoundException("El usuario no tiene trabajos");
         }

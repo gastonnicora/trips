@@ -53,27 +53,27 @@ class GetCompaniesByOwnerTest {
                 new Worker(owner, company2, Set.of(RoleCompany.OWNER))
         );
 
-        when(workerRepository.findAllByUserUuidAndRolesContainsAndActiveTrue(
+        when(workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(
                 ownerUuid,
                 RoleCompany.OWNER
-        )).thenReturn(workers);
+                                                                                              )).thenReturn(workers);
 
         List<Company> result = workerService.getCompaniesByOwner(ownerUuid);
 
         assertEquals(List.of(company, company2), result);
 
         verify(workerRepository)
-                .findAllByUserUuidAndRolesContainsAndActiveTrue(ownerUuid, RoleCompany.OWNER);
+                .findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(ownerUuid, RoleCompany.OWNER);
     }
 
     @Test
     void shouldThrowNotFoundExceptionWhenOwnerHasNoCompanies() {
         UUID ownerUuid = UUID.randomUUID();
 
-        when(workerRepository.findAllByUserUuidAndRolesContainsAndActiveTrue(
+        when(workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(
                 ownerUuid,
                 RoleCompany.OWNER
-        )).thenReturn(List.of());
+                                                                                              )).thenReturn(List.of());
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
@@ -84,6 +84,6 @@ class GetCompaniesByOwnerTest {
         assertEquals("Empresas no encontradas", exception.getMessage());
 
         verify(workerRepository)
-                .findAllByUserUuidAndRolesContainsAndActiveTrue(ownerUuid, RoleCompany.OWNER);
+                .findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(ownerUuid, RoleCompany.OWNER);
     }
 }

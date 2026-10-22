@@ -54,10 +54,10 @@ class GetWorkerByUserAndCompanyTest {
 
         WorkerDTO expectedWorkerDTO = new WorkerDTO();
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
                 userUuid,
                 companyUuid
-        )).thenReturn(Optional.of(worker));
+                                                                                                             )).thenReturn(Optional.of(worker));
 
         when(workerMapper.toDTO(worker))
                 .thenReturn(expectedWorkerDTO);
@@ -71,7 +71,7 @@ class GetWorkerByUserAndCompanyTest {
         assertEquals(expectedWorkerDTO, result);
 
         verify(workerRepository)
-                .findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid);
+                .findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid);
 
         verify(workerMapper)
                 .toDTO(worker);
@@ -82,10 +82,10 @@ class GetWorkerByUserAndCompanyTest {
         UUID userUuid = UUID.randomUUID();
         UUID companyUuid = UUID.randomUUID();
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
                 userUuid,
                 companyUuid
-        )).thenReturn(Optional.empty());
+                                                                                                             )).thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
@@ -98,7 +98,7 @@ class GetWorkerByUserAndCompanyTest {
         assertEquals(404, exception.getStatus());
 
         verify(workerRepository)
-                .findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid);
+                .findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid);
 
         verify(workerMapper, never())
                 .toDTO(any(Worker.class));

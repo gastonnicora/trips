@@ -49,15 +49,15 @@ class DeleteWorkerTest {
                 Set.of(RoleCompany.DRIVER)
         );
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
                 userUuid,
                 companyUuid
-        )).thenReturn(Optional.of(worker));
+                                                                                                             )).thenReturn(Optional.of(worker));
 
         workerService.deleteWorker(userUuid, companyUuid);
 
         verify(workerRepository)
-                .findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid);
+                .findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid);
 
         ArgumentCaptor<Worker> captor
                 = ArgumentCaptor.forClass(Worker.class);
@@ -83,7 +83,7 @@ class DeleteWorkerTest {
 
         Worker owner = new Worker(user, company, Set.of(RoleCompany.OWNER));
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
                 .thenReturn(Optional.of(owner));
 
         ForbiddenException exception = assertThrows(
@@ -101,10 +101,10 @@ class DeleteWorkerTest {
         UUID userUuid = UUID.randomUUID();
         UUID companyUuid = UUID.randomUUID();
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrue(
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
                 userUuid,
                 companyUuid
-        )).thenReturn(Optional.empty());
+                                                                                                             )).thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
@@ -114,7 +114,7 @@ class DeleteWorkerTest {
         assertEquals(404, exception.getStatus());
 
         verify(workerRepository)
-                .findByUserUuidAndCompanyUuidAndActiveTrue(userUuid, companyUuid);
+                .findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid);
 
         verify(workerRepository, never())
                 .save(any(Worker.class));
