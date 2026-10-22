@@ -22,12 +22,22 @@ import java.util.UUID;
 public interface RoutePointRepository extends JpaRepository<RoutePoint, UUID> {
 
     /**
-     * Busca un punto de ruta por su identificador único.
+     * Busca un punto de ruta activo que pertenezca a una ruta activa de una empresa activa.
      *
-     * @param uuid Identificador único del punto de ruta.
+     * <p>
+     * La búsqueda verifica en conjunto que el punto de ruta, su ruta y la empresa
+     * a la que pertenece la ruta estén activos, y que la ruta pertenezca a la
+     * empresa indicada. Si alguna de estas condiciones no se cumple, el resultado
+     * es vacío.
+     * </p>
      *
-     * @return {@link Optional} que contiene el punto de ruta encontrado, o vacío si
-     * no existe.
+     * @param companyUuid    Identificador único de la empresa a la que debe pertenecer la ruta.
+     * @param routeUuid      Identificador único de la ruta a la que debe pertenecer el punto.
+     * @param routePointUuid Identificador único del punto de ruta.
+     *
+     * @return {@link Optional} que contiene el punto de ruta encontrado, o vacío si no
+     * existe o si no cumple todas las condiciones de actividad y pertenencia.
      */
-    Optional<RoutePoint> findByUuid(UUID uuid);
+    Optional<RoutePoint> findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(
+            UUID companyUuid, UUID routeUuid, UUID routePointUuid);
 }

@@ -75,4 +75,31 @@ public class RoutePointService {
         route.addPoint(routePoint);
         return routePointMapper.toDTO(routePointRepository.save(routePoint));
     }
+
+    /**
+     * Obtiene un punto de ruta activo que pertenezca a una ruta activa de una empresa activa.
+     *
+     * <p>
+     * La búsqueda delega en
+     * {@link RoutePointRepository#findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(UUID, UUID, UUID)}.
+     * El punto solo se devuelve si el punto, su ruta y la empresa a la que pertenece
+     * la ruta están activos, y si la ruta pertenece a la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid    Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid      Identificador único de la ruta a la que pertenece el punto.
+     * @param routePointUuid Identificador único del punto de ruta.
+     *
+     * @return {@link RoutePointDTO} correspondiente al punto de ruta encontrado.
+     *
+     * @throws NotFoundException Si no existe un punto de ruta activo que cumpla con las
+     *                           condiciones indicadas.
+     * @see RoutePointRepository#findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(UUID, UUID, UUID)
+     * @see RoutePointMapper#toDTO(RoutePoint)
+     */
+    public RoutePointDTO getRoutePoint(UUID companyUuid, UUID routeUuid, UUID routePointUuid) {
+        RoutePoint routePoint = routePointRepository.findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(
+                companyUuid, routeUuid, routePointUuid).orElseThrow(()->new NotFoundException("No existe el punto de ruta."));
+        return routePointMapper.toDTO(routePoint);
+    }
 }

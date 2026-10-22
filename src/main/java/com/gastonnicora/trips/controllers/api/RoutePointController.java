@@ -74,4 +74,36 @@ public class RoutePointController {
                                          ) {
         return routePointService.createRoutePoint(companyUuid, routeUuid, routePointCreate);
     }
+
+    /**
+     * Obtiene un punto de ruta de una ruta de una empresa.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de la empresa indicada.
+     * Solo se devuelven puntos activos que pertenezcan a la ruta indicada, y la ruta debe
+     * pertenecer a la empresa indicada y estar activa.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece la ruta.
+     * @param routeUuid   UUID de la ruta a la que pertenece el punto.
+     * @param uuid        UUID del punto de ruta que se desea obtener.
+     *
+     * @return datos del punto de ruta encontrado.
+     *
+     * @see RoutePointService#getRoutePoint(UUID, UUID, UUID)
+     */
+    @GetMapping("/companies/{companyUuid}/route/{routeUuid}/routePoint/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Obtener punto de ruta",
+            description = "Obtiene un punto de ruta de una ruta de una empresa.")
+    public RoutePointDTO getRoutePoint(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid,
+            @PathVariable("uuid") UUID uuid
+                                      ) {
+        return routePointService.getRoutePoint(companyUuid, routeUuid, uuid);
+    }
 }

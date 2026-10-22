@@ -70,6 +70,8 @@ public class RouteApiTestClient {
                                        .header("User-Agent", "JUnit-Test"));
     }
 
+    public String getToken() {return this.token;}
+
     public ResultActions updateRoute(
             UUID companyUuid,
             UUID routeUuid,

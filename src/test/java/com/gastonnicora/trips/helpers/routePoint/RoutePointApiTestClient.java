@@ -9,6 +9,9 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 public class RoutePointApiTestClient {
 
@@ -53,6 +56,23 @@ public class RoutePointApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test")
                 .content(json);
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
+
+    public ResultActions getRoutePoint(UUID companyUuid, UUID routeUuid, UUID routePointUuid) throws Exception {
+
+        var request = get(
+                "/api/companies/{companyUuid}/route/{routeUuid}/routePoint/{uuid}",
+                companyUuid,
+                routeUuid,
+                routePointUuid
+                         )
+                .header("User-Agent", "JUnit-Test");
 
         if (token != null) {
             request.header("Authorization", "Bearer " + token);
