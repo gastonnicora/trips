@@ -3,9 +3,9 @@ package com.gastonnicora.trips.services;
 import com.gastonnicora.trips.dtos.response.company.AddressResponse;
 import com.gastonnicora.trips.exceptions.InternalErrorException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.http.client.JdkClientHttpRequestFactory;
 
 import java.net.http.HttpClient;
 import java.time.Duration;
@@ -65,8 +65,10 @@ public class GeocodingService {
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new InternalErrorException("Error al inicializar el servicio de geocodificación",
-                    e.getMessage() + " Error al intentar inicializar el servicio de geocodificación");
+            throw new InternalErrorException(
+                    "Error al inicializar el servicio de geocodificación",
+                    e.getMessage() + " Error al intentar inicializar el servicio de geocodificación"
+            );
         }
 
     }
@@ -101,8 +103,10 @@ public class GeocodingService {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new InternalErrorException("Error al obtener la dirección",
-                    ex.getMessage() + " Error al intentar obtener la dirección");
+            throw new InternalErrorException(
+                    "Error al obtener la dirección",
+                    ex.getMessage() + " Error al intentar obtener la dirección"
+            );
         }
 
     }

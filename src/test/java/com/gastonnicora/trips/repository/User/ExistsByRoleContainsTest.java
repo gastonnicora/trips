@@ -37,7 +37,8 @@ class ExistsByRoleContainsTest {
                 "latName",
                 "test@test.com",
                 "password",
-                Set.of(Role.SUPER_ADMIN));
+                Set.of(Role.SUPER_ADMIN)
+        );
 
         user.setEnabled(true);
 
@@ -56,7 +57,8 @@ class ExistsByRoleContainsTest {
                 "latName",
                 "test@test.com",
                 "password",
-                Set.of(Role.USER));
+                Set.of(Role.USER)
+        );
 
         user.setEnabled(true);
 

@@ -53,9 +53,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
      * @throws IOException Si ocurre un error al escribir la respuesta JSON.
      */
     @Override
-    public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
-                         AuthenticationException authException) throws IOException {
+    public void commence(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException authException
+                        ) throws IOException {
 
         // Configura el estado HTTP y el tipo de contenido
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

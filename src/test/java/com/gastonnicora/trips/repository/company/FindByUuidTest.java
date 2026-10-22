@@ -44,14 +44,17 @@ class FindByUuidTest {
                 "latName",
                 "test@test.com",
                 "password",
-                Set.of(Role.USER));
+                Set.of(Role.USER)
+        );
 
         user.setEnabled(true);
 
         userRepository.save(user);
 
-        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
+        Company company = new Company(
+                "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
+                "test@mail.com", "123"
+        );
 
         Company c = companyRepository.save(company);
 
@@ -71,14 +74,17 @@ class FindByUuidTest {
                 "latName",
                 "test@test.com",
                 "password",
-                Set.of(Role.USER));
+                Set.of(Role.USER)
+        );
 
         user.setEnabled(true);
 
         userRepository.save(user);
 
-        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
+        Company company = new Company(
+                "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
+                "test@mail.com", "123"
+        );
 
         Company c = companyRepository.save(company);
 

@@ -19,7 +19,8 @@ public class WorkerTestFactory {
     public WorkerTestFactory(
             MockMvc mockMvc,
             ObjectMapper objectMapper,
-            String token) {
+            String token
+                            ) {
         this.objectMapper = objectMapper;
         this.workerApi = new WorkerApiTestClient(mockMvc, objectMapper).withToken(token);
     }

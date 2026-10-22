@@ -3,7 +3,6 @@ package com.gastonnicora.trips.controllers.api;
 import com.gastonnicora.trips.dtos.entities.RoutePointDTO;
 import com.gastonnicora.trips.dtos.request.route.RouteCreate;
 import com.gastonnicora.trips.dtos.request.routePoint.RoutePointCreate;
-import com.gastonnicora.trips.entities.Route;
 import com.gastonnicora.trips.services.RoutePointService;
 import com.gastonnicora.trips.services.RouteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,7 +63,7 @@ public class RoutePointController {
      *
      * @return datos del punto de ruta creada
      *
-     * @see RoutePointService#createRoutePoint(UUID,UUID, RoutePointCreate)
+     * @see RoutePointService#createRoutePoint(UUID, UUID, RoutePointCreate)
      */
     @PostMapping("/companies/{companyUuid}/route/{routeUuid}/routePoint")
     @SecurityRequirement(name = "bearerAuth")
@@ -77,7 +76,7 @@ public class RoutePointController {
             @PathVariable("routeUuid") UUID routeUuid,
             @RequestBody @Valid RoutePointCreate routePointCreate
                                          ) {
-        return routePointService.createRoutePoint(companyUuid,routeUuid, routePointCreate);
+        return routePointService.createRoutePoint(companyUuid, routeUuid, routePointCreate);
     }
 }
 

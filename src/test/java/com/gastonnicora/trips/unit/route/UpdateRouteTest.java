@@ -18,13 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UpdateRouteTest {
@@ -37,6 +33,28 @@ class UpdateRouteTest {
 
     @Mock
     private RouteMapper routeMapper;
+
+    @Test
+    void shouldThrowNotFoundExceptionWhenRouteDoesNotExistInCompany() {
+        UUID companyUuid = UUID.randomUUID();
+        UUID routeUuid = UUID.randomUUID();
+
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                NotFoundException.class,
+                () -> routeService.updateRoute(
+                        companyUuid,
+                        routeUuid,
+                        new RouteCreate("Ruta nueva", PricingType.PER_KM)
+                                              )
+                    );
+
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid);
+        verify(routeRepository, never()).save(any(Route.class));
+        verify(routeMapper, never()).toDTO(any(Route.class));
+    }
 
     @Test
     void shouldUpdateRouteSuccessfully() {
@@ -68,27 +86,5 @@ class UpdateRouteTest {
         verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid);
         verify(routeRepository).save(route);
         verify(routeMapper).toDTO(route);
-    }
-
-    @Test
-    void shouldThrowNotFoundExceptionWhenRouteDoesNotExistInCompany() {
-        UUID companyUuid = UUID.randomUUID();
-        UUID routeUuid = UUID.randomUUID();
-
-        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
-                .thenReturn(Optional.empty());
-
-        assertThrows(
-                NotFoundException.class,
-                () -> routeService.updateRoute(
-                        companyUuid,
-                        routeUuid,
-                        new RouteCreate("Ruta nueva", PricingType.PER_KM)
-                                              )
-                    );
-
-        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid);
-        verify(routeRepository, never()).save(any(Route.class));
-        verify(routeMapper, never()).toDTO(any(Route.class));
     }
 }

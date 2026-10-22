@@ -65,40 +65,6 @@ class GetRoutesTest {
     }
 
     @Test
-    void shouldReturnRoutesSuccessfully() throws Exception {
-
-        new RouteTestFactory(mockMvc, objectMapper, ownerToken)
-                .createRoute(company.getUuid(), "La Plata - Berisso", PricingType.PER_SECTION);
-
-        routeApi
-                .getRoutes(company.getUuid())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[*].name").value(
-                        org.hamcrest.Matchers.containsInAnyOrder("25 de Mayo - La Plata", "La Plata - Berisso")));
-    }
-
-    @Test
-    void shouldReturnNotFoundWhenCompanyHasNoRoutes() throws Exception {
-
-        CompanyDTO company2 = new CompanyTestFactory(
-                mockMvc, objectMapper, ownerToken, geocodingService
-        ).createCompany();
-
-        routeApi
-                .getRoutes(company2.getUuid())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-
-        new RouteApiTestClient(mockMvc, objectMapper)
-                .getRoutes(company.getUuid())
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void shouldReturnForbiddenWhenUserHasNoAllowedRole() throws Exception {
 
         UserDTO seller = UserTestFactory.registerUser(mockMvc, "seller", PASSWORD);
@@ -126,5 +92,39 @@ class GetRoutesTest {
                 .withToken(login.getToken())
                 .getRoutes(company.getUuid())
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenCompanyHasNoRoutes() throws Exception {
+
+        CompanyDTO company2 = new CompanyTestFactory(
+                mockMvc, objectMapper, ownerToken, geocodingService
+        ).createCompany();
+
+        routeApi
+                .getRoutes(company2.getUuid())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnRoutesSuccessfully() throws Exception {
+
+        new RouteTestFactory(mockMvc, objectMapper, ownerToken)
+                .createRoute(company.getUuid(), "La Plata - Berisso", PricingType.PER_SECTION);
+
+        routeApi
+                .getRoutes(company.getUuid())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[*].name").value(
+                        org.hamcrest.Matchers.containsInAnyOrder("25 de Mayo - La Plata", "La Plata - Berisso")));
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+
+        new RouteApiTestClient(mockMvc, objectMapper)
+                .getRoutes(company.getUuid())
+                .andExpect(status().isUnauthorized());
     }
 }

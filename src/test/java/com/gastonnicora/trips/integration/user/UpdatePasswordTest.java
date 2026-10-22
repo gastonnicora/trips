@@ -50,7 +50,8 @@ class UpdatePasswordTest {
                 // Campos en null
                 Arguments.of(null, null, null, "passwordOld"),
                 Arguments.of(null, null, null, "password"),
-                Arguments.of(null, null, null, "confirmPassword"));
+                Arguments.of(null, null, null, "confirmPassword")
+                        );
     }
 
     @BeforeEach
@@ -76,16 +77,18 @@ class UpdatePasswordTest {
 
     @ParameterizedTest
     @MethodSource("invalidFields")
-    void shouldReturnBadRequestWhenFieldsAreInvalid(String passwordOld,
-                                                    String password,
-                                                    String confirmPassword,
-                                                    String expectedField) throws Exception {
+    void shouldReturnBadRequestWhenFieldsAreInvalid(
+            String passwordOld,
+            String password,
+            String confirmPassword,
+            String expectedField
+                                                   ) throws Exception {
         userApi.updatePassword(passwordOld, password, confirmPassword)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
-                        .value(notNullValue()));
+                                   .value(notNullValue()));
     }
 
     @Test
@@ -96,7 +99,7 @@ class UpdatePasswordTest {
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.passwordOld").exists())
                 .andExpect(jsonPath("$.errors.passwordOld")
-                        .value(notNullValue()));
+                                   .value(notNullValue()));
     }
 
     @Test

@@ -58,7 +58,8 @@ class UpdateCompanyTest {
                 Arguments.of("Goodname", "test@test.com", "123456789", 54.4, null, "longitude"),
                 // campos en null
                 Arguments.of(null, null, null, null, null, "name"),
-                Arguments.of("Goodname", "test", "123456789", 54.4, -34.5, "email"));
+                Arguments.of("Goodname", "test", "123456789", 54.4, -34.5, "email")
+                        );
     }
 
     @BeforeEach
@@ -73,8 +74,10 @@ class UpdateCompanyTest {
 
     @Test
     void shouldReturnBadRequestWhenAddressIsNotFound() throws Exception {
-        companyApi.updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", 100.0,
-                        -100.0)
+        companyApi.updateCompany(
+                        company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455", 100.0,
+                        -100.0
+                                )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists());
     }
@@ -87,14 +90,15 @@ class UpdateCompanyTest {
             String phone,
             Double latitude,
             Double longitude,
-            String expectedField) throws Exception {
+            String expectedField
+                                                          ) throws Exception {
 
         companyApi.updateCompany(company.getUuid(), name, email, phone, latitude, longitude)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
-                        .value(notNullValue()))
+                                   .value(notNullValue()))
                 .andDo(result -> System.out
                         .println("Errors " + result.getResponse().getContentAsString()));
     }
@@ -104,18 +108,22 @@ class UpdateCompanyTest {
         String token2 = UserTestFactory.registerAndLogin(mockMvc);
         companyApi.withToken(token2);
         companyApi
-                .updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455",
+                .updateCompany(
+                        company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455",
                         -34.6037,
-                        -58.3816)
+                        -58.3816
+                              )
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void shouldReturnOk() throws Exception {
         companyApi
-                .updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455",
+                .updateCompany(
+                        company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455",
                         -34.6037,
-                        -58.3816)
+                        -58.3816
+                              )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Good Name"))
                 .andExpect(jsonPath("$.email").value("goodemail@mail.com"))
@@ -130,9 +138,11 @@ class UpdateCompanyTest {
     void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
         companyApi.withToken("");
         companyApi
-                .updateCompany(company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455",
+                .updateCompany(
+                        company.getUuid(), "Good Name", "goodemail@mail.com", "+5491122334455",
                         -34.6037,
-                        -58.3816)
+                        -58.3816
+                              )
                 .andExpect(status().isUnauthorized());
     }
 }

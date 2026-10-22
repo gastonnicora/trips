@@ -93,7 +93,8 @@ class GetCurrentUserTest {
 
         NotFoundException ex = assertThrows(
                 NotFoundException.class,
-                () -> userService.getCurrentUser());
+                () -> userService.getCurrentUser()
+                                           );
 
         assertEquals("El usuario solicitado no existe", ex.getMessage());
 

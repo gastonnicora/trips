@@ -11,7 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -22,23 +23,10 @@ class FindAllByActiveTrueTest {
     private CompanyRepository companyRepository;
 
     private Company newCompany(String name) {
-        return new Company(name, "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
-    }
-
-    private List<UUID> uuidsOf(List<Company> companies) {
-        return companies.stream().map(Company::getUuid).toList();
-    }
-
-    @Test
-    void shouldReturnActiveCompanies() {
-        Company company1 = companyRepository.save(newCompany("Test 1"));
-        Company company2 = companyRepository.save(newCompany("Test 2"));
-
-        List<UUID> found = uuidsOf(companyRepository.findAllByActiveTrue());
-
-        assertTrue(found.contains(company1.getUuid()));
-        assertTrue(found.contains(company2.getUuid()));
+        return new Company(
+                name, "Buenos Aires, Argentina", -34.6037, -58.3816,
+                "test@mail.com", "123"
+        );
     }
 
     @Test
@@ -56,6 +44,17 @@ class FindAllByActiveTrueTest {
     }
 
     @Test
+    void shouldReturnActiveCompanies() {
+        Company company1 = companyRepository.save(newCompany("Test 1"));
+        Company company2 = companyRepository.save(newCompany("Test 2"));
+
+        List<UUID> found = uuidsOf(companyRepository.findAllByActiveTrue());
+
+        assertTrue(found.contains(company1.getUuid()));
+        assertTrue(found.contains(company2.getUuid()));
+    }
+
+    @Test
     void shouldReturnOnlyActiveCompanies() {
         Company inactive = newCompany("Inactive");
         inactive.setActive(false);
@@ -66,5 +65,9 @@ class FindAllByActiveTrueTest {
 
         assertFalse(found.isEmpty());
         assertTrue(found.stream().allMatch(Company::isActive));
+    }
+
+    private List<UUID> uuidsOf(List<Company> companies) {
+        return companies.stream().map(Company::getUuid).toList();
     }
 }

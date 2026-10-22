@@ -2,7 +2,6 @@ package com.gastonnicora.trips.unit.vehicle;
 
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.Vehicle;
-import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.repositories.VehicleRepository;
 import com.gastonnicora.trips.services.VehicleService;
@@ -13,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,7 +36,8 @@ class DeleteVehicleTest {
         vehicle.setActive(true);
         vehicle.setCompany(company);
 
-        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid())).thenReturn(Optional.of(vehicle));
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(
+                vehicle.getUuid(), company.getUuid())).thenReturn(Optional.of(vehicle));
 
         vehicleService.deleteVehicle(company.getUuid(), vehicle.getUuid());
 
@@ -55,11 +54,13 @@ class DeleteVehicleTest {
         Vehicle vehicle = new Vehicle();
         vehicle.setCompany(company);
 
-        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid())).thenReturn(Optional.empty());
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(
+                vehicle.getUuid(), company.getUuid())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> vehicleService.deleteVehicle(company.getUuid(), vehicle.getUuid()));
 
-        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid());
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(
+                vehicle.getUuid(), company.getUuid());
         verify(vehicleRepository, never()).save(new Vehicle());
     }
 }

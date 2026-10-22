@@ -32,10 +32,10 @@ public class WorkerApiTestClient {
         String json = objectMapper.writeValueAsString(body);
 
         return mockMvc.perform(post("/api/companies/" + companyUuid + "/worker")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test")
-                .content(json));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content(json));
     }
 
     public ResultActions deleteWorker(UUID companyUuid, UUID userUuid)
@@ -43,38 +43,39 @@ public class WorkerApiTestClient {
 
         return mockMvc.perform(delete(
                 "/api/companies/" + companyUuid + "/worker/" + userUuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
     }
 
     public ResultActions getWorkersByCompany(UUID uuid) throws Exception {
         return mockMvc.perform(get("/api/companies/" + uuid + "/workers")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
     }
 
     public ResultActions getWorkersByCurrentUser() throws Exception {
         return mockMvc.perform(get("/api/users/workers")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON));
     }
 
     public ResultActions getWorkersByUser(String uuid) throws Exception {
         return mockMvc.perform(get("/api/users/workers/" + uuid + "/workers")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON));
     }
 
     public ResultActions updateWorkerRoles(
             UUID companyUuid,
             UUID userUuid,
-            Set<RoleCompany> roles) throws Exception {
+            Set<RoleCompany> roles
+                                          ) throws Exception {
 
         WorkerCreate body = new WorkerCreate(
                 userUuid,
@@ -85,10 +86,10 @@ public class WorkerApiTestClient {
 
         return mockMvc.perform(put(
                 "/api/companies/" + companyUuid + "/worker/" + userUuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test")
-                .content(json));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content(json));
     }
 
     public WorkerApiTestClient withToken(String token) {

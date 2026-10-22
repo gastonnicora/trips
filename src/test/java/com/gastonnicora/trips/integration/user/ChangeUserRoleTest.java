@@ -54,7 +54,8 @@ class ChangeUserRoleTest {
 
         String superAdminUuid = JsonPath.read(
                 result.getResponse().getContentAsString(),
-                "$.uuid");
+                "$.uuid"
+                                             );
         userApi.changeRole(superAdminUuid, Set.of(Role.ADMIN))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists())

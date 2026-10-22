@@ -62,60 +62,6 @@ class UpdateVehicleTest {
     }
 
     @Test
-    void shouldUpdateVehicleSuccessfully() throws Exception {
-
-        vehicleApi
-                .updateVehicle(
-                        company.getUuid(),
-                        vehicleUuid,
-                        "CC456DD",
-                        "Iveco",
-                        30
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid")
-                        .value(vehicleUuid.toString()))
-                .andExpect(jsonPath("$.company.uuid")
-                        .value(company.getUuid().toString()))
-                .andExpect(jsonPath("$.plate")
-                        .value("CC456DD"))
-                .andExpect(jsonPath("$.model")
-                        .value("Iveco"))
-                .andExpect(jsonPath("$.capacity")
-                        .value(30))
-                .andExpect(jsonPath("$.active")
-                        .value(true));
-
-        // el cambio quedó persistido
-        vehicleApi
-                .getVehicle(company.getUuid(), vehicleUuid)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.plate").value("CC456DD"))
-                .andExpect(jsonPath("$.model").value("Iveco"))
-                .andExpect(jsonPath("$.capacity").value(30));
-    }
-
-    @Test
-    void shouldUpdateVehicleSuccessfullyWhenPlateDoesNotChange() throws Exception {
-
-        vehicleApi
-                .updateVehicle(
-                        company.getUuid(),
-                        vehicleUuid,
-                        "AA123BB",
-                        "Iveco",
-                        30
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.plate")
-                        .value("AA123BB"))
-                .andExpect(jsonPath("$.model")
-                        .value("Iveco"))
-                .andExpect(jsonPath("$.capacity")
-                        .value(30));
-    }
-
-    @Test
     void shouldNormalizePlateWhenUpdatingVehicle() throws Exception {
 
         vehicleApi
@@ -125,10 +71,10 @@ class UpdateVehicleTest {
                         "cc 456 dd",
                         "Iveco",
                         30
-                )
+                              )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.plate")
-                        .value("CC456DD"));
+                                   .value("CC456DD"));
     }
 
     @Test
@@ -141,7 +87,7 @@ class UpdateVehicleTest {
                         "",
                         "Iveco",
                         30
-                )
+                              )
                 .andExpect(status().isBadRequest());
 
         vehicleApi
@@ -151,7 +97,7 @@ class UpdateVehicleTest {
                         "CC456DD",
                         "Iveco",
                         0
-                )
+                              )
                 .andExpect(status().isBadRequest());
     }
 
@@ -164,7 +110,7 @@ class UpdateVehicleTest {
                         "CC456DD",
                         "Iveco",
                         30
-                )
+                              )
                 .andExpect(status().isOk());
 
         vehicleApi
@@ -174,7 +120,7 @@ class UpdateVehicleTest {
                         "CC456DD",
                         "Mercedes Benz",
                         50
-                )
+                              )
                 .andExpect(status().isConflict());
     }
 
@@ -188,7 +134,7 @@ class UpdateVehicleTest {
                         "CC456DD",
                         "Iveco",
                         30
-                )
+                              )
                 .andExpect(status().isForbidden());
     }
 
@@ -210,10 +156,9 @@ class UpdateVehicleTest {
                         "CC456DD",
                         "Iveco",
                         30
-                )
+                              )
                 .andExpect(status().isForbidden());
     }
-
 
     @Test
     void shouldReturnNotFoundWhenVehicleDoesNotExist() throws Exception {
@@ -225,7 +170,7 @@ class UpdateVehicleTest {
                         "CC456DD",
                         "Iveco",
                         30
-                )
+                              )
                 .andExpect(status().isNotFound());
     }
 
@@ -243,7 +188,7 @@ class UpdateVehicleTest {
                         "CC456DD",
                         "Iveco",
                         30
-                )
+                              )
                 .andExpect(status().isNotFound());
     }
 
@@ -263,7 +208,61 @@ class UpdateVehicleTest {
                         "CC456DD",
                         "Iveco",
                         30
-                )
+                              )
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldUpdateVehicleSuccessfully() throws Exception {
+
+        vehicleApi
+                .updateVehicle(
+                        company.getUuid(),
+                        vehicleUuid,
+                        "CC456DD",
+                        "Iveco",
+                        30
+                              )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid")
+                                   .value(vehicleUuid.toString()))
+                .andExpect(jsonPath("$.company.uuid")
+                                   .value(company.getUuid().toString()))
+                .andExpect(jsonPath("$.plate")
+                                   .value("CC456DD"))
+                .andExpect(jsonPath("$.model")
+                                   .value("Iveco"))
+                .andExpect(jsonPath("$.capacity")
+                                   .value(30))
+                .andExpect(jsonPath("$.active")
+                                   .value(true));
+
+        // el cambio quedó persistido
+        vehicleApi
+                .getVehicle(company.getUuid(), vehicleUuid)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.plate").value("CC456DD"))
+                .andExpect(jsonPath("$.model").value("Iveco"))
+                .andExpect(jsonPath("$.capacity").value(30));
+    }
+
+    @Test
+    void shouldUpdateVehicleSuccessfullyWhenPlateDoesNotChange() throws Exception {
+
+        vehicleApi
+                .updateVehicle(
+                        company.getUuid(),
+                        vehicleUuid,
+                        "AA123BB",
+                        "Iveco",
+                        30
+                              )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.plate")
+                                   .value("AA123BB"))
+                .andExpect(jsonPath("$.model")
+                                   .value("Iveco"))
+                .andExpect(jsonPath("$.capacity")
+                                   .value(30));
     }
 }

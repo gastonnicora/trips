@@ -44,33 +44,15 @@ class FindByUuidTest {
         company.setActive(true);
         vehicle.setCompany(company);
 
-        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid,company.getUuid()))
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid, company.getUuid()))
                 .thenReturn(Optional.of(vehicle));
 
-        Vehicle result = vehicleService.findByUuid(company.getUuid(),uuid);
+        Vehicle result = vehicleService.findByUuid(company.getUuid(), uuid);
 
         assertEquals(vehicle, result);
-        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid,company.getUuid());
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid, company.getUuid());
     }
 
-    @Test
-    void shouldThrowNotFoundExceptionWhenVehicleDoesNotExist() {
-        UUID uuid = UUID.randomUUID();
-
-        Company company = new Company();
-        company.setUuid(UUID.randomUUID());
-        company.setActive(true);
-        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid,company.getUuid()))
-                .thenReturn(Optional.empty());
-
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> vehicleService.findByUuid(company.getUuid(),uuid));
-
-        assertEquals(404, exception.getStatus());
-        assertEquals("Vehículo no encontrado", exception.getMessage());
-        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid,company.getUuid());
-    }
     @Test
     void shouldThrowNotFoundExceptionWhenCompanyIsInactive() {
         UUID uuid = UUID.randomUUID();
@@ -82,15 +64,36 @@ class FindByUuidTest {
         company.setActive(false);
         vehicle.setCompany(company);
 
-        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid,company.getUuid()))
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid, company.getUuid()))
                 .thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
-                () -> vehicleService.findByUuid(company.getUuid(),uuid));
+                () -> vehicleService.findByUuid(company.getUuid(), uuid)
+                                                  );
 
         assertEquals(404, exception.getStatus());
         assertEquals("Vehículo no encontrado", exception.getMessage());
-        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid,company.getUuid());
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid, company.getUuid());
+    }
+
+    @Test
+    void shouldThrowNotFoundExceptionWhenVehicleDoesNotExist() {
+        UUID uuid = UUID.randomUUID();
+
+        Company company = new Company();
+        company.setUuid(UUID.randomUUID());
+        company.setActive(true);
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid, company.getUuid()))
+                .thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                () -> vehicleService.findByUuid(company.getUuid(), uuid)
+                                                  );
+
+        assertEquals(404, exception.getStatus());
+        assertEquals("Vehículo no encontrado", exception.getMessage());
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(uuid, company.getUuid());
     }
 }

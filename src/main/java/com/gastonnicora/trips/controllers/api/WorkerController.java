@@ -59,7 +59,8 @@ public class WorkerController {
     public WorkerController(
             WorkerService workerService,
             CompanyService companyService,
-            UserService userService) {
+            UserService userService
+                           ) {
         this.workerService = workerService;
         this.companyService = companyService;
         this.userService = userService;
@@ -97,7 +98,8 @@ public class WorkerController {
     @Operation(summary = "Agregar trabajador", description = "Agrega un usuario como trabajador de una empresa.")
     public WorkerDTO createWorker(
             @PathVariable("uuid") UUID uuid,
-            @RequestBody @Valid WorkerCreate workerCreate) {
+            @RequestBody @Valid WorkerCreate workerCreate
+                                 ) {
 
         Company company = companyService.getCompanyEntity(uuid);
         User user = userService.getUser(workerCreate.getUserUuid());
@@ -105,7 +107,8 @@ public class WorkerController {
         return workerService.createWorker(
                 user,
                 company,
-                workerCreate.getRoles());
+                workerCreate.getRoles()
+                                         );
     }
 
     /**
@@ -130,7 +133,8 @@ public class WorkerController {
     @Operation(summary = "Eliminar trabajador", description = "Elimina la relación laboral de un usuario con una empresa.")
     public void deleteWorker(
             @PathVariable("companyUuid") UUID companyUuid,
-            @PathVariable("userUuid") UUID userUuid) {
+            @PathVariable("userUuid") UUID userUuid
+                            ) {
 
         workerService.deleteWorker(userUuid, companyUuid);
     }
@@ -212,11 +216,13 @@ public class WorkerController {
     public WorkerDTO updateWorkerRoles(
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("userUuid") UUID userUuid,
-            @RequestBody @Valid WorkerCreate workerCreate) {
+            @RequestBody @Valid WorkerCreate workerCreate
+                                      ) {
 
         return workerService.updateWorker(
                 userUuid,
                 companyUuid,
-                workerCreate.getRoles());
+                workerCreate.getRoles()
+                                         );
     }
 }

@@ -49,7 +49,7 @@ public class GetVehiclesTest {
 
         company = new CompanyTestFactory(mockMvc, objectMapper, token, geocodingService).createCompany();
 
-         new VehicleTestFactory(mockMvc, objectMapper, token).createVehicle(company.getUuid());
+        new VehicleTestFactory(mockMvc, objectMapper, token).createVehicle(company.getUuid());
 
         this.vehicleApi = new VehicleApiTestClient(
                 mockMvc,
@@ -61,11 +61,11 @@ public class GetVehiclesTest {
     @Test
     void shouldReturnNotFoundWhenCompanyDontHaveVehicles() throws Exception {
 
-        CompanyDTO company2= new CompanyTestFactory(mockMvc, objectMapper, token, geocodingService).createCompany();
+        CompanyDTO company2 = new CompanyTestFactory(mockMvc, objectMapper, token, geocodingService).createCompany();
         vehicleApi
                 .getVehicles(
                         company2.getUuid()
-                )
+                            )
                 .andExpect(status().isNotFound());
     }
 
@@ -81,7 +81,7 @@ public class GetVehiclesTest {
         apiWithoutToken
                 .getVehicles(
                         company.getUuid()
-                )
+                            )
                 .andExpect(status().isUnauthorized());
     }
 
@@ -91,7 +91,7 @@ public class GetVehiclesTest {
         vehicleApi
                 .getVehicles(
                         company.getUuid()
-                )
+                            )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[*].plate").exists())
                 .andExpect(jsonPath("$.[*].plate").value("AA123BB"));

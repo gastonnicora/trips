@@ -48,15 +48,16 @@ public class SwaggerConfig {
     public OpenAPI apiInfo() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API Viajes")
-                        .version("1.0")
-                        .description("API REST de viajes para la plataforma de gestión de viajes, reservas y usuarios.")
-                        .contact(new Contact()
-                                .name("Gastón Nicora")
-                                .email("gastonmatias.21@gmail.com")
-                                .url("https://github.com/gastonnicora/trips"))
-                        .license(new License()
-                                .name("MIT License")
-                                .url("https://opensource.org/licenses/MIT")));
+                              .title("API Viajes")
+                              .version("1.0")
+                              .description(
+                                      "API REST de viajes para la plataforma de gestión de viajes, reservas y usuarios.")
+                              .contact(new Contact()
+                                               .name("Gastón Nicora")
+                                               .email("gastonmatias.21@gmail.com")
+                                               .url("https://github.com/gastonnicora/trips"))
+                              .license(new License()
+                                               .name("MIT License")
+                                               .url("https://opensource.org/licenses/MIT")));
     }
 }

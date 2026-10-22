@@ -57,7 +57,8 @@ public class VehicleMapper {
                 vehicle.getCapacity(),
                 vehicle.getCreatedAt(),
                 vehicle.getUpdatedAt(),
-                vehicle.isActive());
+                vehicle.isActive()
+        );
     }
 
     /**

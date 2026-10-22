@@ -33,6 +33,13 @@ public class FindByUuidTest {
     private CompanyRepository companyRepository;
 
     @Test
+    void shouldReturnEmptyWhenUuidDoesNotExist() {
+        Optional<RoutePoint> found = routePointRepository.findByUuid(UUID.randomUUID());
+
+        assertFalse(found.isPresent());
+    }
+
+    @Test
     void shouldReturnRoutePointWhenUuidExists() {
         Company company = new Company(
                 "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
@@ -42,7 +49,7 @@ public class FindByUuidTest {
 
         Route route = routeRepository.save(new Route(company, "Test route", PricingType.PER_KM));
 
-        RoutePoint routePoint = new RoutePoint("Test routePoint",35.00,36.00);
+        RoutePoint routePoint = new RoutePoint("Test routePoint", 35.00, 36.00);
         routePoint.setRoute(route);
         routePoint = routePointRepository.save(routePoint);
 
@@ -50,16 +57,9 @@ public class FindByUuidTest {
         Optional<RoutePoint> found = routePointRepository.findByUuid(routePoint.getUuid());
 
         assertTrue(found.isPresent());
-        assertEquals(found.get().getUuid(), routePoint.getUuid());;
+        assertEquals(found.get().getUuid(), routePoint.getUuid());
         assertEquals("Test routePoint", found.get().getName());
         assertEquals(35.00, found.get().getLatitude());
         assertEquals(36.00, found.get().getLongitude());
-    }
-
-    @Test
-    void shouldReturnEmptyWhenUuidDoesNotExist() {
-        Optional<RoutePoint> found = routePointRepository.findByUuid(UUID.randomUUID());
-
-        assertFalse(found.isPresent());
     }
 }

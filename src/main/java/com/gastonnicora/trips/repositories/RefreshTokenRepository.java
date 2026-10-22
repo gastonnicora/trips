@@ -20,7 +20,6 @@ import java.util.UUID;
  * y estado de activación.
  * </p>
  *
- *
  * @author Gastón
  * @version 1.0
  * @since 2026-04-11

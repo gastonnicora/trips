@@ -26,7 +26,7 @@ public class TripsApplication implements CommandLineRunner {
      *
      * @param args Argumentos recibidos al iniciar la aplicación.
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(TripsApplication.class, args);
     }
 

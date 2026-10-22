@@ -47,14 +47,14 @@ class GetWorkersTest {
                 mockMvc,
                 "worker_" + role.name(),
                 pass
-        );
+                                                     );
 
         workerApi
                 .createWorker(
                         companyUuid,
                         worker.getUuid(),
                         Set.of(role)
-                )
+                             )
                 .andExpect(status().isOk());
 
         return worker;
@@ -65,7 +65,7 @@ class GetWorkersTest {
                 mockMvc,
                 user.getEmail(),
                 pass
-        );
+                                                   );
 
         return new WorkerApiTestClient(
                 mockMvc,
@@ -81,14 +81,15 @@ class GetWorkersTest {
                 mockMvc,
                 user.getEmail(),
                 pass
-        );
+                                                   );
 
         workerApi = new WorkerApiTestClient(
                 mockMvc,
                 new ObjectMapper()
         ).withToken(login.getToken());
 
-        companyUuid = new CompanyTestFactory(mockMvc, objectMapper, login.getToken(), geocodingService).createCompany().getUuid();
+        companyUuid = new CompanyTestFactory(mockMvc, objectMapper, login.getToken(), geocodingService).createCompany()
+                .getUuid();
     }
 
     @Test
@@ -161,7 +162,7 @@ class GetWorkersTest {
                 mockMvc,
                 "normal_user",
                 pass
-        );
+                                                         );
 
         WorkerApiTestClient userApi = loginAs(normalUser);
 

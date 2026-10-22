@@ -59,19 +59,19 @@ class CreateVehicleTest {
                         "AA123BB",
                         "Mercedes Benz",
                         50
-                )
+                              )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").exists())
                 .andExpect(jsonPath("$.company.uuid")
-                        .value(company.getUuid().toString()))
+                                   .value(company.getUuid().toString()))
                 .andExpect(jsonPath("$.plate")
-                        .value("AA123BB"))
+                                   .value("AA123BB"))
                 .andExpect(jsonPath("$.model")
-                        .value("Mercedes Benz"))
+                                   .value("Mercedes Benz"))
                 .andExpect(jsonPath("$.capacity")
-                        .value(50))
+                                   .value(50))
                 .andExpect(jsonPath("$.active")
-                        .value(true));
+                                   .value(true));
     }
 
     @Test
@@ -83,7 +83,7 @@ class CreateVehicleTest {
                         "",
                         "Mercedes Benz",
                         50
-                )
+                              )
                 .andExpect(status().isBadRequest());
     }
 
@@ -96,7 +96,7 @@ class CreateVehicleTest {
                         "AA123BB",
                         "Mercedes Benz",
                         50
-                )
+                              )
                 .andExpect(status().isOk());
 
         vehicleApi
@@ -105,7 +105,7 @@ class CreateVehicleTest {
                         "AA123BB",
                         "Mercedes Benz",
                         50
-                )
+                              )
                 .andExpect(status().isConflict());
     }
 
@@ -118,7 +118,7 @@ class CreateVehicleTest {
                         "AA123BB",
                         "Mercedes Benz",
                         50
-                )
+                              )
                 .andExpect(status().isForbidden());
     }
 
@@ -137,7 +137,7 @@ class CreateVehicleTest {
                         "AA123BB",
                         "Mercedes Benz",
                         50
-                )
+                              )
                 .andExpect(status().isUnauthorized());
     }
 }

@@ -50,7 +50,7 @@ public class UserTestFactory {
                 mockMvc,
                 "UserGeneric",
                 pass
-        );
+                                                   );
 
         return UserTestFactory
                 .login(mockMvc, user.getEmail(), pass)

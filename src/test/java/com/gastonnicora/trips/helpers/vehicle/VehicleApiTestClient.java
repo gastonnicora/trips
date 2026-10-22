@@ -22,7 +22,8 @@ public class VehicleApiTestClient {
         this.objectMapper = objectMapper;
     }
 
-    public ResultActions createVehicle(UUID companyUuid, String plate, String model, Integer capacity) throws Exception {
+    public ResultActions createVehicle(UUID companyUuid, String plate, String model, Integer capacity)
+            throws Exception {
 
         VehicleCreate body = new VehicleCreate(
                 plate,
@@ -33,10 +34,10 @@ public class VehicleApiTestClient {
         String json = objectMapper.writeValueAsString(body);
 
         return mockMvc.perform(post("/api/companies/" + companyUuid + "/vehicle")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test")
-                .content(json));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content(json));
     }
 
     public ResultActions deleteVehicle(UUID companyUuid, UUID vehicleUuid)
@@ -44,9 +45,27 @@ public class VehicleApiTestClient {
 
         return mockMvc.perform(delete(
                 "/api/companies/" + companyUuid + "/vehicle/" + vehicleUuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
+    }
+
+    public ResultActions getVehicle(UUID companyUuid, UUID uuid)
+            throws Exception {
+
+        return mockMvc.perform(get("/api/companies/" + companyUuid + "/vehicle/" + uuid)
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
+    }
+
+    public ResultActions getVehicles(UUID companyUuid)
+            throws Exception {
+
+        return mockMvc.perform(get("/api/companies/" + companyUuid + "/vehicles")
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
     }
 
     public ResultActions updateVehicle(UUID companyUuid, UUID vehicleUuid, String plate, String model, Integer capacity)
@@ -61,28 +80,10 @@ public class VehicleApiTestClient {
         String json = objectMapper.writeValueAsString(body);
 
         return mockMvc.perform(put("/api/companies/" + companyUuid + "/vehicle/" + vehicleUuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test")
-                .content(json));
-    }
-
-    public ResultActions getVehicle(UUID companyUuid, UUID uuid)
-            throws Exception {
-
-        return mockMvc.perform(get("/api/companies/" + companyUuid + "/vehicle/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
-    }
-
-    public ResultActions getVehicles(UUID companyUuid)
-            throws Exception {
-
-        return mockMvc.perform(get("/api/companies/" + companyUuid + "/vehicles")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content(json));
     }
 
     public VehicleApiTestClient withToken(String token) {

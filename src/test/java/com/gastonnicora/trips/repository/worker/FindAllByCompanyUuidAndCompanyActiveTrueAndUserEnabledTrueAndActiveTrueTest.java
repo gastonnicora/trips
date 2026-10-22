@@ -39,7 +39,8 @@ class FindAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrueTes
                 "username",
                 "latName",
                 "email@example.com",
-                "password");
+                "password"
+        );
         user.setEnabled(true);
         userRepository.save(user);
         Company company = new Company(
@@ -48,14 +49,17 @@ class FindAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrueTes
                 -34.6037,
                 -58.3816,
                 "test@company.com",
-                "1234567890");
+                "1234567890"
+        );
         company = companyRepository.save(company);
         workerRepository.save(new com.gastonnicora.trips.entities.Worker(
                 user,
                 company,
-                Set.of(RoleCompany.ADMIN)));
+                Set.of(RoleCompany.ADMIN)
+        ));
 
-        List<Worker> found = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company.getUuid());
+        List<Worker> found = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(
+                company.getUuid());
         assertFalse(found.isEmpty());
         assertTrue(found.stream().anyMatch(worker -> worker.getUser().getUuid().equals(user.getUuid())));
     }
@@ -68,10 +72,12 @@ class FindAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrueTes
                 -34.6037,
                 -58.3816,
                 "test@company.com",
-                "1234567890");
+                "1234567890"
+        );
         company = companyRepository.save(company);
 
-        List<Worker> found = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company.getUuid());
+        List<Worker> found = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(
+                company.getUuid());
         assertTrue(found.isEmpty());
     }
 }

@@ -55,7 +55,8 @@ class GetWorkersByCurrentUserTest {
         String ownerToken = registerAndLoginUser("ownerComapany");
         this.company = new CompanyTestFactory(mockMvc, objectMapper, ownerToken, geocodingService).createCompany();
         registerAndLoginUser("worker");
-        new WorkerTestFactory(mockMvc, objectMapper, ownerToken).createWorker(company.getUuid(), user.getUuid(), Set.of(RoleCompany.DRIVER));
+        new WorkerTestFactory(mockMvc, objectMapper, ownerToken).createWorker(
+                company.getUuid(), user.getUuid(), Set.of(RoleCompany.DRIVER));
 
         workerApi = new WorkerApiTestClient(mockMvc, objectMapper).withToken(token);
     }

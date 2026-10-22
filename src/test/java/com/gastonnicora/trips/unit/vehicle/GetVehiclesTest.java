@@ -47,7 +47,8 @@ public class GetVehiclesTest {
 
         List<Vehicle> vehicles = List.of(vehicle, vehicle2);
 
-        when(vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid())).thenReturn(vehicles);
+        when(vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid())).thenReturn(
+                vehicles);
 
         List<VehicleDTO> expectedVehicleDTO = List.of(new VehicleDTO(), new VehicleDTO());
 
@@ -69,7 +70,8 @@ public class GetVehiclesTest {
         Vehicle vehicle = new Vehicle();
         vehicle.setCompany(company);
         vehicle.setActive(false);
-        when(vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid())).thenReturn(List.of());
+        when(vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid())).thenReturn(
+                List.of());
         assertThrows(NotFoundException.class, () -> vehicleService.getVehicles(company.getUuid()));
         verify(vehicleRepository).findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid());
         verify(vehicleMapper, never()).toDTOList(any());

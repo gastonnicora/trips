@@ -50,7 +50,7 @@ class GetWorkersByCompanyTest {
         List<Worker> workers = List.of(
                 new Worker(driver, company, Set.of(RoleCompany.DRIVER)),
                 new Worker(owner, company, Set.of(RoleCompany.OWNER))
-        );
+                                      );
 
         WorkersByCompany expected = new WorkersByCompany();
 

@@ -35,8 +35,10 @@ class GetCompanyTest {
     @Test
     void shouldReturnCompanySuccessfully() {
 
-        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
+        Company company = new Company(
+                "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
+                "test@mail.com", "123"
+        );
         company.setUuid(UUID.randomUUID());
 
         when(companyRepository.findByUuidAndActiveTrue(company.getUuid())).thenReturn(java.util.Optional.of(company));
@@ -63,7 +65,8 @@ class GetCompanyTest {
 
         NotFoundException ex = assertThrows(
                 NotFoundException.class,
-                () -> companyService.getCompany(UUID.randomUUID()));
+                () -> companyService.getCompany(UUID.randomUUID())
+                                           );
 
         assertEquals("Empresa no encontrada", ex.getMessage());
 

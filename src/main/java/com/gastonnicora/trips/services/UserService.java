@@ -16,7 +16,6 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.utils.SecurityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +62,10 @@ public class UserService {
      *                            {@link User} en
      *                            {@link UserDTO} ({@link UserMapper}).
      */
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService, UserMapper userMapper) {
+    public UserService(
+            UserRepository userRepository, PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService,
+            UserMapper userMapper
+                      ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.refreshTokenService = refreshTokenService;
@@ -94,7 +96,8 @@ public class UserService {
         System.out.println("SUPER_ADMIN existe: " + exists);
 
         if (!exists && email != null && password != null && !userRepository.existsByEmailAndEnabledTrue(email)) {
-            User superAdmin = new User("Super", "Admin", email, passwordEncoder.encode(password), Set.of(Role.SUPER_ADMIN));
+            User superAdmin = new User(
+                    "Super", "Admin", email, passwordEncoder.encode(password), Set.of(Role.SUPER_ADMIN));
 
             userRepository.save(superAdmin);
         }
@@ -125,7 +128,10 @@ public class UserService {
 
         userCreate.setPassword(passwordEncoder.encode(userCreate.getPassword()));
 
-        User newUser = new User(userCreate.getName(), userCreate.getLastname(), userCreate.getEmail(), userCreate.getPassword(), Set.of(Role.USER));
+        User newUser = new User(
+                userCreate.getName(), userCreate.getLastname(), userCreate.getEmail(), userCreate.getPassword(),
+                Set.of(Role.USER)
+        );
 
         return userMapper.toDTO(userRepository.save(newUser));
     }
@@ -307,7 +313,8 @@ public class UserService {
      * @see UserMapper#toDTO(User)
      */
     public UserDTO updatePassword(UserChangePassword userChangePassword) {
-        User userEntity = userRepository.findByUuid(getCurrentUserUuid()).orElseThrow(() -> new NotFoundException("El usuario solicitado no existe"));
+        User userEntity = userRepository.findByUuid(getCurrentUserUuid())
+                .orElseThrow(() -> new NotFoundException("El usuario solicitado no existe"));
 
         if (!passwordEncoder.matches(userChangePassword.getPasswordOld(), userEntity.getPassword())) {
             ValidationException ex = new ValidationException("Error en la validación");

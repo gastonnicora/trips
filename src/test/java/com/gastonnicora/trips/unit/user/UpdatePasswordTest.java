@@ -83,9 +83,11 @@ class UpdatePasswordTest {
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
-            userService.updatePassword(request);
-        });
+        NotFoundException ex = assertThrows(
+                NotFoundException.class, () -> {
+                    userService.updatePassword(request);
+                }
+                                           );
 
         assertEquals(404, ex.getStatus());
 
@@ -115,9 +117,11 @@ class UpdatePasswordTest {
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("pass", "pass")).thenReturn(false);
 
-        ValidationException ex = assertThrows(ValidationException.class, () -> {
-            userService.updatePassword(request);
-        });
+        ValidationException ex = assertThrows(
+                ValidationException.class, () -> {
+                    userService.updatePassword(request);
+                }
+                                             );
 
         assertEquals(400, ex.getStatus());
 

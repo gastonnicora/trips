@@ -14,8 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -31,8 +31,10 @@ public class FindAllByCompanyUuidAndCompanyActiveTrueAndActiveTrueTest {
 
     @Test
     void shouldReturnActiveVehicleWhenUuidExists() {
-        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
+        Company company = new Company(
+                "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
+                "test@mail.com", "123"
+        );
         company = companyRepository.save(company);
 
         Vehicle vehicle = vehicleRepository.save(
@@ -41,7 +43,8 @@ public class FindAllByCompanyUuidAndCompanyActiveTrueAndActiveTrueTest {
         Vehicle vehicle2 = vehicleRepository.save(
                 new Vehicle(company, "ABC123", "Model X", 50));
 
-        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid());
+        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(
+                company.getUuid());
 
         assertFalse(found.isEmpty());
         assertTrue(found.stream().anyMatch(item -> item.getUuid().equals(vehicle.getUuid())));
@@ -51,22 +54,26 @@ public class FindAllByCompanyUuidAndCompanyActiveTrueAndActiveTrueTest {
 
     @Test
     void shouldReturnEmptyWhenUuidDoesNotExist() {
-        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID.randomUUID());
+        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(
+                UUID.randomUUID());
 
         assertTrue(found.isEmpty());
     }
 
     @Test
     void shouldReturnEmptyWhenVehicleIsInactive() {
-        Company company = new Company("Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123");
+        Company company = new Company(
+                "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
+                "test@mail.com", "123"
+        );
         company = companyRepository.save(company);
 
         Vehicle vehicle = new Vehicle(company, "ABC123", "Model X", 50);
         vehicle.setActive(false);
         vehicle = vehicleRepository.save(vehicle);
 
-        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid());
+        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(
+                company.getUuid());
 
         assertTrue(found.isEmpty());
     }

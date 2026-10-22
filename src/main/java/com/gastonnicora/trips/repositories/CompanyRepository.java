@@ -23,6 +23,13 @@ import java.util.UUID;
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     /**
+     * Obtiene todas las empresas que se encuentran activas.
+     *
+     * @return Lista de {@link Company} activas, o una lista vacía si no existe ninguna.
+     */
+    List<Company> findAllByActiveTrue();
+
+    /**
      * Busca una empresa activa por su identificador único.
      *
      * @param uuid Identificador único de la empresa.
@@ -30,11 +37,4 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
      * @return {@link Optional} que contiene la empresa encontrada, o vacío si no existe.
      */
     Optional<Company> findByUuidAndActiveTrue(UUID uuid);
-
-    /**
-     * Obtiene todas las empresas que se encuentran activas.
-     *
-     * @return Lista de {@link Company} activas, o una lista vacía si no existe ninguna.
-     */
-    List<Company> findAllByActiveTrue();
 }

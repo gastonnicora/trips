@@ -9,10 +9,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 public class RouteApiTestClient {
 
@@ -49,14 +46,6 @@ public class RouteApiTestClient {
                                        .content(json));
     }
 
-    public ResultActions getRoute(UUID companyUuid, UUID routeUuid) throws Exception {
-
-        return mockMvc.perform(get("/api/companies/" + companyUuid + "/route/" + routeUuid)
-                                       .header("Authorization", "Bearer " + token)
-                                       .contentType(MediaType.APPLICATION_JSON)
-                                       .header("User-Agent", "JUnit-Test"));
-    }
-
     public ResultActions deleteRoute(UUID companyUuid, UUID routeUuid) throws Exception {
 
         return mockMvc.perform(delete("/api/companies/" + companyUuid + "/route/" + routeUuid)
@@ -65,6 +54,13 @@ public class RouteApiTestClient {
                                        .header("User-Agent", "JUnit-Test"));
     }
 
+    public ResultActions getRoute(UUID companyUuid, UUID routeUuid) throws Exception {
+
+        return mockMvc.perform(get("/api/companies/" + companyUuid + "/route/" + routeUuid)
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
+    }
 
     public ResultActions getRoutes(UUID companyUuid) throws Exception {
 
@@ -73,6 +69,7 @@ public class RouteApiTestClient {
                                        .contentType(MediaType.APPLICATION_JSON)
                                        .header("User-Agent", "JUnit-Test"));
     }
+
     public ResultActions updateRoute(
             UUID companyUuid,
             UUID routeUuid,

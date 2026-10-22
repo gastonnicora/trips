@@ -44,11 +44,11 @@ class ClientTypeTest {
 
     private ResultActions login(String userAgent) throws Exception {
         return mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", userAgent)
-                .content("""
-                        {"email":"%s","password":"%s"}
-                        """.formatted(email, pass)));
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", userAgent)
+                                       .content("""
+                                                        {"email":"%s","password":"%s"}
+                                                        """.formatted(email, pass)));
     }
 
     @BeforeEach
@@ -64,11 +64,11 @@ class ClientTypeTest {
                 .readValue(result.getResponse().getContentAsString(), LoginResponse.class);
 
         mockMvc.perform(post("/api/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("User-Agent", IOS_APP)
-                        .content("""
-                                {"refreshToken":"%s"}
-                                """.formatted(loginResponse.getRefreshToken())))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("User-Agent", IOS_APP)
+                                .content("""
+                                                 {"refreshToken":"%s"}
+                                                 """.formatted(loginResponse.getRefreshToken())))
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist("refreshToken"))
                 .andExpect(jsonPath("$.token").isNotEmpty())

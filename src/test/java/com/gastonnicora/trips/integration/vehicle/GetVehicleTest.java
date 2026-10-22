@@ -68,7 +68,7 @@ class GetVehicleTest {
                 .getVehicle(
                         company.getUuid(),
                         UUID.randomUUID()
-                )
+                           )
                 .andExpect(status().isNotFound());
     }
 
@@ -85,7 +85,7 @@ class GetVehicleTest {
                 .getVehicle(
                         company.getUuid(),
                         vehicleUuid
-                )
+                           )
                 .andExpect(status().isUnauthorized());
     }
 
@@ -96,7 +96,7 @@ class GetVehicleTest {
                 .getVehicle(
                         company.getUuid(),
                         vehicleUuid
-                )
+                           )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.plate").exists())
                 .andExpect(jsonPath("$.plate").value("AA123BB"));

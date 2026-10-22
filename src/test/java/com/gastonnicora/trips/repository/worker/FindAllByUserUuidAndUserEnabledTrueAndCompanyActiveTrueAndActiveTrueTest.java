@@ -39,14 +39,17 @@ class FindAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrueTest {
         user.setEnabled(true);
         user = userRepository.save(user);
 
-        Company company = new Company("Company Name", "Company Description", -34.6037, -58.3816,
-                "test@company.com", "1234567890");
+        Company company = new Company(
+                "Company Name", "Company Description", -34.6037, -58.3816,
+                "test@company.com", "1234567890"
+        );
         company = companyRepository.save(company);
 
         Worker worker = workerRepository.save(
                 new Worker(user, company, Set.of(RoleCompany.ADMIN)));
 
-        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(user.getUuid());
+        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(
+                user.getUuid());
 
         assertFalse(found.isEmpty());
         assertTrue(found.stream().anyMatch(item -> item.getUuid().equals(worker.getUuid())));
@@ -59,15 +62,18 @@ class FindAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrueTest {
         user.setEnabled(true);
         user = userRepository.save(user);
 
-        Company company = new Company("Company Name", "Company Description", -34.6037, -58.3816,
-                "test@company.com", "1234567890");
+        Company company = new Company(
+                "Company Name", "Company Description", -34.6037, -58.3816,
+                "test@company.com", "1234567890"
+        );
         company = companyRepository.save(company);
 
         Worker worker = new Worker(user, company, Set.of(RoleCompany.ADMIN));
         worker.setActive(false);
         workerRepository.save(worker);
 
-        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(user.getUuid());
+        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(
+                user.getUuid());
 
         assertTrue(found.isEmpty());
     }
@@ -78,7 +84,8 @@ class FindAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrueTest {
         user.setEnabled(true);
         user = userRepository.save(user);
 
-        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(user.getUuid());
+        List<Worker> found = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(
+                user.getUuid());
 
         assertTrue(found.isEmpty());
     }

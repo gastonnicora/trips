@@ -45,8 +45,10 @@ class CreateTokenTest {
 
         ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
 
-        refreshTokenService.createToken("token", user, "user-agent", "127.0.0.1",
-                "device", 0);
+        refreshTokenService.createToken(
+                "token", user, "user-agent", "127.0.0.1",
+                "device", 0
+                                       );
 
         verify(refreshTokenRepository).save(captor.capture());
 
@@ -91,8 +93,10 @@ class CreateTokenTest {
 
         ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
 
-        refreshTokenService.createToken("token", user, " ", "127.0.0.1",
-                "device", 0);
+        refreshTokenService.createToken(
+                "token", user, " ", "127.0.0.1",
+                "device", 0
+                                       );
 
         verify(refreshTokenRepository).save(captor.capture());
 
@@ -137,8 +141,10 @@ class CreateTokenTest {
 
         ArgumentCaptor<RefreshToken> captor = ArgumentCaptor.forClass(RefreshToken.class);
 
-        refreshTokenService.createToken("token", user, null, "127.0.0.1",
-                "device", 0);
+        refreshTokenService.createToken(
+                "token", user, null, "127.0.0.1",
+                "device", 0
+                                       );
 
         verify(refreshTokenRepository).save(captor.capture());
 

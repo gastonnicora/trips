@@ -69,14 +69,14 @@ class DeleteVehicleTest {
                 .deleteVehicle(
                         company.getUuid(),
                         vehicleUuid
-                )
+                              )
                 .andExpect(status().isOk());
 
         vehicleApi
                 .deleteVehicle(
                         company.getUuid(),
                         vehicleUuid
-                )
+                              )
                 .andExpect(status().isNotFound());
     }
 
@@ -87,7 +87,7 @@ class DeleteVehicleTest {
                 .deleteVehicle(
                         UUID.randomUUID(),
                         vehicleUuid
-                )
+                              )
                 .andExpect(status().isForbidden());
     }
 
@@ -106,7 +106,7 @@ class DeleteVehicleTest {
                 .deleteVehicle(
                         company.getUuid(),
                         vehicleUuid
-                )
+                              )
                 .andExpect(status().isForbidden());
     }
 
@@ -117,7 +117,7 @@ class DeleteVehicleTest {
                 .deleteVehicle(
                         company.getUuid(),
                         UUID.randomUUID()
-                )
+                              )
                 .andExpect(status().isNotFound());
     }
 
@@ -134,7 +134,7 @@ class DeleteVehicleTest {
                 .deleteVehicle(
                         company.getUuid(),
                         vehicleUuid
-                )
+                              )
                 .andExpect(status().isUnauthorized());
     }
 }

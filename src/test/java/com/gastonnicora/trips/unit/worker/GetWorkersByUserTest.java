@@ -50,7 +50,7 @@ class GetWorkersByUserTest {
         List<Worker> workers = List.of(
                 new Worker(user, company, Set.of(RoleCompany.DRIVER)),
                 new Worker(user, company2, Set.of(RoleCompany.OWNER))
-        );
+                                      );
 
         WorkersByUser expected = new WorkersByUser();
 
@@ -82,7 +82,7 @@ class GetWorkersByUserTest {
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
                 () -> workerService.getWorkersByUser(userUuid)
-        );
+                                                  );
 
         assertEquals(404, exception.getStatus());
         assertEquals("El usuario no tiene trabajos", exception.getMessage());
@@ -101,7 +101,7 @@ class GetWorkersByUserTest {
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
                 () -> workerService.getWorkersByUser(userUuid)
-        );
+                                                  );
 
         assertEquals(404, exception.getStatus());
         assertEquals("El usuario no tiene trabajos", exception.getMessage());

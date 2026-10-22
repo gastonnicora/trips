@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
  * Validador personalizado que verifica que dos campos de un objeto sean
  * iguales. Se usa junto con la anotación {@link FieldsMatch}.
  *
- *
  * @author Gastón
  * @version 1.0
  * @since 2026-03-18

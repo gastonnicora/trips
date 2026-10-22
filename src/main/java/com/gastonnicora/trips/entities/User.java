@@ -3,6 +3,7 @@ package com.gastonnicora.trips.entities;
 import com.gastonnicora.trips.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import org.hibernate.annotations.BatchSize;
 
 /**
  * Entidad que representa un usuario en el sistema.

@@ -47,6 +47,24 @@ class FindByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrueTest {
     }
 
     @Test
+    void shouldReturnEmptyWhenCompanyIsInactive() {
+        Company company = new Company(
+                "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
+                "test@mail.com", "123"
+        );
+        company.setActive(false);
+        company = companyRepository.save(company);
+
+        Vehicle vehicle = new Vehicle(company, "ABC123", "Model X", 50);
+        vehicle = vehicleRepository.save(vehicle);
+
+        Optional<Vehicle> found = vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(
+                vehicle.getUuid(), company.getUuid());
+
+        assertFalse(found.isPresent());
+    }
+
+    @Test
     void shouldReturnEmptyWhenUuidDoesNotExist() {
         Company company = new Company(
                 "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
@@ -73,23 +91,7 @@ class FindByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrueTest {
         vehicle = vehicleRepository.save(vehicle);
 
         Optional<Vehicle> found = vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(
-                vehicle.getUuid(),company.getUuid());
-
-        assertFalse(found.isPresent());
-    } @Test
-    void shouldReturnEmptyWhenCompanyIsInactive() {
-        Company company = new Company(
-                "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
-                "test@mail.com", "123"
-        );
-        company.setActive(false);
-        company = companyRepository.save(company);
-
-        Vehicle vehicle = new Vehicle(company, "ABC123", "Model X", 50);
-        vehicle = vehicleRepository.save(vehicle);
-
-        Optional<Vehicle> found = vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(
-                vehicle.getUuid(),company.getUuid());
+                vehicle.getUuid(), company.getUuid());
 
         assertFalse(found.isPresent());
     }

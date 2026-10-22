@@ -73,7 +73,11 @@ public class WorkerService {
      */
     public WorkerDTO createWorker(User user, Company company, Set<RoleCompany> roles) {
         this.verifyRole(roles);
-        if (workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(user.getUuid(), company.getUuid())
+        if (workerRepository
+                .findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
+                        user.getUuid(),
+                        company.getUuid()
+                                                                                                )
                 .isPresent()) {
             throw new ConflictException("Ya existe el trabajador");
         }
@@ -137,8 +141,10 @@ public class WorkerService {
      * @see WorkerRepository#findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(UUID, RoleCompany)
      */
     public List<Company> getCompaniesByOwner(UUID owner) {
-        List<Worker> workers = workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(owner,
-                                                                                                                 RoleCompany.OWNER);
+        List<Worker> workers = workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(
+                owner,
+                RoleCompany.OWNER
+                                                                                                                );
         if (workers.isEmpty()) {
             throw new NotFoundException("Empresas no encontradas");
         }
@@ -160,7 +166,8 @@ public class WorkerService {
      * @see WorkerRepository#findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(UUID, UUID)
      */
     private Worker getWorker(UUID user, UUID company) {
-        return workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(user, company)
+        return workerRepository
+                .findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(user, company)
                 .orElseThrow(() -> new NotFoundException("Relación entre usuario y empresa no encontrada"));
     }
 
@@ -192,7 +199,8 @@ public class WorkerService {
      * @see WorkerMapper#toWorkersByCompanyDTO(List)
      */
     public WorkersByCompany getWorkersByCompany(UUID company) {
-        List<Worker> workers = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company);
+        List<Worker> workers = workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(
+                company);
         return WorkerMapper.toWorkersByCompanyDTO(workers);
     }
 
@@ -213,7 +221,8 @@ public class WorkerService {
      * @see WorkerMapper#toWorkersByUserDTO(List)
      */
     public WorkersByUser getWorkersByUser(UUID user) {
-        List<Worker> workers = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(user);
+        List<Worker> workers = workerRepository.findAllByUserUuidAndUserEnabledTrueAndCompanyActiveTrueAndActiveTrue(
+                user);
         if (workers == null || workers.isEmpty()) {
             throw new NotFoundException("El usuario no tiene trabajos");
         }

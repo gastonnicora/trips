@@ -86,8 +86,10 @@ class CreateUserTest {
         when(userRepository.existsByEmailAndEnabledTrue(request.getEmail()))
                 .thenReturn(true);
 
-        assertThrows(ConflictException.class,
-                () -> userService.createUser(request));
+        assertThrows(
+                ConflictException.class,
+                () -> userService.createUser(request)
+                    );
 
         verify(userRepository).existsByEmailAndEnabledTrue(request.getEmail());
         verify(passwordEncoder, never()).encode("pass");

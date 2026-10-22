@@ -41,16 +41,20 @@ class UpdateUserTest {
                 // lastname vacío
                 Arguments.of(
                         "Juan", "", "test@test.com",
-                        "lastname"),
+                        "lastname"
+                            ),
                 Arguments.of(
                         "Juan", "Perez", "invalid-email",
-                        "email"),
+                        "email"
+                            ),
                 Arguments.of(
                         "Juan", "Perez", "", "email"),
                 // campos en null
                 Arguments.of(
                         null, null, null,
-                        "email"));
+                        "email"
+                            )
+                        );
     }
 
     @BeforeEach
@@ -77,7 +81,8 @@ class UpdateUserTest {
             String name,
             String lastname,
             String email,
-            String expectedField) throws Exception {
+            String expectedField
+                                                       ) throws Exception {
         apiUser.update(name, lastname, email)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists())

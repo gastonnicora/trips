@@ -111,8 +111,10 @@ class UpdateCompanyTest {
         request.setLatitude(-34.6037);
         request.setLongitude(-58.3816);
 
-        AddressResponse addressResponse = new AddressResponse("Buenos Aires, Argentina", new Address(
-                "calle 2", "123", "barrio", "ciudad", "departamento", "estado", "pais"));
+        AddressResponse addressResponse = new AddressResponse(
+                "Buenos Aires, Argentina", new Address(
+                "calle 2", "123", "barrio", "ciudad", "departamento", "estado", "pais")
+        );
 
         Company company = new Company();
         Company company2 = new Company("Test2", "Test2", -34.6037, -58.3816, "test2@mail.com", "123");

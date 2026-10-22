@@ -26,8 +26,8 @@ class VerifyRoleTest {
                 () -> ReflectionTestUtils.invokeMethod(
                         workerService, "verifyRole",
                         Set.of(RoleCompany.ADMIN)
-                )
-        );
+                                                      )
+                                                           );
     }
 
     @Test
@@ -36,13 +36,13 @@ class VerifyRoleTest {
                 BadRequestException.class,
                 () -> ReflectionTestUtils.invokeMethod(
                         workerService, "verifyRole", Set.of()
-                )
-        );
+                                                      )
+                                                    );
 
         assertEquals(
                 "Se debe asignar al menos un rol al trabajador",
                 exception.getMessage()
-        );
+                    );
     }
 
     @Test
@@ -51,13 +51,13 @@ class VerifyRoleTest {
                 BadRequestException.class,
                 () -> ReflectionTestUtils.invokeMethod(
                         workerService, "verifyRole", (Set<RoleCompany>) null
-                )
-        );
+                                                      )
+                                                    );
 
         assertEquals(
                 "Se debe asignar al menos un rol al trabajador",
                 exception.getMessage()
-        );
+                    );
     }
 
     @Test
@@ -67,12 +67,12 @@ class VerifyRoleTest {
                 () -> ReflectionTestUtils.invokeMethod(
                         workerService, "verifyRole",
                         Set.of(RoleCompany.OWNER)
-                )
-        );
+                                                      )
+                                                    );
 
         assertEquals(
                 "No se puede asignar el rol de OWNER a un trabajador",
                 exception.getMessage()
-        );
+                    );
     }
 }

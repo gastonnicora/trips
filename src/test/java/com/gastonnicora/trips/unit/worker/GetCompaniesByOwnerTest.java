@@ -51,7 +51,7 @@ class GetCompaniesByOwnerTest {
         List<Worker> workers = List.of(
                 new Worker(owner, company, Set.of(RoleCompany.OWNER)),
                 new Worker(owner, company2, Set.of(RoleCompany.OWNER))
-        );
+                                      );
 
         when(workerRepository.findAllByUserUuidAndUserEnabledTrueAndRolesContainsAndActiveTrue(
                 ownerUuid,
@@ -78,7 +78,7 @@ class GetCompaniesByOwnerTest {
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
                 () -> workerService.getCompaniesByOwner(ownerUuid)
-        );
+                                                  );
 
         assertEquals(404, exception.getStatus());
         assertEquals("Empresas no encontradas", exception.getMessage());

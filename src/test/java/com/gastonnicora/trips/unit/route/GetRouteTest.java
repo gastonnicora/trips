@@ -4,7 +4,6 @@ import com.gastonnicora.trips.dtos.entities.RouteDTO;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.Route;
 import com.gastonnicora.trips.enums.PricingType;
-import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.RouteMapper;
 import com.gastonnicora.trips.repositories.RouteRepository;
@@ -45,14 +44,16 @@ class GetRouteTest {
 
         RouteDTO routeDTO = new RouteDTO();
 
-        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(route.getUuid(),company.getUuid())).thenReturn(Optional.of(route));
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
+                route.getUuid(), company.getUuid())).thenReturn(Optional.of(route));
         when(routeMapper.toDTO(route)).thenReturn(routeDTO);
 
         RouteDTO result = routeService.getRoute(company.getUuid(), route.getUuid());
 
         assertEquals(routeDTO, result);
 
-        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(route.getUuid(),company.getUuid());
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
+                route.getUuid(), company.getUuid());
         verify(routeMapper).toDTO(route);
     }
 
@@ -62,11 +63,12 @@ class GetRouteTest {
         UUID companyUuid = UUID.randomUUID();
         UUID routeUuid = UUID.randomUUID();
 
-        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid,companyUuid)).thenReturn(Optional.empty());
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
+                routeUuid, companyUuid)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> routeService.getRoute(companyUuid, routeUuid));
 
-        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid,companyUuid);
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid);
         verify(routeMapper, never()).toDTO(any(Route.class));
     }
 }

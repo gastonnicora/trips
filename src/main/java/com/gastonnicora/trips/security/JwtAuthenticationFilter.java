@@ -57,9 +57,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param refreshTokenRepository Repositorio ({@link RefreshTokenRepository}) utilizado para consultar
      *                               el registro asociado al token recibido.
      */
-    public JwtAuthenticationFilter(JwtService jwtService,
-                                   UserDetailsServiceImpl userDetailsService,
-                                   RefreshTokenRepository refreshTokenRepository) {
+    public JwtAuthenticationFilter(
+            JwtService jwtService,
+            UserDetailsServiceImpl userDetailsService,
+            RefreshTokenRepository refreshTokenRepository
+                                  ) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.refreshTokenRepository = refreshTokenRepository;
@@ -85,9 +87,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      *                          de la solicitud.
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+                                   )
             throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
@@ -127,7 +131,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
-                    userDetails.getAuthorities());
+                    userDetails.getAuthorities()
+            );
 
             SecurityContextHolder.getContext().setAuthentication(auth);
 

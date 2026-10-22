@@ -39,6 +39,12 @@ public class FindByUuidTest {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Test
+    void shouldReturnEmptyWhenUuidDoesNotExist() {
+        Optional<SectionPrice> found = sectionPriceRepository.findByUuid(UUID.randomUUID());
+
+        assertFalse(found.isPresent());
+    }
 
     @Test
     void shouldReturnSectionPriceWhenUuidExists() {
@@ -50,14 +56,14 @@ public class FindByUuidTest {
 
         Route route = routeRepository.save(new Route(company, "Test route", PricingType.PER_KM));
 
-        RoutePoint routePoint = new RoutePoint( "Test routePoint", 35.00, 36.00);
+        RoutePoint routePoint = new RoutePoint("Test routePoint", 35.00, 36.00);
         routePoint.setRoute(route);
 
         routePoint = routePointRepository.save(routePoint);
 
         SectionPrice sectionPrice = new SectionPrice(route, routePoint, routePoint, BigDecimal.valueOf(35));
 
-        sectionPrice= sectionPriceRepository.save(sectionPrice);
+        sectionPrice = sectionPriceRepository.save(sectionPrice);
 
         Optional<SectionPrice> found = sectionPriceRepository.findByUuid(sectionPrice.getUuid());
 
@@ -66,12 +72,5 @@ public class FindByUuidTest {
         assertEquals(found.get().getRoute().getUuid(), route.getUuid());
         assertEquals(routePoint.getUuid(), found.get().getFromPoint().getUuid());
         assertEquals(routePoint.getUuid(), found.get().getToPoint().getUuid());
-    }
-
-    @Test
-    void shouldReturnEmptyWhenUuidDoesNotExist() {
-        Optional<SectionPrice> found = sectionPriceRepository.findByUuid(UUID.randomUUID());
-
-        assertFalse(found.isPresent());
     }
 }

@@ -35,6 +35,13 @@ public class FindByUuidTest {
     private CompanyRepository companyRepository;
 
     @Test
+    void shouldReturnEmptyWhenUuidDoesNotExist() {
+        Optional<PricePerKilometer> found = pricePerKilometerRepository.findByUuid(UUID.randomUUID());
+
+        assertFalse(found.isPresent());
+    }
+
+    @Test
     void shouldReturnPricePerKilometerWhenUuidExists() {
         Company company = new Company(
                 "Test", "Buenos Aires, Argentina", -34.6037, -58.3816,
@@ -57,12 +64,5 @@ public class FindByUuidTest {
         assertEquals(found.get().getBaseKm(), pricePerKilometer.getBaseKm());
         assertEquals(found.get().getBasePrice(), pricePerKilometer.getBasePrice());
         assertEquals(found.get().getPricePerKm(), pricePerKilometer.getPricePerKm());
-    }
-
-    @Test
-    void shouldReturnEmptyWhenUuidDoesNotExist() {
-        Optional<PricePerKilometer> found = pricePerKilometerRepository.findByUuid(UUID.randomUUID());
-
-        assertFalse(found.isPresent());
     }
 }

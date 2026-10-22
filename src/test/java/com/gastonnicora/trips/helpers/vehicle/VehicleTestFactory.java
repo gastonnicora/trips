@@ -17,15 +17,18 @@ public class VehicleTestFactory {
     public VehicleTestFactory(
             MockMvc mockMvc,
             ObjectMapper objectMapper,
-            String token) {
+            String token
+                             ) {
         this.objectMapper = objectMapper;
         this.vehicleApi = new VehicleApiTestClient(mockMvc, objectMapper).withToken(token);
     }
 
     public VehicleDTO createVehicle(UUID companyUuid) throws Exception {
-        MvcResult result = this.vehicleApi.createVehicle(companyUuid, "AA123BB",
+        MvcResult result = this.vehicleApi.createVehicle(
+                        companyUuid, "AA123BB",
                         "Mercedes Benz",
-                        50)
+                        50
+                                                        )
                 .andExpect(status().isOk())
                 .andReturn();
         String responseJson = result

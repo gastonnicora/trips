@@ -47,7 +47,8 @@ class CreateWorkerOwnerTest {
         Worker savedWorker = new Worker(user, company, Set.of(RoleCompany.OWNER));
         WorkerDTO expectedDTO = new WorkerDTO();
 
-        when(workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company.getUuid()))
+        when(workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(
+                company.getUuid()))
                 .thenReturn(List.of());
         when(workerRepository.save(any(Worker.class)))
                 .thenReturn(savedWorker);
@@ -85,12 +86,14 @@ class CreateWorkerOwnerTest {
 
         Worker worker = new Worker(user, company, Set.of(RoleCompany.ADMIN));
 
-        when(workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(company.getUuid()))
+        when(workerRepository.findAllByCompanyUuidAndCompanyActiveTrueAndUserEnabledTrueAndActiveTrue(
+                company.getUuid()))
                 .thenReturn(List.of(worker));
 
         ConflictException exception = assertThrows(
                 ConflictException.class,
-                () -> workerService.createWorkerOwner(user, company));
+                () -> workerService.createWorkerOwner(user, company)
+                                                  );
 
         assertEquals(409, exception.getStatus());
         assertEquals("Ya existe el trabajador", exception.getMessage());

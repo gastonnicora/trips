@@ -57,7 +57,8 @@ class GetWorkerByUserAndCompanyTest {
         when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
                 userUuid,
                 companyUuid
-                                                                                                             )).thenReturn(Optional.of(worker));
+                                                                                                             )).thenReturn(
+                Optional.of(worker));
 
         when(workerMapper.toDTO(worker))
                 .thenReturn(expectedWorkerDTO);
@@ -66,7 +67,7 @@ class GetWorkerByUserAndCompanyTest {
                 = workerService.getWorkerByUserAndCompany(
                 userUuid,
                 companyUuid
-        );
+                                                         );
 
         assertEquals(expectedWorkerDTO, result);
 
@@ -85,15 +86,16 @@ class GetWorkerByUserAndCompanyTest {
         when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
                 userUuid,
                 companyUuid
-                                                                                                             )).thenReturn(Optional.empty());
+                                                                                                             )).thenReturn(
+                Optional.empty());
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
                 () -> workerService.getWorkerByUserAndCompany(
                         userUuid,
                         companyUuid
-                )
-        );
+                                                             )
+                                                  );
 
         assertEquals(404, exception.getStatus());
 

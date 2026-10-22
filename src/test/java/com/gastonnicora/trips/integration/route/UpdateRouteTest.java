@@ -50,6 +50,19 @@ class UpdateRouteTest {
     private String ownerToken;
     private RouteApiTestClient routeApi;
 
+    private RouteApiTestClient routeApiForWorkerWithRoles(String name, Set<RoleCompany> roles) throws Exception {
+        UserDTO user = UserTestFactory.registerUser(mockMvc, name, PASSWORD);
+
+        new WorkerApiTestClient(mockMvc, objectMapper)
+                .withToken(ownerToken)
+                .createWorker(company.getUuid(), user.getUuid(), roles)
+                .andExpect(status().isOk());
+
+        LoginResponse login = UserTestFactory.login(mockMvc, user.getEmail(), PASSWORD);
+
+        return new RouteApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
+    }
+
     @BeforeEach
     void setup() throws Exception {
 
@@ -67,32 +80,15 @@ class UpdateRouteTest {
         routeApi = new RouteApiTestClient(mockMvc, objectMapper).withToken(ownerToken);
     }
 
-    private RouteApiTestClient routeApiForWorkerWithRoles(String name, Set<RoleCompany> roles) throws Exception {
-        UserDTO user = UserTestFactory.registerUser(mockMvc, name, PASSWORD);
-
-        new WorkerApiTestClient(mockMvc, objectMapper)
-                .withToken(ownerToken)
-                .createWorker(company.getUuid(), user.getUuid(), roles)
-                .andExpect(status().isOk());
-
-        LoginResponse login = UserTestFactory.login(mockMvc, user.getEmail(), PASSWORD);
-
-        return new RouteApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
-    }
-
     // ---------- casos felices ----------
 
     @Test
-    void shouldUpdateRouteSuccessfully() throws Exception {
+    void shouldAllowAdminToUpdateRoute() throws Exception {
 
-        routeApi
-                .updateRoute(company.getUuid(), routeUuid, "La Plata - Berisso", PricingType.PER_SECTION)
+        routeApiForWorkerWithRoles("admin", Set.of(RoleCompany.ADMIN))
+                .updateRoute(company.getUuid(), routeUuid, "Ruta admin", PricingType.PER_KM)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").value(routeUuid.toString()))
-                .andExpect(jsonPath("$.company.uuid").value(company.getUuid().toString()))
-                .andExpect(jsonPath("$.name").value("La Plata - Berisso"))
-                .andExpect(jsonPath("$.pricingType").value("PER_SECTION"))
-                .andExpect(jsonPath("$.active").value(true));
+                .andExpect(jsonPath("$.name").value("Ruta admin"));
     }
 
     @Test
@@ -110,22 +106,29 @@ class UpdateRouteTest {
     }
 
     @Test
-    void shouldAllowAdminToUpdateRoute() throws Exception {
+    void shouldReturnBadRequestWhenNameIsBlank() throws Exception {
 
-        routeApiForWorkerWithRoles("admin", Set.of(RoleCompany.ADMIN))
-                .updateRoute(company.getUuid(), routeUuid, "Ruta admin", PricingType.PER_KM)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Ruta admin"));
+        routeApi
+                .updateRoute(company.getUuid(), routeUuid, "   ", PricingType.PER_KM)
+                .andExpect(status().isBadRequest());
     }
 
     // ---------- permisos ----------
 
     @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+    void shouldReturnBadRequestWhenNameIsNull() throws Exception {
 
-        new RouteApiTestClient(mockMvc, objectMapper)
-                .updateRoute(company.getUuid(), routeUuid, "Ruta nueva", PricingType.PER_KM)
-                .andExpect(status().isUnauthorized());
+        routeApi
+                .updateRoute(company.getUuid(), routeUuid, null, PricingType.PER_KM)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenPricingTypeIsNull() throws Exception {
+
+        routeApi
+                .updateRoute(company.getUuid(), routeUuid, "Ruta nueva", null)
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -135,6 +138,8 @@ class UpdateRouteTest {
                 .updateRoute(company.getUuid(), routeUuid, "Ruta nueva", PricingType.PER_KM)
                 .andExpect(status().isForbidden());
     }
+
+    // ---------- errores de negocio ----------
 
     @Test
     void shouldReturnForbiddenWhenUserIsNotWorkerOfTheCompany() throws Exception {
@@ -146,16 +151,6 @@ class UpdateRouteTest {
                 .withToken(login.getToken())
                 .updateRoute(company.getUuid(), routeUuid, "Ruta nueva", PricingType.PER_KM)
                 .andExpect(status().isForbidden());
-    }
-
-    // ---------- errores de negocio ----------
-
-    @Test
-    void shouldReturnNotFoundWhenRouteDoesNotExist() throws Exception {
-
-        routeApi
-                .updateRoute(company.getUuid(), UUID.randomUUID(), "Ruta nueva", PricingType.PER_KM)
-                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -179,26 +174,31 @@ class UpdateRouteTest {
     // ---------- validaciones ----------
 
     @Test
-    void shouldReturnBadRequestWhenNameIsBlank() throws Exception {
+    void shouldReturnNotFoundWhenRouteDoesNotExist() throws Exception {
 
         routeApi
-                .updateRoute(company.getUuid(), routeUuid, "   ", PricingType.PER_KM)
-                .andExpect(status().isBadRequest());
+                .updateRoute(company.getUuid(), UUID.randomUUID(), "Ruta nueva", PricingType.PER_KM)
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void shouldReturnBadRequestWhenNameIsNull() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
 
-        routeApi
-                .updateRoute(company.getUuid(), routeUuid, null, PricingType.PER_KM)
-                .andExpect(status().isBadRequest());
+        new RouteApiTestClient(mockMvc, objectMapper)
+                .updateRoute(company.getUuid(), routeUuid, "Ruta nueva", PricingType.PER_KM)
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturnBadRequestWhenPricingTypeIsNull() throws Exception {
+    void shouldUpdateRouteSuccessfully() throws Exception {
 
         routeApi
-                .updateRoute(company.getUuid(), routeUuid, "Ruta nueva", null)
-                .andExpect(status().isBadRequest());
+                .updateRoute(company.getUuid(), routeUuid, "La Plata - Berisso", PricingType.PER_SECTION)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid").value(routeUuid.toString()))
+                .andExpect(jsonPath("$.company.uuid").value(company.getUuid().toString()))
+                .andExpect(jsonPath("$.name").value("La Plata - Berisso"))
+                .andExpect(jsonPath("$.pricingType").value("PER_SECTION"))
+                .andExpect(jsonPath("$.active").value(true));
     }
 }

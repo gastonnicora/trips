@@ -20,9 +20,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GetRoutesTest {
@@ -47,7 +45,8 @@ class GetRoutesTest {
                                     );
         List<RouteDTO> routeDTOs = List.of(new RouteDTO(), new RouteDTO());
 
-        when(routeRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid())).thenReturn(routes);
+        when(routeRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid())).thenReturn(
+                routes);
         when(routeMapper.toDTOList(routes)).thenReturn(routeDTOs);
 
         List<RouteDTO> result = routeService.getRoutes(company.getUuid());

@@ -108,7 +108,8 @@ public class UserCreate extends UserBasic {
             String lastname,
             String email,
             String password,
-            String confirmPass) {
+            String confirmPass
+                     ) {
 
         super(name, lastname, email);
         this.password = password;

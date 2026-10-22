@@ -5,7 +5,6 @@ import com.gastonnicora.trips.dtos.entities.UserDTO;
 import com.gastonnicora.trips.dtos.response.auth.LoginResponse;
 import com.gastonnicora.trips.enums.PricingType;
 import com.gastonnicora.trips.enums.RoleCompany;
-import com.gastonnicora.trips.helpers.*;
 import com.gastonnicora.trips.helpers.company.CompanyTestFactory;
 import com.gastonnicora.trips.helpers.route.RouteApiTestClient;
 import com.gastonnicora.trips.helpers.routePoint.RoutePointApiTestClient;

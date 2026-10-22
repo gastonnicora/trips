@@ -38,10 +38,12 @@ class RegisterTest {
                 // lastname vacío
                 Arguments.of(
                         "Juan", "", "test@test.com", "goodPassword", "goodPassword",
-                        "lastname"),
+                        "lastname"
+                            ),
                 Arguments.of(
                         "Juan", "Perez", "invalid-email", "goodPassword", "goodPassword",
-                        "email"),
+                        "email"
+                            ),
                 Arguments.of(
                         "Juan", "Perez", "", "goodPassword", "goodPassword", "email"),
                 // password corta
@@ -50,10 +52,12 @@ class RegisterTest {
                 // passwords no coinciden
                 Arguments.of(
                         "Juan", "Perez", "test@test.com", "goodPassword", "wrongPassword",
-                        "confirmPassword"),
+                        "confirmPassword"
+                            ),
                 // campos nulos
                 Arguments.of(
-                        null, null, null, null, null, "password"));
+                        null, null, null, null, null, "password")
+                        );
     }
 
     @BeforeEach
@@ -112,7 +116,8 @@ class RegisterTest {
             String email,
             String password,
             String confirmPassword,
-            String expectedField) throws Exception {
+            String expectedField
+                                                       ) throws Exception {
 
         apiUser.register(name, lastname, email, password, confirmPassword)
                 .andExpect(status().isBadRequest())

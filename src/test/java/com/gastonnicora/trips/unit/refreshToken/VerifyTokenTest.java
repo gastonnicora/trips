@@ -41,9 +41,11 @@ class VerifyTokenTest {
 
         when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.of(refreshToken));
 
-        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
-            refreshTokenService.verifyToken("token", "181.0.0.1", "user-agent");
-        });
+        UnauthorizedException ex = assertThrows(
+                UnauthorizedException.class, () -> {
+                    refreshTokenService.verifyToken("token", "181.0.0.1", "user-agent");
+                }
+                                               );
         assertEquals(401, ex.getStatus());
         assertEquals("Token inválido o expirado", ex.getMessage());
 
@@ -61,9 +63,11 @@ class VerifyTokenTest {
 
         when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.of(refreshToken));
 
-        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
-            refreshTokenService.verifyToken("token", "127.0.0.1", "user-agent2");
-        });
+        UnauthorizedException ex = assertThrows(
+                UnauthorizedException.class, () -> {
+                    refreshTokenService.verifyToken("token", "127.0.0.1", "user-agent2");
+                }
+                                               );
         assertEquals(401, ex.getStatus());
         assertEquals("Token inválido o expirado", ex.getMessage());
 
@@ -75,11 +79,13 @@ class VerifyTokenTest {
 
         when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.empty());
 
-        UnauthorizedException ex = assertThrows(UnauthorizedException.class,
+        UnauthorizedException ex = assertThrows(
+                UnauthorizedException.class,
                 () -> {
                     refreshTokenService.verifyToken("token", "127.0.0.1", "user-agent");
 
-                });
+                }
+                                               );
         assertEquals(401, ex.getStatus());
         assertEquals("Token inválido o expirado", ex.getMessage());
 
@@ -99,9 +105,11 @@ class VerifyTokenTest {
 
         when(refreshTokenRepository.findByRefreshToken("token")).thenReturn(Optional.of(refreshToken));
 
-        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
-            refreshTokenService.verifyToken("token", "127.0.0.1", "user-agent");
-        });
+        UnauthorizedException ex = assertThrows(
+                UnauthorizedException.class, () -> {
+                    refreshTokenService.verifyToken("token", "127.0.0.1", "user-agent");
+                }
+                                               );
         assertEquals(401, ex.getStatus());
         assertEquals("Token inválido o expirado", ex.getMessage());
 
@@ -122,9 +130,11 @@ class VerifyTokenTest {
         when(refreshTokenRepository.findByRefreshToken(any(String.class)))
                 .thenReturn(Optional.of(refreshToken));
 
-        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
-            refreshTokenService.verifyToken("token", "127.0.0.1", "user-agent");
-        });
+        UnauthorizedException ex = assertThrows(
+                UnauthorizedException.class, () -> {
+                    refreshTokenService.verifyToken("token", "127.0.0.1", "user-agent");
+                }
+                                               );
 
         assertEquals(401, ex.getStatus());
         assertEquals("Token inválido o expirado", ex.getMessage());
@@ -135,9 +145,11 @@ class VerifyTokenTest {
     @Test
     void shouldThrowUnauthorizedExceptionWhenTokenIsNull() {
 
-        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> {
-            refreshTokenService.verifyToken(null, "127.0.0.1", "user-agent");
-        });
+        UnauthorizedException ex = assertThrows(
+                UnauthorizedException.class, () -> {
+                    refreshTokenService.verifyToken(null, "127.0.0.1", "user-agent");
+                }
+                                               );
 
         assertEquals(401, ex.getStatus());
         assertEquals("Token inválido o expirado", ex.getMessage());

@@ -58,9 +58,11 @@ class GetUserByUuidTest {
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
-            userService.getUserByUuid(uuid);
-        });
+        NotFoundException ex = assertThrows(
+                NotFoundException.class, () -> {
+                    userService.getUserByUuid(uuid);
+                }
+                                           );
 
         assertEquals(404, ex.getStatus());
     }

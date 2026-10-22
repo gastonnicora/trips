@@ -31,7 +31,8 @@ class FindByEmailAndEnabledTrueTest {
                 "latName",
                 "test@test.com",
                 "password",
-                Set.of(Role.USER));
+                Set.of(Role.USER)
+        );
 
         user.setEnabled(true);
 
@@ -58,7 +59,8 @@ class FindByEmailAndEnabledTrueTest {
                 "latName",
                 "test@test.com",
                 "password",
-                Set.of(Role.USER));
+                Set.of(Role.USER)
+        );
 
         user.setEnabled(false);
 

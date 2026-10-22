@@ -74,7 +74,8 @@ class CreateVehicleTest {
         when(vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleCreate.getPlate()
-                                                                                         )).thenReturn(Optional.empty());
+                                                                                         )).thenReturn(
+                Optional.empty());
 
         when(vehicleRepository.save(any(Vehicle.class)))
                 .thenReturn(vehicle);
@@ -85,7 +86,7 @@ class CreateVehicleTest {
         VehicleDTO result = vehicleService.createVehicle(
                 company,
                 vehicleCreate
-        );
+                                                        );
 
         assertNotNull(result);
         assertEquals(expectedDTO, result);
@@ -149,7 +150,8 @@ class CreateVehicleTest {
         when(vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleCreate.getPlate()
-                                                                                         )).thenReturn(Optional.empty());
+                                                                                         )).thenReturn(
+                Optional.empty());
 
         when(vehicleRepository.save(any(Vehicle.class)))
                 .thenReturn(vehicle);
@@ -160,7 +162,7 @@ class CreateVehicleTest {
         VehicleDTO result = vehicleService.createVehicle(
                 company,
                 vehicleCreate
-        );
+                                                        );
 
         assertNotNull(result);
         assertEquals(expectedDTO, result);
@@ -221,20 +223,21 @@ class CreateVehicleTest {
         when(vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleCreate.getPlate()
-                                                                                         )).thenReturn(Optional.of(existingVehicle));
+                                                                                         )).thenReturn(
+                Optional.of(existingVehicle));
 
         ConflictException exception = assertThrows(
                 ConflictException.class,
                 () -> vehicleService.createVehicle(
                         company,
                         vehicleCreate
-                )
-        );
+                                                  )
+                                                  );
 
         assertEquals(
                 "Ya existe un vehículo activo con esa patente",
                 exception.getMessage()
-        );
+                    );
 
         verify(vehicleRepository)
                 .findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(

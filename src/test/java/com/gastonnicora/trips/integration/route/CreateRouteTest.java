@@ -49,21 +49,6 @@ class CreateRouteTest {
     private RouteApiTestClient routeApi;
     private WorkerApiTestClient ownerWorkerApi;
 
-    @BeforeEach
-    void setup() throws Exception {
-
-        owner = UserTestFactory.registerUser(mockMvc, "owner", PASSWORD);
-
-        LoginResponse ownerLogin = UserTestFactory.login(mockMvc, owner.getEmail(), PASSWORD);
-
-        company = new CompanyTestFactory(
-                mockMvc, objectMapper, ownerLogin.getToken(), geocodingService
-        ).createCompany();
-
-        routeApi = new RouteApiTestClient(mockMvc, objectMapper).withToken(ownerLogin.getToken());
-        ownerWorkerApi = new WorkerApiTestClient(mockMvc, objectMapper).withToken(ownerLogin.getToken());
-    }
-
     /**
      * Crea un usuario, lo agrega a la empresa con los roles indicados y
      * devuelve un client de rutas autenticado con ese usuario.
@@ -80,6 +65,47 @@ class CreateRouteTest {
         return new RouteApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
     }
 
+    @BeforeEach
+    void setup() throws Exception {
+
+        owner = UserTestFactory.registerUser(mockMvc, "owner", PASSWORD);
+
+        LoginResponse ownerLogin = UserTestFactory.login(mockMvc, owner.getEmail(), PASSWORD);
+
+        company = new CompanyTestFactory(
+                mockMvc, objectMapper, ownerLogin.getToken(), geocodingService
+        ).createCompany();
+
+        routeApi = new RouteApiTestClient(mockMvc, objectMapper).withToken(ownerLogin.getToken());
+        ownerWorkerApi = new WorkerApiTestClient(mockMvc, objectMapper).withToken(ownerLogin.getToken());
+    }
+
+    @Test
+    void shouldAllowAdminToCreateRoute() throws Exception {
+
+        routeApiForWorkerWithRoles("admin", Set.of(RoleCompany.ADMIN))
+                .createRoute(company.getUuid(), "Ruta admin", PricingType.PER_KM)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Ruta admin"));
+    }
+
+    @Test
+    void shouldAllowCreatingTwoRoutesWithTheSameName() throws Exception {
+
+        routeApi.createRoute(company.getUuid(), "Ruta repetida", PricingType.PER_KM)
+                .andExpect(status().isOk());
+
+        routeApi.createRoute(company.getUuid(), "Ruta repetida", PricingType.PER_KM)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldCreateRouteWhenNameHasMaxLength() throws Exception {
+
+        routeApi
+                .createRoute(company.getUuid(), "a".repeat(255), PricingType.PER_KM)
+                .andExpect(status().isOk());
+    }
 
     @Test
     void shouldCreateRouteWithPerKmPricingSuccessfully() throws Exception {
@@ -110,24 +136,12 @@ class CreateRouteTest {
     }
 
     @Test
-    void shouldAllowAdminToCreateRoute() throws Exception {
+    void shouldReturnBadRequestWhenBodyIsMalformed() throws Exception {
 
-        routeApiForWorkerWithRoles("admin", Set.of(RoleCompany.ADMIN))
-                .createRoute(company.getUuid(), "Ruta admin", PricingType.PER_KM)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Ruta admin"));
+        routeApi
+                .createRouteRaw(company.getUuid(), "{ esto no es json")
+                .andExpect(status().isBadRequest());
     }
-
-    @Test
-    void shouldAllowCreatingTwoRoutesWithTheSameName() throws Exception {
-
-        routeApi.createRoute(company.getUuid(), "Ruta repetida", PricingType.PER_KM)
-                .andExpect(status().isOk());
-
-        routeApi.createRoute(company.getUuid(), "Ruta repetida", PricingType.PER_KM)
-                .andExpect(status().isOk());
-    }
-
 
     @Test
     void shouldReturnBadRequestWhenNameIsBlank() throws Exception {
@@ -154,11 +168,15 @@ class CreateRouteTest {
     }
 
     @Test
-    void shouldCreateRouteWhenNameHasMaxLength() throws Exception {
+    void shouldReturnBadRequestWhenPricingTypeIsInvalid() throws Exception {
 
         routeApi
-                .createRoute(company.getUuid(), "a".repeat(255), PricingType.PER_KM)
-                .andExpect(status().isOk());
+                .createRouteRaw(
+                        company.getUuid(), """
+                                {"name": "Ruta", "pricingType": "NOT_A_TYPE"}
+                                """
+                               )
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -170,23 +188,12 @@ class CreateRouteTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenPricingTypeIsInvalid() throws Exception {
+    void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
 
         routeApi
-                .createRouteRaw(company.getUuid(), """
-                        {"name": "Ruta", "pricingType": "NOT_A_TYPE"}
-                        """)
-                .andExpect(status().isBadRequest());
+                .createRoute(UUID.randomUUID(), "Ruta", PricingType.PER_KM)
+                .andExpect(status().isForbidden());
     }
-
-    @Test
-    void shouldReturnBadRequestWhenBodyIsMalformed() throws Exception {
-
-        routeApi
-                .createRouteRaw(company.getUuid(), "{ esto no es json")
-                .andExpect(status().isBadRequest());
-    }
-
 
     @Test
     void shouldReturnForbiddenWhenUserHasNoAllowedRole() throws Exception {
@@ -204,14 +211,6 @@ class CreateRouteTest {
         new RouteApiTestClient(mockMvc, objectMapper)
                 .withToken(strangerToken)
                 .createRoute(company.getUuid(), "Ruta ajena", PricingType.PER_KM)
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    void shouldReturnForbiddenWhenCompanyDoesNotExist() throws Exception {
-
-        routeApi
-                .createRoute(UUID.randomUUID(), "Ruta", PricingType.PER_KM)
                 .andExpect(status().isForbidden());
     }
 

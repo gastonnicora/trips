@@ -140,7 +140,8 @@ public class UserDTO {
             Set<Role> role,
             boolean enabled,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt) {
+            LocalDateTime updatedAt
+                  ) {
 
         this.uuid = uuid;
         this.name = name;

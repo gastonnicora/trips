@@ -82,9 +82,11 @@ public class AuthController {
      * @param refreshTokenService   ({@link RefreshTokenService}) servicio encargado de gestionar refresh tokens.
      * @param userRepository        ({@link UserRepository}) repositorio utilizado para consultar usuarios.
      */
-    public AuthController(AuthenticationManager authenticationManager,
-                          JwtService jwtService, RefreshTokenService refreshTokenService,
-                          UserRepository userRepository) {
+    public AuthController(
+            AuthenticationManager authenticationManager,
+            JwtService jwtService, RefreshTokenService refreshTokenService,
+            UserRepository userRepository
+                         ) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
@@ -179,8 +181,10 @@ public class AuthController {
     @Operation(summary = "Iniciar sesión", description = "Autentica un usuario mediante email y contraseña y genera un token de acceso JWT. "
             + "Para clientes web, el refresh token se envía mediante una cookie; "
             + "para clientes Android, se devuelve en el cuerpo de la respuesta.")
-    public LoginResponse login(@Valid @RequestBody @NonNull LoginRequest login, @NonNull HttpServletRequest request,
-                               HttpServletResponse response) {
+    public LoginResponse login(
+            @Valid @RequestBody @NonNull LoginRequest login, @NonNull HttpServletRequest request,
+            HttpServletResponse response
+                              ) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
         User user = userRepository.findByEmailAndEnabledTrue(login.getEmail())
@@ -191,15 +195,19 @@ public class AuthController {
         String ip = request.getRemoteAddr();
         String device = UserAgent.getDevice(userAgent);
 
-        RefreshToken refreshTokenE = refreshTokenService.createToken(token, user, userAgent, ip,
-                device, user.getVersion());
+        RefreshToken refreshTokenE = refreshTokenService.createToken(
+                token, user, userAgent, ip,
+                device, user.getVersion()
+                                                                    );
 
         if ("web".equals(device)) {
             addRefreshCookie(response, refreshTokenE.getRefreshToken());
         }
 
-        return new LoginResponse(token,
-                !"web".equals(device) ? refreshTokenE.getRefreshToken() : null);
+        return new LoginResponse(
+                token,
+                !"web".equals(device) ? refreshTokenE.getRefreshToken() : null
+        );
     }
 
     /**
@@ -232,7 +240,8 @@ public class AuthController {
     public ResponseEntity<?> logout(
             @CookieValue(value = "refreshToken", required = false) String cookieToken,
             @RequestBody(required = false) RefreshRequest body,
-            HttpServletResponse response) {
+            HttpServletResponse response
+                                   ) {
 
         String refreshToken = cookieToken != null
                 ? cookieToken
@@ -293,10 +302,12 @@ public class AuthController {
     @Operation(summary = "Renovar token de acceso", description = "Genera un nuevo token de acceso y un nuevo refresh token utilizando un refresh token válido. "
             + "El refresh token puede recibirse mediante cookie para clientes web "
             + "o mediante el cuerpo de la solicitud para clientes móviles.")
-    public RefreshResponse refresh(@CookieValue(value = "refreshToken", required = false) String cookieToken,
-                                   @RequestBody(required = false) RefreshRequest body,
-                                   HttpServletRequest request,
-                                   HttpServletResponse response) {
+    public RefreshResponse refresh(
+            @CookieValue(value = "refreshToken", required = false) String cookieToken,
+            @RequestBody(required = false) RefreshRequest body,
+            HttpServletRequest request,
+            HttpServletResponse response
+                                  ) {
 
         String refreshToken = null;
 
@@ -319,8 +330,10 @@ public class AuthController {
                 .orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
         String newAccess = jwtService.generateToken(user.getEmail(), user.getVersion(), user.getUuid());
 
-        RefreshToken newRefresh = refreshTokenService.createToken(newAccess, user, userAgent, ip,
-                rt.getDevice(), user.getVersion());
+        RefreshToken newRefresh = refreshTokenService.createToken(
+                newAccess, user, userAgent, ip,
+                rt.getDevice(), user.getVersion()
+                                                                 );
         refreshTokenService.revokeToken(refreshToken);
 
         if ("web".equals(rt.getDevice())) {
@@ -328,6 +341,7 @@ public class AuthController {
         }
         return new RefreshResponse(
                 newAccess,
-                !"web".equals(rt.getDevice()) ? newRefresh.getRefreshToken() : null);
+                !"web".equals(rt.getDevice()) ? newRefresh.getRefreshToken() : null
+        );
     }
 }

@@ -51,14 +51,14 @@ class UpdateWorkerTest {
                 mockMvc,
                 "worker_" + role.name(),
                 "goodPassword"
-        );
+                                                        );
 
         workerApi
                 .createWorker(
                         companyUuid,
                         newWorker.getUuid(),
                         Set.of(role)
-                )
+                             )
                 .andExpect(status().isOk());
 
         return newWorker;
@@ -69,7 +69,7 @@ class UpdateWorkerTest {
                 mockMvc,
                 user.getEmail(),
                 "goodPassword"
-        );
+                                                   );
 
         return new WorkerApiTestClient(
                 mockMvc,
@@ -83,26 +83,27 @@ class UpdateWorkerTest {
                 mockMvc,
                 "owner",
                 "goodPassword"
-        );
+                                            );
 
         LoginResponse login = UserTestFactory.login(
                 mockMvc,
                 owner.getEmail(),
                 "goodPassword"
-        );
+                                                   );
 
         workerApi = new WorkerApiTestClient(
                 mockMvc,
                 new ObjectMapper()
         ).withToken(login.getToken());
 
-        companyUuid = new CompanyTestFactory(mockMvc, objectMapper, login.getToken(), geocodingService).createCompany().getUuid();
+        companyUuid = new CompanyTestFactory(mockMvc, objectMapper, login.getToken(), geocodingService).createCompany()
+                .getUuid();
 
         worker = UserTestFactory.registerUser(
                 mockMvc,
                 "worker",
                 "goodPassword"
-        );
+                                             );
     }
 
     @Test
@@ -112,7 +113,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
 
         workerApi
@@ -120,7 +121,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.OWNER)
-                )
+                                  )
                 .andExpect(status().isBadRequest());
     }
 
@@ -131,7 +132,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
 
         workerApi
@@ -139,7 +140,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of()
-                )
+                                  )
                 .andExpect(status().isBadRequest());
     }
 
@@ -152,7 +153,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         owner.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                                  )
                 .andExpect(status().isForbidden());
     }
 
@@ -163,7 +164,7 @@ class UpdateWorkerTest {
                         UUID.randomUUID(),
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                                  )
                 .andExpect(status().isForbidden());
     }
 
@@ -176,7 +177,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.SELLER)
-                )
+                             )
                 .andExpect(status().isOk());
 
         WorkerApiTestClient driverApi = loginAs(driver);
@@ -186,7 +187,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.ADMIN)
-                )
+                                  )
                 .andExpect(status().isForbidden());
     }
 
@@ -197,7 +198,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         owner.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                                  )
                 .andExpect(status().isForbidden());
     }
 
@@ -210,7 +211,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
 
         WorkerApiTestClient sellerApi = loginAs(seller);
@@ -220,7 +221,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.ADMIN)
-                )
+                                  )
                 .andExpect(status().isForbidden());
     }
 
@@ -230,14 +231,14 @@ class UpdateWorkerTest {
                 mockMvc,
                 "normal_user",
                 "goodPassword"
-        );
+                                                         );
 
         workerApi
                 .createWorker(
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
 
         WorkerApiTestClient userApi = loginAs(normalUser);
@@ -247,7 +248,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.ADMIN)
-                )
+                                  )
                 .andExpect(status().isForbidden());
     }
 
@@ -258,7 +259,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         UUID.randomUUID(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                                  )
                 .andExpect(status().isNotFound());
     }
 
@@ -274,7 +275,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.ADMIN)
-                )
+                                  )
                 .andExpect(status().isUnauthorized());
     }
 
@@ -287,7 +288,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
 
         WorkerApiTestClient adminApi = loginAs(admin);
@@ -297,7 +298,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.SELLER)
-                )
+                                  )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.roles").isArray())
                 .andExpect(jsonPath("$.roles[0]").value("SELLER"));
@@ -312,7 +313,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
 
         WorkerApiTestClient hrManagerApi = loginAs(hrManager);
@@ -322,7 +323,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.SELLER)
-                )
+                                  )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.roles").isArray())
                 .andExpect(jsonPath("$.roles[0]").value("SELLER"));
@@ -335,7 +336,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
 
         workerApi
@@ -343,7 +344,7 @@ class UpdateWorkerTest {
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.ADMIN)
-                )
+                                  )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.roles").isArray())
                 .andExpect(jsonPath("$.roles[0]").value("ADMIN"));

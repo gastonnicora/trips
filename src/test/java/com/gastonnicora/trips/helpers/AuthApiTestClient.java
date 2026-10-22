@@ -18,56 +18,56 @@ public class AuthApiTestClient {
 
     public ResultActions login(String email, String password) throws Exception {
         return mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test")
-                .content("""
-                        {"email":"%s","password":"%s"}
-                        """.formatted(email, password)));
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content("""
+                                                        {"email":"%s","password":"%s"}
+                                                        """.formatted(email, password)));
     }
 
     public ResultActions loginWithAndroid(String email, String password) throws Exception {
         return mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "okhttp/4.9.0 (Android)")
-                .content("""
-                        {"email":"%s","password":"%s"}
-                        """.formatted(email, password)));
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "okhttp/4.9.0 (Android)")
+                                       .content("""
+                                                        {"email":"%s","password":"%s"}
+                                                        """.formatted(email, password)));
     }
 
     public ResultActions logout(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/logout")
-                .contentType(MediaType.APPLICATION_JSON)
-                .cookie(new Cookie("refreshToken", refreshToken))
-                .header("User-Agent", "JUnit-Test")
-                .header("Authorization", "Bearer " + token));
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .cookie(new Cookie("refreshToken", refreshToken))
+                                       .header("User-Agent", "JUnit-Test")
+                                       .header("Authorization", "Bearer " + token));
     }
 
     public ResultActions logoutAndroid(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/logout")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "okhttp/4.9.0 (Android)")
-                .header("Authorization", "Bearer " + token)
-                .content("""
-                        {"refreshToken":"%s"}
-                        """.formatted(refreshToken)));
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "okhttp/4.9.0 (Android)")
+                                       .header("Authorization", "Bearer " + token)
+                                       .content("""
+                                                        {"refreshToken":"%s"}
+                                                        """.formatted(refreshToken)));
     }
 
     public ResultActions refresh(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/refresh")
-                .contentType(MediaType.APPLICATION_JSON)
-                .cookie(new Cookie("refreshToken", refreshToken))
-                .header("User-Agent", "JUnit-Test")
-                .header("Authorization", "Bearer " + token));
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .cookie(new Cookie("refreshToken", refreshToken))
+                                       .header("User-Agent", "JUnit-Test")
+                                       .header("Authorization", "Bearer " + token));
     }
 
     public ResultActions refreshAndroid(String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/refresh")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "okhttp/4.9.0 (Android)")
-                .header("Authorization", "Bearer " + token)
-                .content("""
-                        {"refreshToken":"%s"}
-                        """.formatted(refreshToken)));
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "okhttp/4.9.0 (Android)")
+                                       .header("Authorization", "Bearer " + token)
+                                       .content("""
+                                                        {"refreshToken":"%s"}
+                                                        """.formatted(refreshToken)));
     }
 
     public AuthApiTestClient withToken(String token) {

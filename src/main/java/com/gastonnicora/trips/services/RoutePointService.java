@@ -57,17 +57,17 @@ public class RoutePointService {
      * El punto de ruta se crea con el nombre y las coordenadas geográficas.
      * </p>
      *
-     * @param  companyUuid Identificador unico de la empresa a la que pertenece la ruta.
+     * @param companyUuid      Identificador unico de la empresa a la que pertenece la ruta.
      * @param routeUuid        Identificador unico de la ruta a la que se asociará el punto de ruta.
      * @param routePointCreate Datos del punto de ruta que se desea crear ({@link RoutePointCreate}).
      *
      * @return {@link RoutePointDTO} correspondiente al punto de ruta creado.
      *
-     * @see  RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
+     * @see RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
      * @see RoutePointMapper#toDTO(RoutePoint)
      */
     @Transactional
-    public RoutePointDTO createRoutePoint(UUID companyUuid,UUID routeUuid, RoutePointCreate routePointCreate) {
+    public RoutePointDTO createRoutePoint(UUID companyUuid, UUID routeUuid, RoutePointCreate routePointCreate) {
         Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
         RoutePoint routePoint = new RoutePoint(

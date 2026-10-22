@@ -34,13 +34,16 @@ class DeleteByRefreshTokenTest {
                 "latName",
                 "test@test.com",
                 "password",
-                Set.of(Role.USER));
+                Set.of(Role.USER)
+        );
 
         user.setEnabled(true);
         userRepository.save(user);
 
-        RefreshToken rt = new RefreshToken("token", user, "127.0.0.1",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0);
+        RefreshToken rt = new RefreshToken(
+                "token", user, "127.0.0.1",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "web", 0
+        );
 
         refreshTokenRepository.save(rt);
 

@@ -63,15 +63,6 @@ class GetCompaniesTest {
     }
 
     @Test
-    void shouldReturnOkWhenCompaniesExist() throws Exception {
-        companyApi.getCompanies()
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].uuid", hasItem(company.getUuid().toString())))
-                .andExpect(jsonPath("$[*].name", hasItem(company.getName())))
-                .andExpect(jsonPath("$[*].email", hasItem(company.getEmail())));
-    }
-
-    @Test
     void shouldReturnAllCompaniesWhenThereAreTwo() throws Exception {
         CompanyDTO company2 = new CompanyTestFactory(
                 mockMvc,
@@ -90,6 +81,15 @@ class GetCompaniesTest {
         companyApi.withToken(tokenUser);
         companyApi.getCompanies()
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnOkWhenCompaniesExist() throws Exception {
+        companyApi.getCompanies()
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].uuid", hasItem(company.getUuid().toString())))
+                .andExpect(jsonPath("$[*].name", hasItem(company.getName())))
+                .andExpect(jsonPath("$[*].email", hasItem(company.getEmail())));
     }
 
     @Test

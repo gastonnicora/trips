@@ -52,21 +52,25 @@ class CreateWorkerTest {
         owner = UserTestFactory.registerUser(
                 mockMvc,
                 "owner",
-                "goodPassword");
+                "goodPassword"
+                                            );
 
         worker = UserTestFactory.registerUser(
                 mockMvc,
                 "worker",
-                "goodPassword");
+                "goodPassword"
+                                             );
 
         LoginResponse login = UserTestFactory.login(
                 mockMvc,
                 owner.getEmail(),
-                "goodPassword");
+                "goodPassword"
+                                                   );
 
         workerApi = new WorkerApiTestClient(
                 mockMvc,
-                objectMapper)
+                objectMapper
+        )
                 .withToken(login.getToken());
 
 
@@ -80,29 +84,34 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.ADMIN))
+                        Set.of(RoleCompany.ADMIN)
+                             )
                 .andExpect(status().isOk());
 
         LoginResponse adminLogin = UserTestFactory.login(
                 mockMvc,
                 worker.getEmail(),
-                "goodPassword");
+                "goodPassword"
+                                                        );
 
         WorkerApiTestClient adminApi = new WorkerApiTestClient(
                 mockMvc,
-                objectMapper)
+                objectMapper
+        )
                 .withToken(adminLogin.getToken());
 
         UserDTO anotherUser = UserTestFactory.registerUser(
                 mockMvc,
                 "adminCreate",
-                "goodPassword");
+                "goodPassword"
+                                                          );
 
         adminApi
                 .createWorker(
                         company.getUuid(),
                         anotherUser.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isOk());
     }
 
@@ -113,29 +122,34 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.HR_MANAGER))
+                        Set.of(RoleCompany.HR_MANAGER)
+                             )
                 .andExpect(status().isOk());
 
         LoginResponse hrLogin = UserTestFactory.login(
                 mockMvc,
                 worker.getEmail(),
-                "goodPassword");
+                "goodPassword"
+                                                     );
 
         WorkerApiTestClient hrApi = new WorkerApiTestClient(
                 mockMvc,
-                objectMapper)
+                objectMapper
+        )
                 .withToken(hrLogin.getToken());
 
         UserDTO anotherUser = UserTestFactory.registerUser(
                 mockMvc,
                 "hrCreate",
-                "goodPassword");
+                "goodPassword"
+                                                          );
 
         hrApi
                 .createWorker(
                         company.getUuid(),
                         anotherUser.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isOk());
     }
 
@@ -145,13 +159,15 @@ class CreateWorkerTest {
         UserDTO anotherUser = UserTestFactory.registerUser(
                 mockMvc,
                 "ownerCreate",
-                "goodPassword");
+                "goodPassword"
+                                                          );
 
         workerApi
                 .createWorker(
                         company.getUuid(),
                         anotherUser.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isOk());
     }
 
@@ -162,19 +178,20 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").exists())
                 .andExpect(jsonPath("$.user.uuid")
-                        .value(worker.getUuid().toString()))
+                                   .value(worker.getUuid().toString()))
                 .andExpect(jsonPath("$.company.uuid")
-                        .value(company.getUuid().toString()))
+                                   .value(company.getUuid().toString()))
                 .andExpect(jsonPath("$.roles")
-                        .isArray())
+                                   .isArray())
                 .andExpect(jsonPath("$.roles[0]")
-                        .value("DRIVER"))
+                                   .value("DRIVER"))
                 .andExpect(jsonPath("$.active")
-                        .value(true));
+                                   .value(true));
     }
 
     @Test
@@ -186,7 +203,9 @@ class CreateWorkerTest {
                         worker.getUuid(),
                         Set.of(
                                 RoleCompany.DRIVER,
-                                RoleCompany.SELLER))
+                                RoleCompany.SELLER
+                              )
+                             )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.roles").isArray())
                 .andExpect(jsonPath("$.roles.length()").value(2));
@@ -199,7 +218,8 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.OWNER))
+                        Set.of(RoleCompany.OWNER)
+                             )
                 .andExpect(status().isBadRequest());
     }
 
@@ -210,7 +230,8 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of())
+                        Set.of()
+                             )
                 .andExpect(status().isBadRequest());
     }
 
@@ -221,14 +242,16 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isOk());
 
         workerApi
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.SELLER))
+                        Set.of(RoleCompany.SELLER)
+                             )
                 .andExpect(status().isConflict());
     }
 
@@ -239,7 +262,8 @@ class CreateWorkerTest {
                 .createWorker(
                         UUID.randomUUID(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -250,29 +274,34 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isOk());
 
         LoginResponse driverLogin = UserTestFactory.login(
                 mockMvc,
                 worker.getEmail(),
-                "goodPassword");
+                "goodPassword"
+                                                         );
 
         WorkerApiTestClient driverApi = new WorkerApiTestClient(
                 mockMvc,
-                objectMapper)
+                objectMapper
+        )
                 .withToken(driverLogin.getToken());
 
         UserDTO anotherUser = UserTestFactory.registerUser(
                 mockMvc,
                 "driverCreate",
-                "goodPassword");
+                "goodPassword"
+                                                          );
 
         driverApi
                 .createWorker(
                         company.getUuid(),
                         anotherUser.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -283,29 +312,34 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.SELLER))
+                        Set.of(RoleCompany.SELLER)
+                             )
                 .andExpect(status().isOk());
 
         LoginResponse sellerLogin = UserTestFactory.login(
                 mockMvc,
                 worker.getEmail(),
-                "goodPassword");
+                "goodPassword"
+                                                         );
 
         WorkerApiTestClient sellerApi = new WorkerApiTestClient(
                 mockMvc,
-                objectMapper)
+                objectMapper
+        )
                 .withToken(sellerLogin.getToken());
 
         UserDTO anotherUser = UserTestFactory.registerUser(
                 mockMvc,
                 "sellerCreate",
-                "goodPassword");
+                "goodPassword"
+                                                          );
 
         sellerApi
                 .createWorker(
                         company.getUuid(),
                         anotherUser.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -315,28 +349,33 @@ class CreateWorkerTest {
         UserDTO anotherUser = UserTestFactory.registerUser(
                 mockMvc,
                 "another",
-                "goodPassword");
+                "goodPassword"
+                                                          );
 
         LoginResponse userLogin = UserTestFactory.login(
                 mockMvc,
                 anotherUser.getEmail(),
-                "goodPassword");
+                "goodPassword"
+                                                       );
 
         WorkerApiTestClient userApi = new WorkerApiTestClient(
                 mockMvc,
-                objectMapper)
+                objectMapper
+        )
                 .withToken(userLogin.getToken());
 
         UserDTO targetUser = UserTestFactory.registerUser(
                 mockMvc,
                 "target",
-                "goodPassword");
+                "goodPassword"
+                                                         );
 
         userApi
                 .createWorker(
                         company.getUuid(),
                         targetUser.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -347,7 +386,8 @@ class CreateWorkerTest {
                 .createWorker(
                         company.getUuid(),
                         UUID.randomUUID(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isNotFound());
     }
 
@@ -356,13 +396,15 @@ class CreateWorkerTest {
 
         WorkerApiTestClient apiWithoutToken = new WorkerApiTestClient(
                 mockMvc,
-                objectMapper);
+                objectMapper
+        );
 
         apiWithoutToken
                 .createWorker(
                         company.getUuid(),
                         worker.getUuid(),
-                        Set.of(RoleCompany.DRIVER))
+                        Set.of(RoleCompany.DRIVER)
+                             )
                 .andExpect(status().isUnauthorized());
     }
 }

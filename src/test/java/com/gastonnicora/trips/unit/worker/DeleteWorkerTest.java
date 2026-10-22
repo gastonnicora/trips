@@ -52,7 +52,8 @@ class DeleteWorkerTest {
         when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
                 userUuid,
                 companyUuid
-                                                                                                             )).thenReturn(Optional.of(worker));
+                                                                                                             )).thenReturn(
+                Optional.of(worker));
 
         workerService.deleteWorker(userUuid, companyUuid);
 
@@ -83,13 +84,14 @@ class DeleteWorkerTest {
 
         Worker owner = new Worker(user, company, Set.of(RoleCompany.OWNER));
 
-        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid))
+        when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
+                userUuid, companyUuid))
                 .thenReturn(Optional.of(owner));
 
         ForbiddenException exception = assertThrows(
                 ForbiddenException.class,
                 () -> workerService.deleteWorker(userUuid, companyUuid)
-        );
+                                                   );
 
         assertEquals(403, exception.getStatus());
         assertTrue(owner.isActive());
@@ -104,12 +106,13 @@ class DeleteWorkerTest {
         when(workerRepository.findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
                 userUuid,
                 companyUuid
-                                                                                                             )).thenReturn(Optional.empty());
+                                                                                                             )).thenReturn(
+                Optional.empty());
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
                 () -> workerService.deleteWorker(userUuid, companyUuid)
-        );
+                                                  );
 
         assertEquals(404, exception.getStatus());
 

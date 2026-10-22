@@ -27,70 +27,83 @@ public class CompanyApiTestClient {
                 email,
                 phone,
                 latitude,
-                longitude);
+                longitude
+        );
 
         String json = objectMapper.writeValueAsString(body);
 
         return mockMvc.perform(post("/api/companies")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test")
-                .content(json));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content(json));
     }
 
     public ResultActions deleteCompany(UUID uuid)
             throws Exception {
 
         return mockMvc.perform(delete("/api/companies/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
+    }
+
+    public ResultActions getCompanies()
+            throws Exception {
+
+        return mockMvc.perform(get("/api/companies")
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
     }
 
     public ResultActions getCompaniesByCurrentUser()
             throws Exception {
 
         return mockMvc.perform(get("/api/companies/me")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
     }
 
     public ResultActions getCompaniesByOwner(UUID uuid)
             throws Exception {
 
         return mockMvc.perform(get("/api/companies/owner/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
     }
 
     public ResultActions getCompany(UUID uuid)
             throws Exception {
 
         return mockMvc.perform(get("/api/companies/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
     }
 
-    public ResultActions updateCompany(UUID uuid, String name, String email, String phone, Double latitude,
-                                       Double longitude)
+    public ResultActions updateCompany(
+            UUID uuid, String name, String email, String phone, Double latitude,
+            Double longitude
+                                      )
             throws Exception {
         CompanyCreateTest body = new CompanyCreateTest(
                 name,
                 email,
                 phone,
                 latitude,
-                longitude);
+                longitude
+        );
 
         String json = objectMapper.writeValueAsString(body);
 
         return mockMvc.perform(put("/api/companies/" + uuid)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test")
-                .content(json));
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content(json));
     }
 
     public CompanyApiTestClient withToken(String token) {
@@ -105,15 +118,6 @@ public class CompanyApiTestClient {
             Double latitude,
             Double longitude) {
 
-    }
-
-    public ResultActions getCompanies()
-            throws Exception {
-
-        return mockMvc.perform(get("/api/companies")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("User-Agent", "JUnit-Test"));
     }
 
 }

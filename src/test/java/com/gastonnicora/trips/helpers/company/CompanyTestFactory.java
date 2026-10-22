@@ -23,7 +23,8 @@ public class CompanyTestFactory {
             MockMvc mockMvc,
             ObjectMapper objectMapper,
             String token,
-            GeocodingService geocodingService) {
+            GeocodingService geocodingService
+                             ) {
 
         this.objectMapper = objectMapper;
         this.geocodingService = geocodingService;
@@ -51,7 +52,7 @@ public class CompanyTestFactory {
                                         "pais"
                                 )
                         )
-                );
+                           );
     }
 
     public CompanyDTO createCompany() throws Exception {
@@ -63,11 +64,11 @@ public class CompanyTestFactory {
                         "+549112233445",
                         -34.6037,
                         -54.3816
-                )
+                              )
                 .andExpect(
                         org.springframework.test.web.servlet.result.MockMvcResultMatchers
                                 .status().isOk()
-                )
+                          )
                 .andReturn();
 
         String responseJson = result
@@ -77,7 +78,7 @@ public class CompanyTestFactory {
         this.company = objectMapper.readValue(
                 responseJson,
                 CompanyDTO.class
-        );
+                                             );
 
         return company;
     }

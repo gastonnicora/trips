@@ -51,39 +51,40 @@ class DeleteWorkerTest {
                 mockMvc,
                 "owner",
                 "goodPassword"
-        );
+                                            );
 
         LoginResponse login = UserTestFactory.login(
                 mockMvc,
                 owner.getEmail(),
                 "goodPassword"
-        );
-        companyUuid = new CompanyTestFactory(mockMvc, objectMapper, login.getToken(), geocodingService).createCompany().getUuid();
+                                                   );
+        companyUuid = new CompanyTestFactory(mockMvc, objectMapper, login.getToken(), geocodingService).createCompany()
+                .getUuid();
 
         worker = UserTestFactory.registerUser(
                 mockMvc,
                 "worker",
                 "goodPassword"
-        );
+                                             );
         workerApi = new WorkerApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
         workerApi
                 .createWorker(
                         companyUuid,
                         worker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
         otherWorker = UserTestFactory.registerUser(
                 mockMvc,
                 "worker",
                 "goodPassword"
-        );
+                                                  );
         workerApi
                 .createWorker(
                         companyUuid,
                         otherWorker.getUuid(),
                         Set.of(RoleCompany.DRIVER)
-                )
+                             )
                 .andExpect(status().isOk());
     }
 
@@ -94,7 +95,7 @@ class DeleteWorkerTest {
                 .deleteWorker(
                         companyUuid,
                         worker.getUuid()
-                )
+                             )
                 .andExpect(status().isOk());
     }
 
@@ -106,13 +107,13 @@ class DeleteWorkerTest {
                 mockMvc,
                 worker.getEmail(),
                 "goodPassword"
-        );
+                                                        );
 
         workerApi.withToken(adminLogin.getToken())
                 .deleteWorker(
                         companyUuid,
                         owner.getUuid()
-                )
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -122,7 +123,7 @@ class DeleteWorkerTest {
                 .deleteWorker(
                         UUID.randomUUID(),
                         worker.getUuid()
-                )
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -133,13 +134,13 @@ class DeleteWorkerTest {
                 mockMvc,
                 worker.getEmail(),
                 "goodPassword"
-        );
+                                                         );
 
         workerApi.withToken(driverLogin.getToken())
                 .deleteWorker(
                         companyUuid,
                         worker.getUuid()
-                )
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -149,7 +150,7 @@ class DeleteWorkerTest {
                 .deleteWorker(
                         companyUuid,
                         owner.getUuid()
-                )
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -160,12 +161,12 @@ class DeleteWorkerTest {
                 mockMvc,
                 worker.getEmail(),
                 "goodPassword"
-        );
+                                                       );
         workerApi.withToken(userLogin.getToken())
                 .deleteWorker(
                         companyUuid,
                         owner.getUuid()
-                )
+                             )
                 .andExpect(status().isForbidden());
     }
 
@@ -175,18 +176,19 @@ class DeleteWorkerTest {
                 .deleteWorker(
                         companyUuid,
                         UUID.randomUUID()
-                )
+                             )
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void shouldReturnOkWhenAdminDeletesWorker() throws Exception {
-        workerApi.updateWorkerRoles(companyUuid, worker.getUuid(), Set.of(RoleCompany.ADMIN)).andExpect(status().isOk());
+        workerApi.updateWorkerRoles(companyUuid, worker.getUuid(), Set.of(RoleCompany.ADMIN))
+                .andExpect(status().isOk());
         LoginResponse adminLogin = UserTestFactory.login(
                 mockMvc,
                 worker.getEmail(),
                 "goodPassword"
-        );
+                                                        );
 
         workerApi.withToken(adminLogin.getToken());
 
@@ -194,26 +196,27 @@ class DeleteWorkerTest {
                 .deleteWorker(
                         companyUuid,
                         otherWorker.getUuid()
-                )
+                             )
                 .andExpect(status().isOk());
     }
 
     @Test
     void shouldReturnOkWhenHRManagerDeletesWorker() throws Exception {
 
-        workerApi.updateWorkerRoles(companyUuid, worker.getUuid(), Set.of(RoleCompany.HR_MANAGER)).andExpect(status().isOk());
+        workerApi.updateWorkerRoles(companyUuid, worker.getUuid(), Set.of(RoleCompany.HR_MANAGER))
+                .andExpect(status().isOk());
         LoginResponse HRLogin = UserTestFactory.login(
                 mockMvc,
                 worker.getEmail(),
                 "goodPassword"
-        );
+                                                     );
 
         workerApi.withToken(HRLogin.getToken());
 
         workerApi.deleteWorker(
                         companyUuid,
                         otherWorker.getUuid()
-                )
+                              )
                 .andExpect(status().isOk());
     }
 
@@ -228,7 +231,7 @@ class DeleteWorkerTest {
                 .deleteWorker(
                         companyUuid,
                         worker.getUuid()
-                )
+                             )
                 .andExpect(status().isUnauthorized());
     }
 

@@ -86,7 +86,8 @@ class CompanySecurityTest {
         assertTrue(companySecurity.hasAnyRole(
                 companyUuid,
                 RoleCompany.ADMIN,
-                RoleCompany.HR_MANAGER));
+                RoleCompany.HR_MANAGER
+                                             ));
     }
 
     @Test
@@ -96,7 +97,8 @@ class CompanySecurityTest {
                 .thenReturn(Optional.of(worker));
 
         assertTrue(companySecurity.hasRole(companyUuid, RoleCompany.ADMIN));
-        verify(workerRepository).findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(userUuid, companyUuid);
+        verify(workerRepository).findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
+                userUuid, companyUuid);
     }
 
     @AfterEach

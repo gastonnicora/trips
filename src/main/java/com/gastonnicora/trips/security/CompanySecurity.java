@@ -41,14 +41,16 @@ public class CompanySecurity {
      */
     public boolean hasAnyRole(
             UUID companyUuid,
-            RoleCompany... roles) {
+            RoleCompany... roles
+                             ) {
 
         UUID userUuid = SecurityUtils.getCurrentUserUuid();
 
         Worker worker = workerRepository
                 .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
                         userUuid,
-                        companyUuid)
+                        companyUuid
+                                                                                   )
                 .orElse(null);
 
         if (worker == null) {
@@ -70,14 +72,16 @@ public class CompanySecurity {
      */
     public boolean hasRole(
             UUID companyUuid,
-            RoleCompany role) {
+            RoleCompany role
+                          ) {
 
         UUID userUuid = SecurityUtils.getCurrentUserUuid();
 
         Worker worker = workerRepository
                 .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
                         userUuid,
-                        companyUuid)
+                        companyUuid
+                                                                                   )
                 .orElse(null);
 
         return worker != null

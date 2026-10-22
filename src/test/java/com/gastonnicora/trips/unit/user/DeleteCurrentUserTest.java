@@ -90,9 +90,11 @@ class DeleteCurrentUserTest {
 
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
-            userService.deleteCurrentUser();
-        });
+        NotFoundException ex = assertThrows(
+                NotFoundException.class, () -> {
+                    userService.deleteCurrentUser();
+                }
+                                           );
 
         assertEquals(404, ex.getStatus());
 

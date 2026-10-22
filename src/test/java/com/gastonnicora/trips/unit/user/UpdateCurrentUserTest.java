@@ -186,9 +186,11 @@ class UpdateCurrentUserTest {
         when(userRepository.existsByEmailAndEnabledTrue(request.getEmail()))
                 .thenReturn(true);
 
-        ConflictException ex = assertThrows(ConflictException.class, () -> {
-            userService.updateCurrentUser(request);
-        });
+        ConflictException ex = assertThrows(
+                ConflictException.class, () -> {
+                    userService.updateCurrentUser(request);
+                }
+                                           );
 
         assertEquals(409, ex.getStatus());
 
@@ -221,9 +223,11 @@ class UpdateCurrentUserTest {
         when(userRepository.findByUuid(uuid))
                 .thenReturn(Optional.empty());
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> {
-            userService.updateCurrentUser(request);
-        });
+        NotFoundException ex = assertThrows(
+                NotFoundException.class, () -> {
+                    userService.updateCurrentUser(request);
+                }
+                                           );
 
         assertEquals(404, ex.getStatus());
 

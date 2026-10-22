@@ -79,7 +79,8 @@ public class VehicleController {
     )
     public VehicleDTO createVehicle(
             @PathVariable("companyUuid") UUID companyUuid,
-            @RequestBody @Valid VehicleCreate vehicleCreate) {
+            @RequestBody @Valid VehicleCreate vehicleCreate
+                                   ) {
 
         Company company = companyService.getCompanyEntity(companyUuid);
         return vehicleService.createVehicle(company, vehicleCreate);
@@ -109,7 +110,8 @@ public class VehicleController {
     )
     public void deleteVehicle(
             @PathVariable("companyUuid") UUID companyUuid,
-            @PathVariable("vehicleUuid") UUID vehicleUuid) {
+            @PathVariable("vehicleUuid") UUID vehicleUuid
+                             ) {
 
         vehicleService.deleteVehicle(companyUuid, vehicleUuid);
     }
@@ -140,7 +142,8 @@ public class VehicleController {
     )
     public VehicleDTO getVehicle(
             @PathVariable("companyUuid") UUID companyUuid,
-            @PathVariable("vehicleUuid") UUID vehicleUuid) {
+            @PathVariable("vehicleUuid") UUID vehicleUuid
+                                ) {
 
         return vehicleService.getVehicle(vehicleUuid, companyUuid);
     }
@@ -169,7 +172,8 @@ public class VehicleController {
             description = "Obtiene los vehículos perteneciente a una empresa."
     )
     public List<VehicleDTO> getVehicles(
-            @PathVariable("companyUuid") UUID companyUuid) {
+            @PathVariable("companyUuid") UUID companyUuid
+                                       ) {
 
         return vehicleService.getVehicles(companyUuid);
     }
@@ -189,7 +193,7 @@ public class VehicleController {
      *
      * @return datos del vehículo actualizado
      *
-     * @see VehicleService#updateVehicle(UUID, UUID, VehicleCreate)  
+     * @see VehicleService#updateVehicle(UUID, UUID, VehicleCreate)
      */
     @PutMapping("/companies/{companyUuid}/vehicle/{vehicleUuid}")
     @SecurityRequirement(name = "bearerAuth")
@@ -203,7 +207,8 @@ public class VehicleController {
     public VehicleDTO updateVehicle(
             @PathVariable("companyUuid") UUID companyUuid,
             @PathVariable("vehicleUuid") UUID vehicleUuid,
-            @RequestBody @Valid VehicleCreate vehicleUpdate) {
-        return vehicleService.updateVehicle(companyUuid,vehicleUuid, vehicleUpdate);
+            @RequestBody @Valid VehicleCreate vehicleUpdate
+                                   ) {
+        return vehicleService.updateVehicle(companyUuid, vehicleUuid, vehicleUpdate);
     }
 }

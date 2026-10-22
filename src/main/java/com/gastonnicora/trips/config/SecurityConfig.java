@@ -65,7 +65,8 @@ public class SecurityConfig {
             UserDetailsServiceImpl userService,
             JwtAuthenticationFilter jwtFilter,
             CustomAccessDeniedHandler accessDeniedHandler,
-            CustomAuthenticationEntryPoint authenticationEntryPoint) {
+            CustomAuthenticationEntryPoint authenticationEntryPoint
+                         ) {
         this.userService = userService;
         this.jwtFilter = jwtFilter;
         this.accessDeniedHandler = accessDeniedHandler;
@@ -85,7 +86,8 @@ public class SecurityConfig {
      */
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+            AuthenticationConfiguration config
+                                                      ) throws Exception {
         return config.getAuthenticationManager();
     }
 
@@ -182,7 +184,8 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain securityChain(
             HttpSecurity http,
-            AuthenticationManager authenticationManager) throws Exception {
+            AuthenticationManager authenticationManager
+                                            ) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -192,8 +195,10 @@ public class SecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/error", "/auth/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
-                                "/swagger-ui.html", "/public/**")
+                        .requestMatchers(
+                                "/v3/api-docs/**", "/swagger-ui/**",
+                                "/swagger-ui.html", "/public/**"
+                                        )
                         .permitAll()
                         .requestMatchers("/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())

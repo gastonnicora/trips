@@ -59,7 +59,8 @@ public class WorkerMapper {
                 worker.getUuid(),
                 userMapper.toDTO(worker.getUser()),
                 worker.getRoles(),
-                worker.isActive());
+                worker.isActive()
+        );
     }
 
     /**
@@ -82,7 +83,8 @@ public class WorkerMapper {
                 worker.getRoles(),
                 worker.isActive(),
                 worker.getCreatedAt(),
-                worker.getUpdatedAt());
+                worker.getUpdatedAt()
+        );
     }
 
     /**
@@ -116,7 +118,8 @@ public class WorkerMapper {
                 worker.getUuid(),
                 companyMapper.toDTO(worker.getCompany()),
                 worker.getRoles(),
-                worker.isActive());
+                worker.isActive()
+        );
     }
 
     /**
@@ -137,7 +140,8 @@ public class WorkerMapper {
                 companyMapper.toDTO(worker.get(0).getCompany()),
                 worker.stream()
                         .map(this::toCompanyDTO)
-                        .toList());
+                        .toList()
+        );
     }
 
     /**
@@ -158,7 +162,8 @@ public class WorkerMapper {
                 userMapper.toDTO(worker.get(0).getUser()),
                 worker.stream()
                         .map(this::toUserDTO)
-                        .toList());
+                        .toList()
+        );
     }
 
 }

@@ -22,61 +22,64 @@ public class UserApiTestClient {
 
     public ResultActions changeRole(String uuid, Set<Role> role) throws Exception {
         return mockMvc.perform(put("/api/users/" + uuid + "/role")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {
-                        "roles": %s
-                        }""".formatted(setToJson(role))));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content("""
+                                                        {
+                                                        "roles": %s
+                                                        }""".formatted(setToJson(role))));
     }
 
     public ResultActions deleteCurrentUser() throws Exception {
         return mockMvc.perform(delete("/api/users")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON));
     }
 
     public ResultActions deleteCurrentUserWithUserAgent(String userAgent) throws Exception {
         return mockMvc.perform(delete("/api/users")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", userAgent)
-                .contentType(MediaType.APPLICATION_JSON));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", userAgent)
+                                       .contentType(MediaType.APPLICATION_JSON));
     }
 
     public ResultActions getMe() throws Exception {
         return mockMvc.perform(get("/api/users/me")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON));
     }
 
     public ResultActions getUser(String uuid) throws Exception {
         return mockMvc.perform(get("/api/users/" + uuid)
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON));
     }
 
     public ResultActions getUsers() throws Exception {
         return mockMvc.perform(get("/api/users")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON));
     }
 
     public ResultActions register(String name, String lastname, String email, String password, String confirmPassword)
             throws Exception {
         return mockMvc.perform(post("/api/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(UserTestFactory.userJson(name, lastname, email, password, confirmPassword)));
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(UserTestFactory.userJson(
+                                               name, lastname, email, password,
+                                               confirmPassword
+                                                                        )));
     }
 
     private String setToJson(Set<Role> roles) {
@@ -87,20 +90,23 @@ public class UserApiTestClient {
 
     public ResultActions update(String name, String lastname, String email) throws Exception {
         return mockMvc.perform(put("/api/users")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(UserTestFactory.userJson(name, lastname, email, null, null)));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(UserTestFactory.userJson(name, lastname, email, null, null)));
     }
 
     public ResultActions updatePassword(String passwordOld, String password, String confirmPassword) throws Exception {
         return mockMvc.perform(put("/api/users/me/password")
-                .with(csrf())
-                .header("Authorization", "Bearer " + token)
-                .header("User-Agent", "JUnit-Test")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(UserTestFactory.userJsonPutPass(passwordOld, password, confirmPassword)));
+                                       .with(csrf())
+                                       .header("Authorization", "Bearer " + token)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(UserTestFactory.userJsonPutPass(
+                                               passwordOld, password,
+                                               confirmPassword
+                                                                               )));
     }
 
     public UserApiTestClient withToken(String token) {

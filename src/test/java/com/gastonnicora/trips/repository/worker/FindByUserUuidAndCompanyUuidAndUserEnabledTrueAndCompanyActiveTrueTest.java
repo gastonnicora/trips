@@ -33,7 +33,8 @@ class FindByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrueTest {
     @Test
     void shouldReturnEmptyWhenWorkerDoesNotExist() {
         Optional<com.gastonnicora.trips.entities.Worker> found = workerRepository
-                .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(UUID.randomUUID(), UUID.randomUUID());
+                .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
+                        UUID.randomUUID(), UUID.randomUUID());
         assertFalse(found.isPresent());
     }
 
@@ -44,7 +45,8 @@ class FindByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrueTest {
                 "username",
                 "latName",
                 "email@example.com",
-                "password");
+                "password"
+        );
         user.setEnabled(true);
         userRepository.save(user);
         Company company = new Company(
@@ -53,13 +55,15 @@ class FindByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrueTest {
                 -34.6037,
                 -58.3816,
                 "test@example.com",
-                "1234567890");
+                "1234567890"
+        );
         companyRepository.save(company);
 
         workerRepository.save(new com.gastonnicora.trips.entities.Worker(
                 user,
                 company,
-                Set.of(RoleCompany.ADMIN)));
+                Set.of(RoleCompany.ADMIN)
+        ));
 
         Optional<com.gastonnicora.trips.entities.Worker> found = workerRepository
                 .findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(user.getUuid(), company.getUuid());

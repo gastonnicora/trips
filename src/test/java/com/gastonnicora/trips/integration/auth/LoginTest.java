@@ -36,19 +36,25 @@ class LoginTest {
 
     static Stream<Arguments> invalid() {
         return Stream.of(
-                Arguments.of("invalid-email", "goodPassword",
-                        "email"),
+                Arguments.of(
+                        "invalid-email", "goodPassword",
+                        "email"
+                            ),
                 Arguments.of("", "goodPassword", "email"),
-                Arguments.of("test@test.com",
+                Arguments.of(
+                        "test@test.com",
                         "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penativehicle et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
-                        "password"),
-                Arguments.of("test@test.com", "", "password"));
+                        "password"
+                            ),
+                Arguments.of("test@test.com", "", "password")
+                        );
     }
 
     static Stream<Arguments> invalidCredentials() {
         return Stream.of(
                 Arguments.of("user@test.com", "wrongPassword"),
-                Arguments.of("nonexistent@test.com", "goodPassword"));
+                Arguments.of("nonexistent@test.com", "goodPassword")
+                        );
     }
 
     @BeforeEach
@@ -77,7 +83,8 @@ class LoginTest {
     void shouldReturnBadRequestWhenValidationFails(
             String email,
             String password,
-            String expectedField) throws Exception {
+            String expectedField
+                                                  ) throws Exception {
         authApi.login(email, password)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists())
@@ -100,7 +107,8 @@ class LoginTest {
     @MethodSource("invalidCredentials")
     void shouldReturnUnauthorizedWhenCredentialsAreInvalid(
             String email,
-            String password) throws Exception {
+            String password
+                                                          ) throws Exception {
         authApi.login(email, password)
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").exists())

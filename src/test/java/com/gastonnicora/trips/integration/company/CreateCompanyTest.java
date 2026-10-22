@@ -58,14 +58,17 @@ class CreateCompanyTest {
                 Arguments.of("Goodname", "test@test.com", "123456789", 54.4, null, "longitude"),
                 // campos en null
                 Arguments.of(null, null, null, null, null, "name"),
-                Arguments.of("Goodname", "test", "123456789", 54.4, -34.5, "email"));
+                Arguments.of("Goodname", "test", "123456789", 54.4, -34.5, "email")
+                        );
     }
 
     @BeforeEach
     void setup() throws Exception {
         when(geocodingService.obtenerDireccion(anyDouble(), anyDouble()))
-                .thenReturn(new AddressResponse("calle falsa 123",
-                        new Address("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")));
+                .thenReturn(new AddressResponse(
+                        "calle falsa 123",
+                        new Address("calle falsa", "123", "barrio", "ciudad", "departamento", "estado", "pais")
+                ));
 
         token = UserTestFactory.registerAndLogin(mockMvc);
         this.companyApi = new CompanyApiTestClient(mockMvc, objectMapper).withToken(token);
@@ -87,14 +90,15 @@ class CreateCompanyTest {
             String phone,
             Double latitude,
             Double longitude,
-            String expectedField) throws Exception {
+            String expectedField
+                                                          ) throws Exception {
 
         companyApi.createCompany(name, email, phone, latitude, longitude)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField)).exists())
                 .andExpect(jsonPath("$.errors.%s".formatted(expectedField))
-                        .value(notNullValue()))
+                                   .value(notNullValue()))
                 .andDo(result -> System.out.println("Errors " + result.getResponse().getContentAsString()));
     }
 

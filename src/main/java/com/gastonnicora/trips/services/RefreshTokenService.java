@@ -69,8 +69,10 @@ public class RefreshTokenService {
      *
      * @return {@link RefreshToken} persistido.
      */
-    public RefreshToken createToken(String token, User user, String userAgent, String ip, String device,
-                                    int version) {
+    public RefreshToken createToken(
+            String token, User user, String userAgent, String ip, String device,
+            int version
+                                   ) {
         RefreshToken newToken = new RefreshToken(token, user, ip, userAgent, device, version);
         return repo.save(newToken);
     }

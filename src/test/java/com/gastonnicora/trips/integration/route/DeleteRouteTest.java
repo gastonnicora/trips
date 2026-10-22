@@ -50,6 +50,19 @@ class DeleteRouteTest {
     private String ownerToken;
     private RouteApiTestClient routeApi;
 
+    private RouteApiTestClient routeApiForWorkerWithRoles(String name, Set<RoleCompany> roles) throws Exception {
+        UserDTO user = UserTestFactory.registerUser(mockMvc, name, PASSWORD);
+
+        new WorkerApiTestClient(mockMvc, objectMapper)
+                .withToken(ownerToken)
+                .createWorker(company.getUuid(), user.getUuid(), roles)
+                .andExpect(status().isOk());
+
+        LoginResponse login = UserTestFactory.login(mockMvc, user.getEmail(), PASSWORD);
+
+        return new RouteApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
+    }
+
     @BeforeEach
     void setup() throws Exception {
 
@@ -67,25 +80,12 @@ class DeleteRouteTest {
         routeApi = new RouteApiTestClient(mockMvc, objectMapper).withToken(ownerToken);
     }
 
-    private RouteApiTestClient routeApiForWorkerWithRoles(String name, Set<RoleCompany> roles) throws Exception {
-        UserDTO user = UserTestFactory.registerUser(mockMvc, name, PASSWORD);
-
-        new WorkerApiTestClient(mockMvc, objectMapper)
-                .withToken(ownerToken)
-                .createWorker(company.getUuid(), user.getUuid(), roles)
-                .andExpect(status().isOk());
-
-        LoginResponse login = UserTestFactory.login(mockMvc, user.getEmail(), PASSWORD);
-
-        return new RouteApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
-    }
-
     // ---------- casos felices ----------
 
     @Test
-    void shouldDeleteRouteSuccessfully() throws Exception {
+    void shouldAllowAdminToDeleteRoute() throws Exception {
 
-        routeApi
+        routeApiForWorkerWithRoles("admin", Set.of(RoleCompany.ADMIN))
                 .deleteRoute(company.getUuid(), routeUuid)
                 .andExpect(status().isOk());
 
@@ -95,9 +95,9 @@ class DeleteRouteTest {
     }
 
     @Test
-    void shouldAllowAdminToDeleteRoute() throws Exception {
+    void shouldDeleteRouteSuccessfully() throws Exception {
 
-        routeApiForWorkerWithRoles("admin", Set.of(RoleCompany.ADMIN))
+        routeApi
                 .deleteRoute(company.getUuid(), routeUuid)
                 .andExpect(status().isOk());
 
@@ -127,14 +127,6 @@ class DeleteRouteTest {
     // ---------- permisos ----------
 
     @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-
-        new RouteApiTestClient(mockMvc, objectMapper)
-                .deleteRoute(company.getUuid(), routeUuid)
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void shouldReturnForbiddenWhenUserHasNoAllowedRole() throws Exception {
 
         routeApiForWorkerWithRoles("seller", Set.of(RoleCompany.SELLER))
@@ -157,6 +149,23 @@ class DeleteRouteTest {
                 .deleteRoute(company.getUuid(), routeUuid)
                 .andExpect(status().isForbidden());
 
+        routeApi
+                .getRoute(company.getUuid(), routeUuid)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenRouteBelongsToAnotherCompany() throws Exception {
+
+        CompanyDTO anotherCompany = new CompanyTestFactory(
+                mockMvc, objectMapper, ownerToken, geocodingService
+        ).createCompany();
+
+        routeApi
+                .deleteRoute(anotherCompany.getUuid(), routeUuid)
+                .andExpect(status().isNotFound());
+
+        // la ruta original no debe haberse eliminado
         routeApi
                 .getRoute(company.getUuid(), routeUuid)
                 .andExpect(status().isOk());
@@ -185,19 +194,10 @@ class DeleteRouteTest {
     }
 
     @Test
-    void shouldReturnNotFoundWhenRouteBelongsToAnotherCompany() throws Exception {
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
 
-        CompanyDTO anotherCompany = new CompanyTestFactory(
-                mockMvc, objectMapper, ownerToken, geocodingService
-        ).createCompany();
-
-        routeApi
-                .deleteRoute(anotherCompany.getUuid(), routeUuid)
-                .andExpect(status().isNotFound());
-
-        // la ruta original no debe haberse eliminado
-        routeApi
-                .getRoute(company.getUuid(), routeUuid)
-                .andExpect(status().isOk());
+        new RouteApiTestClient(mockMvc, objectMapper)
+                .deleteRoute(company.getUuid(), routeUuid)
+                .andExpect(status().isUnauthorized());
     }
 }

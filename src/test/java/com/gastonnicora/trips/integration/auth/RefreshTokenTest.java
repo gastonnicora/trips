@@ -76,15 +76,15 @@ class RefreshTokenTest {
     void shouldReturnUnauthorizedWhenCurrentIpDiffersFromOriginalLogin() throws Exception {
 
         mockMvc.perform(post("/api/auth/refresh")
-                        .with(request -> {
-                            request.setRemoteAddr("1.1.1.1");
-                            return request;
-                        })
-                        .header("User-Agent", "JUnit-Test")
-                        .content("""
-                                    { "refreshToken": "%s" }
-                                """.formatted(refreshToken))
-                        .contentType(MediaType.APPLICATION_JSON))
+                                .with(request -> {
+                                    request.setRemoteAddr("1.1.1.1");
+                                    return request;
+                                })
+                                .header("User-Agent", "JUnit-Test")
+                                .content("""
+                                                     { "refreshToken": "%s" }
+                                                 """.formatted(refreshToken))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -113,11 +113,11 @@ class RefreshTokenTest {
     void shouldReturnUnauthorizedWhenUserAgentDiffersFromOriginalLogin() throws Exception {
 
         mockMvc.perform(post("/api/auth/refresh")
-                        .header("User-Agent", "totally-different-browser")
-                        .content("""
-                                    { "refreshToken": "%s" }
-                                """.formatted(refreshToken))
-                        .contentType(MediaType.APPLICATION_JSON))
+                                .header("User-Agent", "totally-different-browser")
+                                .content("""
+                                                     { "refreshToken": "%s" }
+                                                 """.formatted(refreshToken))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -145,12 +145,12 @@ class RefreshTokenTest {
     void shouldUseBodyRefreshTokenWhenCookieAlsoExists() throws Exception {
 
         mockMvc.perform(post("/api/auth/refresh")
-                        .cookie(new Cookie("refreshToken", "old-cookie-token"))
-                        .header("User-Agent", "JUnit-Test")
-                        .content("""
-                                    { "refreshToken": "%s" }
-                                """.formatted(refreshToken))
-                        .contentType(MediaType.APPLICATION_JSON))
+                                .cookie(new Cookie("refreshToken", "old-cookie-token"))
+                                .header("User-Agent", "JUnit-Test")
+                                .content("""
+                                                     { "refreshToken": "%s" }
+                                                 """.formatted(refreshToken))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
     }

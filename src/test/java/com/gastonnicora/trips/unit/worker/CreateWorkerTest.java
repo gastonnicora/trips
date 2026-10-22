@@ -59,7 +59,7 @@ class CreateWorkerTest {
                 user,
                 company,
                 roles
-        );
+                                                     );
 
         assertNotNull(result);
         assertEquals(expectedDTO, result);

@@ -59,7 +59,8 @@ class GetCompanyEntityTest {
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
-                () -> companyService.getCompanyEntity(uuid));
+                () -> companyService.getCompanyEntity(uuid)
+                                                  );
 
         assertEquals(404, exception.getStatus());
         assertEquals("Empresa no encontrada", exception.getMessage());

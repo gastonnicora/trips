@@ -51,6 +51,22 @@ class GetRouteTest {
     private RouteApiTestClient routeApi;
     private WorkerApiTestClient ownerWorkerApi;
 
+    /**
+     * Crea un usuario, lo agrega a la empresa con los roles indicados y
+     * devuelve un client de rutas autenticado con ese usuario.
+     */
+    private RouteApiTestClient routeApiForWorkerWithRoles(String name, Set<RoleCompany> roles) throws Exception {
+        UserDTO user = UserTestFactory.registerUser(mockMvc, name, PASSWORD);
+
+        ownerWorkerApi
+                .createWorker(company.getUuid(), user.getUuid(), roles)
+                .andExpect(status().isOk());
+
+        LoginResponse login = UserTestFactory.login(mockMvc, user.getEmail(), PASSWORD);
+
+        return new RouteApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
+    }
+
     @BeforeEach
     void setup() throws Exception {
 
@@ -71,38 +87,6 @@ class GetRouteTest {
         ownerWorkerApi = new WorkerApiTestClient(mockMvc, objectMapper).withToken(ownerToken);
     }
 
-    /**
-     * Crea un usuario, lo agrega a la empresa con los roles indicados y
-     * devuelve un client de rutas autenticado con ese usuario.
-     */
-    private RouteApiTestClient routeApiForWorkerWithRoles(String name, Set<RoleCompany> roles) throws Exception {
-        UserDTO user = UserTestFactory.registerUser(mockMvc, name, PASSWORD);
-
-        ownerWorkerApi
-                .createWorker(company.getUuid(), user.getUuid(), roles)
-                .andExpect(status().isOk());
-
-        LoginResponse login = UserTestFactory.login(mockMvc, user.getEmail(), PASSWORD);
-
-        return new RouteApiTestClient(mockMvc, objectMapper).withToken(login.getToken());
-    }
-
-
-    @Test
-    void shouldReturnRouteSuccessfully() throws Exception {
-
-        routeApi
-                .getRoute(company.getUuid(), routeUuid)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").value(routeUuid.toString()))
-                .andExpect(jsonPath("$.company.uuid").value(company.getUuid().toString()))
-                .andExpect(jsonPath("$.name").value("25 de Mayo - La Plata"))
-                .andExpect(jsonPath("$.pricingType").value("PER_KM"))
-                .andExpect(jsonPath("$.active").value(true))
-                .andExpect(jsonPath("$.points").isEmpty())
-                .andExpect(jsonPath("$.sectionPrices").isEmpty());
-    }
-
     @Test
     void shouldAllowAdminToGetRoute() throws Exception {
 
@@ -110,15 +94,6 @@ class GetRouteTest {
                 .getRoute(company.getUuid(), routeUuid)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").value(routeUuid.toString()));
-    }
-
-
-    @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-
-        new RouteApiTestClient(mockMvc, objectMapper)
-                .getRoute(company.getUuid(), routeUuid)
-                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -141,13 +116,34 @@ class GetRouteTest {
                 .andExpect(status().isForbidden());
     }
 
-
-
     @Test
     void shouldReturnNotFoundWhenRouteDoesNotExist() throws Exception {
 
         routeApi
                 .getRoute(company.getUuid(), UUID.randomUUID())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnRouteSuccessfully() throws Exception {
+
+        routeApi
+                .getRoute(company.getUuid(), routeUuid)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid").value(routeUuid.toString()))
+                .andExpect(jsonPath("$.company.uuid").value(company.getUuid().toString()))
+                .andExpect(jsonPath("$.name").value("25 de Mayo - La Plata"))
+                .andExpect(jsonPath("$.pricingType").value("PER_KM"))
+                .andExpect(jsonPath("$.active").value(true))
+                .andExpect(jsonPath("$.points").isEmpty())
+                .andExpect(jsonPath("$.sectionPrices").isEmpty());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+
+        new RouteApiTestClient(mockMvc, objectMapper)
+                .getRoute(company.getUuid(), routeUuid)
+                .andExpect(status().isUnauthorized());
     }
 }

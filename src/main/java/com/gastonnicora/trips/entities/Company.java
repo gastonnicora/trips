@@ -125,8 +125,10 @@ public class Company {
      * @param email     Dirección de correo electrónico de la empresa.
      * @param phone     Número de teléfono de la empresa.
      */
-    public Company(String name, String address, double latitude, double longitude, String email,
-                   String phone) {
+    public Company(
+            String name, String address, double latitude, double longitude, String email,
+            String phone
+                  ) {
         this.name = name;
         this.address = address;
         this.email = email;

@@ -57,20 +57,6 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     /**
      * Busca un trabajador por el identificador del usuario y de la empresa
-     * asociada.
-     *
-     * @param userUuid    Identificador único del usuario.
-     * @param companyUuid Identificador único de la empresa.
-     *
-     * @return {@link Optional} que contiene el trabajador encontrado, o vacío si no
-     * existe.
-     */
-    Optional<Worker> findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
-            UUID userUuid,
-            UUID companyUuid);
-
-    /**
-     * Busca un trabajador por el identificador del usuario y de la empresa
      * asociada únicamente si se encuentra activo.
      *
      * @param userUuid    Identificador único del usuario.
@@ -81,5 +67,21 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
      */
     Optional<Worker> findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
             UUID userUuid,
-            UUID companyUuid);
+            UUID companyUuid
+                                                                                                    );
+
+    /**
+     * Busca un trabajador por el identificador del usuario y de la empresa
+     * asociada.
+     *
+     * @param userUuid    Identificador único del usuario.
+     * @param companyUuid Identificador único de la empresa.
+     *
+     * @return {@link Optional} que contiene el trabajador encontrado, o vacío si no
+     * existe.
+     */
+    Optional<Worker> findByUserUuidAndCompanyUuidAndUserEnabledTrueAndCompanyActiveTrue(
+            UUID userUuid,
+            UUID companyUuid
+                                                                                       );
 }

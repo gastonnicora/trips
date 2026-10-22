@@ -49,7 +49,8 @@ public class CompanyMapper {
                 company.getPhone(),
                 company.getCreatedAt(),
                 company.getUpdatedAt(),
-                company.isActive());
+                company.isActive()
+        );
     }
 
     /**

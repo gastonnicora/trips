@@ -51,9 +51,11 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
      * @throws IOException Si ocurre un error al escribir la respuesta JSON.
      */
     @Override
-    public void handle(HttpServletRequest request,
-                       HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException {
+    public void handle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AccessDeniedException accessDeniedException
+                      ) throws IOException {
 
         // Configura el estado HTTP y el tipo de contenido
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
