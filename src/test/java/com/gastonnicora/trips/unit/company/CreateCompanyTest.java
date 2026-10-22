@@ -25,8 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateCompanyTest {
@@ -100,6 +99,20 @@ class CreateCompanyTest {
                 .thenReturn(response);
 
         assertThrows(BadRequestException.class, () -> companyService.createCompany(request));
+    }
+
+    @Test
+    void shouldThrowBadRequestWhenGeocodingReturnsNoBody() {
+
+        CompanyCreate request = new CompanyCreate();
+        request.setLatitude(-34.6037);
+        request.setLongitude(-58.3816);
+
+        when(geocodingService.obtenerDireccion(anyDouble(), anyDouble())).thenReturn(null);
+
+        assertThrows(BadRequestException.class, () -> companyService.createCompany(request));
+
+        verify(companyRepository, never()).save(any());
     }
 
 }

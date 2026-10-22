@@ -6,6 +6,7 @@ import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.Route;
 import com.gastonnicora.trips.entities.RoutePoint;
 import com.gastonnicora.trips.enums.PricingType;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.RoutePointMapper;
 import com.gastonnicora.trips.repositories.RoutePointRepository;
 import com.gastonnicora.trips.repositories.RouteRepository;
@@ -22,8 +23,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateRoutePointTest {
@@ -98,5 +98,25 @@ class CreateRoutePointTest {
 
         // Verifica la conversión al DTO
         verify(routePointMapper).toDTO(savedPoint);
+    }
+
+    @Test
+    void shouldThrowNotFoundAndNotSaveWhenRouteDoesNotExist() {
+
+        UUID companyUuid = UUID.randomUUID();
+        UUID routeUuid = UUID.randomUUID();
+
+        RoutePointCreate request = new RoutePointCreate(
+                "Terminal La Plata", -34.9214, -57.9545
+        );
+
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                NotFoundException.class,
+                () -> routePointService.createRoutePoint(companyUuid, routeUuid, request));
+
+        verify(routePointRepository, never()).save(any(RoutePoint.class));
     }
 }

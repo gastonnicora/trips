@@ -51,6 +51,7 @@ class CreateRoutePointTest {
     private RoutePointApiTestClient routePointApi;
     private WorkerApiTestClient ownerWorkerApi;
     private UUID routeUuid;
+    private String ownerToken;
 
     private RoutePointApiTestClient routePointApiForWorkerWithRoles(
             String name,
@@ -117,6 +118,7 @@ class CreateRoutePointTest {
                         result.getResponse().getContentAsString()
                                      ).get("uuid").asString()
                                    );
+        ownerToken = ownerLogin.getToken();
     }
 
     @Test
@@ -311,5 +313,50 @@ class CreateRoutePointTest {
                         -57.9545
                                  )
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenRouteBelongsToAnotherCompany() throws Exception {
+
+        CompanyDTO anotherCompany = new CompanyTestFactory(
+                mockMvc, objectMapper, ownerToken, geocodingService
+        ).createCompany();
+
+        MvcResult result = routeApi
+                .createRoute(anotherCompany.getUuid(), "Ruta ajena", PricingType.PER_KM)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        UUID anotherRouteUuid = UUID.fromString(
+                objectMapper.readTree(result.getResponse().getContentAsString())
+                        .get("uuid").asString());
+
+        // se usa la empresa propia en la URL con la ruta de otra empresa
+        routePointApi
+                .createRoutePoint(company.getUuid(), anotherRouteUuid,
+                                  "Terminal Ajena", -34.9214, -57.9545)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenRouteIsDeleted() throws Exception {
+
+        routeApi
+                .deleteRoute(company.getUuid(), routeUuid)
+                .andExpect(status().isOk());
+
+        routePointApi
+                .createRoutePoint(company.getUuid(), routeUuid,
+                                  "Terminal Borrada", -34.9214, -57.9545)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenRouteDoesNotExist() throws Exception {
+
+        routePointApi
+                .createRoutePoint(company.getUuid(), UUID.randomUUID(),
+                                  "Terminal Inexistente", -34.9214, -57.9545)
+                .andExpect(status().isNotFound());
     }
 }

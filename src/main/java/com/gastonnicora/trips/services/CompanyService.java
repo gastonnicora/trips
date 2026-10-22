@@ -75,7 +75,7 @@ public class CompanyService {
                 companyCreate.getLatitude(),
                 companyCreate.getLongitude()
                                                                     );
-        if (addressR.displayName() == null) {
+        if (addressR == null || addressR.displayName() == null) {
             throw new BadRequestException("Dirección inválida");
         }
         String address = addressR.displayName();
@@ -206,7 +206,7 @@ public class CompanyService {
                 companyCreate.getLatitude(),
                 companyCreate.getLongitude()
                                                                     );
-        if (addressR.displayName() == null) {
+        if (addressR == null || addressR.displayName() == null) {
             throw new BadRequestException("Dirección inválida");
         }
         String address = addressR.displayName();
