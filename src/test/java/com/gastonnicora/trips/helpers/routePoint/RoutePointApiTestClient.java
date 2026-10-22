@@ -97,6 +97,35 @@ public class RoutePointApiTestClient {
         return mockMvc.perform(request);
     }
 
+    public ResultActions updateRoutePoint(
+            UUID companyUuid,
+            UUID routeUuid,
+            UUID routePointUuid,
+            String name,
+            Double latitude,
+            Double longitude
+                                         ) throws Exception {
+
+        String json = objectMapper.writeValueAsString(
+                new RoutePointCreate(name, latitude, longitude)
+                                                     );
+
+        var request = put(
+                "/api/companies/{companyUuid}/route/{routeUuid}/routePoint/{uuid}",
+                companyUuid,
+                routeUuid,
+                routePointUuid
+                         )
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test")
+                .content(json);
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
 
     public RoutePointApiTestClient withToken(String token) {
         this.token = token;

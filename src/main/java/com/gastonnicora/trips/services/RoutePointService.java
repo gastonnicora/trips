@@ -135,4 +135,39 @@ public class RoutePointService {
         }
         return routePointMapper.toDTOList(routePoints);
     }
+
+    /**
+     * Actualiza el nombre y las coordenadas de un punto de ruta activo.
+     *
+     * <p>
+     * El punto se busca con
+     * {@link RoutePointRepository#findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(UUID, UUID, UUID)},
+     * por lo que solo se actualizan puntos activos, cuya ruta esté activa, que pertenezca
+     * a la empresa indicada y cuya empresa también esté activa.
+     * </p>
+     *
+     * @param companyUuid      Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid        Identificador único de la ruta a la que pertenece el punto.
+     * @param routePointUuid   Identificador único del punto de ruta que se desea actualizar.
+     * @param routePointUpdate Nuevos datos del punto de ruta ({@link RoutePointCreate}).
+     *
+     * @return {@link RoutePointDTO} correspondiente al punto de ruta actualizado.
+     *
+     * @throws NotFoundException Si no existe un punto de ruta activo que cumpla con las
+     *                           condiciones indicadas.
+     * @see RoutePointRepository#findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(UUID, UUID, UUID)
+     * @see RoutePointMapper#toDTO(RoutePoint)
+     */
+    public RoutePointDTO updateRoutePoint(
+            UUID companyUuid, UUID routeUuid, UUID routePointUuid, RoutePointCreate routePointUpdate) {
+        RoutePoint routePoint = routePointRepository
+                .findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndUuidAndActiveTrue(
+                        companyUuid, routeUuid, routePointUuid)
+                .orElseThrow(() -> new NotFoundException("No existe el punto de ruta."));
+        routePoint.setLatitude(routePointUpdate.getLatitude());
+        routePoint.setLongitude(routePointUpdate.getLongitude());
+        routePoint.setName(routePointUpdate.getName());
+        routePoint = routePointRepository.save(routePoint);
+        return routePointMapper.toDTO(routePoint);
+    }
 }

@@ -137,4 +137,38 @@ public class RoutePointController {
                                              ) {
         return routePointService.getRoutePoints(companyUuid, routeUuid);
     }
+
+    /**
+     * Actualiza el nombre y las coordenadas de un punto de ruta activo.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de la empresa indicada.
+     * Solo se actualizan puntos activos que pertenezcan a una ruta activa de la empresa.
+     * Si el punto no existe o no cumple esas condiciones, se responde con 404.
+     * </p>
+     *
+     * @param companyUuid      UUID de la empresa a la que pertenece la ruta.
+     * @param routeUuid        UUID de la ruta a la que pertenece el punto.
+     * @param uuid             UUID del punto de ruta que se desea actualizar.
+     * @param routePointUpdate ({@link RoutePointCreate}) nuevos datos del punto de ruta.
+     *
+     * @return datos del punto de ruta actualizado.
+     *
+     * @see RoutePointService#updateRoutePoint(UUID, UUID, UUID, RoutePointCreate)
+     */
+    @PutMapping("/companies/{companyUuid}/route/{routeUuid}/routePoint/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Actualizar punto de ruta",
+            description = "Actualiza el nombre y las coordenadas de un punto activo de una ruta de una empresa.")
+    public RoutePointDTO updateRoutePoint(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid,
+            @PathVariable("uuid") UUID uuid,
+            @RequestBody @Valid RoutePointCreate routePointUpdate
+                                         ) {
+        return routePointService.updateRoutePoint(companyUuid, routeUuid, uuid, routePointUpdate);
+    }
 }
