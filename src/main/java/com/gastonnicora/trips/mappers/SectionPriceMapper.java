@@ -1,8 +1,6 @@
 package com.gastonnicora.trips.mappers;
 
-import com.gastonnicora.trips.dtos.entities.RoutePointDTO;
 import com.gastonnicora.trips.dtos.entities.SectionPriceDTO;
-import com.gastonnicora.trips.entities.RoutePoint;
 import com.gastonnicora.trips.entities.SectionPrice;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +54,8 @@ public class SectionPriceMapper {
         }
         return new SectionPriceDTO(
                 sectionPrice.getUuid(), routePointMapper.toDTO(sectionPrice.getFromPoint()),
-                routePointMapper.toDTO(sectionPrice.getToPoint()), sectionPrice.getPrice()
+                routePointMapper.toDTO(sectionPrice.getToPoint()), sectionPrice.getPrice(),
+                sectionPrice.getCreatedAt(), sectionPrice.getUpdatedAt(), sectionPrice.isActive()
         );
     }
 
@@ -69,8 +68,8 @@ public class SectionPriceMapper {
      * @return Lista de DTOs de precio por tramo correspondientes a las entidades
      * proporcionadas.
      */
-    public List<SectionPriceDTO> toDTOList(List<SectionPrice>  sectionPrices) {
-         return sectionPrices.stream()
+    public List<SectionPriceDTO> toDTOList(List<SectionPrice> sectionPrices) {
+        return sectionPrices.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }

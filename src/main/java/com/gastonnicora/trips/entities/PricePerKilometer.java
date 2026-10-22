@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -63,6 +66,27 @@ public class PricePerKilometer {
     @Column(name = "price_per_km", nullable = false, precision = 12, scale = 4)
     private BigDecimal pricePerKm;
 
+
+    /**
+     * Fecha y hora en la que se creó el precio de cada kilómetro.
+     */
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    /**
+     * Fecha y hora de la última actualización del precio de cada kilómetro.
+     */
+    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    /**
+     * Indica si el precio de cada kilómetro se encuentra activ0.
+     */
+    @Column(name = "active", nullable = false)
+    private boolean active;
+
     /**
      * Constructor para crear un nuevo precio por kilómetro.
      *
@@ -76,5 +100,6 @@ public class PricePerKilometer {
         this.baseKm = baseKm;
         this.basePrice = basePrice;
         this.pricePerKm = pricePerKm;
+        this.active = true;
     }
 }

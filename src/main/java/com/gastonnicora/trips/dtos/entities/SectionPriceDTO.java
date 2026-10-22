@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -66,4 +67,32 @@ public class SectionPriceDTO {
             example = "2500.00"
     )
     private BigDecimal price;
+
+
+    /**
+     * Fecha y hora en la que se creó el tramo.
+     */
+    @Schema(
+            description = "Fecha y hora de creación del tramo.",
+            example = "2026-01-01T00:00:00"
+    )
+    private LocalDateTime createdAt;
+
+    /**
+     * Fecha y hora de la última actualización del tramo.
+     */
+    @Schema(
+            description = "Fecha y hora de la última actualización del tramo.",
+            example = "2026-01-01T00:00:00"
+    )
+    private LocalDateTime updatedAt;
+
+    /**
+     * Indica si el tramo se encuentra activo.
+     */
+    @Schema(
+            description = "Indica si el tramo se encuentra activo.",
+            example = "true"
+    )
+    private boolean active;
 }

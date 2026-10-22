@@ -58,7 +58,10 @@ class CreateRoutePointTest {
                 UUID.randomUUID(),
                 "Terminal La Plata",
                 -34.9214,
-                -57.9545
+                -57.9545,
+                null,
+                null,
+                true
         );
 
         when(routePointRepository.save(any(RoutePoint.class)))

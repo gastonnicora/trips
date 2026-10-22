@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -62,6 +65,27 @@ public class RoutePoint {
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
+
+    /**
+     * Fecha y hora en la que se creó el punto de ruta.
+     */
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    /**
+     * Fecha y hora de la última actualización del punto de ruta.
+     */
+    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    /**
+     * Indica si el punto ruta se encuentra activo.
+     */
+    @Column(name = "active", nullable = false)
+    private boolean active;
+
     /**
      * Constructor para crear un nuevo punto.
      *
@@ -73,5 +97,6 @@ public class RoutePoint {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.active = true;
     }
 }

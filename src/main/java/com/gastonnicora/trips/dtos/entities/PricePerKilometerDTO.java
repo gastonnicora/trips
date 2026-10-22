@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -67,4 +68,32 @@ public class PricePerKilometerDTO {
             example = "120.5"
     )
     private BigDecimal pricePerKm;
+
+
+    /**
+     * Fecha y hora en la que se creó el precio por kilómetro.
+     */
+    @Schema(
+            description = "Fecha y hora de creación del precio por kilómetro.",
+            example = "2026-01-01T00:00:00"
+    )
+    private LocalDateTime createdAt;
+
+    /**
+     * Fecha y hora de la última actualización del precio por kilómetro.
+     */
+    @Schema(
+            description = "Fecha y hora de la última actualización del precio por kilómetro.",
+            example = "2026-01-01T00:00:00"
+    )
+    private LocalDateTime updatedAt;
+
+    /**
+     * Indica si el precio por kilómetro se encuentra activa.
+     */
+    @Schema(
+            description = "Indica si el precio por kilometro se encuentra activo.",
+            example = "true"
+    )
+    private boolean active;
 }

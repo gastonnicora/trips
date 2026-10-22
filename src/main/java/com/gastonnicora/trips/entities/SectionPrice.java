@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -75,6 +78,26 @@ public class SectionPrice {
     private BigDecimal price;
 
     /**
+     * Fecha y hora en la que se creó el tramo.
+     */
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    /**
+     * Fecha y hora de la última actualización del tramo.
+     */
+    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    /**
+     * Indica si el tramo se encuentra activo.
+     */
+    @Column(name = "active", nullable = false)
+    private boolean active;
+
+    /**
      * Constructor para crear un nuevo precio por tramo.
      *
      * @param route     Ruta a la que pertenece el tramo.
@@ -87,5 +110,6 @@ public class SectionPrice {
         this.fromPoint = fromPoint;
         this.toPoint = toPoint;
         this.price = price;
+        this.active = true;
     }
 }

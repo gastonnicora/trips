@@ -34,10 +34,13 @@ public class PricePerKilometerMapper {
      * proporcionada, o {@code null} si la entidad es {@code null}.
      */
     public PricePerKilometerDTO toDTO(PricePerKilometer price) {
-       if (price == null) {
+        if (price == null) {
             return null;
         }
-        return new PricePerKilometerDTO(price.getUuid(), price.getBaseKm(), price.getBasePrice(), price.getPricePerKm());
+        return new PricePerKilometerDTO(
+                price.getUuid(), price.getBaseKm(), price.getBasePrice(), price.getPricePerKm(), price.getCreatedAt(),
+                price.getUpdatedAt(), price.isActive()
+        );
     }
 
     /**

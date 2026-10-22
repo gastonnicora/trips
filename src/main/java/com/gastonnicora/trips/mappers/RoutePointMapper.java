@@ -35,7 +35,10 @@ public class RoutePointMapper {
         if (routePoint == null) {
             return null;
         }
-        return new RoutePointDTO(routePoint.getUuid(), routePoint.getName(), routePoint.getLatitude(), routePoint.getLongitude());
+        return new RoutePointDTO(
+                routePoint.getUuid(), routePoint.getName(), routePoint.getLatitude(), routePoint.getLongitude(),
+                routePoint.getCreatedAt(), routePoint.getUpdatedAt(), routePoint.isActive()
+        );
     }
 
     /**
