@@ -38,18 +38,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
      *
      * @return Lista de vehículos asociados a la empresa indicada.
      */
-    List<Vehicle> findAllByCompanyUuidAndActiveTrue(UUID companyUuid);
-
-    /**
-     * Busca un vehículo por el identificador de su empresa y su patente.
-     *
-     * @param companyUuid Identificador único de la empresa.
-     * @param plate       Patente del vehículo.
-     *
-     * @return {@link Optional} que contiene el vehículo encontrado, o vacío si no
-     * existe.
-     */
-    Optional<Vehicle> findByCompanyUuidAndPlate(UUID companyUuid, String plate);
+    List<Vehicle> findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID companyUuid);
 
     /**
      * Busca un vehículo por el identificador de su empresa y su patente

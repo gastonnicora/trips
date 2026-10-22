@@ -145,11 +145,11 @@ public class VehicleService {
      * @return Lista de {@link VehicleDTO} correspondiente a los vehículos encontrados.
      *
      * @throws NotFoundException Si la empresa no tiene vehículos.
-     * @see VehicleRepository#findAllByCompanyUuidAndActiveTrue(UUID)
+     * @see VehicleRepository#findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID)
      * @see VehicleMapper#toDTOList(List)
      */
     public List<VehicleDTO> getVehicles(UUID companyUuid) {
-        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyUuidAndActiveTrue(companyUuid);
+        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(companyUuid);
         if (vehicles.isEmpty()) {
             throw new NotFoundException("No existen vehículos para esa empresa");
         }

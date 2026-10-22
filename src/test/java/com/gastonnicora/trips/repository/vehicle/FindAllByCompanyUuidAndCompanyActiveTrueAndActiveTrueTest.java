@@ -3,7 +3,6 @@ package com.gastonnicora.trips.repository.vehicle;
 
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.Vehicle;
-import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.repositories.CompanyRepository;
 import com.gastonnicora.trips.repositories.VehicleRepository;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FindAllByCompanyUuidAndActiveTrueTest {
+public class FindAllByCompanyUuidAndCompanyActiveTrueAndActiveTrueTest {
 
 
     @Autowired
@@ -43,7 +41,7 @@ public class FindAllByCompanyUuidAndActiveTrueTest {
         Vehicle vehicle2 = vehicleRepository.save(
                 new Vehicle(company, "ABC123", "Model X", 50));
 
-        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndActiveTrue(company.getUuid());
+        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid());
 
         assertFalse(found.isEmpty());
         assertTrue(found.stream().anyMatch(item -> item.getUuid().equals(vehicle.getUuid())));
@@ -53,7 +51,7 @@ public class FindAllByCompanyUuidAndActiveTrueTest {
 
     @Test
     void shouldReturnEmptyWhenUuidDoesNotExist() {
-        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndActiveTrue(UUID.randomUUID());
+        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID.randomUUID());
 
         assertTrue(found.isEmpty());
     }
@@ -68,7 +66,7 @@ public class FindAllByCompanyUuidAndActiveTrueTest {
         vehicle.setActive(false);
         vehicle = vehicleRepository.save(vehicle);
 
-        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndActiveTrue(company.getUuid());
+        List<Vehicle> found = vehicleRepository.findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(company.getUuid());
 
         assertTrue(found.isEmpty());
     }

@@ -35,7 +35,7 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
 
 
     /**
-     * Busca una ruta activa por su uuid y el uuid de la empresa a la que pertenece.
+     * Busca una ruta activa por su uuid y el uuid de la empresa activa a la que pertenece.
      *
      * @param routeUuid   Identificador único de la ruta.
      * @param companyUuid Identificador único de la empresa.
