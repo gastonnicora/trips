@@ -60,23 +60,6 @@ class GetVehicleTest {
         ).withToken(token);
     }
 
-    @Test
-    void shouldReturnForbiddenWhenVehicleBelongsToAnotherCompany() throws Exception {
-
-        CompanyDTO anotherCompany = new CompanyTestFactory(
-                mockMvc,
-                objectMapper,
-                token,
-                geocodingService
-        ).createCompany();
-
-        vehicleApi
-                .getVehicle(
-                        anotherCompany.getUuid(),
-                        vehicleUuid
-                )
-                .andExpect(status().isForbidden());
-    }
 
     @Test
     void shouldReturnNotFoundWhenVehicleDoesNotExist() throws Exception {

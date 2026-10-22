@@ -62,12 +62,12 @@ public class VehicleService {
      *
      * @throws ConflictException Si ya existe un vehículo activo con la misma
      *                           patente para la empresa.
-     * @see VehicleRepository#findByCompanyUuidAndPlateAndActiveTrue(UUID, String)
+     * @see VehicleRepository#findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(UUID, String)
      * @see VehicleMapper#toDTO(Vehicle)
      */
     public VehicleDTO createVehicle(Company company, VehicleCreate vehicleCreate) {
         if (vehicleRepository
-                .findByCompanyUuidAndPlateAndActiveTrue(company.getUuid(), vehicleCreate.getPlate())
+                .findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(company.getUuid(), vehicleCreate.getPlate())
                 .isPresent()) {
             throw new ConflictException("Ya existe un vehículo activo con esa patente");
         }
@@ -90,13 +90,10 @@ public class VehicleService {
      *
      * @throws ForbiddenException Si el vehículo no pertenece a la empresa
      *                            indicada.
-     * @see VehicleService#findByUuid(UUID)
+     * @see VehicleService#findByUuid(UUID,UUID)
      */
     public void deleteVehicle(UUID companyUuid, UUID vehicleUuid) {
-        Vehicle existingVehicle = findByUuid(vehicleUuid);
-        if (!companyUuid.equals(existingVehicle.getCompany().getUuid())) {
-            throw new ForbiddenException("Acceso denegado");
-        }
+        Vehicle existingVehicle = findByUuid(companyUuid,vehicleUuid);
         existingVehicle.setActive(false);
         vehicleRepository.save(existingVehicle);
     }
@@ -104,16 +101,17 @@ public class VehicleService {
     /**
      * Busca un vehículo activo mediante su UUID.
      *
+     * @param  companyUuid UUID de la empresa.
      * @param vehicleUuid UUID del vehículo que se desea obtener.
      *
      * @return {@link Vehicle} correspondiente al vehículo encontrado.
      *
      * @throws NotFoundException Si el vehículo no existe o se encuentra
      *                           inactivo.
-     * @see VehicleRepository#findByUuidAndActiveTrue(UUID)
+     * @see VehicleRepository#findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(UUID,UUID)
      */
-    public Vehicle findByUuid(UUID vehicleUuid) {
-        return vehicleRepository.findByUuidAndActiveTrue(vehicleUuid)
+    public Vehicle findByUuid(UUID companyUuid,UUID vehicleUuid) {
+        return vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicleUuid,companyUuid)
                 .orElseThrow(() -> new NotFoundException("Vehículo no encontrado"));
     }
 
@@ -126,14 +124,11 @@ public class VehicleService {
      * @return {@link VehicleDTO} correspondiente al vehículo encontrado.
      *
      * @throws ForbiddenException Si el vehículo no pertenece a la compañía.
-     * @see VehicleService#findByUuid(UUID)
+     * @see VehicleService#findByUuid(UUID,UUID)
      * @see VehicleMapper#toDTO(Vehicle)
      */
     public VehicleDTO getVehicle(UUID vehicleUuid, UUID companyUuid) {
-        Vehicle vehicle = findByUuid(vehicleUuid);
-        if (!vehicle.getCompany().getUuid().equals(companyUuid)) {
-            throw new ForbiddenException("El vehiculo no existe");
-        }
+        Vehicle vehicle = findByUuid(companyUuid,vehicleUuid);
         return vehicleMapper.toDTO(vehicle);
     }
 
@@ -175,17 +170,14 @@ public class VehicleService {
      * @throws ForbiddenException Si el vehículo no pertenece a la empresa indicada.
      * @throws ConflictException  Si la patente cambia y ya existe un vehículo activo
      *                            con esa patente para la empresa.
-     * @see #findByUuid(UUID)
-     * @see VehicleRepository#findByCompanyUuidAndPlateAndActiveTrue(UUID, String)
+     * @see #findByUuid(UUID,UUID)
+     * @see VehicleRepository#findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(UUID, String)
      * @see VehicleMapper#toDTO(Vehicle)
      */
     public VehicleDTO updateVehicle(UUID companyUuid, UUID vehicleUuid, VehicleCreate vehicleUpdate) {
-        Vehicle vehicle = findByUuid(vehicleUuid);
-        if (!vehicle.getCompany().getUuid().equals(companyUuid)) {
-            throw new ForbiddenException("Acceso denegado");
-        }
+        Vehicle vehicle = findByUuid(companyUuid,vehicleUuid);
         if (!Objects.equals(vehicle.getPlate(), vehicleUpdate.getPlate())) {
-            Optional<Vehicle> ve = vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(companyUuid, vehicleUpdate.getPlate());
+            Optional<Vehicle> ve = vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(companyUuid, vehicleUpdate.getPlate());
             if (ve.isPresent()) {
                 throw new ConflictException("No se puede guardar el cambio por que la patente ya esta registrada.");
             }

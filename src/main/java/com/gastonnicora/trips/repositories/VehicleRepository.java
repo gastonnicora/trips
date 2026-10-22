@@ -22,14 +22,6 @@ import java.util.UUID;
  */
 public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
 
-    /**
-     * Busca todos los vehículos asociados a una empresa.
-     *
-     * @param companyUuid Identificador único de la empresa.
-     *
-     * @return Lista de vehículos asociados a la empresa indicada.
-     */
-    List<Vehicle> findAllByCompanyUuid(UUID companyUuid);
 
     /**
      * Busca todos los vehículos asociados a una empresa.
@@ -50,28 +42,20 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
      * @return {@link Optional} que contiene el vehículo activo encontrado, o vacío
      * si no existe.
      */
-    Optional<Vehicle> findByCompanyUuidAndPlateAndActiveTrue(UUID companyUuid, String plate);
+    Optional<Vehicle> findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(UUID companyUuid, String plate);
 
-    /**
-     * Busca un vehículo por su identificador único.
-     *
-     * @param uuid Identificador único del vehículo.
-     *
-     * @return {@link Optional} que contiene el vehículo encontrado, o vacío si no
-     * existe.
-     */
-    Optional<Vehicle> findByUuid(UUID uuid);
 
     /**
      * Busca un vehículo por su identificador único únicamente si se encuentra
      * activo.
      *
-     * @param uuid Identificador único del vehículo.
+     * @param uuid        Identificador único del vehículo.
+     * @param companyUuid identificador de la empresa a la que pertenece la ruta.
      *
      * @return {@link Optional} que contiene el vehículo activo encontrado, o vacío
      * si no existe.
      */
-    Optional<Vehicle> findByUuidAndActiveTrue(UUID uuid);
+    Optional<Vehicle> findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(UUID uuid, UUID companyUuid);
 
 
 }

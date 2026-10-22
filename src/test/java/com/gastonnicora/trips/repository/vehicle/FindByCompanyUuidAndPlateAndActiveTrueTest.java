@@ -35,7 +35,7 @@ class FindByCompanyUuidAndPlateAndActiveTrueTest {
         Vehicle vehicle = vehicleRepository.save(
                 new Vehicle(company, "ABC123", "Model X", 50));
 
-        Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+        Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 company.getUuid(), "ABC123");
 
         assertTrue(found.isPresent());
@@ -47,7 +47,7 @@ class FindByCompanyUuidAndPlateAndActiveTrueTest {
 
     @Test
     void shouldReturnEmptyWhenCompanyAndPlateDoNotMatch() {
-        Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+        Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 UUID.randomUUID(), "ABC123");
 
         assertFalse(found.isPresent());
@@ -63,7 +63,7 @@ class FindByCompanyUuidAndPlateAndActiveTrueTest {
         vehicle.setActive(false);
         vehicleRepository.save(vehicle);
 
-        Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+        Optional<Vehicle> found = vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 company.getUuid(), "ABC123");
 
         assertFalse(found.isPresent());

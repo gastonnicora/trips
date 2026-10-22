@@ -38,7 +38,7 @@ class DeleteVehicleTest {
         vehicle.setActive(true);
         vehicle.setCompany(company);
 
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.of(vehicle));
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid())).thenReturn(Optional.of(vehicle));
 
         vehicleService.deleteVehicle(company.getUuid(), vehicle.getUuid());
 
@@ -46,21 +46,6 @@ class DeleteVehicleTest {
         assertFalse(vehicle.isActive());
     }
 
-    @Test
-    void shouldThrowForbiddenExceptionWhenVehicleCompanyUuidNotEqualsCompany() {
-        Company company = new Company();
-        company.setUuid(java.util.UUID.randomUUID());
-
-        Vehicle vehicle = new Vehicle();
-        vehicle.setCompany(company);
-
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.of(vehicle));
-
-        assertThrows(ForbiddenException.class, () -> vehicleService.deleteVehicle(UUID.randomUUID(), vehicle.getUuid()));
-
-        verify(vehicleRepository).findByUuidAndActiveTrue(vehicle.getUuid());
-        verify(vehicleRepository, never()).save(new Vehicle());
-    }
 
     @Test
     void shouldThrowNotFoundExceptionWhenVehicleDoesNotExist() {
@@ -70,11 +55,11 @@ class DeleteVehicleTest {
         Vehicle vehicle = new Vehicle();
         vehicle.setCompany(company);
 
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.empty());
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> vehicleService.deleteVehicle(company.getUuid(), vehicle.getUuid()));
 
-        verify(vehicleRepository).findByUuidAndActiveTrue(vehicle.getUuid());
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid());
         verify(vehicleRepository, never()).save(new Vehicle());
     }
 }

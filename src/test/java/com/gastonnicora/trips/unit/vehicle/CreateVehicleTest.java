@@ -71,10 +71,10 @@ class CreateVehicleTest {
         VehicleDTO expectedDTO = new VehicleDTO();
         expectedDTO.setUuid(vehicleUuid);
 
-        when(vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+        when(vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleCreate.getPlate()
-        )).thenReturn(Optional.empty());
+                                                                                         )).thenReturn(Optional.empty());
 
         when(vehicleRepository.save(any(Vehicle.class)))
                 .thenReturn(vehicle);
@@ -91,10 +91,10 @@ class CreateVehicleTest {
         assertEquals(expectedDTO, result);
 
         verify(vehicleRepository)
-                .findByCompanyUuidAndPlateAndActiveTrue(
+                .findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                         companyUuid,
                         vehicleCreate.getPlate()
-                );
+                                                                           );
 
         ArgumentCaptor<Vehicle> captor
                 = ArgumentCaptor.forClass(Vehicle.class);
@@ -146,10 +146,10 @@ class CreateVehicleTest {
         VehicleDTO expectedDTO = new VehicleDTO();
         expectedDTO.setUuid(vehicleUuid);
 
-        when(vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+        when(vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleCreate.getPlate()
-        )).thenReturn(Optional.empty());
+                                                                                         )).thenReturn(Optional.empty());
 
         when(vehicleRepository.save(any(Vehicle.class)))
                 .thenReturn(vehicle);
@@ -166,10 +166,10 @@ class CreateVehicleTest {
         assertEquals(expectedDTO, result);
 
         verify(vehicleRepository)
-                .findByCompanyUuidAndPlateAndActiveTrue(
+                .findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                         companyUuid,
                         vehicleCreate.getPlate()
-                );
+                                                                           );
 
         ArgumentCaptor<Vehicle> captor
                 = ArgumentCaptor.forClass(Vehicle.class);
@@ -218,10 +218,10 @@ class CreateVehicleTest {
                 vehicleCreate.getCapacity()
         );
 
-        when(vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+        when(vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleCreate.getPlate()
-        )).thenReturn(Optional.of(existingVehicle));
+                                                                                         )).thenReturn(Optional.of(existingVehicle));
 
         ConflictException exception = assertThrows(
                 ConflictException.class,
@@ -237,10 +237,10 @@ class CreateVehicleTest {
         );
 
         verify(vehicleRepository)
-                .findByCompanyUuidAndPlateAndActiveTrue(
+                .findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                         companyUuid,
                         vehicleCreate.getPlate()
-                );
+                                                                           );
         verify(vehicleRepository, never())
                 .save(any(Vehicle.class));
 

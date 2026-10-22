@@ -39,11 +39,11 @@ class GetVehicleTest {
         Vehicle vehicle = new Vehicle();
         vehicle.setActive(true);
         vehicle.setCompany(company);
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.of(vehicle));
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid())).thenReturn(Optional.of(vehicle));
         VehicleDTO expectedVehicleDTO = new VehicleDTO();
         when(vehicleMapper.toDTO(vehicle)).thenReturn(expectedVehicleDTO);
         VehicleDTO result = vehicleService.getVehicle(vehicle.getUuid(), company.getUuid());
-        verify(vehicleRepository).findByUuidAndActiveTrue(vehicle.getUuid());
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid());
         assertEquals(expectedVehicleDTO, result);
         verify(vehicleMapper).toDTO(vehicle);
     }
@@ -54,9 +54,9 @@ class GetVehicleTest {
         company.setUuid(java.util.UUID.randomUUID());
         Vehicle vehicle = new Vehicle();
         vehicle.setCompany(company);
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicle.getUuid())).thenReturn(Optional.empty());
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> vehicleService.getVehicle(vehicle.getUuid(), company.getUuid()));
-        verify(vehicleRepository).findByUuidAndActiveTrue(vehicle.getUuid());
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicle.getUuid(),company.getUuid());
         verify(vehicleMapper, never()).toDTO(any(Vehicle.class));
     }
 }

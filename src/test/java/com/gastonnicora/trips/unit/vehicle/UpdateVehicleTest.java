@@ -65,12 +65,12 @@ class UpdateVehicleTest {
         VehicleDTO expectedDTO = new VehicleDTO();
         expectedDTO.setUuid(vehicleUuid);
 
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicleUuid))
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicleUuid,companyUuid))
                 .thenReturn(Optional.of(vehicle));
-        when(vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+        when(vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleUpdate.getPlate()
-        )).thenReturn(Optional.empty());
+                                                                                         )).thenReturn(Optional.empty());
         when(vehicleRepository.save(any(Vehicle.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
         when(vehicleMapper.toDTO(vehicle)).thenReturn(expectedDTO);
@@ -80,11 +80,11 @@ class UpdateVehicleTest {
         assertNotNull(result);
         assertEquals(expectedDTO, result);
 
-        verify(vehicleRepository).findByUuidAndActiveTrue(vehicleUuid);
-        verify(vehicleRepository).findByCompanyUuidAndPlateAndActiveTrue(
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicleUuid,companyUuid);
+        verify(vehicleRepository).findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleUpdate.getPlate()
-        );
+                                                                                            );
 
         ArgumentCaptor<Vehicle> captor = ArgumentCaptor.forClass(Vehicle.class);
         verify(vehicleRepository).save(captor.capture());
@@ -115,7 +115,7 @@ class UpdateVehicleTest {
         VehicleDTO expectedDTO = new VehicleDTO();
         expectedDTO.setUuid(vehicleUuid);
 
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicleUuid))
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicleUuid,companyUuid))
                 .thenReturn(Optional.of(vehicle));
         when(vehicleRepository.save(any(Vehicle.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -126,7 +126,7 @@ class UpdateVehicleTest {
         assertEquals(expectedDTO, result);
 
         verify(vehicleRepository, never())
-                .findByCompanyUuidAndPlateAndActiveTrue(any(UUID.class), anyString());
+                .findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(any(UUID.class), anyString());
 
         ArgumentCaptor<Vehicle> captor = ArgumentCaptor.forClass(Vehicle.class);
         verify(vehicleRepository).save(captor.capture());
@@ -155,7 +155,7 @@ class UpdateVehicleTest {
         VehicleDTO expectedDTO = new VehicleDTO();
         expectedDTO.setUuid(vehicleUuid);
 
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicleUuid))
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicleUuid,companyUuid))
                 .thenReturn(Optional.of(vehicle));
         when(vehicleRepository.save(any(Vehicle.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -166,7 +166,7 @@ class UpdateVehicleTest {
         assertEquals(expectedDTO, result);
 
         verify(vehicleRepository, never())
-                .findByCompanyUuidAndPlateAndActiveTrue(any(UUID.class), anyString());
+                .findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(any(UUID.class), anyString());
 
         ArgumentCaptor<Vehicle> captor = ArgumentCaptor.forClass(Vehicle.class);
         verify(vehicleRepository).save(captor.capture());
@@ -190,12 +190,12 @@ class UpdateVehicleTest {
         Vehicle otherVehicle = new Vehicle(company, "CC456DD", "Ford", 20);
         otherVehicle.setUuid(UUID.randomUUID());
 
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicleUuid))
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicleUuid,companyUuid))
                 .thenReturn(Optional.of(vehicle));
-        when(vehicleRepository.findByCompanyUuidAndPlateAndActiveTrue(
+        when(vehicleRepository.findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleUpdate.getPlate()
-        )).thenReturn(Optional.of(otherVehicle));
+                                                                                         )).thenReturn(Optional.of(otherVehicle));
 
         ConflictException exception = assertThrows(
                 ConflictException.class,
@@ -207,10 +207,10 @@ class UpdateVehicleTest {
                 exception.getMessage()
         );
 
-        verify(vehicleRepository).findByCompanyUuidAndPlateAndActiveTrue(
+        verify(vehicleRepository).findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(
                 companyUuid,
                 vehicleUpdate.getPlate()
-        );
+                                                                                            );
         verify(vehicleRepository, never()).save(any(Vehicle.class));
         verify(vehicleMapper, never()).toDTO(any(Vehicle.class));
 
@@ -220,40 +220,6 @@ class UpdateVehicleTest {
         assertEquals(50, vehicle.getCapacity());
     }
 
-    @Test
-    void shouldThrowForbiddenWhenVehicleBelongsToAnotherCompany() {
-
-        UUID vehicleCompanyUuid = UUID.randomUUID();
-        UUID anotherCompanyUuid = UUID.randomUUID();
-        UUID vehicleUuid = UUID.randomUUID();
-        Company company = buildCompany(vehicleCompanyUuid);
-
-        Vehicle vehicle = new Vehicle(company, "AA123BB", "Mercedes Benz", 50);
-        vehicle.setUuid(vehicleUuid);
-
-        VehicleCreate vehicleUpdate = new VehicleCreate("CC456DD", "Iveco", 30);
-
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicleUuid))
-                .thenReturn(Optional.of(vehicle));
-
-        ForbiddenException exception = assertThrows(
-                ForbiddenException.class,
-                () -> vehicleService.updateVehicle(anotherCompanyUuid, vehicleUuid, vehicleUpdate)
-        );
-
-        assertEquals("Acceso denegado", exception.getMessage());
-
-        verify(vehicleRepository).findByUuidAndActiveTrue(vehicleUuid);
-        verify(vehicleRepository, never())
-                .findByCompanyUuidAndPlateAndActiveTrue(any(UUID.class), anyString());
-        verify(vehicleRepository, never()).save(any(Vehicle.class));
-        verify(vehicleMapper, never()).toDTO(any(Vehicle.class));
-
-        // el vehículo no debe haberse modificado
-        assertEquals("AA123BB", vehicle.getPlate());
-        assertEquals("Mercedes Benz", vehicle.getModel());
-        assertEquals(50, vehicle.getCapacity());
-    }
 
     @Test
     void shouldThrowNotFoundWhenVehicleDoesNotExist() {
@@ -262,7 +228,7 @@ class UpdateVehicleTest {
         UUID vehicleUuid = UUID.randomUUID();
         VehicleCreate vehicleUpdate = new VehicleCreate("CC456DD", "Iveco", 30);
 
-        when(vehicleRepository.findByUuidAndActiveTrue(vehicleUuid))
+        when(vehicleRepository.findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicleUuid,companyUuid))
                 .thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(
@@ -272,9 +238,9 @@ class UpdateVehicleTest {
 
         assertEquals("Vehículo no encontrado", exception.getMessage());
 
-        verify(vehicleRepository).findByUuidAndActiveTrue(vehicleUuid);
+        verify(vehicleRepository).findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(vehicleUuid,companyUuid);
         verify(vehicleRepository, never())
-                .findByCompanyUuidAndPlateAndActiveTrue(any(UUID.class), anyString());
+                .findByCompanyUuidAndCompanyActiveTrueAndPlateAndActiveTrue(any(UUID.class), anyString());
         verify(vehicleRepository, never()).save(any(Vehicle.class));
         verify(vehicleMapper, never()).toDTO(any(Vehicle.class));
     }

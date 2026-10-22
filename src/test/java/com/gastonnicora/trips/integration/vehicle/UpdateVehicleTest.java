@@ -214,42 +214,6 @@ class UpdateVehicleTest {
                 .andExpect(status().isForbidden());
     }
 
-    @Test
-    void shouldReturnForbiddenWhenVehicleBelongsToAnotherCompany() throws Exception {
-
-        // otro usuario con su propia empresa, donde sí tiene rol OWNER
-        String anotherToken = UserTestFactory.registerAndLogin(mockMvc);
-
-        CompanyDTO anotherCompany = new CompanyTestFactory(
-                mockMvc,
-                objectMapper,
-                anotherToken,
-                geocodingService
-        ).createCompany();
-
-        VehicleApiTestClient anotherUserApi
-                = new VehicleApiTestClient(
-                mockMvc,
-                objectMapper
-        ).withToken(anotherToken);
-
-        // intenta modificar un vehículo de la empresa original usando su propia empresa en la URL
-        anotherUserApi
-                .updateVehicle(
-                        anotherCompany.getUuid(),
-                        vehicleUuid,
-                        "CC456DD",
-                        "Iveco",
-                        30
-                )
-                .andExpect(status().isForbidden());
-
-        // el vehículo original no fue modificado
-        vehicleApi
-                .getVehicle(company.getUuid(), vehicleUuid)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.plate").value("AA123BB"));
-    }
 
     @Test
     void shouldReturnNotFoundWhenVehicleDoesNotExist() throws Exception {
