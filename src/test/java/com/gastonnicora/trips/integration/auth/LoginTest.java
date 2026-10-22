@@ -26,11 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class LoginTest {
 
-    private final String name = "user";
     private final String pass = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
-    private UserDTO user;
     private AuthApiTestClient authApi;
     private String email;
 
@@ -59,7 +57,8 @@ class LoginTest {
 
     @BeforeEach
     void setup() throws Exception {
-        user = UserTestFactory.registerUser(mockMvc, name, pass);
+        String name = "user";
+        UserDTO user = UserTestFactory.registerUser(mockMvc, name, pass);
         this.authApi = new AuthApiTestClient(mockMvc);
         email = user.getEmail();
     }

@@ -31,7 +31,6 @@ class ChangeUserRoleTest {
     private final String userPassword = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
-    private String token;
     private UserApiTestClient userApi;
     @Value("${superadmin.email}")
     private String adminEmail;
@@ -41,7 +40,7 @@ class ChangeUserRoleTest {
 
     @BeforeEach
     void setup() throws Exception {
-        token = UserTestFactory.login(mockMvc, adminEmail, adminPassword).getToken();
+        String token = UserTestFactory.login(mockMvc, adminEmail, adminPassword).getToken();
         this.userApi = new UserApiTestClient(mockMvc).withToken(token);
         this.user = UserTestFactory.registerUser(mockMvc, "User", userPassword);
     }

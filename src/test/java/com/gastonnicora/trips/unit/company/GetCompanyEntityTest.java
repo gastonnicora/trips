@@ -29,11 +29,6 @@ class GetCompanyEntityTest {
     @Mock
     private CompanyRepository companyRepository;
 
-    @Mock
-    private CompanyMapper companyMapper;
-
-    @Mock
-    private GeocodingService geocodingService;
 
     @Test
     void shouldReturnCompanyEntitySuccessfully() {

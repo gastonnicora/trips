@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class GetWorkersByCurrentUserTest {
 
-    private final String password = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -39,21 +38,21 @@ class GetWorkersByCurrentUserTest {
     private GeocodingService geocodingService;
     private String token;
     private WorkerApiTestClient workerApi;
-    private String email;
     private UserDTO user;
-    private CompanyDTO company;
 
     private String registerAndLoginUser(String nombre) throws Exception {
-        this.user = UserTestFactory.registerUser(mockMvc, nombre, this.password);
-        this.email = user.getEmail();
-        this.token = UserTestFactory.login(mockMvc, email, this.password).getToken();
+        String password = "goodPassword";
+        this.user = UserTestFactory.registerUser(mockMvc, nombre, password);
+        String email = user.getEmail();
+        this.token = UserTestFactory.login(mockMvc, email, password).getToken();
         return this.token;
     }
 
     @BeforeEach
     void setup() throws Exception {
         String ownerToken = registerAndLoginUser("ownerComapany");
-        this.company = new CompanyTestFactory(mockMvc, objectMapper, ownerToken, geocodingService).createCompany();
+        CompanyDTO company = new CompanyTestFactory(
+                mockMvc, objectMapper, ownerToken, geocodingService).createCompany();
         registerAndLoginUser("worker");
         new WorkerTestFactory(mockMvc, objectMapper, ownerToken).createWorker(
                 company.getUuid(), user.getUuid(), Set.of(RoleCompany.DRIVER));

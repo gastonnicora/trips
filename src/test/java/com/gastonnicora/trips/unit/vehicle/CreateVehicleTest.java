@@ -35,8 +35,6 @@ class CreateVehicleTest {
     @Mock
     private VehicleMapper vehicleMapper;
 
-    @Mock
-    private CompanyService companyService;
 
     @Test
     void shouldCreateVehicleSuccessfully() {

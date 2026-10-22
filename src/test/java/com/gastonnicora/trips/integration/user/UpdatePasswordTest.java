@@ -28,12 +28,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class UpdatePasswordTest {
 
-    private final String name = "Juan";
     private final String password = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
     private UserDTO user;
-    private String token;
     private UserApiTestClient userApi;
 
     static Stream<Arguments> invalidFields() {
@@ -57,8 +55,9 @@ class UpdatePasswordTest {
     @BeforeEach
     void setup() throws Exception {
 
+        String name = "Juan";
         user = UserTestFactory.registerUser(mockMvc, name, password);
-        token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
+        String token = UserTestFactory.login(mockMvc, user.getEmail(), password).getToken();
         this.userApi = new UserApiTestClient(mockMvc).withToken(token);
     }
 

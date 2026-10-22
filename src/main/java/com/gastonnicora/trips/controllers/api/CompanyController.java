@@ -130,7 +130,7 @@ public class CompanyController {
     @Operation(summary = "Obtener empresas", description = "Obtiene todas las empresas activas del sistema. Requiere rol ADMIN o SUPER_ADMIN.")
     public List<CompanyDTO> getCompanies() {
         return companyService.getCompanies();
-    }// TODO: Testear
+    }
 
     /**
      * Obtiene las empresas cuyo propietario es el usuario autenticado.

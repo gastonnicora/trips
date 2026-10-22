@@ -42,12 +42,10 @@ class DeleteVehicleTest {
 
     private UUID vehicleUuid;
 
-    private String token;
-
     @BeforeEach
     void setup() throws Exception {
 
-        token = UserTestFactory.registerAndLogin(mockMvc);
+        String token = UserTestFactory.registerAndLogin(mockMvc);
 
 
         vehicleApi = new VehicleApiTestClient(

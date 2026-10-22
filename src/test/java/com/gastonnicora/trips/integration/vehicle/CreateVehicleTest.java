@@ -37,13 +37,12 @@ class CreateVehicleTest {
     private GeocodingService geocodingService;
 
     private CompanyDTO company;
-    private String token;
     private VehicleApiTestClient vehicleApi;
 
     @BeforeEach
     void setup() throws Exception {
 
-        token = UserTestFactory.registerAndLogin(mockMvc);
+        String token = UserTestFactory.registerAndLogin(mockMvc);
 
         company = new CompanyTestFactory(mockMvc, objectMapper, token, geocodingService).createCompany();
 

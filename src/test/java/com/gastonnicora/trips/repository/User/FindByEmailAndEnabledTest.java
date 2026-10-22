@@ -40,8 +40,8 @@ class FindByEmailAndEnabledTest {
         List<User> found = userRepository.findByEmailAndEnabled("test@test.com", true);
 
         assertFalse(found.isEmpty());
-        assertTrue(found.get(0).isEnabled());
-        assertEquals("test@test.com", found.get(0).getEmail());
+        assertTrue(found.getFirst().isEnabled());
+        assertEquals("test@test.com", found.getFirst().getEmail());
         assertEquals(1, found.size());
     }
 
@@ -72,8 +72,8 @@ class FindByEmailAndEnabledTest {
         List<User> found = userRepository.findByEmailAndEnabled("test@test.com", false);
 
         assertFalse(found.isEmpty());
-        assertFalse(found.get(0).isEnabled());
-        assertEquals("test@test.com", found.get(0).getEmail());
+        assertFalse(found.getFirst().isEnabled());
+        assertEquals("test@test.com", found.getFirst().getEmail());
         assertEquals(1, found.size());
     }
 }

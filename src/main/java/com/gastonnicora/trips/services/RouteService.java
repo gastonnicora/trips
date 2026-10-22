@@ -107,7 +107,7 @@ public class RouteService {
      * @see RouteMapper#toDTO(Route)
      */
     @Transactional
-    public RouteDTO getRoute(UUID companyUuid, UUID routeUuid) { //TODO mejorar
+    public RouteDTO getRoute(UUID companyUuid, UUID routeUuid) {
         Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
 

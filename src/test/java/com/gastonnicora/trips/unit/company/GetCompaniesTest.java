@@ -32,8 +32,6 @@ class GetCompaniesTest {
     @Mock
     private CompanyMapper companyMapper;
 
-    @Mock
-    private GeocodingService geocodingService;
 
     @Test
     void shouldReturnCompaniesSuccessfully() {

@@ -28,7 +28,6 @@ class FindByEmailTest {
         List<User> found = userRepository.findByEmail("test@test.com");
 
         assertTrue(found.isEmpty());
-        assertTrue(found.isEmpty());
     }
 
     @Test

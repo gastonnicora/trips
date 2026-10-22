@@ -32,8 +32,6 @@ class GetCompaniesByOwnerTest {
     @Mock
     private WorkerRepository workerRepository;
 
-    @Mock
-    private WorkerMapper workerMapper;
 
     @Test
     void shouldReturnCompaniesOwnedByUser() {

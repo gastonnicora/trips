@@ -29,8 +29,6 @@ class FindByUuidTest {
     @Mock
     private VehicleRepository vehicleRepository;
 
-    @Mock
-    private VehicleMapper vehicleMapper;
 
     @Test
     void shouldReturnVehicleWhenUuidExists() {

@@ -30,14 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class GetWorkersTest {
 
-    private final String name = "user";
     private final String pass = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
     private GeocodingService geocodingService;
     private WorkerApiTestClient workerApi;
-    private UserDTO user;
     private UUID companyUuid;
     @Autowired
     private ObjectMapper objectMapper;
@@ -75,7 +73,8 @@ class GetWorkersTest {
 
     @BeforeEach
     void setup() throws Exception {
-        user = UserTestFactory.registerUser(mockMvc, name, pass);
+        String name = "user";
+        UserDTO user = UserTestFactory.registerUser(mockMvc, name, pass);
 
         LoginResponse login = UserTestFactory.login(
                 mockMvc,

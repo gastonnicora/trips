@@ -30,14 +30,6 @@ class GetUserTest {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private RefreshTokenService refreshTokenService;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
-    @Mock
-    private UserMapper userMapper;
 
     @Test
     void shouldReturnUserSuccessfully() {

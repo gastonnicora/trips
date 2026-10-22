@@ -32,22 +32,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class RefreshTokenTest {
 
-    private final String name = "user";
     private final String pass = "goodPassword";
     @Autowired
     private MockMvc mockMvc;
-    private UserDTO user;
     private AuthApiTestClient authApi;
     private String email;
-    private String token;
     private String refreshToken;
 
     @BeforeEach
     void setup() throws Exception {
-        user = UserTestFactory.registerUser(mockMvc, name, pass);
+        String name = "user";
+        UserDTO user = UserTestFactory.registerUser(mockMvc, name, pass);
         email = user.getEmail();
         LoginResponse response = UserTestFactory.login(mockMvc, email, pass);
-        token = response.getToken();
+        String token = response.getToken();
         refreshToken = response.getRefreshToken();
 
         this.authApi = new AuthApiTestClient(mockMvc).withToken(token);
