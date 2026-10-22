@@ -142,17 +142,6 @@ class GetRouteTest {
     }
 
 
-    @Test
-    void shouldReturnForbiddenWhenRouteBelongsToAnotherCompany() throws Exception {
-
-        CompanyDTO anotherCompany = new CompanyTestFactory(
-                mockMvc, objectMapper, ownerToken, geocodingService
-        ).createCompany();
-
-        routeApi
-                .getRoute(anotherCompany.getUuid(), routeUuid)
-                .andExpect(status().isForbidden());
-    }
 
     @Test
     void shouldReturnNotFoundWhenRouteDoesNotExist() throws Exception {

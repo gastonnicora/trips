@@ -45,43 +45,28 @@ class GetRouteTest {
 
         RouteDTO routeDTO = new RouteDTO();
 
-        when(routeRepository.findByUuidAndActiveTrue(route.getUuid())).thenReturn(Optional.of(route));
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(route.getUuid(),company.getUuid())).thenReturn(Optional.of(route));
         when(routeMapper.toDTO(route)).thenReturn(routeDTO);
 
         RouteDTO result = routeService.getRoute(company.getUuid(), route.getUuid());
 
         assertEquals(routeDTO, result);
 
-        verify(routeRepository).findByUuidAndActiveTrue(route.getUuid());
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(route.getUuid(),company.getUuid());
         verify(routeMapper).toDTO(route);
     }
 
-    @Test
-    void shouldThrowForbiddenExceptionWhenRouteBelongsToAnotherCompany() {
-        Company company = new Company();
-        company.setUuid(UUID.randomUUID());
-
-        Route route = new Route(company, "Test route", PricingType.PER_KM);
-        route.setUuid(UUID.randomUUID());
-
-        when(routeRepository.findByUuidAndActiveTrue(route.getUuid())).thenReturn(Optional.of(route));
-
-        assertThrows(ForbiddenException.class, () -> routeService.getRoute(UUID.randomUUID(), route.getUuid()));
-
-        verify(routeRepository).findByUuidAndActiveTrue(route.getUuid());
-        verify(routeMapper, never()).toDTO(any(Route.class));
-    }
 
     @Test
     void shouldThrowNotFoundExceptionWhenRouteDoesNotExist() {
         UUID companyUuid = UUID.randomUUID();
         UUID routeUuid = UUID.randomUUID();
 
-        when(routeRepository.findByUuidAndActiveTrue(routeUuid)).thenReturn(Optional.empty());
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid,companyUuid)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> routeService.getRoute(companyUuid, routeUuid));
 
-        verify(routeRepository).findByUuidAndActiveTrue(routeUuid);
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid,companyUuid);
         verify(routeMapper, never()).toDTO(any(Route.class));
     }
 }

@@ -78,10 +78,10 @@ public class RouteService {
      *
      * @throws NotFoundException Si la ruta no existe, se encuentra inactiva o no
      *                           pertenece a la empresa indicada.
-     * @see RouteRepository#findByUuidAndCompanyUuidAndActiveTrue(UUID, UUID)
+     * @see RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
      */
     public void deleteRoute(UUID companyUuid, UUID routeUuid) {
-        Route route = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid)
+        Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
         route.setActive(false);
         routeRepository.save(route);
@@ -102,16 +102,13 @@ public class RouteService {
      *
      * @throws NotFoundException  Si la ruta no existe o se encuentra inactiva.
      * @throws ForbiddenException Si la ruta no pertenece a la empresa indicada.
-     * @see RouteRepository#findByUuidAndActiveTrue(UUID)
+     * @see RouteRepository#findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID)
      * @see RouteMapper#toDTO(Route)
      */
     public RouteDTO getRoute(UUID companyUuid, UUID routeUuid) { //TODO mejorar
-        Route route = routeRepository.findByUuidAndActiveTrue(routeUuid)
+        Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid,companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
 
-        if (!route.getCompany().getUuid().equals(companyUuid)) {
-            throw new ForbiddenException("No tienes permisos para acceder a esta ruta");
-        }
         return routeMapper.toDTO(route);
     }
 
@@ -125,10 +122,10 @@ public class RouteService {
      * empresa.
      *
      * @throws NotFoundException Si la empresa no posee rutas activas.
-     * @see RouteRepository#findByUuidAndCompanyUuidAndActiveTrue(UUID, UUID)
+     * @see RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
      */
     public Route getRouteByUuid(UUID companyUuid, UUID routeUuid) {//TODO testear
-        return routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid)
+        return routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
     }
 
@@ -168,11 +165,11 @@ public class RouteService {
      *
      * @throws NotFoundException Si la ruta no existe, está inactiva o no
      *                           pertenece a la empresa indicada.
-     * @see RouteRepository#findByUuidAndCompanyUuidAndActiveTrue(UUID, UUID)
+     * @see RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
      * @see RouteMapper#toDTO(Route)
      */
     public RouteDTO updateRoute(UUID companyUuid, UUID routeUuid, RouteCreate routeUpdate) {
-        Route route = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid)
+        Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
         route.setName(routeUpdate.getName());
         route.setPricingType(routeUpdate.getPricingType());

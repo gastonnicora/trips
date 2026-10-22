@@ -69,7 +69,7 @@ class CreateRoutePointTest {
 
         when(routePointMapper.toDTO(any(RoutePoint.class)))
                 .thenReturn(expectedDTO);
-        when(routeRepository.findByUuidAndCompanyUuidAndActiveTrue(route.getUuid(),company.getUuid())).thenReturn(Optional.of(route));
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(route.getUuid(), company.getUuid())).thenReturn(Optional.of(route));
 
         RoutePointDTO result = routePointService.createRoutePoint(company.getUuid(),route.getUuid(), request);
 
@@ -82,7 +82,7 @@ class CreateRoutePointTest {
         verify(routePointRepository).save(captor.capture());
 
 
-        verify(routeRepository).findByUuidAndCompanyUuidAndActiveTrue(route.getUuid(),company.getUuid());
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(route.getUuid(), company.getUuid());
 
         RoutePoint savedPoint = captor.getValue();
 

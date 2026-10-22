@@ -63,12 +63,12 @@ public class RoutePointService {
      *
      * @return {@link RoutePointDTO} correspondiente al punto de ruta creado.
      *
-     * @see  RouteRepository#findByUuidAndCompanyUuidAndActiveTrue(UUID, UUID) 
+     * @see  RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
      * @see RoutePointMapper#toDTO(RoutePoint)
      */
     @Transactional
     public RoutePointDTO createRoutePoint(UUID companyUuid,UUID routeUuid, RoutePointCreate routePointCreate) {
-        Route route = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid)
+        Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
         RoutePoint routePoint = new RoutePoint(
                 routePointCreate.getName(), routePointCreate.getLatitude(), routePointCreate.getLongitude());

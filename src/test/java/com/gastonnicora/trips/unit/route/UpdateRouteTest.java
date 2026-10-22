@@ -49,7 +49,7 @@ class UpdateRouteTest {
         Route route = new Route(company, "Ruta vieja", PricingType.PER_KM);
         RouteDTO routeDTO = new RouteDTO();
 
-        when(routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid))
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
                 .thenReturn(Optional.of(route));
         when(routeRepository.save(route)).thenReturn(route);
         when(routeMapper.toDTO(route)).thenReturn(routeDTO);
@@ -65,7 +65,7 @@ class UpdateRouteTest {
         assertEquals(PricingType.PER_SECTION, route.getPricingType());
         assertEquals(company, route.getCompany());
 
-        verify(routeRepository).findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid);
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid);
         verify(routeRepository).save(route);
         verify(routeMapper).toDTO(route);
     }
@@ -75,7 +75,7 @@ class UpdateRouteTest {
         UUID companyUuid = UUID.randomUUID();
         UUID routeUuid = UUID.randomUUID();
 
-        when(routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid))
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
                 .thenReturn(Optional.empty());
 
         assertThrows(
@@ -87,7 +87,7 @@ class UpdateRouteTest {
                                               )
                     );
 
-        verify(routeRepository).findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid);
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid);
         verify(routeRepository, never()).save(any(Route.class));
         verify(routeMapper, never()).toDTO(any(Route.class));
     }

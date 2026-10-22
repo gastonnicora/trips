@@ -40,7 +40,7 @@ public class FindByUuidAndCompanyUuidAndActiveTrueTest {
 
         Route route = routeRepository.save(new Route(company, "Ruta propia", PricingType.PER_KM));
 
-        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(
+        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
                 route.getUuid(), otherCompany.getUuid());
         assertTrue(found.isEmpty());
     }
@@ -54,7 +54,7 @@ public class FindByUuidAndCompanyUuidAndActiveTrueTest {
 
         Route route = routeRepository.save(new Route(company, "Ruta 1", PricingType.PER_KM));
 
-        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(
+        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
                 route.getUuid(), company.getUuid());
 
         assertFalse(found.isEmpty());
@@ -65,7 +65,7 @@ public class FindByUuidAndCompanyUuidAndActiveTrueTest {
 
     @Test
     void shouldReturnEmptyWhenCompanyAndRouteDoNotExist() {
-        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(
+        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
                 UUID.randomUUID(), UUID.randomUUID());
 
         assertTrue(found.isEmpty());
@@ -82,7 +82,7 @@ public class FindByUuidAndCompanyUuidAndActiveTrueTest {
         route.setActive(false);
         routeRepository.save(route);
 
-        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(
+        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
                 route.getUuid(), company.getUuid());
 
         assertTrue(found.isEmpty());
@@ -97,7 +97,7 @@ public class FindByUuidAndCompanyUuidAndActiveTrueTest {
 
         routeRepository.save(new Route(company, "Ruta 1", PricingType.PER_KM));
 
-        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndActiveTrue(
+        Optional<Route> found = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
                 UUID.randomUUID(), company.getUuid());
 
         assertTrue(found.isEmpty());

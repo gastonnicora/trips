@@ -44,14 +44,14 @@ class DeleteRouteTest {
         Route route = new Route(company, "Ruta 1", PricingType.PER_KM);
         assertTrue(route.isActive());
 
-        when(routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid))
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
                 .thenReturn(Optional.of(route));
 
         routeService.deleteRoute(companyUuid, routeUuid);
 
         ArgumentCaptor<Route> captor = ArgumentCaptor.forClass(Route.class);
 
-        verify(routeRepository).findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid);
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid);
         verify(routeRepository).save(captor.capture());
 
         assertFalse(captor.getValue().isActive());
@@ -62,12 +62,12 @@ class DeleteRouteTest {
         UUID companyUuid = UUID.randomUUID();
         UUID routeUuid = UUID.randomUUID();
 
-        when(routeRepository.findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid))
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
                 .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> routeService.deleteRoute(companyUuid, routeUuid));
 
-        verify(routeRepository).findByUuidAndCompanyUuidAndActiveTrue(routeUuid, companyUuid);
+        verify(routeRepository).findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid);
         verify(routeRepository, never()).save(any(Route.class));
     }
 }
