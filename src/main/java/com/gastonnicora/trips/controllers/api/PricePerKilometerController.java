@@ -84,6 +84,38 @@ public class PricePerKilometerController {
     }
 
     /**
+     * Da de baja la configuración de precio por kilómetro de una ruta de una empresa.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de
+     * la empresa indicada. La baja es lógica: la configuración se marca como
+     * inactiva y no se elimina de la base de datos.
+     * </p>
+     *
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta a la que pertenece el precio.
+     * @param uuid        Identificador único del precio por kilómetro que se desea dar de baja.
+     *
+     * @see PricePerKilometerService#deletePricePerKilometer(UUID, UUID, UUID)
+     */
+    @DeleteMapping("/companies/{companyUuid}/route/{routeUuid}/pricePerKilometer/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(
+            summary = "Eliminar precio por kilómetro",
+            description = "Da de baja el precio por kilómetro de una ruta de una empresa."
+    )
+    public void deletePricePerKilometer(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid,
+            @PathVariable("uuid") UUID uuid
+                                       ) {
+        pricePerKilometerService.deletePricePerKilometer(companyUuid, routeUuid, uuid);
+    }
+
+    /**
      * Obtiene el precio por kilómetro de una ruta de una empresa.
      *
      * <p>

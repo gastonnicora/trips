@@ -112,4 +112,20 @@ public class PricePerKilometerApiTestClient {
 
         return mockMvc.perform(request);
     }
+
+    public ResultActions deletePricePerKilometer(UUID companyUuid, UUID routeUuid, UUID uuid) throws Exception {
+
+        var request = delete(
+                "/api/companies/{companyUuid}/route/{routeUuid}/pricePerKilometer/{uuid}",
+                companyUuid,
+                routeUuid,
+                uuid
+                            ).header("User-Agent", "JUnit-Test");
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
 }

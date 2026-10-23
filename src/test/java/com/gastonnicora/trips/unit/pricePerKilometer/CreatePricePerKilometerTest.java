@@ -43,20 +43,32 @@ class CreatePricePerKilometerTest {
     @Mock
     private PricePerKilometerMapper pricePerKilometerMapper;
 
-    @Test
-    void shouldCreatePricePerKilometerSuccessfully() {
+    private Company company;
+    private Route route;
 
-        Company company = new Company();
+    private void givenRouteExists() {
+        company = new Company();
         company.setUuid(UUID.randomUUID());
 
-        Route route = new Route(company, "Test route", PricingType.PER_KM);
+        route = new Route(company, "Test route", PricingType.PER_KM);
         route.setUuid(UUID.randomUUID());
 
-        PricePerKilometerCreate request = new PricePerKilometerCreate(
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
+                route.getUuid(), company.getUuid())).thenReturn(Optional.of(route));
+    }
+
+    private PricePerKilometerCreate request() {
+        return new PricePerKilometerCreate(
                 BigDecimal.valueOf(100),
                 BigDecimal.valueOf(10000),
                 BigDecimal.valueOf(500)
         );
+    }
+
+    @Test
+    void shouldCreatePricePerKilometerWhenRouteHasNoPrice() {
+
+        givenRouteExists();
 
         PricePerKilometerDTO expectedDTO = new PricePerKilometerDTO(
                 UUID.randomUUID(),
@@ -68,19 +80,13 @@ class CreatePricePerKilometerTest {
                 true
         );
 
-        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
-                route.getUuid(), company.getUuid())).thenReturn(Optional.of(route));
-        when(pricePerKilometerRepository
-                     .findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
-                             company.getUuid(), route.getUuid())).thenReturn(Optional.empty());
         when(pricePerKilometerRepository.save(any(PricePerKilometer.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
         when(pricePerKilometerMapper.toDTO(any(PricePerKilometer.class))).thenReturn(expectedDTO);
 
         PricePerKilometerDTO result = pricePerKilometerService.createPricePerKilometer(
-                company.getUuid(), route.getUuid(), request);
+                company.getUuid(), route.getUuid(), request());
 
-        assertNotNull(result);
         assertEquals(expectedDTO, result);
 
         ArgumentCaptor<PricePerKilometer> captor = ArgumentCaptor.forClass(PricePerKilometer.class);
@@ -92,8 +98,6 @@ class CreatePricePerKilometerTest {
         assertEquals(BigDecimal.valueOf(10000), savedPrice.getBasePrice());
         assertEquals(BigDecimal.valueOf(500), savedPrice.getPricePerKm());
         assertTrue(savedPrice.isActive());
-
-        // Verifica la relación bidireccional con la ruta
         assertEquals(route, savedPrice.getRoute());
         assertSame(savedPrice, route.getPricePerKilometer());
 
@@ -102,59 +106,71 @@ class CreatePricePerKilometerTest {
     }
 
     @Test
-    void shouldThrowNotFoundAndNotSaveWhenRouteDoesNotExist() {
+    void shouldReactivateInactivePricePerKilometerInsteadOfCreatingNewOne() {
 
-        UUID companyUuid = UUID.randomUUID();
-        UUID routeUuid = UUID.randomUUID();
+        givenRouteExists();
 
-        PricePerKilometerCreate request = new PricePerKilometerCreate(
-                BigDecimal.valueOf(100),
-                BigDecimal.valueOf(10000),
-                BigDecimal.valueOf(500)
-        );
+        PricePerKilometer inactive = new PricePerKilometer(
+                route, BigDecimal.valueOf(50), BigDecimal.valueOf(5000), BigDecimal.valueOf(300));
+        inactive.setActive(false);
+        route.setPricePerKilometer(inactive);
 
-        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
-                .thenReturn(Optional.empty());
+        when(pricePerKilometerRepository.save(any(PricePerKilometer.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(pricePerKilometerMapper.toDTO(any(PricePerKilometer.class))).thenReturn(null);
+
+        pricePerKilometerService.createPricePerKilometer(company.getUuid(), route.getUuid(), request());
+
+        ArgumentCaptor<PricePerKilometer> captor = ArgumentCaptor.forClass(PricePerKilometer.class);
+        verify(pricePerKilometerRepository).save(captor.capture());
+
+        PricePerKilometer savedPrice = captor.getValue();
+
+        // Se reutiliza la misma instancia: no se crea un registro nuevo para la ruta
+        assertSame(inactive, savedPrice);
+        assertSame(inactive, route.getPricePerKilometer());
+        assertTrue(savedPrice.isActive());
+        assertEquals(BigDecimal.valueOf(100), savedPrice.getBaseKm());
+        assertEquals(BigDecimal.valueOf(10000), savedPrice.getBasePrice());
+        assertEquals(BigDecimal.valueOf(500), savedPrice.getPricePerKm());
+
+        verify(routeRepository).save(route);
+    }
+
+    @Test
+    void shouldThrowConflictAndNotSaveWhenRouteAlreadyHasActivePrice() {
+
+        givenRouteExists();
+
+        PricePerKilometer active = new PricePerKilometer(
+                route, BigDecimal.valueOf(50), BigDecimal.valueOf(5000), BigDecimal.valueOf(300));
+        route.setPricePerKilometer(active);
 
         assertThrows(
-                NotFoundException.class,
-                () -> pricePerKilometerService.createPricePerKilometer(companyUuid, routeUuid, request));
+                ConflictException.class,
+                () -> pricePerKilometerService.createPricePerKilometer(
+                        company.getUuid(), route.getUuid(), request())
+                    );
 
         verify(pricePerKilometerRepository, never()).save(any(PricePerKilometer.class));
         verify(routeRepository, never()).save(any(Route.class));
     }
 
     @Test
-    void shouldThrowConflictAndNotSaveWhenRouteAlreadyHasPricePerKilometer() {
+    void shouldThrowNotFoundAndNotSaveWhenRouteDoesNotExist() {
 
-        Company company = new Company();
-        company.setUuid(UUID.randomUUID());
+        UUID companyUuid = UUID.randomUUID();
+        UUID routeUuid = UUID.randomUUID();
 
-        Route route = new Route(company, "Test route", PricingType.PER_KM);
-        route.setUuid(UUID.randomUUID());
-
-        PricePerKilometer existing = new PricePerKilometer(
-                route, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN);
-
-        PricePerKilometerCreate request = new PricePerKilometerCreate(
-                BigDecimal.valueOf(100),
-                BigDecimal.valueOf(10000),
-                BigDecimal.valueOf(500)
-        );
-
-        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(
-                route.getUuid(), company.getUuid())).thenReturn(Optional.of(route));
-        when(pricePerKilometerRepository
-                     .findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
-                             company.getUuid(), route.getUuid())).thenReturn(Optional.of(existing));
+        when(routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid))
+                .thenReturn(Optional.empty());
 
         assertThrows(
-                ConflictException.class,
-                () -> pricePerKilometerService.createPricePerKilometer(
-                        company.getUuid(), route.getUuid(), request));
+                NotFoundException.class,
+                () -> pricePerKilometerService.createPricePerKilometer(companyUuid, routeUuid, request())
+                    );
 
         verify(pricePerKilometerRepository, never()).save(any(PricePerKilometer.class));
         verify(routeRepository, never()).save(any(Route.class));
-        verify(pricePerKilometerMapper, never()).toDTO(any(PricePerKilometer.class));
     }
 }

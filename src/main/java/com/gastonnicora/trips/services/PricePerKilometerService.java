@@ -11,7 +11,6 @@ import com.gastonnicora.trips.repositories.PricePerKilometerRepository;
 import com.gastonnicora.trips.repositories.RouteRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -60,17 +59,23 @@ public class PricePerKilometerService {
      * Crea la configuración de precio por kilómetro de una ruta.
      *
      * <p>
-     * Busca la ruta activa indicada dentro de la empresa activa indicada y le
-     * asigna la configuración de precio recibida. Si la ruta ya tiene una
-     * configuración de precio por kilómetro activa, la operación se rechaza.
+     * Busca la ruta activa indicada dentro de la empresa activa indicada. Si la
+     * ruta no tiene ninguna configuración de precio, se crea una nueva. Si ya tiene
+     * una configuración inactiva, esa misma configuración se reutiliza: se actualizan
+     * sus valores y se vuelve a activar, ya que la ruta solo puede tener una
+     * configuración de precio por kilómetro.
      * </p>
      *
-     * @param companyUuid             Uuid de la empresa a la que pertenece la ruta.
-     * @param routeUuid               Uuid de la ruta a la que se asignará el precio.
+     * <p>
+     * Si la ruta ya tiene una configuración activa, la operación se rechaza.
+     * </p>
+     *
+     * @param companyUuid             Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid               Identificador único de la ruta a la que se asignará el precio.
      * @param pricePerKilometerCreate Datos del precio por kilómetro que se desea crear
      *                                ({@link PricePerKilometerCreate}).
      *
-     * @return {@link PricePerKilometerDTO} correspondiente al precio creado.
+     * @return {@link PricePerKilometerDTO} correspondiente al precio creado o reactivado.
      *
      * @throws NotFoundException Si la ruta no existe, se encuentra inactiva o no
      *                           pertenece a la empresa indicada.
@@ -84,25 +89,58 @@ public class PricePerKilometerService {
         Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
 
-        Optional<PricePerKilometer> price = pricePerKilometerRepository
-                .findByRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
-                        companyUuid, routeUuid);
-        if (price.isPresent()) {
+        PricePerKilometer pricePerKilometer = route.getPricePerKilometer();
+
+        if (pricePerKilometer != null && pricePerKilometer.isActive()) {
             throw new ConflictException("El precio por kilómetro ya existe en el sistema");
         }
 
-        PricePerKilometer pricePerKilometer = new PricePerKilometer(
-                route,
-                pricePerKilometerCreate.getBaseKm(),
-                pricePerKilometerCreate.getBasePrice(),
-                pricePerKilometerCreate.getPricePerKm()
-        );
+        if (pricePerKilometer == null) {
+            pricePerKilometer = new PricePerKilometer(
+                    route,
+                    pricePerKilometerCreate.getBaseKm(),
+                    pricePerKilometerCreate.getBasePrice(),
+                    pricePerKilometerCreate.getPricePerKm()
+            );
+            route.setPricePerKilometer(pricePerKilometer);
+        } else {
+            pricePerKilometer.setBaseKm(pricePerKilometerCreate.getBaseKm());
+            pricePerKilometer.setBasePrice(pricePerKilometerCreate.getBasePrice());
+            pricePerKilometer.setPricePerKm(pricePerKilometerCreate.getPricePerKm());
+            pricePerKilometer.setActive(true);
+        }
 
-        route.setPricePerKilometer(pricePerKilometer);
         pricePerKilometer = pricePerKilometerRepository.save(pricePerKilometer);
         routeRepository.save(route);
-
         return pricePerKilometerMapper.toDTO(pricePerKilometer);
+    }
+
+    /**
+     * Da de baja la configuración de precio por kilómetro de una ruta.
+     *
+     * <p>
+     * La baja es lógica: la configuración no se elimina de la base de datos, sino
+     * que se marca como inactiva. Solo se pueden dar de baja precios activos, cuya
+     * ruta esté activa, que pertenezca a la empresa indicada y cuya empresa también
+     * esté activa.
+     * </p>
+     *
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta a la que pertenece el precio.
+     * @param uuid        Identificador único del precio por kilómetro que se desea dar de baja.
+     *
+     * @throws NotFoundException Si el precio no existe, está inactivo, o su ruta o
+     *                           empresa no cumplen las condiciones indicadas.
+     * @see PricePerKilometerRepository#findByUuidAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(UUID, UUID, UUID)
+     */
+    public void deletePricePerKilometer(UUID companyUuid, UUID routeUuid, UUID uuid) {
+        PricePerKilometer price = pricePerKilometerRepository
+                .findByUuidAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
+                        uuid, companyUuid, routeUuid)
+                .orElseThrow(() -> new NotFoundException("Precio por kilómetro no encontrado"));
+
+        price.setActive(false);
+        pricePerKilometerRepository.save(price);
     }
 
     /**
