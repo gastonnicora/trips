@@ -153,6 +153,7 @@ public class RouteService {
      * @see RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
      * @see RouteMapper#toDTO(Route)
      */
+    @Transactional
     public RouteDTO updateRoute(UUID companyUuid, UUID routeUuid, RouteCreate routeUpdate) {
         Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));

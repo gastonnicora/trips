@@ -22,12 +22,22 @@ import java.util.UUID;
 public interface SectionPriceRepository extends JpaRepository<SectionPrice, UUID> {
 
     /**
-     * Busca un precio por tramo por su identificador único.
+     * Busca un precio por tramo activo por su identificador único, validando que
+     * pertenezca a una ruta activa de una empresa activa.
      *
-     * @param uuid Identificador único del precio por tramo.
+     * <p>
+     * La búsqueda devuelve el precio por tramo solo si el tramo, la ruta y la empresa
+     * se encuentran activos, y si la ruta pertenece a la empresa indicada. Si alguna
+     * de estas condiciones no se cumple, el resultado es vacío.
+     * </p>
+     *
+     * @param uuid        Identificador único del precio por tramo.
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta a la que pertenece el tramo.
      *
      * @return {@link Optional} que contiene el precio por tramo encontrado, o vacío
-     * si no existe.
+     * si no existe o no cumple alguna de las condiciones.
      */
-    Optional<SectionPrice> findByUuid(UUID uuid);
+    Optional<SectionPrice> findByUuidAndActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(
+            UUID uuid, UUID companyUuid, UUID routeUuid);
 }

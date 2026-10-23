@@ -82,8 +82,13 @@ public class Route {
 
     /**
      * Precios por tramo de la ruta. Se utilizan cuando el tipo de precio es
-     * {@link PricingType#PER_SECTION}.
+     * {@link PricingType#PER_SECTION}, ordenados por su posición.
+     *
+     * <p>
+     * La posición es administrada por JPA mediante {@link OrderColumn}.
+     * </p>
      */
+    @OrderColumn(name = "position")
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SectionPrice> sectionPrices = new ArrayList<>();
 

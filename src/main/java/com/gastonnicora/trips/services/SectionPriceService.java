@@ -1,0 +1,166 @@
+package com.gastonnicora.trips.services;
+
+import com.gastonnicora.trips.dtos.entities.SectionPriceDTO;
+import com.gastonnicora.trips.dtos.request.sectionPrice.SectionPriceCreate;
+import com.gastonnicora.trips.entities.Route;
+import com.gastonnicora.trips.entities.RoutePoint;
+import com.gastonnicora.trips.entities.SectionPrice;
+import com.gastonnicora.trips.exceptions.BadRequestException;
+import com.gastonnicora.trips.exceptions.ConflictException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
+import com.gastonnicora.trips.mappers.SectionPriceMapper;
+import com.gastonnicora.trips.repositories.RouteRepository;
+import com.gastonnicora.trips.repositories.SectionPriceRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service
+public class SectionPriceService {
+
+    private final SectionPriceRepository sectionPriceRepository;
+    private final SectionPriceMapper sectionPriceMapper;
+    private final RouteRepository routeRepository;
+
+    public SectionPriceService(
+            SectionPriceRepository sectionPriceRepository, SectionPriceMapper sectionPriceMapper,
+            RouteRepository routeRepository
+                              ) {
+        this.sectionPriceRepository = sectionPriceRepository;
+        this.sectionPriceMapper = sectionPriceMapper;
+        this.routeRepository = routeRepository;
+    }
+
+    /**
+     * Crea el precio de un tramo entre dos puntos de la ruta.
+     *
+     * <p>
+     * Los tramos forman una cadena continua desde el inicio de la ruta: el primer
+     * tramo debe comenzar en el primer punto y cada tramo siguiente debe comenzar
+     * en el punto donde terminó el anterior. No se permiten tramos que se superpongan
+     * con los existentes ni tramos duplicados.
+     * </p>
+     *
+     * <p>
+     * Si ya existe un tramo inactivo entre los mismos puntos, se reutiliza y se
+     * reactiva, ya que la base de datos no permite duplicar el par de puntos.
+     * </p>
+     *
+     * @param companyUuid        Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid          Identificador único de la ruta.
+     * @param sectionPriceCreate Datos del tramo que se desea crear.
+     *
+     * @return {@link SectionPriceDTO} correspondiente al tramo creado o reactivado.
+     *
+     * @throws NotFoundException   Si la ruta no existe o alguno de los puntos no pertenece a ella.
+     * @throws ConflictException   Si la ruta no tiene puntos, el tramo ya está activo o se superpone con otro.
+     * @throws BadRequestException Si el destino no está después del origen o el tramo no es continuo.
+     */
+    @Transactional
+    public SectionPriceDTO createSectionPrice(UUID companyUuid, UUID routeUuid, SectionPriceCreate sectionPriceCreate) {
+        Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
+                .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
+
+        List<RoutePoint> points = route.getPoints();
+        List<RoutePoint> activePoints = points.stream()
+                .filter(RoutePoint::isActive)
+                .toList();
+        if (activePoints.isEmpty()) {
+            throw new ConflictException("La ruta no tiene puntos");
+        }
+
+        RoutePoint fromPoint = findActivePoint(activePoints, sectionPriceCreate.getFromPoint());
+        RoutePoint toPoint = findActivePoint(activePoints, sectionPriceCreate.getToPoint());
+
+        int fromIndex = indexOfPoint(points, fromPoint);
+        int toIndex = indexOfPoint(points, toPoint);
+        if (toIndex <= fromIndex) {
+            throw new BadRequestException("El punto de destino debe estar después del punto de origen");
+        }
+
+        List<SectionPrice> sectionPrices = route.getSectionPrices();
+
+        SectionPrice existing = sectionPrices.stream()
+                .filter(section -> section.getFromPoint().getUuid().equals(fromPoint.getUuid())
+                        && section.getToPoint().getUuid().equals(toPoint.getUuid()))
+                .findFirst()
+                .orElse(null);
+        if (existing != null && existing.isActive()) {
+            throw new ConflictException("El tramo ya existe en el sistema");
+        }
+
+        List<SectionPrice> activeSections = sectionPrices.stream()
+                .filter(SectionPrice::isActive)
+                .toList();
+
+        for (SectionPrice section : activeSections) {
+            int sectionFromIndex = indexOfPoint(points, section.getFromPoint());
+            int sectionToIndex = indexOfPoint(points, section.getToPoint());
+            if (fromIndex < sectionToIndex && sectionFromIndex < toIndex) {
+                throw new ConflictException("El tramo se superpone con un tramo existente");
+            }
+        }
+
+        RoutePoint expectedStart = activeSections.isEmpty()
+                ? activePoints.get(0)
+                : activeSections.get(activeSections.size() - 1).getToPoint();
+        if (!fromPoint.getUuid().equals(expectedStart.getUuid())) {
+            throw new BadRequestException("El tramo no es continuo: debe comenzar en el punto donde termina el tramo anterior");
+        }
+
+        SectionPrice sectionPrice;
+        if (existing != null) {
+            sectionPrice = existing;
+            sectionPrice.setPrice(sectionPriceCreate.getPrice());
+            sectionPrice.setActive(true);
+        } else {
+            sectionPrice = new SectionPrice(route, fromPoint, toPoint, sectionPriceCreate.getPrice());
+            route.addSectionPrice(sectionPrice);
+        }
+
+        sectionPrice = sectionPriceRepository.save(sectionPrice);
+        routeRepository.save(route);
+        return sectionPriceMapper.toDTO(sectionPrice);
+    }
+
+    public SectionPrice getSectionPrice(UUID companyUuid,UUID routeUuid, UUID sectionUuid) {
+
+
+    }
+
+    /**
+     * Busca un punto activo de la ruta por su identificador.
+     *
+     * @param activePoints Puntos activos de la ruta.
+     * @param pointUuid    Identificador del punto buscado.
+     *
+     * @return punto encontrado.
+     *
+     * @throws NotFoundException Si el punto no está entre los puntos activos de la ruta.
+     */
+    private RoutePoint findActivePoint(List<RoutePoint> activePoints, UUID pointUuid) {
+        return activePoints.stream()
+                .filter(point -> point.getUuid().equals(pointUuid))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("El punto no pertenece a la ruta"));
+    }
+
+    /**
+     * Obtiene la posición de un punto dentro del orden de la ruta.
+     *
+     * @param points Puntos de la ruta, ordenados.
+     * @param point  Punto cuya posición se desea conocer.
+     *
+     * @return índice del punto dentro de la lista.
+     */
+    private int indexOfPoint(List<RoutePoint> points, RoutePoint point) {
+        for (int i = 0; i < points.size(); i++) {
+            if (points.get(i).getUuid().equals(point.getUuid())) {
+                return i;
+            }
+        }
+        throw new IllegalStateException("El punto del tramo no pertenece a la ruta");
+    }
+
+}
