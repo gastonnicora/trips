@@ -113,9 +113,9 @@ public class PricePerKilometerService {
      * encuentran activos, y si la ruta pertenece a la empresa indicada.
      * </p>
      *
-     * @param companyUuid            Identificador único de la empresa a la que pertenece la ruta.
-     * @param routeUuid              Identificador único de la ruta a la que pertenece el precio.
-     * @param pricePerKilometerUuid  Identificador único del precio por kilómetro.
+     * @param companyUuid           Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid             Identificador único de la ruta a la que pertenece el precio.
+     * @param pricePerKilometerUuid Identificador único del precio por kilómetro.
      *
      * @return {@link PricePerKilometerDTO} correspondiente al precio encontrado.
      *
@@ -130,5 +130,42 @@ public class PricePerKilometerService {
                 .orElseThrow(() -> new NotFoundException("Precio por kilómetro no encontrado"));
 
         return pricePerKilometerMapper.toDTO(price);
+    }
+
+    /**
+     * Actualiza la configuración de precio por kilómetro de una ruta activa.
+     *
+     * <p>
+     * El precio se busca con
+     * {@link PricePerKilometerRepository#findByUuidAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(UUID, UUID, UUID)},
+     * por lo que solo se actualizan precios activos, cuya ruta esté activa, que
+     * pertenezca a la empresa indicada y cuya empresa también esté activa.
+     * </p>
+     *
+     * @param companyUuid             Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid               Identificador único de la ruta a la que pertenece el precio.
+     * @param priceUuid               Identificador único del precio por kilómetro que se desea actualizar.
+     * @param pricePerKilometerUpdate Nuevos datos del precio por kilómetro ({@link PricePerKilometerCreate}).
+     *
+     * @return {@link PricePerKilometerDTO} correspondiente al precio actualizado.
+     *
+     * @throws NotFoundException Si el precio no existe, está inactivo, o su ruta o
+     *                           empresa no cumplen las condiciones indicadas.
+     * @see PricePerKilometerMapper#toDTO(PricePerKilometer)
+     */
+    public PricePerKilometerDTO updatePricePerKilometer(
+            UUID companyUuid, UUID routeUuid, UUID priceUuid, PricePerKilometerCreate pricePerKilometerUpdate) {
+
+        PricePerKilometer pricePerKilometer = pricePerKilometerRepository
+                .findByUuidAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
+                        priceUuid, companyUuid, routeUuid)
+                .orElseThrow(() -> new NotFoundException("Precio por kilómetro no encontrado"));
+
+        pricePerKilometer.setBaseKm(pricePerKilometerUpdate.getBaseKm());
+        pricePerKilometer.setBasePrice(pricePerKilometerUpdate.getBasePrice());
+        pricePerKilometer.setPricePerKm(pricePerKilometerUpdate.getPricePerKm());
+
+        pricePerKilometer = pricePerKilometerRepository.save(pricePerKilometer);
+        return pricePerKilometerMapper.toDTO(pricePerKilometer);
     }
 }

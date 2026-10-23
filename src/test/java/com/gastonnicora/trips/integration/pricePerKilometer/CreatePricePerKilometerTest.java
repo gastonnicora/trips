@@ -126,6 +126,14 @@ class CreatePricePerKilometerTest {
     }
 
     @Test
+    void shouldAllowAdminToCreatePricePerKilometer() throws Exception {
+        pricePerKilometerApiForWorkerWithRoles("admin", Set.of(RoleCompany.ADMIN))
+                .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, PRICE_PER_KM)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid").exists());
+    }
+
+    @Test
     void shouldCreatePricePerKilometerSuccessfully() throws Exception {
         pricePerKilometerApi
                 .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, PRICE_PER_KM)
@@ -138,11 +146,34 @@ class CreatePricePerKilometerTest {
     }
 
     @Test
-    void shouldAllowAdminToCreatePricePerKilometer() throws Exception {
-        pricePerKilometerApiForWorkerWithRoles("admin", Set.of(RoleCompany.ADMIN))
-                .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, PRICE_PER_KM)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").exists());
+    void shouldReturnBadRequestWhenBaseKmIsNull() throws Exception {
+        pricePerKilometerApi
+                .createPricePerKilometer(company.getUuid(), routeUuid, null, BASE_PRICE, PRICE_PER_KM)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenBasePriceIsNegative() throws Exception {
+        pricePerKilometerApi
+                .createPricePerKilometer(
+                        company.getUuid(), routeUuid, BASE_KM,
+                        new BigDecimal("-1.00"), PRICE_PER_KM
+                                        )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenBodyIsMalformed() throws Exception {
+        pricePerKilometerApi
+                .createPricePerKilometerRaw(company.getUuid(), routeUuid, "{ esto no es json")
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenPricePerKmIsNull() throws Exception {
+        pricePerKilometerApi
+                .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, null)
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -154,35 +185,6 @@ class CreatePricePerKilometerTest {
         pricePerKilometerApi
                 .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, PRICE_PER_KM)
                 .andExpect(status().isConflict());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenBodyIsMalformed() throws Exception {
-        pricePerKilometerApi
-                .createPricePerKilometerRaw(company.getUuid(), routeUuid, "{ esto no es json")
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenBaseKmIsNull() throws Exception {
-        pricePerKilometerApi
-                .createPricePerKilometer(company.getUuid(), routeUuid, null, BASE_PRICE, PRICE_PER_KM)
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenBasePriceIsNegative() throws Exception {
-        pricePerKilometerApi
-                .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM,
-                                         new BigDecimal("-1.00"), PRICE_PER_KM)
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenPricePerKmIsNull() throws Exception {
-        pricePerKilometerApi
-                .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, null)
-                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -200,13 +202,6 @@ class CreatePricePerKilometerTest {
                 .withToken(strangerToken)
                 .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, PRICE_PER_KM)
                 .andExpect(status().isForbidden());
-    }
-
-    @Test
-    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
-        new PricePerKilometerApiTestClient(mockMvc, objectMapper)
-                .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, PRICE_PER_KM)
-                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -231,6 +226,13 @@ class CreatePricePerKilometerTest {
     }
 
     @Test
+    void shouldReturnNotFoundWhenRouteDoesNotExist() throws Exception {
+        pricePerKilometerApi
+                .createPricePerKilometer(company.getUuid(), UUID.randomUUID(), BASE_KM, BASE_PRICE, PRICE_PER_KM)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void shouldReturnNotFoundWhenRouteIsDeleted() throws Exception {
         routeApi
                 .deleteRoute(company.getUuid(), routeUuid)
@@ -242,9 +244,9 @@ class CreatePricePerKilometerTest {
     }
 
     @Test
-    void shouldReturnNotFoundWhenRouteDoesNotExist() throws Exception {
-        pricePerKilometerApi
-                .createPricePerKilometer(company.getUuid(), UUID.randomUUID(), BASE_KM, BASE_PRICE, PRICE_PER_KM)
-                .andExpect(status().isNotFound());
+    void shouldReturnUnauthorizedWhenTokenIsMissing() throws Exception {
+        new PricePerKilometerApiTestClient(mockMvc, objectMapper)
+                .createPricePerKilometer(company.getUuid(), routeUuid, BASE_KM, BASE_PRICE, PRICE_PER_KM)
+                .andExpect(status().isUnauthorized());
     }
 }

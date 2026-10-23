@@ -88,9 +88,10 @@ public class JwtService {
      * Genera un token JWT para un usuario.
      *
      * <p>
-     * El token contiene el correo electrónico como subject, la versión del
-     * token, el identificador del usuario, un identificador único del token,
-     * la fecha de emisión y la fecha de expiración.
+     * El token contiene el correo electrónico como subject, la versión del token,
+     * el identificador del usuario, un identificador único del token (jti), la
+     * fecha de emisión y la fecha de expiración. El token expira a los 5 minutos
+     * de su emisión.
      * </p>
      *
      * @param email   Correo electrónico del usuario.

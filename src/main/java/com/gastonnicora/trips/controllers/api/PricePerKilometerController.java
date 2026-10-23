@@ -115,4 +115,39 @@ public class PricePerKilometerController {
                                                     ) {
         return pricePerKilometerService.getPricePerKilometer(companyUuid, routeUuid, uuid);
     }
+
+    /**
+     * Actualiza la configuración de precio por kilómetro de una ruta de una empresa.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de
+     * la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid             Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid               Identificador único de la ruta a la que pertenece el precio.
+     * @param uuid                    Identificador único del precio por kilómetro que se desea actualizar.
+     * @param pricePerKilometerUpdate Nuevos datos del precio por kilómetro ({@link PricePerKilometerCreate}).
+     *
+     * @return datos del precio por kilómetro actualizado.
+     *
+     * @see PricePerKilometerService#updatePricePerKilometer(UUID, UUID, UUID, PricePerKilometerCreate)
+     */
+    @PutMapping("/companies/{companyUuid}/route/{routeUuid}/pricePerKilometer/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(
+            summary = "Actualizar precio por kilómetro",
+            description = "Actualiza el precio por kilómetro de una ruta de una empresa."
+    )
+    public PricePerKilometerDTO updatePricePerKilometer(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid,
+            @PathVariable("uuid") UUID uuid,
+            @RequestBody @Valid PricePerKilometerCreate pricePerKilometerUpdate
+                                                       ) {
+        return pricePerKilometerService.updatePricePerKilometer(companyUuid, routeUuid, uuid, pricePerKilometerUpdate);
+    }
 }

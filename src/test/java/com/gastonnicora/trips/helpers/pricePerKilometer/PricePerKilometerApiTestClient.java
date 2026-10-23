@@ -83,4 +83,33 @@ public class PricePerKilometerApiTestClient {
 
         return mockMvc.perform(request);
     }
+    public ResultActions updatePricePerKilometer(
+            UUID companyUuid,
+            UUID routeUuid,
+            UUID uuid,
+            BigDecimal baseKm,
+            BigDecimal basePrice,
+            BigDecimal pricePerKm
+                                                ) throws Exception {
+
+        String json = objectMapper.writeValueAsString(
+                new PricePerKilometerCreate(baseKm, basePrice, pricePerKm)
+                                                     );
+
+        var request = put(
+                "/api/companies/{companyUuid}/route/{routeUuid}/pricePerKilometer/{uuid}",
+                companyUuid,
+                routeUuid,
+                uuid
+                         )
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test")
+                .content(json);
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
 }

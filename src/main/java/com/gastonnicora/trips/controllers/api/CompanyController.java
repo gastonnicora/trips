@@ -71,7 +71,7 @@ public class CompanyController {
      * asociado a la empresa.
      * </p>
      *
-     * @param companyCreate datos necesarios para crear la empresa({@link CompanyCreate}).
+     * @param companyCreate datos necesarios para crear la empresa ({@link CompanyCreate}).
      *
      * @return datos de la empresa creada.
      *

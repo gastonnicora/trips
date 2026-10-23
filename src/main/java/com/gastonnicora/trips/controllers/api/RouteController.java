@@ -19,7 +19,8 @@ import java.util.UUID;
  * Controlador REST encargado de gestionar las rutas de las empresas.
  *
  * <p>
- * Proporciona operaciones para registrar rutas pertenecientes a una empresa.
+ * Proporciona operaciones para crear, obtener, listar, actualizar y eliminar
+ * rutas de una empresa.
  * </p>
  *
  * <p>

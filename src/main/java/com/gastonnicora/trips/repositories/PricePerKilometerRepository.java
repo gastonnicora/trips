@@ -3,6 +3,7 @@ package com.gastonnicora.trips.repositories;
 import com.gastonnicora.trips.entities.PricePerKilometer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,4 +62,6 @@ public interface PricePerKilometerRepository extends JpaRepository<PricePerKilom
      */
     Optional<PricePerKilometer> findByUuidAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrueAndActiveTrue(
             UUID uuid, UUID companyUuid, UUID routeUuid);
+
+
 }

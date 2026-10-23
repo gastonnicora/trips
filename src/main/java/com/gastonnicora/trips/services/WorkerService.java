@@ -59,8 +59,8 @@ public class WorkerService {
      * no exista un trabajador activo asociado al mismo usuario y empresa.
      * </p>
      *
-     * @param user    Usuario({@link User}) que se asociará como trabajador.
-     * @param company Empresa({@link Company}) a la que se asociará el trabajador.
+     * @param user    Usuario ({@link User}) que se asociará como trabajador.
+     * @param company Empresa ({@link Company}) a la que se asociará el trabajador.
      * @param roles   Conjunto de {@link RoleCompany} que tendrá el trabajador.
      *
      * @return {@link WorkerDTO} correspondiente al trabajador creado.
@@ -91,8 +91,8 @@ public class WorkerService {
      * La creación solo se realiza si la empresa no posee trabajadores activos.
      * </p>
      *
-     * @param user    Usuario({@link User}) que se asociará como propietario.
-     * @param company Empresa({@link Company}) a la que se asociará el trabajador.
+     * @param user    Usuario ({@link User}) que se asociará como propietario.
+     * @param company Empresa ({@link Company}) a la que se asociará el trabajador.
      *
      * @return {@link WorkerDTO} correspondiente al trabajador creado.
      *
@@ -107,9 +107,13 @@ public class WorkerService {
         }
         return WorkerMapper.toDTO(workerRepository.save(new Worker(user, company, Set.of(RoleCompany.OWNER))));
     }
-
     /**
      * Desactiva la relación entre un usuario y una empresa.
+     *
+     * <p>
+     * La baja es lógica: el trabajador se marca como inactivo y no se elimina de
+     * la base de datos. No se permite dar de baja al propietario de la empresa.
+     * </p>
      *
      * @param user    UUID del usuario asociado al trabajador.
      * @param company UUID de la empresa asociada al trabajador.
@@ -234,7 +238,7 @@ public class WorkerService {
      *
      * <p>
      * Antes de actualizar la relación, valida los roles proporcionados y verifica
-     * que el trabajador exista y se encuentre activo.
+     * que el trabajador exista, se encuentre activo y no sea el propietario.
      * </p>
      *
      * @param user    UUID del usuario asociado al trabajador.

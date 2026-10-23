@@ -17,10 +17,11 @@ import java.util.UUID;
  * Servicio encargado de gestionar las rutas asociadas a empresas.
  *
  * <p>
- * Permite crear, obtener, listar, actualizar y eliminar rutas y convertirlas en su representación {@link RouteDTO}.
+ * Permite crear, obtener, listar, actualizar y eliminar (baja lógica) las
+ * rutas de una empresa, convirtiéndolas en su representación {@link RouteDTO}.
  * </p>
  *
- * @author Gastón Nicora
+ * @author Gastón
  * @version 1.0
  * @since 2026-10-20
  */
@@ -51,7 +52,7 @@ public class RouteService {
      * los precios de la ruta no se cargan en esta operación.
      * </p>
      *
-     * @param company     Empresa({@link Company}) a la que se asociará la ruta.
+     * @param company     Empresa ({@link Company}) a la que se asociará la ruta.
      * @param routeCreate Datos de la ruta que se desea crear ({@link RouteCreate}).
      *
      * @return {@link RouteDTO} correspondiente a la ruta creada.

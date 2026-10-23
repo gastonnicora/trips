@@ -19,8 +19,8 @@ import java.util.UUID;
  * Controlador REST encargado de la gestión de vehículos asociados a empresas.
  *
  * <p>
- * Proporciona operaciones para consultar, registrar y eliminar vehículos
- * pertenecientes a una empresa.
+ * Proporciona operaciones para crear, obtener, listar, actualizar y eliminar
+ * vehículos pertenecientes a una empresa.
  * </p>
  *
  * <p>

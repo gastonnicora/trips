@@ -20,11 +20,11 @@ import java.util.UUID;
  * Servicio encargado de gestionar los vehículos asociados a empresas.
  *
  * <p>
- * Permite crear, consultar y desactivar vehículos, así como validar su
- * existencia, estado y asociación con la empresa correspondiente.
+ * Permite crear, consultar, actualizar y desactivar vehículos, así como validar
+ * su existencia, estado y asociación con la empresa correspondiente.
  * </p>
  *
- * @author Gastón Nicora
+ * @author Gastón
  * @version 1.0
  * @since 2026-09-06
  */
@@ -55,7 +55,7 @@ public class VehicleService {
      * con la misma patente asociado a la empresa.
      * </p>
      *
-     * @param company       Empresa({@link Company}) a la que se asociará el vehículo.
+     * @param company       Empresa ({@link Company}) a la que se asociará el vehículo.
      * @param vehicleCreate Datos del vehículo que se desea crear ({@link VehicleCreate}).
      *
      * @return {@link VehicleDTO} correspondiente al vehículo creado.

@@ -53,12 +53,12 @@ public class SecurityConfig {
      * @param userService              ({@link UserDetailsServiceImpl}) servicio utilizado por Spring Security para
      *                                 cargar los
      *                                 datos de los usuarios.
-     * @param jwtFilter                ({@link JwtAuthenticationFilter})filtro encargado de procesar la autenticación
+     * @param jwtFilter                ({@link JwtAuthenticationFilter}) filtro encargado de procesar la autenticación
      *                                 mediante
      *                                 JWT.
      * @param accessDeniedHandler      ({@link CustomAccessDeniedHandler}) handler encargado de gestionar accesos
      *                                 denegados.
-     * @param authenticationEntryPoint ({@link CustomAuthenticationEntryPoint})handler encargado de gestionar
+     * @param authenticationEntryPoint ({@link CustomAuthenticationEntryPoint}) handler encargado de gestionar
      *                                 solicitudes no autenticadas.
      */
     public SecurityConfig(
@@ -116,10 +116,11 @@ public class SecurityConfig {
      * </p>
      *
      * <p>
-     * Las rutas de autenticación y registro permitidas sin autenticación son
-     * {@code /api/auth/login}, {@code POST /api/users} y
-     * {@code /api/auth/refresh}. El resto de las solicitudes de la API requiere
-     * un usuario autenticado.
+     * Las rutas {@code /api/auth/refresh} y {@code /error} son públicas.
+     * {@code /api/auth/login} y {@code POST /api/users} solo son accesibles para
+     * solicitudes sin autenticar: un usuario que ya tiene sesión recibe 403 si
+     * intenta usarlas. El resto de las rutas de la API requiere un usuario
+     * autenticado.
      * </p>
      *
      * <p>
@@ -129,10 +130,9 @@ public class SecurityConfig {
      *
      * @param http Objeto utilizado para configurar la seguridad HTTP.
      *
-     * @return Cadena de filtros de seguridad configurada para la API
+     * @return Cadena de filtros de seguridad configurada para la API.
      *
-     * @throws Exception Si ocurre un error durante la configuración de
-     *                   seguridad
+     * @throws Exception Si ocurre un error durante la configuración de seguridad.
      * @see JwtAuthenticationFilter
      */
     @Bean
