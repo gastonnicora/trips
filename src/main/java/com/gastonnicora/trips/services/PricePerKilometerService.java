@@ -17,8 +17,9 @@ import java.util.UUID;
  * Servicio encargado de gestionar las configuraciones de precio por kilómetro.
  *
  * <p>
- * Permite crear la configuración de precio por kilómetro de una ruta a partir
- * de un precio base y un precio por kilómetro adicional.
+ * Permite crear, obtener, actualizar y dar de baja la configuración de precio
+ * por kilómetro de una ruta a partir de un precio base y un precio por kilómetro
+ * adicional.
  * </p>
  *
  * @author Gastón Nicora

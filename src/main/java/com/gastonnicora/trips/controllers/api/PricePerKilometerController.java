@@ -17,8 +17,8 @@ import java.util.UUID;
  * de las empresas.
  *
  * <p>
- * Proporciona operaciones para registrar el precio por kilómetro de una ruta
- * perteneciente a una empresa.
+ * Proporciona operaciones para crear, obtener, actualizar y dar de baja el
+ * precio por kilómetro de una ruta perteneciente a una empresa.
  * </p>
  *
  * <p>
@@ -57,10 +57,10 @@ public class PricePerKilometerController {
      * de la empresa indicada.
      * </p>
      *
-     * @param companyUuid             UUID de la empresa a la que pertenece la ruta.
-     * @param routeUuid               UUID de la ruta a la que se asignará el precio.
-     * @param pricePerKilometerCreate ({@link PricePerKilometerCreate}) datos necesarios
-     *                                para crear el precio por kilómetro.
+     * @param companyUuid             Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid               Identificador único de la ruta a la que se asignará el precio.
+     * @param pricePerKilometerCreate Datos necesarios para crear el precio por kilómetro
+     *                                ({@link PricePerKilometerCreate}).
      *
      * @return datos del precio por kilómetro creado.
      *
@@ -87,8 +87,8 @@ public class PricePerKilometerController {
      * Da de baja la configuración de precio por kilómetro de una ruta de una empresa.
      *
      * <p>
-     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de
-     * la empresa indicada. La baja es lógica: la configuración se marca como
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro
+     * de la empresa indicada. La baja es lógica: la configuración se marca como
      * inactiva y no se elimina de la base de datos.
      * </p>
      *
@@ -123,9 +123,9 @@ public class PricePerKilometerController {
      * de la empresa indicada.
      * </p>
      *
-     * @param companyUuid UUID de la empresa a la que pertenece la ruta.
-     * @param routeUuid   UUID de la ruta a la que pertenece el precio.
-     * @param uuid        UUID del precio por kilómetro que se desea obtener.
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta a la que pertenece el precio.
+     * @param uuid        Identificador único del precio por kilómetro que se desea obtener.
      *
      * @return datos del precio por kilómetro encontrado.
      *
@@ -152,8 +152,8 @@ public class PricePerKilometerController {
      * Actualiza la configuración de precio por kilómetro de una ruta de una empresa.
      *
      * <p>
-     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de
-     * la empresa indicada.
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro
+     * de la empresa indicada.
      * </p>
      *
      * @param companyUuid             Identificador único de la empresa a la que pertenece la ruta.
