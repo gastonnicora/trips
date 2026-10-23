@@ -82,4 +82,37 @@ public class PricePerKilometerController {
                                                        ) {
         return pricePerKilometerService.createPricePerKilometer(companyUuid, routeUuid, pricePerKilometerCreate);
     }
+
+    /**
+     * Obtiene el precio por kilómetro de una ruta de una empresa.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro
+     * de la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece la ruta.
+     * @param routeUuid   UUID de la ruta a la que pertenece el precio.
+     * @param uuid        UUID del precio por kilómetro que se desea obtener.
+     *
+     * @return datos del precio por kilómetro encontrado.
+     *
+     * @see PricePerKilometerService#getPricePerKilometer(UUID, UUID, UUID)
+     */
+    @GetMapping("/companies/{companyUuid}/route/{routeUuid}/pricePerKilometer/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(
+            summary = "Obtener precio por kilómetro",
+            description = "Obtiene el precio por kilómetro de una ruta de una empresa."
+    )
+    public PricePerKilometerDTO getPricePerKilometer(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid,
+            @PathVariable("uuid") UUID uuid
+                                                    ) {
+        return pricePerKilometerService.getPricePerKilometer(companyUuid, routeUuid, uuid);
+    }
 }

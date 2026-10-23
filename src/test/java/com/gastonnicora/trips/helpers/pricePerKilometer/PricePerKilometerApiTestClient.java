@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 public class PricePerKilometerApiTestClient {
 
@@ -56,6 +59,23 @@ public class PricePerKilometerApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test")
                 .content(json);
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
+
+    public ResultActions getPricePerKilometer(UUID companyUuid, UUID routeUuid, UUID uuid) throws Exception {
+
+        var request = get(
+                "/api/companies/{companyUuid}/route/{routeUuid}/pricePerKilometer/{uuid}",
+                companyUuid,
+                routeUuid,
+                uuid
+                         )
+                .header("User-Agent", "JUnit-Test");
 
         if (token != null) {
             request.header("Authorization", "Bearer " + token);
