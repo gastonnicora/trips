@@ -260,4 +260,50 @@ public class SectionPriceService {
         return sectionPriceMapper.toDTO(sectionPriceRepository.save(sectionPrice));
     }
 
+    /**
+     * Da de baja el precio de un tramo de una ruta.
+     *
+     * <p>
+     * La baja es lógica: el tramo no se elimina de la base de datos, sino que se
+     * marca como inactivo. Solo puede darse de baja el último tramo activo de la
+     * ruta, porque los tramos forman una cadena continua y dar de baja uno
+     * intermedio la dejaría cortada. Los tramos inactivos que estén después del
+     * último activo no se tienen en cuenta.
+     * </p>
+     *
+     * <p>
+     * El tramo se busca con
+     * {@link SectionPriceRepository#findByUuidAndActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(UUID, UUID, UUID)},
+     * por lo que solo se pueden dar de baja tramos activos, cuya ruta esté activa,
+     * que pertenezca a la empresa indicada y cuya empresa también esté activa.
+     * </p>
+     *
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta a la que pertenece el tramo.
+     * @param sectionUuid Identificador único del precio por tramo que se desea dar de baja.
+     *
+     * @throws NotFoundException Si el tramo no existe, está inactivo, o su ruta o
+     *                           empresa no cumplen las condiciones indicadas.
+     * @throws ConflictException Si el tramo no es el último tramo activo de la ruta.
+     */
+    @Transactional
+    public void deleteSectionPrice(UUID companyUuid, UUID routeUuid, UUID sectionUuid) {
+        SectionPrice sectionPrice = sectionPriceRepository
+                .findByUuidAndActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(
+                        sectionUuid, companyUuid, routeUuid)
+                .orElseThrow(() -> new NotFoundException("Tramo no encontrado"));
+
+        List<SectionPrice> activeSections = sectionPrice.getRoute().getSectionPrices().stream()
+                .filter(SectionPrice::isActive)
+                .toList();
+        SectionPrice last = activeSections.get(activeSections.size() - 1);
+
+        if (!last.getUuid().equals(sectionUuid)) {
+            throw new ConflictException("Solo se puede dar de baja el último tramo de la ruta");
+        }
+
+        sectionPrice.setActive(false);
+        sectionPriceRepository.save(sectionPrice);
+    }
+
 }

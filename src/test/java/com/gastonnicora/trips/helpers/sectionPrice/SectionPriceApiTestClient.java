@@ -10,10 +10,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 public class SectionPriceApiTestClient {
 
@@ -55,6 +52,24 @@ public class SectionPriceApiTestClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("User-Agent", "JUnit-Test")
                 .content(json);
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
+
+    public ResultActions deleteSectionPrice(UUID companyUuid, UUID routeUuid, UUID sectionUuid)
+            throws Exception {
+
+        var request = delete(
+                "/api/companies/{companyUuid}/route/{routeUuid}/sectionPrice/{uuid}",
+                companyUuid,
+                routeUuid,
+                sectionUuid
+                            )
+                .header("User-Agent", "JUnit-Test");
 
         if (token != null) {
             request.header("Authorization", "Bearer " + token);

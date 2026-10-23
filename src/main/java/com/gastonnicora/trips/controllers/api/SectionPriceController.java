@@ -161,4 +161,22 @@ public class SectionPriceController {
                                              ) {
         return sectionPriceService.updateSectionPrice(companyUuid, routeUuid, sectionUuid, sectionPriceUpdate);
     }
+
+
+    @DeleteMapping("/companies/{companyUuid}/route/{routeUuid}/sectionPrice/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(
+            summary = "Dar de baja precio de tramo",
+            description = "Da de baja el último tramo activo de una ruta de una empresa."
+    )
+    public void deleteSectionPrice(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid,
+            @PathVariable("uuid") UUID sectionUuid
+                                  ) {
+        sectionPriceService.deleteSectionPrice(companyUuid, routeUuid, sectionUuid);
+    }
 }
