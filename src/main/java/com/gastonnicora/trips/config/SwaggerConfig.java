@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
  * {@code Authorization} como Bearer Token.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

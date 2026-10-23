@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
  * para generar respuestas de error estandarizadas con código HTTP 401.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-06
  */

@@ -33,7 +33,7 @@ import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
  * gestionar sus contraseñas, roles y tokens de refresco asociados.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */
@@ -52,8 +52,7 @@ public class UserService {
      * conversión de entidades a DTOs.
      *
      * @param userRepository      Repositorio de usuarios utilizado para acceder a
-     *                            la
-     *                            base de datos ({@link UserRepository}).
+     *                            la base de datos ({@link UserRepository}).
      * @param passwordEncoder     Codificador de contraseñas utilizado para proteger
      *                            las contraseñas de los usuarios.
      * @param refreshTokenService Servicio encargado de gestionar los tokens de

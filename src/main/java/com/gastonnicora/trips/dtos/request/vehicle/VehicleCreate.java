@@ -23,7 +23,7 @@ import lombok.Setter;
  * garantizar que se proporcione una patente, un modelo y una capacidad válida.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-09-06
  */

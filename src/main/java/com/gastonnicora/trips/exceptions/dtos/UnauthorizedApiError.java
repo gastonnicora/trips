@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
  * HTTP {@link HttpStatus#UNAUTHORIZED}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-21
  */

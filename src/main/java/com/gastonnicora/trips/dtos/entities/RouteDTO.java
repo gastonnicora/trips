@@ -22,7 +22,7 @@ import java.util.UUID;
  * {@code sectionPrices} para {@link PricingType#PER_SECTION}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-20
  */

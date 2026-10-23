@@ -26,7 +26,7 @@ import java.util.UUID;
  * No incluye información sensible del usuario, como su contraseña.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-04
  */

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * el precio por kilómetro y los precios por tramo de la ruta.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-20
  */

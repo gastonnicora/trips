@@ -24,7 +24,7 @@ import java.io.IOException;
  * formato JSON utilizando {@link UnauthorizedApiError}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-21
  */

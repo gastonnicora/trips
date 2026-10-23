@@ -27,7 +27,7 @@ import org.jspecify.annotations.NonNull;
  * la solicitud.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-11
  */

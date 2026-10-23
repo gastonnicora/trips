@@ -29,7 +29,7 @@ import java.util.UUID;
  * gestionar sus vehículos.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-09-06
  */
@@ -149,7 +149,7 @@ public class VehicleController {
     }
 
     /**
-     * Obtiene un vehículo perteneciente a una empresa.
+     * Obtiene los vehículos de una empresa.
      *
      * <p>
      * El acceso requiere que el usuario autenticado tenga rol {@code OWNER} o

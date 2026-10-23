@@ -40,7 +40,7 @@ import java.util.Map;
  * representar los diferentes tipos de error que puede devolver la API.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-21
  */

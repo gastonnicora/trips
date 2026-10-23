@@ -27,7 +27,7 @@ import java.util.Set;
  * Los roles disponibles están definidos en {@link Role}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-21
  */

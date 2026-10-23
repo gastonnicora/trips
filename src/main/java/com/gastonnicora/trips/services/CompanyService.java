@@ -24,7 +24,7 @@ import java.util.UUID;
  * {@link CompanyDTO}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-20
  */

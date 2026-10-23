@@ -19,7 +19,7 @@ import java.util.List;
  * trabajadores y agrupaciones de trabajadores asociadas a usuarios o empresas.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-04
  */

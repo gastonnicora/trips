@@ -4,7 +4,6 @@ import com.gastonnicora.trips.dtos.entities.RouteDTO;
 import com.gastonnicora.trips.dtos.request.route.RouteCreate;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.Route;
-import com.gastonnicora.trips.exceptions.ForbiddenException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.RouteMapper;
 import com.gastonnicora.trips.repositories.RouteRepository;
@@ -18,10 +17,10 @@ import java.util.UUID;
  * Servicio encargado de gestionar las rutas asociadas a empresas.
  *
  * <p>
- * Permite crear rutas y convertirlas en su representación {@link RouteDTO}.
+ * Permite crear, obtener, listar, actualizar y eliminar rutas y convertirlas en su representación {@link RouteDTO}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-20
  */
@@ -101,9 +100,8 @@ public class RouteService {
      *
      * @return {@link RouteDTO} correspondiente a la ruta encontrada.
      *
-     * @throws NotFoundException  Si la ruta no existe o se encuentra inactiva.
-     * @throws ForbiddenException Si la ruta no pertenece a la empresa indicada.
-     * @see RouteRepository#findAllByCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID)
+     * @throws NotFoundException Si la ruta no existe, está inactiva o no pertenece a la empresa indicada.
+     * @see RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
      * @see RouteMapper#toDTO(Route)
      */
     @Transactional

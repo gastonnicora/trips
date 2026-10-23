@@ -21,7 +21,7 @@ import java.util.Map;
  * validación y los detalles de los errores por campo.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-21
  */

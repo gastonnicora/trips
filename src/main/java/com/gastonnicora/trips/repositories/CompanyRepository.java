@@ -16,7 +16,7 @@ import java.util.UUID;
  * y gestión de datos correspondientes a la entidad empresa.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-20
  */

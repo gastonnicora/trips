@@ -23,7 +23,7 @@ import java.util.List;
  * laborales en respuestas de la API.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-04
  */

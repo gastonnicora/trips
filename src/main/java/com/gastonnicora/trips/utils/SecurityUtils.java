@@ -15,7 +15,7 @@ import java.util.UUID;
  * actualmente autenticado a partir del contexto de Spring Security.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-03
  */

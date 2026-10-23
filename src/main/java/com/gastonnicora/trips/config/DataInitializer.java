@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * {@code superadmin.password}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-19
  */

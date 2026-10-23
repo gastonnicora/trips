@@ -23,7 +23,7 @@ import lombok.Setter;
  * garantizar que se proporcione un nombre y un tipo de precio válidos.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-20
  */

@@ -26,7 +26,7 @@ import java.util.UUID;
  * {@link PricePerKilometerService}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-22
  */

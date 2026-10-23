@@ -18,7 +18,7 @@ import lombok.Setter;
  * garantizar que los datos recibidos sean válidos antes de ser procesados.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-21
  *

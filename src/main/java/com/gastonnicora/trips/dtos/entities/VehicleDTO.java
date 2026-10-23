@@ -20,7 +20,7 @@ import java.util.UUID;
  * necesarios para los clientes de la API.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-09-06
  */

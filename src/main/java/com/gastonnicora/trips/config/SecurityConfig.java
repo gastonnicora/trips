@@ -33,7 +33,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * autenticación y autorización.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */
@@ -50,7 +50,7 @@ public class SecurityConfig {
     /**
      * Crea una instancia de la configuración de seguridad.
      *
-     * @param userService              ({@link UserDetailsServiceImpl})servicio utilizado por Spring Security para
+     * @param userService              ({@link UserDetailsServiceImpl}) servicio utilizado por Spring Security para
      *                                 cargar los
      *                                 datos de los usuarios.
      * @param jwtFilter                ({@link JwtAuthenticationFilter})filtro encargado de procesar la autenticación

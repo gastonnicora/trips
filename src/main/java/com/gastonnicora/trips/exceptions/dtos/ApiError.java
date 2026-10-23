@@ -23,7 +23,7 @@ import java.util.Map;
  * Se utiliza como estructura común para las respuestas de error de la API.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-21
  */

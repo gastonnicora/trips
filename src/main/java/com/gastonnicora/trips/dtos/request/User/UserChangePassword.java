@@ -28,7 +28,7 @@ import lombok.Setter;
  * y {@code confirmPassword} contengan el mismo valor.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-21
  */

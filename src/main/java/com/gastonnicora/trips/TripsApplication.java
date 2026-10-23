@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * iniciar la aplicación mediante {@link CommandLineRunner}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

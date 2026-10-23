@@ -24,7 +24,7 @@ import java.lang.annotation.*;
  * y es procesada por {@link FieldsMatchValidator}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

@@ -24,7 +24,7 @@ import java.util.UUID;
  * existencia, estado y asociación con la empresa correspondiente.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-09-06
  */
@@ -88,8 +88,6 @@ public class VehicleService {
      * @param companyUuid UUID de la empresa a la que debe pertenecer el vehículo.
      * @param vehicleUuid UUID del vehículo que se desea desactivar.
      *
-     * @throws ForbiddenException Si el vehículo no pertenece a la empresa
-     *                            indicada.
      * @see VehicleService#findByUuid(UUID, UUID)
      */
     public void deleteVehicle(UUID companyUuid, UUID vehicleUuid) {
@@ -123,7 +121,6 @@ public class VehicleService {
      *
      * @return {@link VehicleDTO} correspondiente al vehículo encontrado.
      *
-     * @throws ForbiddenException Si el vehículo no pertenece a la compañía.
      * @see VehicleService#findByUuid(UUID, UUID)
      * @see VehicleMapper#toDTO(Vehicle)
      */
@@ -166,8 +163,6 @@ public class VehicleService {
      *
      * @return {@link VehicleDTO} correspondiente al vehículo actualizado.
      *
-     * @throws NotFoundException  Si el vehículo no existe o se encuentra inactivo.
-     * @throws ForbiddenException Si el vehículo no pertenece a la empresa indicada.
      * @throws ConflictException  Si la patente cambia y ya existe un vehículo activo
      *                            con esa patente para la empresa.
      * @see #findByUuid(UUID, UUID)

@@ -32,7 +32,7 @@ import lombok.Setter;
  * Se utiliza en los endpoints de registro de usuarios.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

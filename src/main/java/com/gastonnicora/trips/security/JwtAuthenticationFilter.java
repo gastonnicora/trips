@@ -35,7 +35,7 @@ import java.util.Optional;
  * {@link UserDetailsServiceImpl} para cargar los detalles del usuario.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

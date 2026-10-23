@@ -16,7 +16,7 @@ import java.util.UUID;
  * identificador único, estado de habilitación y rol.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

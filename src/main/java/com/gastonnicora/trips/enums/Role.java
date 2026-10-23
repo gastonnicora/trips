@@ -9,7 +9,7 @@ package com.gastonnicora.trips.enums;
  * permisos y el nivel de acceso de un usuario dentro de la aplicación.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

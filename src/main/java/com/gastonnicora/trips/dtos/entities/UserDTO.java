@@ -27,7 +27,7 @@ import java.util.UUID;
  * al usuario dentro de la aplicación.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-04
  */

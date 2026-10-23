@@ -15,7 +15,7 @@ import java.util.List;
  * entidades en los DTOs correspondientes.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-09-06
  */

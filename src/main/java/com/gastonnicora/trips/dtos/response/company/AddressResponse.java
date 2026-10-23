@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * geocodificación.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-21
  */
@@ -43,7 +43,7 @@ public record AddressResponse(
      * correspondientes a una ubicación geográfica.
      * </p>
      *
-     * @author Gastón
+     * @author Gastón Nicora
      * @version 1.0
      * @since 2026-05-21
      */

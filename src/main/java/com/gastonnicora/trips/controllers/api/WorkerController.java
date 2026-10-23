@@ -36,7 +36,7 @@ import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
  * un rol con permisos suficientes dentro de dicha empresa.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-09-07
  */

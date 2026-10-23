@@ -15,7 +15,7 @@ import lombok.Setter;
  * solicitud.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-11
  */

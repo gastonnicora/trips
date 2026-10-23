@@ -4,7 +4,7 @@ package com.gastonnicora.trips.enums;
  * Enumeración que define la forma en que se calcula el precio de un pasaje en
  * una ruta.
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-19
  */

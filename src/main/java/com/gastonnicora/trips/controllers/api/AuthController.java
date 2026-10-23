@@ -44,7 +44,7 @@ import java.util.Optional;
  * clientes Android, el refresh token se devuelve en el cuerpo de la respuesta.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */
@@ -167,8 +167,6 @@ public class AuthController {
      * @return {@link LoginResponse} con el token de acceso y, para clientes
      * Android, el refresh token
      *
-     * @throws UnauthorizedException si las credenciales proporcionadas no son
-     *                               válidas
      * @throws NotFoundException     si no se encuentra un usuario habilitado con el
      *                               correo electrónico proporcionado
      */

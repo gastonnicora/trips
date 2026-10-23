@@ -35,7 +35,7 @@ import static com.gastonnicora.trips.utils.SecurityUtils.getCurrentUserUuid;
  * gestionar las relaciones entre empresas, propietarios y usuarios.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-20
  */

@@ -25,7 +25,7 @@ import lombok.Setter;
  * garantizar que los datos recibidos cumplan con los requisitos establecidos.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

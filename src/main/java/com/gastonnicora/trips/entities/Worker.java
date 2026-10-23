@@ -31,7 +31,7 @@ import java.util.UUID;
  * {@code company_uuid}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-03
  */

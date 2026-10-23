@@ -16,7 +16,7 @@ import java.util.UUID;
  * empresa, patente y estado de actividad.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-09-06
  */

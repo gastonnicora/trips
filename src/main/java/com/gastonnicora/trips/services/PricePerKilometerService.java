@@ -22,7 +22,7 @@ import java.util.UUID;
  * de un precio base y un precio por kilómetro adicional.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-22
  */

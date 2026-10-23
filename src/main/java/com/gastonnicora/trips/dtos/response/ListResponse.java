@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @param <T> Tipo de los elementos contenidos en la lista.
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-02
  */

@@ -22,7 +22,7 @@ import java.util.UUID;
  * calcula el precio de sus pasajes mediante {@link PricingType}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-19
  */

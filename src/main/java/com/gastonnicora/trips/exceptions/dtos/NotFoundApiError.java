@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
  * HTTP {@link HttpStatus#NOT_FOUND}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-06
  */

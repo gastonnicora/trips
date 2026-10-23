@@ -8,7 +8,7 @@ package com.gastonnicora.trips.enums;
  * determinar su función dentro de la empresa.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-03
  */

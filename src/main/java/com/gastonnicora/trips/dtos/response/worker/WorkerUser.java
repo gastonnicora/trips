@@ -24,7 +24,7 @@ import java.util.UUID;
  * No incluye información correspondiente a la empresa asociada.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-04
  */

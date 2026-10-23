@@ -27,7 +27,7 @@ import java.util.UUID;
  * de acceso en la aplicación.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-21
  */

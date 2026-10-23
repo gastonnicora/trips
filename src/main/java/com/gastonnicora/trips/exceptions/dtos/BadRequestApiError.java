@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
  * HTTP {@link HttpStatus#BAD_REQUEST}.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-06
  */

@@ -32,7 +32,7 @@ import java.util.UUID;
  * afectado.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-11
  */
@@ -42,15 +42,10 @@ public class RefreshTokenService {
     private final RefreshTokenRepository repo;
 
     /**
-     * Crea una instancia del servicio de tokens de refresco e inicializa las
-     * dependencias
-     * necesarias para la gestión de tokens de refresco y
-     * conversión de entidades a DTOs.
+     * Crea una instancia del servicio con el repositorio de tokens de refresco indicado.
      *
      * @param repo Repositorio de tokens de refresco ({@link RefreshTokenRepository}) utilizado para
-     *             acceder a
-     *             la
-     *             base de datos.
+     *             acceder a la base de datos.
      */
     public RefreshTokenService(RefreshTokenRepository repo) {
         this.repo = repo;

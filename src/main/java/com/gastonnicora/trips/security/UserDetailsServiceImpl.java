@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
  * Security gestionar la autenticación y autorización.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-03-18
  */

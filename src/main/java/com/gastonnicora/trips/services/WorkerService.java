@@ -28,7 +28,7 @@ import java.util.UUID;
  * asignar y modificar sus roles dentro de una empresa.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-03
  */
@@ -43,12 +43,12 @@ public class WorkerService {
      *
      * @param workerRepository Repositorio de trabajadores utilizado para acceder
      *                         a la base de datos ({@link WorkerRepository}).
-     * @param WorkerMapper     Mapper utilizado para convertir entidades
+     * @param workerMapper     Mapper utilizado para convertir entidades
      *                         {@link Worker} en {@link WorkerDTO} ({@link WorkerMapper}).
      */
-    public WorkerService(WorkerRepository workerRepository, WorkerMapper WorkerMapper) {
+    public WorkerService(WorkerRepository workerRepository, WorkerMapper workerMapper) {
         this.workerRepository = workerRepository;
-        this.WorkerMapper = WorkerMapper;
+        this.WorkerMapper = workerMapper;
     }
 
     /**
@@ -263,7 +263,7 @@ public class WorkerService {
      *
      * @param worker ({@link Worker}) relación trabajador/empresa.
      *
-     * @throws ForbiddenException Error de permisos.
+     * @throws ForbiddenException Si el trabajador posee el rol OWNER.
      */
     private void verifyNotOwner(Worker worker) {
         if (worker.hasRole(RoleCompany.OWNER)) {

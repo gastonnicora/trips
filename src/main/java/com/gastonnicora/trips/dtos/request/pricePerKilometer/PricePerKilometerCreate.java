@@ -24,7 +24,7 @@ import java.math.BigDecimal;
  * garantizar que se proporcionen valores válidos.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-22
  */

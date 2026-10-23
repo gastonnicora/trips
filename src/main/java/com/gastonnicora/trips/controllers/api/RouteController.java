@@ -28,7 +28,7 @@ import java.util.UUID;
  * de la empresa pueden gestionar sus rutas.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-20
  */

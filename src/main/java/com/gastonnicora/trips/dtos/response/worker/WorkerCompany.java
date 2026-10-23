@@ -23,7 +23,7 @@ import java.util.UUID;
  * No incluye información correspondiente al usuario asociado a la relación.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-04
  */

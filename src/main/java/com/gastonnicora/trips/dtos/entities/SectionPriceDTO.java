@@ -20,7 +20,7 @@ import java.util.UUID;
  * No incluye la ruta a la que pertenece para evitar referencias circulares.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-10-20
  */

@@ -21,7 +21,7 @@ import lombok.Setter;
  * la respuesta.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-11
  */

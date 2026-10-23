@@ -19,7 +19,7 @@ import java.util.UUID;
  * directamente la entidad persistida en la base de datos.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-05-20
  */

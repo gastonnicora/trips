@@ -25,7 +25,7 @@ import java.time.Instant;
  * ejecutan al inicio de cada hora.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-04-11
  */
@@ -36,8 +36,7 @@ public class TokenCleanupService {
 
     /**
      * Crea una instancia del servicio de limpieza tokens de refresco e inicializa las
-     * dependencias
-     * necesarias.
+     * dependencias necesarias.
      *
      * @param repo Repositorio de tokens de refresco ({@link RefreshTokenRepository}) utilizado para
      *             acceder a

@@ -19,7 +19,7 @@ import java.util.UUID;
  * los roles indicados en una empresa determinada.
  * </p>
  *
- * @author Gastón
+ * @author Gastón Nicora
  * @version 1.0
  * @since 2026-06-03
  */
