@@ -14,7 +14,8 @@ import com.gastonnicora.trips.repositories.SectionPriceRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SectionPriceService {
@@ -106,7 +107,8 @@ public class SectionPriceService {
                 ? activePoints.get(0)
                 : activeSections.get(activeSections.size() - 1).getToPoint();
         if (!fromPoint.getUuid().equals(expectedStart.getUuid())) {
-            throw new BadRequestException("El tramo no es continuo: debe comenzar en el punto donde termina el tramo anterior");
+            throw new BadRequestException(
+                    "El tramo no es continuo: debe comenzar en el punto donde termina el tramo anterior");
         }
 
         SectionPrice sectionPrice;
@@ -124,11 +126,6 @@ public class SectionPriceService {
         return sectionPriceMapper.toDTO(sectionPrice);
     }
 
-    public SectionPrice getSectionPrice(UUID companyUuid,UUID routeUuid, UUID sectionUuid) {
-
-
-    }
-
     /**
      * Busca un punto activo de la ruta por su identificador.
      *
@@ -144,6 +141,66 @@ public class SectionPriceService {
                 .filter(point -> point.getUuid().equals(pointUuid))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("El punto no pertenece a la ruta"));
+    }
+
+
+    /**
+     * Obtiene el precio de un tramo activo de una ruta activa de una empresa activa.
+     *
+     * <p>
+     * La búsqueda delega en
+     * {@link SectionPriceRepository#findByUuidAndActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(UUID, UUID, UUID)}.
+     * El tramo solo se devuelve si el tramo, su ruta y la empresa a la que pertenece
+     * la ruta están activos, y si la ruta pertenece a la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta a la que pertenece el tramo.
+     * @param sectionUuid Identificador único del precio por tramo.
+     *
+     * @return {@link SectionPriceDTO} correspondiente al tramo encontrado.
+     *
+     * @throws NotFoundException Si el tramo no existe, está inactivo, o su ruta o
+     *                           empresa no cumplen las condiciones indicadas.
+     * @see SectionPriceMapper#toDTO(SectionPrice)
+     */
+    @Transactional
+    public SectionPriceDTO getSectionPrice(UUID companyUuid, UUID routeUuid, UUID sectionUuid) {
+        SectionPrice sectionPrice = sectionPriceRepository
+                .findByUuidAndActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(
+                        sectionUuid, companyUuid, routeUuid)
+                .orElseThrow(() -> new NotFoundException("Tramo no encontrado"));
+        return sectionPriceMapper.toDTO(sectionPrice);
+
+    }
+
+
+    /**
+     * Obtiene los precios por tramo activos de una ruta activa de una empresa activa.
+     *
+     * <p>
+     * La búsqueda delega en
+     * {@link SectionPriceRepository#findByActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(UUID, UUID)}.
+     * Solo se devuelven los tramos activos cuya ruta esté activa, pertenezca a la
+     * empresa indicada y cuya empresa también esté activa.
+     * </p>
+     *
+     * @param companyUuid Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid   Identificador único de la ruta cuyos tramos se desean obtener.
+     *
+     * @return lista de {@link SectionPriceDTO} con los tramos activos de la ruta.
+     *
+     * @throws NotFoundException Si la ruta no tiene tramos activos, o si la ruta no
+     *                           existe o no pertenece a la empresa indicada.
+     * @see SectionPriceMapper#toDTOList(List)
+     */
+    @Transactional
+    public List<SectionPriceDTO> getSectionPrices(UUID companyUuid, UUID routeUuid) {
+        List<SectionPrice> sectionPrices = sectionPriceRepository.findByActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(companyUuid, routeUuid);
+        if (sectionPrices.isEmpty()) {
+            throw new NotFoundException("Tramo no encontrado");
+        }
+        return sectionPriceMapper.toDTOList(sectionPrices);
     }
 
     /**

@@ -9,6 +9,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class SectionPriceApiTestClient {
@@ -20,11 +21,6 @@ public class SectionPriceApiTestClient {
     public SectionPriceApiTestClient(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-    }
-
-    public SectionPriceApiTestClient withToken(String token) {
-        this.token = token;
-        return this;
     }
 
     public ResultActions createSectionPrice(
@@ -62,5 +58,44 @@ public class SectionPriceApiTestClient {
         }
 
         return mockMvc.perform(request);
+    }
+
+    public ResultActions getSectionPrice(UUID companyUuid, UUID routeUuid, UUID sectionUuid)
+            throws Exception {
+
+        var request = get(
+                "/api/companies/{companyUuid}/route/{routeUuid}/sectionPrice/{uuid}",
+                companyUuid,
+                routeUuid,
+                sectionUuid
+                         )
+                .header("User-Agent", "JUnit-Test");
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
+
+    public ResultActions getSectionPrices(UUID companyUuid, UUID routeUuid) throws Exception {
+
+        var request = get(
+                "/api/companies/{companyUuid}/route/{routeUuid}/sectionPrice",
+                companyUuid,
+                routeUuid
+                         )
+                .header("User-Agent", "JUnit-Test");
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
+
+    public SectionPriceApiTestClient withToken(String token) {
+        this.token = token;
+        return this;
     }
 }
