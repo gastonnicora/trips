@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.helpers.sectionPrice;
 
 import com.gastonnicora.trips.dtos.request.sectionPrice.SectionPriceCreate;
+import com.gastonnicora.trips.dtos.request.sectionPrice.SectionPriceUpdate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -11,6 +12,8 @@ import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 public class SectionPriceApiTestClient {
 
@@ -86,6 +89,37 @@ public class SectionPriceApiTestClient {
                 routeUuid
                          )
                 .header("User-Agent", "JUnit-Test");
+
+        if (token != null) {
+            request.header("Authorization", "Bearer " + token);
+        }
+
+        return mockMvc.perform(request);
+    }
+
+    public ResultActions updateSectionPrice(UUID companyUuid, UUID routeUuid, UUID sectionUuid, BigDecimal price)
+            throws Exception {
+
+        String json = objectMapper.writeValueAsString(new SectionPriceUpdate(price));
+
+        return updateSectionPriceRaw(companyUuid, routeUuid, sectionUuid, json);
+    }
+
+    /**
+     * Envía el body tal cual, útil para probar JSON mal formado.
+     */
+    public ResultActions updateSectionPriceRaw(UUID companyUuid, UUID routeUuid, UUID sectionUuid, String json)
+            throws Exception {
+
+        var request = put(
+                "/api/companies/{companyUuid}/route/{routeUuid}/sectionPrice/{uuid}",
+                companyUuid,
+                routeUuid,
+                sectionUuid
+                         )
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Agent", "JUnit-Test")
+                .content(json);
 
         if (token != null) {
             request.header("Authorization", "Bearer " + token);

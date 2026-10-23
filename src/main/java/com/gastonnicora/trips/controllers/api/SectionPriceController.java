@@ -1,9 +1,8 @@
 package com.gastonnicora.trips.controllers.api;
 
-import com.gastonnicora.trips.dtos.entities.RoutePointDTO;
 import com.gastonnicora.trips.dtos.entities.SectionPriceDTO;
-import com.gastonnicora.trips.dtos.request.routePoint.RoutePointCreate;
 import com.gastonnicora.trips.dtos.request.sectionPrice.SectionPriceCreate;
+import com.gastonnicora.trips.dtos.request.sectionPrice.SectionPriceUpdate;
 import com.gastonnicora.trips.services.SectionPriceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,9 +20,11 @@ import java.util.UUID;
 public class SectionPriceController {
 
     private final SectionPriceService sectionPriceService;
+
     public SectionPriceController(SectionPriceService sectionPriceService) {
         this.sectionPriceService = sectionPriceService;
     }
+
     /**
      * Registra el precio de un tramo entre dos puntos de una ruta.
      *
@@ -122,5 +123,42 @@ public class SectionPriceController {
             @PathVariable("routeUuid") UUID routeUuid
                                                  ) {
         return sectionPriceService.getSectionPrices(companyUuid, routeUuid);
+    }
+
+    /**
+     * Actualiza el precio de un tramo de una ruta.
+     *
+     * <p>
+     * El usuario autenticado debe tener rol {@code OWNER} o {@code ADMIN} dentro de
+     * la empresa indicada. Solo se puede modificar el precio: los puntos de origen y
+     * destino del tramo no cambian. Solo se actualizan tramos activos, de rutas
+     * activas de empresas activas.
+     * </p>
+     *
+     * @param companyUuid        Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid          Identificador único de la ruta a la que pertenece el tramo.
+     * @param sectionUuid        Identificador único del precio por tramo ({@code uuid} en la URL).
+     * @param sectionPriceUpdate Nuevo precio del tramo ({@link SectionPriceUpdate}).
+     *
+     * @return datos del tramo actualizado.
+     *
+     * @see SectionPriceService#updateSectionPrice(UUID, UUID, UUID, SectionPriceUpdate)
+     */
+    @PutMapping("/companies/{companyUuid}/route/{routeUuid}/sectionPrice/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(
+            summary = "Actualizar precio de tramo",
+            description = "Actualiza el precio de un tramo entre dos puntos de una ruta de una empresa."
+    )
+    public SectionPriceDTO updateSectionPrice(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("routeUuid") UUID routeUuid,
+            @PathVariable("uuid") UUID sectionUuid,
+            @RequestBody @Valid SectionPriceUpdate sectionPriceUpdate
+                                             ) {
+        return sectionPriceService.updateSectionPrice(companyUuid, routeUuid, sectionUuid, sectionPriceUpdate);
     }
 }

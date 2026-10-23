@@ -2,6 +2,7 @@ package com.gastonnicora.trips.services;
 
 import com.gastonnicora.trips.dtos.entities.SectionPriceDTO;
 import com.gastonnicora.trips.dtos.request.sectionPrice.SectionPriceCreate;
+import com.gastonnicora.trips.dtos.request.sectionPrice.SectionPriceUpdate;
 import com.gastonnicora.trips.entities.Route;
 import com.gastonnicora.trips.entities.RoutePoint;
 import com.gastonnicora.trips.entities.SectionPrice;
@@ -218,6 +219,45 @@ public class SectionPriceService {
             }
         }
         throw new IllegalStateException("El punto del tramo no pertenece a la ruta");
+    }
+
+    /**
+     * Actualiza el precio de un tramo activo de una ruta activa de una empresa activa.
+     *
+     * <p>
+     * El tramo se busca con
+     * {@link SectionPriceRepository#findByUuidAndActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(UUID, UUID, UUID)},
+     * por lo que solo se actualizan tramos activos, cuya ruta esté activa, que pertenezca
+     * a la empresa indicada y cuya empresa también esté activa.
+     * </p>
+     *
+     * <p>
+     * Solo se modifica el precio. Los puntos de origen y destino no cambian, porque
+     * definen la identidad del tramo dentro de la cadena de la ruta. Actualizar con el
+     * mismo precio es válido y no produce cambios.
+     * </p>
+     *
+     * @param companyUuid        Identificador único de la empresa a la que pertenece la ruta.
+     * @param routeUuid          Identificador único de la ruta a la que pertenece el tramo.
+     * @param sectionUuid        Identificador único del precio por tramo que se desea actualizar.
+     * @param sectionPriceUpdate Nuevo precio del tramo ({@link SectionPriceUpdate}).
+     *
+     * @return {@link SectionPriceDTO} correspondiente al tramo actualizado.
+     *
+     * @throws NotFoundException Si el tramo no existe, está inactivo, o su ruta o empresa
+     *                           no cumplen las condiciones indicadas.
+     * @see SectionPriceMapper#toDTO(SectionPrice)
+     */
+    @Transactional
+    public SectionPriceDTO updateSectionPrice(UUID companyUuid, UUID routeUuid, UUID sectionUuid,
+                                              SectionPriceUpdate sectionPriceUpdate) {
+        SectionPrice sectionPrice = sectionPriceRepository
+                .findByUuidAndActiveTrueAndRouteCompanyUuidAndRouteCompanyActiveTrueAndRouteUuidAndRouteActiveTrue(
+                        sectionUuid, companyUuid, routeUuid)
+                .orElseThrow(() -> new NotFoundException("Tramo no encontrado"));
+
+        sectionPrice.setPrice(sectionPriceUpdate.getPrice());
+        return sectionPriceMapper.toDTO(sectionPriceRepository.save(sectionPrice));
     }
 
 }
