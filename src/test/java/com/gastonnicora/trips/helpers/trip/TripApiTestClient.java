@@ -9,6 +9,9 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 /**
  * Cliente HTTP para los endpoints de viajes, pensado para tests de integración.
@@ -74,6 +77,20 @@ public class TripApiTestClient {
     public TripApiTestClient withToken(String token) {
         this.token = token;
         return this;
+    }
+
+    /**
+     * Envía una petición para obtener un viaje por su identificador.
+     *
+     * @param tripUuid UUID del viaje que se desea obtener.
+     *
+     * @return resultado de la petición.
+     */
+    public ResultActions getTrip(UUID tripUuid) throws Exception {
+        return mockMvc.perform(get("/api/trip/" + tripUuid)
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test"));
     }
 
     public String getToken() {

@@ -8,6 +8,7 @@ import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.entities.Worker;
 import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.exceptions.BadRequestException;
+import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.TripMapper;
 import com.gastonnicora.trips.repositories.RouteRepository;
 import com.gastonnicora.trips.repositories.TripRepository;
@@ -108,5 +109,23 @@ public class TripsService {
                 tripCreate.getDistanceToRoute()
         );
         return tripMapper.toDTO(tripRepository.save(trip));
+    }
+
+    /**
+     * Obtiene un viaje activo por su identificador único.
+     *
+     * @param tripUuid Identificador único del viaje.
+     *
+     * @return {@link TripDTO} correspondiente al viaje encontrado.
+     *
+     * @throws NotFoundException Si el viaje no existe o está inactivo.
+     * @see TripRepository#findByUuidAndActiveTrue(UUID)
+     * @see TripMapper#toDTO(Trip)
+     */
+    public TripDTO getTrip(UUID tripUuid) {
+        Trip trip = tripRepository
+                .findByUuidAndActiveTrue(tripUuid).orElseThrow(
+                        () -> new NotFoundException("El viaje no existe"));
+        return  tripMapper.toDTO(trip);
     }
 }

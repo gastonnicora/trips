@@ -60,4 +60,26 @@ public class TripController {
                 companyUuid,
                 tripCreate);
     }
+
+    /**
+     * Obtiene un viaje activo por su identificador único.
+     *
+     * <p>
+     * Requiere un usuario autenticado.
+     * </p>
+     *
+     * @param uuid Identificador único del viaje.
+     *
+     * @return {@link TripDTO} correspondiente al viaje encontrado.
+     *
+     * @see TripsService#getTrip(UUID)
+     */
+    @GetMapping("/trip/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Obtener viaje", description = "Obtiene un viaje a una empresa.")
+    public TripDTO getTrip(
+            @PathVariable("uuid") UUID uuid
+                             ) {
+        return tripsService.getTrip(uuid);
+    }
 }
