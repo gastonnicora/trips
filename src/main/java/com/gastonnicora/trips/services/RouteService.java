@@ -4,6 +4,10 @@ import com.gastonnicora.trips.dtos.entities.RouteDTO;
 import com.gastonnicora.trips.dtos.request.route.RouteCreate;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.entities.Route;
+import com.gastonnicora.trips.entities.RoutePoint;
+import com.gastonnicora.trips.entities.SectionPrice;
+import com.gastonnicora.trips.enums.PricingType;
+import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
 import com.gastonnicora.trips.mappers.RouteMapper;
 import com.gastonnicora.trips.repositories.RouteRepository;
@@ -160,6 +164,60 @@ public class RouteService {
         route.setName(routeUpdate.getName());
         route.setPricingType(routeUpdate.getPricingType());
         return routeMapper.toDTO(routeRepository.save(route));
+    }
+    /**
+     * Valida que una ruta activa esté completa y que su configuración de precios
+     * sea coherente con su {@link PricingType}.
+     *
+     * <p>
+     * Reglas verificadas:
+     * </p>
+     * <ul>
+     *     <li>La ruta debe tener al menos dos puntos.</li>
+     *     <li>Si el tipo de precio es {@link PricingType#PER_KM}, debe tener un
+     *     precio por kilómetro configurado.</li>
+     *     <li>Si el tipo de precio es {@link PricingType#PER_SECTION}, debe tener al
+     *     menos un precio por tramo y el último tramo debe terminar en el último
+     *     punto de la ruta.</li>
+     * </ul>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece la ruta.
+     * @param routeUuid   UUID de la ruta que se desea validar.
+     *
+     * @throws NotFoundException   Si la ruta no existe, está inactiva o no pertenece
+     *                             a la empresa indicada.
+     * @throws BadRequestException Si la configuración de la ruta no cumple alguna de
+     *                             las reglas anteriores.
+     * @see RouteRepository#findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(UUID, UUID)
+     */
+    @Transactional
+    public void validateRoute(UUID companyUuid, UUID routeUuid) {
+        Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
+                .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
+
+        List<RoutePoint> points = route.getPoints();
+        if (points.size() < 2) {
+            throw new BadRequestException("La ruta debe tener al menos dos puntos");
+        }
+
+        switch (route.getPricingType()) {
+            case PER_KM -> {
+                if (route.getPricePerKilometer() == null) {
+                    throw new BadRequestException("La ruta por kilómetro no tiene precio por kilómetro configurado");
+                }
+            }
+            case PER_SECTION -> {
+                List<SectionPrice> sections = route.getSectionPrices();
+                if (sections.isEmpty()) {
+                    throw new BadRequestException("La ruta por tramo no tiene precios de tramo configurados");
+                }
+                UUID lastPointUuid = points.getLast().getUuid();
+                UUID sectionEndUuid = sections.getLast().getToPoint().getUuid();
+                if (!sectionEndUuid.equals(lastPointUuid)) {
+                    throw new BadRequestException("El último tramo no termina en el último punto de la ruta");
+                }
+            }
+        }
     }
 
 }

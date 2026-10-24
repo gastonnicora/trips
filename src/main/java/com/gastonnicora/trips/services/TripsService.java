@@ -9,6 +9,8 @@ import com.gastonnicora.trips.repositories.UserRepository;
 import com.gastonnicora.trips.repositories.VehicleRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
  * Servicio encargado de gestionar los viajes programados dentro de una ruta.
  *
