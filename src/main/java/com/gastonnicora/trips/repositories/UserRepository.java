@@ -85,4 +85,19 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      */
     Optional<User> findByUuid(UUID uuid);
 
+    /**
+     * Busca un usuario habilitado por su identificador único.
+     *
+     * <p>
+     * A diferencia de {@link #findByUuid(UUID)}, no devuelve usuarios
+     * deshabilitados.
+     * </p>
+     *
+     * @param uuid Identificador único del usuario.
+     *
+     * @return {@link Optional} que contiene el usuario encontrado si está
+     * habilitado, o vacío si no existe o se encuentra deshabilitado.
+     */
+    Optional<User> findByUuidAndEnabledTrue(UUID uuid);
+
 }
