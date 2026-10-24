@@ -94,14 +94,6 @@ public class Route {
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SectionPrice> sectionPrices = new ArrayList<>();
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @BatchSize(size = 50)
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private TypeTrip type;
-
-    @Column(name = "distanceToRoute")
-    private Integer distanceToRoute;
     /**
      * Fecha y hora en la que se creó la ruta.
      */
@@ -134,12 +126,11 @@ public class Route {
      * @param name        Nombre de la ruta.
      * @param pricingType Forma en que se calcula el precio de los pasajes.
      */
-    public Route(Company company, String name, PricingType pricingType, TypeTrip type) {
+    public Route(Company company, String name, PricingType pricingType) {
         this.company = company;
         this.name = name;
         this.pricingType = pricingType;
         this.active = true;
-        this.type = type;
     }
 
     /**
