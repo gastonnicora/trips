@@ -1,6 +1,7 @@
 package com.gastonnicora.trips.helpers.trip;
 
 import com.gastonnicora.trips.dtos.request.trip.TripCreate;
+import com.gastonnicora.trips.dtos.request.trip.TripUpdate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -108,6 +109,20 @@ public class TripApiTestClient {
                 .header("User-Agent", "JUnit-Test");
         params.forEach((name, value) -> request.param(name, value));
         return mockMvc.perform(request);
+    }
+
+    public ResultActions updateTrip(UUID companyUuid, UUID tripUuid, UUID vehicleUuid, UUID driverUuid)
+            throws Exception {
+        TripUpdate tripUpdate = new TripUpdate();
+        tripUpdate.setVehicleUuid(vehicleUuid);
+        tripUpdate.setDriverUuid(driverUuid);
+        String json = objectMapper.writeValueAsString(tripUpdate);
+
+        return mockMvc.perform(put("/api/companies/" + companyUuid + "/trip/" + tripUuid)
+                                       .header("Authorization", "Bearer " + token)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .header("User-Agent", "JUnit-Test")
+                                       .content(json));
     }
 
     public String getToken() {

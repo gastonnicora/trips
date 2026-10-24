@@ -5,7 +5,9 @@ import com.gastonnicora.trips.dtos.entities.TripDTO;
 import com.gastonnicora.trips.dtos.request.route.RouteCreate;
 import com.gastonnicora.trips.dtos.request.trip.TripCreate;
 import com.gastonnicora.trips.dtos.request.trip.TripSearchRequest;
+import com.gastonnicora.trips.dtos.request.trip.TripUpdate;
 import com.gastonnicora.trips.entities.Company;
+import com.gastonnicora.trips.enums.RoleCompany;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.RouteService;
 import com.gastonnicora.trips.services.TripsService;
@@ -123,5 +125,35 @@ public class TripController {
                 request.toDestination(),
                 request.getMaxDistanceMeters(),
                 request.getDate());
+    }
+
+    /**
+     * Actualiza el vehículo y el conductor asignados a un viaje de una empresa.
+     *
+     * <p>
+     * Solo pueden realizar esta operación los usuarios con rol {@link RoleCompany#OWNER}
+     * o {@link RoleCompany#ADMIN} en la empresa indicada.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece el viaje.
+     * @param uuid        UUID del viaje que se desea actualizar.
+     * @param tripUpdate  Nuevo vehículo y nuevo conductor del viaje ({@link TripUpdate}).
+     *
+     * @return {@link TripDTO} correspondiente al viaje actualizado.
+     *
+     * @see TripsService#updateTrip(UUID, UUID, TripUpdate)
+     */
+    @PutMapping("/companies/{companyUuid}/trip/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("@companySecurity.hasAnyRole(#companyUuid, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).OWNER, "
+            + "T(com.gastonnicora.trips.enums.RoleCompany).ADMIN)")
+    @Operation(summary = "Actualizar viaje", description = "Actualiza el vehículo y el conductor asignados a un viaje de una empresa.")
+    public TripDTO updateTrip(
+            @PathVariable("companyUuid") UUID companyUuid,
+            @PathVariable("uuid") UUID uuid,
+            @RequestBody @Valid TripUpdate tripUpdate
+                             ) {
+        return tripsService.updateTrip(companyUuid, uuid, tripUpdate);
     }
 }

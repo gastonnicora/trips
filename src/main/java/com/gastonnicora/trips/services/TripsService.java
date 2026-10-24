@@ -2,6 +2,7 @@ package com.gastonnicora.trips.services;
 
 import com.gastonnicora.trips.dtos.entities.TripDTO;
 import com.gastonnicora.trips.dtos.request.trip.TripCreate;
+import com.gastonnicora.trips.dtos.request.trip.TripUpdate;
 import com.gastonnicora.trips.entities.Route;
 import com.gastonnicora.trips.entities.RoutePoint;
 import com.gastonnicora.trips.entities.Trip;
@@ -204,29 +205,49 @@ public class TripsService {
                 && originMatch.progress() < destinationMatch.progress();
     }
 
-    public TripDTO updateTrip(UUID companyUuid,UUID tripUuid, TripCreate tripUpdate) {
-        Trip trip= tripRepository.findByUuidAndRouteCompanyUuidAndActiveTrueAndRouteCompanyActiveTrue(tripUuid,companyUuid).orElseThrow(
-                () -> new NotFoundException("El viaje solicitado no existe"));
-        Route route = routeRepository
-                .findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(tripUpdate.getRouteUuid(), companyUuid)
-                .orElseThrow(
-                        () -> new BadRequestException("La ruta solicitada no existe"));
+    /**
+     * Actualiza el vehículo y el conductor asignados a un viaje activo de una empresa.
+     *
+     * <p>
+     * Verifica que el viaje exista, esté activo y pertenezca a una ruta activa de la
+     * empresa. Luego comprueba que el vehículo sea un vehículo activo de la empresa y
+     * que el conductor sea un trabajador activo con el rol {@link RoleCompany#DRIVER}.
+     * Si todas las validaciones pasan, reemplaza las asignaciones actuales y persiste
+     * el viaje. La ruta, la fecha y el tipo del viaje no se modifican.
+     * </p>
+     *
+     * @param companyUuid UUID de la empresa a la que pertenece el viaje.
+     * @param tripUuid    UUID del viaje que se desea actualizar.
+     * @param tripUpdate  Nuevo vehículo y nuevo conductor del viaje ({@link TripUpdate}).
+     *
+     * @return {@link TripDTO} correspondiente al viaje actualizado.
+     *
+     * @throws NotFoundException   Si el viaje no existe, está inactivo o no pertenece a la empresa.
+     * @throws BadRequestException Si el vehículo no existe dentro de la empresa, si el conductor
+     *                             no es un trabajador activo de la empresa o si el trabajador no
+     *                             tiene el rol de conductor.
+     * @see TripRepository#findByUuidAndRouteCompanyUuidAndActiveTrueAndRouteCompanyActiveTrue(UUID, UUID)
+     * @see VehicleRepository#findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(UUID, UUID)
+     * @see WorkerRepository#findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(UUID, UUID)
+     * @see TripMapper#toDTO(Trip)
+     */
+    @Transactional
+    public TripDTO updateTrip(UUID companyUuid, UUID tripUuid, TripUpdate tripUpdate) {
+        Trip trip = tripRepository
+                .findByUuidAndRouteCompanyUuidAndActiveTrueAndRouteCompanyActiveTrue(tripUuid, companyUuid)
+                .orElseThrow(() -> new NotFoundException("El viaje solicitado no existe"));
         Vehicle vehicle = vehicleRepository
                 .findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(tripUpdate.getVehicleUuid(), companyUuid)
-                .orElseThrow(
-                        () -> new BadRequestException("El vehiculo solicitado no existe"));
+                .orElseThrow(() -> new BadRequestException("El vehiculo solicitado no existe"));
         Worker worker = workerRepository
                 .findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
-                        tripUpdate.getDriverUuid(), companyUuid).orElseThrow(
-                        () -> new BadRequestException("El empleado solicitado no existe"));
+                        tripUpdate.getDriverUuid(), companyUuid)
+                .orElseThrow(() -> new BadRequestException("El empleado solicitado no existe"));
         if (!worker.getRoles().contains(RoleCompany.DRIVER)) {
             throw new BadRequestException("El empleado solicitado no existe");
         }
-        trip.setRoute(route);
-        Trip trip = new Trip(
-                route, tripUpdate.getDate(), vehicle, worker.getUser(), tripUpdate.getType(),
-                tripUpdate.getDistanceToRoute()
-        );
+        trip.setVehicle(vehicle);
+        trip.setDriver(worker.getUser());
         return tripMapper.toDTO(tripRepository.save(trip));
     }
 }
