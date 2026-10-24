@@ -4,8 +4,10 @@ import com.gastonnicora.trips.dtos.request.trip.TripCreate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -91,6 +93,21 @@ public class TripApiTestClient {
                                        .header("Authorization", "Bearer " + token)
                                        .contentType(MediaType.APPLICATION_JSON)
                                        .header("User-Agent", "JUnit-Test"));
+    }
+
+    /**
+     * Envía una petición para buscar viajes que pasan entre un origen y un destino.
+     *
+     * @param params parámetros de consulta de la búsqueda (query params).
+     *
+     * @return resultado de la petición.
+     */
+    public ResultActions searchTrips(Map<String, String> params) throws Exception {
+        MockHttpServletRequestBuilder request = get("/api/trips/search")
+                .header("Authorization", "Bearer " + token)
+                .header("User-Agent", "JUnit-Test");
+        params.forEach((name, value) -> request.param(name, value));
+        return mockMvc.perform(request);
     }
 
     public String getToken() {

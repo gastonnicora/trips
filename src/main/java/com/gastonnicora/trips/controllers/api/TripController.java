@@ -4,6 +4,7 @@ import com.gastonnicora.trips.dtos.entities.RouteDTO;
 import com.gastonnicora.trips.dtos.entities.TripDTO;
 import com.gastonnicora.trips.dtos.request.route.RouteCreate;
 import com.gastonnicora.trips.dtos.request.trip.TripCreate;
+import com.gastonnicora.trips.dtos.request.trip.TripSearchRequest;
 import com.gastonnicora.trips.entities.Company;
 import com.gastonnicora.trips.services.CompanyService;
 import com.gastonnicora.trips.services.RouteService;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -79,7 +81,47 @@ public class TripController {
     @Operation(summary = "Obtener viaje", description = "Obtiene un viaje a una empresa.")
     public TripDTO getTrip(
             @PathVariable("uuid") UUID uuid
-                             ) {
+                          ) {
         return tripsService.getTrip(uuid);
+    }
+
+    /**
+     * Busca los viajes activos de un día cuyo recorrido pasa cerca de un origen
+     * y luego cerca de un destino.
+     *
+     * <p>
+     * Un viaje coincide cuando su recorrido pasa a una distancia menor o igual a
+     * {@code maxDistanceMeters} tanto del origen como del destino, y el punto más
+     * cercano al origen aparece antes que el más cercano al destino, es decir, se
+     * recorre en ese sentido. Solo se consideran los viajes cuya fecha de salida
+     * cae dentro del día indicado.
+     * </p>
+     *
+     * <p>
+     * Requiere un usuario autenticado. Si algún parámetro falta o no es válido,
+     * responde con HTTP 400 y los errores agrupados por campo.
+     * </p>
+     *
+     * @param request parámetros de búsqueda ({@link TripSearchRequest}), recibidos
+     *                como query params y validados.
+     *
+     * @return lista de {@link TripDTO} de los viajes que cumplen las condiciones;
+     * vacía si no hay coincidencias.
+     *
+     * @see TripsService#getTripsPassingBetween(com.gastonnicora.trips.utils.GeoUtils.Coordinate,
+     * com.gastonnicora.trips.utils.GeoUtils.Coordinate, double, java.time.LocalDate)
+     */
+    @GetMapping("/trips/search")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(
+            summary = "Buscar viajes entre un origen y un destino",
+            description = "Devuelve los viajes de un día cuyo recorrido pasa cerca del origen y luego cerca del destino."
+    )
+    public List<TripDTO> getTripsPassingBetween(@Valid @ModelAttribute TripSearchRequest request) {
+        return tripsService.getTripsPassingBetween(
+                request.toOrigin(),
+                request.toDestination(),
+                request.getMaxDistanceMeters(),
+                request.getDate());
     }
 }

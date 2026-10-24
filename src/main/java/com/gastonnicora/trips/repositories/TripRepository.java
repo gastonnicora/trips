@@ -1,8 +1,11 @@
 package com.gastonnicora.trips.repositories;
 
 import com.gastonnicora.trips.entities.Trip;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,5 +51,23 @@ public interface TripRepository extends JpaRepository<Trip, UUID> {
      * vacío si no existe o está inactivo.
      */
     Optional<Trip> findByUuidAndActiveTrue(UUID uuid);
+
+    /**
+     * Obtiene los viajes activos cuya ruta y empresa están activas, con fecha de
+     * salida dentro del rango indicado (inicio incluido, fin excluido).
+     *
+     * <p>
+     * Carga la ruta junto con sus puntos para poder evaluar el recorrido sin
+     * consultas adicionales.
+     * </p>
+     *
+     * @param start Inicio del rango, inclusive.
+     * @param end   Fin del rango, exclusive.
+     *
+     * @return lista de viajes que cumplen las condiciones; vacía si no hay coincidencias.
+     */
+    @EntityGraph(attributePaths = {"route", "route.points"})
+    List<Trip> findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
+            LocalDateTime start, LocalDateTime end);
 
 }

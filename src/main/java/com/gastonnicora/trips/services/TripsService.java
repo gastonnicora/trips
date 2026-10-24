@@ -3,6 +3,7 @@ package com.gastonnicora.trips.services;
 import com.gastonnicora.trips.dtos.entities.TripDTO;
 import com.gastonnicora.trips.dtos.request.trip.TripCreate;
 import com.gastonnicora.trips.entities.Route;
+import com.gastonnicora.trips.entities.RoutePoint;
 import com.gastonnicora.trips.entities.Trip;
 import com.gastonnicora.trips.entities.Vehicle;
 import com.gastonnicora.trips.entities.Worker;
@@ -14,8 +15,15 @@ import com.gastonnicora.trips.repositories.RouteRepository;
 import com.gastonnicora.trips.repositories.TripRepository;
 import com.gastonnicora.trips.repositories.VehicleRepository;
 import com.gastonnicora.trips.repositories.WorkerRepository;
+import com.gastonnicora.trips.utils.GeoUtils;
+import com.gastonnicora.trips.utils.GeoUtils.Coordinate;
+import com.gastonnicora.trips.utils.GeoUtils.RouteMatch;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -88,6 +96,7 @@ public class TripsService {
      * @see WorkerRepository#findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(UUID, UUID)
      * @see TripMapper#toDTO(Trip)
      */
+    @Transactional
     public TripDTO createTrip(UUID companyUuid, TripCreate tripCreate) {
         Route route = routeRepository
                 .findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(tripCreate.getRouteUuid(), companyUuid)
@@ -122,10 +131,102 @@ public class TripsService {
      * @see TripRepository#findByUuidAndActiveTrue(UUID)
      * @see TripMapper#toDTO(Trip)
      */
+    @Transactional
     public TripDTO getTrip(UUID tripUuid) {
         Trip trip = tripRepository
                 .findByUuidAndActiveTrue(tripUuid).orElseThrow(
                         () -> new NotFoundException("El viaje no existe"));
         return  tripMapper.toDTO(trip);
+    }
+
+    /**
+     * Obtiene los viajes activos de un día que pasan cerca de un origen y luego
+     * cerca de un destino.
+     *
+     * <p>
+     * Un viaje coincide cuando su recorrido pasa a una distancia menor o igual a
+     * {@code maxDistanceMeters} tanto de la coordenada de origen como de la de
+     * destino, y el punto más cercano al origen aparece antes que el más cercano
+     * al destino a lo largo de la ruta, es decir, se recorre en ese sentido.
+     * Solo se consideran los viajes cuya fecha de salida cae dentro del día
+     * indicado.
+     * </p>
+     *
+     * @param origin            Coordenada de origen (latitud y longitud).
+     * @param destination       Coordenada de destino (latitud y longitud).
+     * @param maxDistanceMeters Distancia máxima, en metros, entre cada coordenada y
+     *                          el recorrido. Debe ser mayor a cero.
+     * @param date              Día de salida de los viajes.
+     *
+     * @return lista de {@link TripDTO} de los viajes que cumplen las condiciones;
+     * vacía si no hay coincidencias.
+     *
+     * @throws BadRequestException Si la distancia máxima no es mayor a cero.
+     * @see TripRepository#findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(LocalDateTime, LocalDateTime)
+     * @see GeoUtils#closestMatch(Coordinate, List)
+     */
+    @Transactional
+    public List<TripDTO> getTripsPassingBetween(
+            Coordinate origin, Coordinate destination, double maxDistanceMeters, LocalDate date) {
+        if (maxDistanceMeters <= 0) {
+            throw new BadRequestException("La distancia debe ser mayor a cero");
+        }
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
+
+        return tripRepository
+                .findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
+                        start, end)
+                .stream()
+                .filter(trip -> passesBetween(trip, origin, destination, maxDistanceMeters))
+                .map(tripMapper::toDTO)
+                .toList();
+    }
+
+    /**
+     * Indica si el recorrido de un viaje pasa cerca del origen y luego cerca del
+     * destino, dentro de la distancia máxima indicada.
+     */
+    private boolean passesBetween(Trip trip, Coordinate origin, Coordinate destination, double maxDistanceMeters) {
+        List<Coordinate> polyline = trip.getRoute().getPoints().stream()
+                .filter(RoutePoint::isActive)
+                .map(point -> new Coordinate(point.getLatitude(), point.getLongitude()))
+                .toList();
+        if (polyline.isEmpty()) {
+            return false;
+        }
+
+        RouteMatch originMatch = GeoUtils.closestMatch(origin, polyline);
+        RouteMatch destinationMatch = GeoUtils.closestMatch(destination, polyline);
+
+        return originMatch.distanceMeters() <= maxDistanceMeters
+                && destinationMatch.distanceMeters() <= maxDistanceMeters
+                && originMatch.progress() < destinationMatch.progress();
+    }
+
+    public TripDTO updateTrip(UUID companyUuid,UUID tripUuid, TripCreate tripUpdate) {
+        Trip trip= tripRepository.findByUuidAndRouteCompanyUuidAndActiveTrueAndRouteCompanyActiveTrue(tripUuid,companyUuid).orElseThrow(
+                () -> new NotFoundException("El viaje solicitado no existe"));
+        Route route = routeRepository
+                .findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(tripUpdate.getRouteUuid(), companyUuid)
+                .orElseThrow(
+                        () -> new BadRequestException("La ruta solicitada no existe"));
+        Vehicle vehicle = vehicleRepository
+                .findByUuidAndActiveTrueAndCompanyUuidAndCompanyActiveTrue(tripUpdate.getVehicleUuid(), companyUuid)
+                .orElseThrow(
+                        () -> new BadRequestException("El vehiculo solicitado no existe"));
+        Worker worker = workerRepository
+                .findByUserUuidAndCompanyUuidAndActiveTrueAndUserEnabledTrueAndCompanyActiveTrue(
+                        tripUpdate.getDriverUuid(), companyUuid).orElseThrow(
+                        () -> new BadRequestException("El empleado solicitado no existe"));
+        if (!worker.getRoles().contains(RoleCompany.DRIVER)) {
+            throw new BadRequestException("El empleado solicitado no existe");
+        }
+        trip.setRoute(route);
+        Trip trip = new Trip(
+                route, tripUpdate.getDate(), vehicle, worker.getUser(), tripUpdate.getType(),
+                tripUpdate.getDistanceToRoute()
+        );
+        return tripMapper.toDTO(tripRepository.save(trip));
     }
 }
