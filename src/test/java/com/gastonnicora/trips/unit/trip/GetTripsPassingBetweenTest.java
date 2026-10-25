@@ -8,8 +8,11 @@ import com.gastonnicora.trips.enums.TypeTrip;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.mappers.TripMapper;
 import com.gastonnicora.trips.repositories.TripRepository;
+import com.gastonnicora.trips.services.RoutingService;
+import com.gastonnicora.trips.services.RoutingService.RoadPath;
 import com.gastonnicora.trips.services.TripsService;
 import com.gastonnicora.trips.utils.GeoUtils.Coordinate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,28 +47,42 @@ class GetTripsPassingBetweenTest {
     @Mock
     private TripMapper tripMapper;
 
-    @Test
-    void shouldReturnTripWhenRoutePassesOriginThenDestination() {
-        Trip trip = tripWithPoints(DAY, activePoint(-58.00), activePoint(-57.95), activePoint(-57.90));
-        TripDTO tripDTO = new TripDTO();
+    @Mock
+    private RoutingService routingService;
 
-        when(tripRepository.findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
-                DAY.atStartOfDay(), DAY.plusDays(1).atStartOfDay()))
-                .thenReturn(List.of(trip));
-        when(tripMapper.toDTO(trip)).thenReturn(tripDTO);
+    private static RoutePoint activePoint(double longitude) {
+        return new RoutePoint("punto", LAT, longitude);
+    }
 
-        List<TripDTO> result = tripsService.getTripsPassingBetween(
-                new Coordinate(LAT, -57.99), new Coordinate(LAT, -57.91), MAX_DISTANCE_METERS, DAY);
+    private static RoutePoint inactivePoint(double longitude) {
+        RoutePoint point = new RoutePoint("punto", LAT, longitude);
+        point.setActive(false);
+        return point;
+    }
 
-        assertEquals(List.of(tripDTO), result);
+    private static Trip tripWithPoints(LocalDate day, RoutePoint... points) {
+        Route route = new Route(null, "Ruta de prueba", null);
+        for (RoutePoint point : points) {
+            route.addPoint(point);
+        }
+        return new Trip(
+                route, LocalDateTime.of(day, java.time.LocalTime.of(8, 0)),
+                null, null, TypeTrip.TOUR, null
+        );
+    }
 
-        verify(tripRepository).findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
-                DAY.atStartOfDay(), DAY.plusDays(1).atStartOfDay());
-        verify(tripMapper).toDTO(trip);
+    /**
+     * Por defecto, el recorrido es la línea recta entre los puntos: así estos tests
+     * verifican la lógica de coincidencia sin depender de caminos reales.
+     */
+    @BeforeEach
+    void routeFollowsStraightLine() {
+        lenient().when(routingService.getRoadPath(any(), any()))
+                .thenAnswer(invocation -> new RoadPath(invocation.getArgument(1), false));
     }
 
     @Test
-    void shouldExcludeTripWhenRouteIsTravelledInOppositeDirection() {
+    void shouldExcludeTripWhenDestinationIsFartherThanMaxDistance() {
         Trip trip = tripWithPoints(DAY, activePoint(-58.00), activePoint(-57.95), activePoint(-57.90));
 
         when(tripRepository.findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
@@ -73,7 +90,7 @@ class GetTripsPassingBetweenTest {
                 .thenReturn(List.of(trip));
 
         List<TripDTO> result = tripsService.getTripsPassingBetween(
-                new Coordinate(LAT, -57.91), new Coordinate(LAT, -57.99), MAX_DISTANCE_METERS, DAY);
+                new Coordinate(LAT, -57.99), new Coordinate(-34.95, -57.91), MAX_DISTANCE_METERS, DAY);
 
         assertEquals(List.of(), result);
         verify(tripMapper, never()).toDTO(any(Trip.class));
@@ -96,15 +113,19 @@ class GetTripsPassingBetweenTest {
     }
 
     @Test
-    void shouldExcludeTripWhenDestinationIsFartherThanMaxDistance() {
+    void shouldExcludeTripWhenRoadDetourIsFartherThanMaxDistance() {
         Trip trip = tripWithPoints(DAY, activePoint(-58.00), activePoint(-57.95), activePoint(-57.90));
+        // Los puntos de la ruta siguen la recta, pero el camino real se desvía unos 22 km al norte.
+        List<Coordinate> detourRoad = List.of(
+                new Coordinate(LAT, -58.00), new Coordinate(LAT + 0.2, -57.95), new Coordinate(LAT, -57.90));
+        doReturn(new RoadPath(detourRoad, true)).when(routingService).getRoadPath(any(), any());
 
         when(tripRepository.findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
                 any(), any()))
                 .thenReturn(List.of(trip));
 
         List<TripDTO> result = tripsService.getTripsPassingBetween(
-                new Coordinate(LAT, -57.99), new Coordinate(-34.95, -57.91), MAX_DISTANCE_METERS, DAY);
+                new Coordinate(LAT, -57.95), new Coordinate(LAT, -57.91), MAX_DISTANCE_METERS, DAY);
 
         assertEquals(List.of(), result);
         verify(tripMapper, never()).toDTO(any(Trip.class));
@@ -117,6 +138,34 @@ class GetTripsPassingBetweenTest {
         when(tripRepository.findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
                 any(), any()))
                 .thenReturn(List.of(trip));
+
+        List<TripDTO> result = tripsService.getTripsPassingBetween(
+                new Coordinate(LAT, -57.99), new Coordinate(LAT, -57.91), MAX_DISTANCE_METERS, DAY);
+
+        assertEquals(List.of(), result);
+        verify(tripMapper, never()).toDTO(any(Trip.class));
+    }
+
+    @Test
+    void shouldExcludeTripWhenRouteIsTravelledInOppositeDirection() {
+        Trip trip = tripWithPoints(DAY, activePoint(-58.00), activePoint(-57.95), activePoint(-57.90));
+
+        when(tripRepository.findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
+                any(), any()))
+                .thenReturn(List.of(trip));
+
+        List<TripDTO> result = tripsService.getTripsPassingBetween(
+                new Coordinate(LAT, -57.91), new Coordinate(LAT, -57.99), MAX_DISTANCE_METERS, DAY);
+
+        assertEquals(List.of(), result);
+        verify(tripMapper, never()).toDTO(any(Trip.class));
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoTripsOnThatDay() {
+        when(tripRepository.findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
+                any(), any()))
+                .thenReturn(List.of());
 
         List<TripDTO> result = tripsService.getTripsPassingBetween(
                 new Coordinate(LAT, -57.99), new Coordinate(LAT, -57.91), MAX_DISTANCE_METERS, DAY);
@@ -144,52 +193,49 @@ class GetTripsPassingBetweenTest {
     }
 
     @Test
-    void shouldReturnEmptyListWhenNoTripsOnThatDay() {
+    void shouldReturnTripWhenRoutePassesOriginThenDestination() {
+        Trip trip = tripWithPoints(DAY, activePoint(-58.00), activePoint(-57.95), activePoint(-57.90));
+        TripDTO tripDTO = new TripDTO();
+
         when(tripRepository.findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
-                any(), any()))
-                .thenReturn(List.of());
+                DAY.atStartOfDay(), DAY.plusDays(1).atStartOfDay()))
+                .thenReturn(List.of(trip));
+        when(tripMapper.toDTO(trip)).thenReturn(tripDTO);
 
         List<TripDTO> result = tripsService.getTripsPassingBetween(
                 new Coordinate(LAT, -57.99), new Coordinate(LAT, -57.91), MAX_DISTANCE_METERS, DAY);
 
-        assertEquals(List.of(), result);
-        verify(tripMapper, never()).toDTO(any(Trip.class));
+        assertEquals(List.of(tripDTO), result);
+
+        verify(tripRepository).findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
+                DAY.atStartOfDay(), DAY.plusDays(1).atStartOfDay());
+        verify(tripMapper).toDTO(trip);
     }
 
     @Test
     void shouldThrowBadRequestWhenMaxDistanceIsNotPositive() {
-        BadRequestException zero = assertThrows(BadRequestException.class,
-                                                () -> tripsService.getTripsPassingBetween(
-                                                        new Coordinate(LAT, -57.99), new Coordinate(LAT, -57.91),
-                                                        0, DAY));
-        BadRequestException negative = assertThrows(BadRequestException.class,
-                                                    () -> tripsService.getTripsPassingBetween(
-                                                            new Coordinate(LAT, -57.99), new Coordinate(LAT, -57.91),
-                                                            -5, DAY));
+        BadRequestException zero = assertThrows(
+                BadRequestException.class,
+                () -> tripsService.getTripsPassingBetween(
+                        new Coordinate(LAT, -57.99), new Coordinate(LAT, -57.91),
+                        0, DAY
+                                                         )
+                                               );
+        BadRequestException negative = assertThrows(
+                BadRequestException.class,
+                () -> tripsService.getTripsPassingBetween(
+                        new Coordinate(LAT, -57.99), new Coordinate(LAT, -57.91),
+                        -5, DAY
+                                                         )
+                                                   );
 
         assertEquals("La distancia debe ser mayor a cero", zero.getMessage());
         assertEquals("La distancia debe ser mayor a cero", negative.getMessage());
 
-        verify(tripRepository, never()).findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
+        verify(
+                tripRepository,
+                never()
+              ).findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(
                 any(), any());
-    }
-
-    private static RoutePoint activePoint(double longitude) {
-        return new RoutePoint("punto", LAT, longitude);
-    }
-
-    private static RoutePoint inactivePoint(double longitude) {
-        RoutePoint point = new RoutePoint("punto", LAT, longitude);
-        point.setActive(false);
-        return point;
-    }
-
-    private static Trip tripWithPoints(LocalDate day, RoutePoint... points) {
-        Route route = new Route(null, "Ruta de prueba", null);
-        for (RoutePoint point : points) {
-            route.addPoint(point);
-        }
-        return new Trip(route, LocalDateTime.of(day, java.time.LocalTime.of(8, 0)),
-                        null, null, TypeTrip.TOUR, null);
     }
 }

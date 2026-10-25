@@ -17,6 +17,8 @@ import com.gastonnicora.trips.helpers.user.UserTestFactory;
 import com.gastonnicora.trips.helpers.vehicle.VehicleTestFactory;
 import com.gastonnicora.trips.helpers.worker.WorkerApiTestClient;
 import com.gastonnicora.trips.services.GeocodingService;
+import com.gastonnicora.trips.services.RoutingService;
+import com.gastonnicora.trips.services.RoutingService.RoadPath;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,12 +67,19 @@ class SearchTripsTest {
     @MockitoBean
     private GeocodingService geocodingService;
 
+    @MockitoBean
+    private RoutingService routingService;
+
     private TripApiTestClient tripApi;
     private LocalDate day;
     private TripDTO createdTrip;
 
     @BeforeEach
     void setup() throws Exception {
+        // Sin llamadas reales a OSRM: el recorrido es la línea recta entre los puntos.
+        when(routingService.getRoadPath(any(), any()))
+                .thenAnswer(invocation -> new RoadPath(invocation.getArgument(1), false));
+
         UserDTO owner = UserTestFactory.registerUser(mockMvc, "owner", PASSWORD);
         String ownerToken = UserTestFactory.login(mockMvc, owner.getEmail(), PASSWORD).getToken();
 

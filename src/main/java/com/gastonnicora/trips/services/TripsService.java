@@ -48,6 +48,7 @@ public class TripsService {
     private final VehicleRepository vehicleRepository;
     private final WorkerRepository workerRepository;
     private final TripMapper tripMapper;
+    private final RoutingService routingService;
 
 
     /**
@@ -58,19 +59,23 @@ public class TripsService {
      * @param vehicleRepository repositorio de vehículos ({@link VehicleRepository}).
      * @param workerRepository  repositorio de trabajadores ({@link WorkerRepository}).
      * @param tripMapper        mapper de viajes ({@link TripMapper}).
+     * @param routingService    servicio que calcula el recorrido por caminos reales
+     *                          ({@link RoutingService}).
      */
     public TripsService(
             RouteRepository routeRepository,
             TripRepository tripRepository,
             VehicleRepository vehicleRepository,
             WorkerRepository workerRepository,
-            TripMapper tripMapper
+            TripMapper tripMapper,
+            RoutingService routingService
                        ) {
         this.routeRepository = routeRepository;
         this.tripRepository = tripRepository;
         this.vehicleRepository = vehicleRepository;
         this.workerRepository = workerRepository;
         this.tripMapper = tripMapper;
+        this.routingService = routingService;
     }
 
     /**
@@ -148,7 +153,9 @@ public class TripsService {
      * Un viaje coincide cuando su recorrido pasa a una distancia menor o igual a
      * {@code maxDistanceMeters} tanto de la coordenada de origen como de la de
      * destino, y el punto más cercano al origen aparece antes que el más cercano
-     * al destino a lo largo de la ruta, es decir, se recorre en ese sentido.
+     * al destino a lo largo de la ruta, es decir, se recorre en ese sentido. El
+     * recorrido sigue caminos reales entre los puntos de la ruta, según
+     * {@link RoutingService#getRoadPath(UUID, List)}.
      * Solo se consideran los viajes cuya fecha de salida cae dentro del día
      * indicado.
      * </p>
@@ -165,6 +172,7 @@ public class TripsService {
      * @throws BadRequestException Si la distancia máxima no es mayor a cero.
      * @see TripRepository#findAllByActiveTrueAndRouteActiveTrueAndRouteCompanyActiveTrueAndDateGreaterThanEqualAndDateLessThan(LocalDateTime, LocalDateTime)
      * @see GeoUtils#closestMatch(Coordinate, List)
+     * @see RoutingService#getRoadPath(UUID, List)
      */
     @Transactional
     public List<TripDTO> getTripsPassingBetween(
@@ -185,20 +193,23 @@ public class TripsService {
     }
 
     /**
-     * Indica si el recorrido de un viaje pasa cerca del origen y luego cerca del
-     * destino, dentro de la distancia máxima indicada.
+     * Indica si el recorrido por caminos reales de un viaje pasa cerca del origen
+     * y luego cerca del destino, dentro de la distancia máxima indicada.
      */
     private boolean passesBetween(Trip trip, Coordinate origin, Coordinate destination, double maxDistanceMeters) {
-        List<Coordinate> polyline = trip.getRoute().getPoints().stream()
+        List<Coordinate> waypoints = trip.getRoute().getPoints().stream()
                 .filter(RoutePoint::isActive)
                 .map(point -> new Coordinate(point.getLatitude(), point.getLongitude()))
                 .toList();
-        if (polyline.isEmpty()) {
+        if (waypoints.isEmpty()) {
             return false;
         }
+        List<Coordinate> roadPolyline = routingService
+                .getRoadPath(trip.getRoute().getUuid(), waypoints)
+                .geometry();
 
-        RouteMatch originMatch = GeoUtils.closestMatch(origin, polyline);
-        RouteMatch destinationMatch = GeoUtils.closestMatch(destination, polyline);
+        RouteMatch originMatch = GeoUtils.closestMatch(origin, roadPolyline);
+        RouteMatch destinationMatch = GeoUtils.closestMatch(destination, roadPolyline);
 
         return originMatch.distanceMeters() <= maxDistanceMeters
                 && destinationMatch.distanceMeters() <= maxDistanceMeters

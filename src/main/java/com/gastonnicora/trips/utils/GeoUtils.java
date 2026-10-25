@@ -86,7 +86,7 @@ public final class GeoUtils {
             throw new IllegalArgumentException("La ruta no tiene puntos");
         }
         if (polyline.size() == 1) {
-            return new RouteMatch(0.0, distanceMeters(target, polyline.get(0)));
+            return new RouteMatch(0.0, distanceMeters(target, polyline.getFirst()));
         }
 
         RouteMatch best = null;
@@ -101,6 +101,55 @@ public final class GeoUtils {
             }
         }
         return best;
+    }
+
+    /**
+     * Calcula la longitud total, en metros, de una polilínea sumando la distancia
+     * de cada tramo entre dos puntos consecutivos.
+     *
+     * @param polyline Puntos de la ruta, en orden. Puede ser la geometría por
+     *                 caminos reales obtenida de {@code RoutingService}.
+     *
+     * @return longitud total en metros; {@code 0} si tiene menos de dos puntos.
+     */
+    public static double pathLengthMeters(List<Coordinate> polyline) {
+        return distanceAlongMeters(polyline, polyline.size() - 1);
+    }
+
+    /**
+     * Calcula la distancia, en metros, recorrida a lo largo de la polilínea desde
+     * su inicio hasta la posición indicada.
+     *
+     * <p>
+     * Usa la misma convención de {@link RouteMatch#progress()}: la parte entera
+     * es el índice del tramo y la parte decimal la fracción recorrida de ese
+     * tramo. De este modo, la distancia entre dos puntos de la ruta (por ejemplo,
+     * subida y bajada de un pasajero) se obtiene como la diferencia de sus
+     * distancias acumuladas.
+     * </p>
+     *
+     * @param polyline Puntos de la ruta, en orden.
+     * @param progress Posición a lo largo de la ruta. Valores menores a cero se
+     *                 tratan como el inicio y mayores al final, como el final.
+     *
+     * @return distancia recorrida desde el inicio hasta {@code progress}, en metros.
+     */
+    public static double distanceAlongMeters(List<Coordinate> polyline, double progress) {
+        if (polyline.size() < 2 || progress <= 0) {
+            return 0.0;
+        }
+        int index = (int) Math.floor(progress);
+        double fraction = progress - index;
+        int lastSegment = polyline.size() - 2;
+
+        double length = 0.0;
+        for (int i = 0; i < Math.min(index, lastSegment + 1); i++) {
+            length += distanceMeters(polyline.get(i), polyline.get(i + 1));
+        }
+        if (index <= lastSegment) {
+            length += fraction * distanceMeters(polyline.get(index), polyline.get(index + 1));
+        }
+        return length;
     }
 
     /**
