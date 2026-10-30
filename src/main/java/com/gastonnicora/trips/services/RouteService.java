@@ -2,10 +2,7 @@ package com.gastonnicora.trips.services;
 
 import com.gastonnicora.trips.dtos.entities.RouteDTO;
 import com.gastonnicora.trips.dtos.request.route.RouteCreate;
-import com.gastonnicora.trips.entities.Company;
-import com.gastonnicora.trips.entities.Route;
-import com.gastonnicora.trips.entities.RoutePoint;
-import com.gastonnicora.trips.entities.SectionPrice;
+import com.gastonnicora.trips.entities.*;
 import com.gastonnicora.trips.enums.PricingType;
 import com.gastonnicora.trips.exceptions.BadRequestException;
 import com.gastonnicora.trips.exceptions.NotFoundException;
@@ -14,8 +11,7 @@ import com.gastonnicora.trips.repositories.RouteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Servicio encargado de gestionar las rutas asociadas a empresas.
@@ -195,28 +191,74 @@ public class RouteService {
         Route route = routeRepository.findByUuidAndCompanyUuidAndCompanyActiveTrueAndActiveTrue(routeUuid, companyUuid)
                 .orElseThrow(() -> new NotFoundException("Ruta no encontrada"));
 
-        List<RoutePoint> points = route.getPoints();
+        List<RoutePoint> points = route.getPoints().stream()
+                .filter(RoutePoint::isActive)
+                .toList();
+
         if (points.size() < 2) {
-            throw new BadRequestException("La ruta debe tener al menos dos puntos");
+            throw new BadRequestException("La ruta debe tener al menos dos puntos activos");
+        }
+        if (points.stream().anyMatch(point -> point.getLatitude() == null || point.getLongitude() == null)) {
+            throw new BadRequestException("Todos los puntos de la ruta deben tener coordenadas");
         }
 
         switch (route.getPricingType()) {
-            case PER_KM -> {
-                if (route.getPricePerKilometer() == null) {
-                    throw new BadRequestException("La ruta por kilómetro no tiene precio por kilómetro configurado");
-                }
+            case PER_KM -> validatePricePerKm(route);
+            case PER_SECTION -> validateSections(route, points);
+        }
+    }
+
+    /**
+     * Verifica que la ruta por kilómetro tenga una configuración de precio activa.
+     */
+    private void validatePricePerKm(Route route) {
+        PricePerKilometer pricePerKilometer = route.getPricePerKilometer();
+        if (pricePerKilometer == null || !pricePerKilometer.isActive()) {
+            throw new BadRequestException("La ruta por kilómetro no tiene un precio por kilómetro activo");
+        }
+    }
+
+    /**
+     * Verifica que los tramos activos formen una cadena continua desde el primer
+     * punto activo hasta el último, en el orden de los puntos de la ruta.
+     *
+     * <p>
+     * Los puntos se toman en el orden en que aparecen en la lista de la ruta, que es
+     * el orden del recorrido. Un tramo que toca un punto inactivo se descarta, y el
+     * hueco que deja queda detectado por la validación de continuidad.
+     * </p>
+     */
+    private void validateSections(Route route, List<RoutePoint> points) {
+        Map<UUID, Integer> positions = new HashMap<>();
+        for (int i = 0; i < points.size(); i++) {
+            positions.put(points.get(i).getUuid(), i);
+        }
+
+        List<SectionPrice> sections = route.getSectionPrices().stream()
+                .filter(SectionPrice::isActive)
+                .filter(section -> positions.containsKey(section.getFromPoint().getUuid())
+                        && positions.containsKey(section.getToPoint().getUuid()))
+                .sorted(Comparator.comparingInt(section -> positions.get(section.getFromPoint().getUuid())))
+                .toList();
+
+        if (sections.isEmpty()) {
+            throw new BadRequestException("La ruta por tramo no tiene precios de tramo activos");
+        }
+
+        if (!sections.getFirst().getFromPoint().getUuid().equals(points.getFirst().getUuid())) {
+            throw new BadRequestException("El primer tramo no empieza en el primer punto de la ruta");
+        }
+
+        for (int i = 1; i < sections.size(); i++) {
+            int previousEnd = positions.get(sections.get(i - 1).getToPoint().getUuid());
+            int nextStart = positions.get(sections.get(i).getFromPoint().getUuid());
+            if (previousEnd != nextStart) {
+                throw new BadRequestException("Hay un hueco entre tramos de la ruta");
             }
-            case PER_SECTION -> {
-                List<SectionPrice> sections = route.getSectionPrices();
-                if (sections.isEmpty()) {
-                    throw new BadRequestException("La ruta por tramo no tiene precios de tramo configurados");
-                }
-                UUID lastPointUuid = points.getLast().getUuid();
-                UUID sectionEndUuid = sections.getLast().getToPoint().getUuid();
-                if (!sectionEndUuid.equals(lastPointUuid)) {
-                    throw new BadRequestException("El último tramo no termina en el último punto de la ruta");
-                }
-            }
+        }
+
+        if (!sections.getLast().getToPoint().getUuid().equals(points.getLast().getUuid())) {
+            throw new BadRequestException("El último tramo no termina en el último punto de la ruta");
         }
     }
 
